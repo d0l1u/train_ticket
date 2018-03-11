@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="tuniuUrgeRefund">
+	
+	<!-- 查询列表条数 -->
+	<select id="queryUrgeRefundCount"  parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM tuniu_urge_refund 
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="order_id">
+				order_id=#order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_create_time">
+				create_time <![CDATA[>=]]> #begin_create_time:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_create_time">
+				create_time <![CDATA[<]]> DATE_ADD(#end_create_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+		    <isNotEmpty prepend=" and " property="urge_status">
+				urge_status in
+				<iterate open="(" close=")" conjunction="," property="urge_status" >
+					#urge_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询列表 -->
+	<select id="queryUrgeRefundList" parameterClass="java.util.HashMap" resultClass="com.l9e.transaction.vo.TuniuUrgeRefund">
+		SELECT urge_refund_id,order_id,cp_id,out_ticket_billno,urge_status,refund_money,
+		remark,fail_reason,create_time,opt_time,opt_person,refund_time
+		 FROM tuniu_urge_refund 
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="order_id">
+				order_id=#order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_create_time">
+				create_time <![CDATA[>=]]> #begin_create_time:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_create_time">
+				create_time <![CDATA[<]]> DATE_ADD(#end_create_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+		    <isNotEmpty prepend=" and " property="urge_status">
+				urge_status in
+				<iterate open="(" close=")" conjunction="," property="urge_status" >
+					#urge_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY create_time LIMIT #everyPagefrom:Integer#, #pageSize:Integer#
+	</select>
+	
+	<!-- 查询列表 -->
+	<select id="queryUrgeRefundListForExcel" parameterClass="java.util.HashMap" resultClass="com.l9e.transaction.vo.TuniuUrgeRefund">
+		SELECT 
+		urge_refund_id,
+		order_id,cp_id,
+		out_ticket_billno,
+		urge_status,
+		CONVERT(refund_money,CHAR) refund_money,
+		remark,
+		fail_reason,
+		CONVERT(DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s'), CHAR) as create_time,
+		CONVERT(DATE_FORMAT(opt_time,'%Y-%m-%d %H:%i:%s'), CHAR) as opt_time,
+		opt_person,
+		CONVERT(DATE_FORMAT(refund_time,'%Y-%m-%d %H:%i:%s'), CHAR) as refund_time
+		FROM tuniu_urge_refund 
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="order_id">
+				order_id=#order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_create_time">
+				create_time <![CDATA[>=]]> #begin_create_time:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_create_time">
+				create_time <![CDATA[<]]> DATE_ADD(#end_create_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+		    <isNotEmpty prepend=" and " property="urge_status">
+				urge_status in
+				<iterate open="(" close=")" conjunction="," property="urge_status" >
+					#urge_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询明细 -->
+	<select id="queryUrgeRefundTicketInfo" parameterClass="java.util.HashMap" resultClass="com.l9e.transaction.vo.TuniuUrgeRefund">
+		SELECT urge_refund_id,order_id,cp_id,out_ticket_billno,urge_status,refund_money,
+		remark,fail_reason,create_time,opt_time,opt_person,refund_time
+		 FROM tuniu_urge_refund 
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="order_id">
+				order_id=#order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="cp_id">
+				cp_id=#cp_id:VARCHAR#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<update id="updateUrgeRefundInfo" parameterClass="java.util.HashMap">
+		UPDATE tuniu_urge_refund  set opt_time = NOW() 
+				<isNotEmpty prepend=" , " property="urge_status">
+					urge_status =#urge_status#
+				</isNotEmpty>
+				<isNotEmpty prepend=" , " property="refund_money">
+					refund_money =#refund_money#
+				</isNotEmpty>
+				<isNotEmpty prepend=" , " property="remark">
+					remark =#remark#
+				</isNotEmpty>
+				<isNotEmpty prepend=" , " property="opt_person">
+					opt_person =#opt_person#
+				</isNotEmpty>
+				<isNotEmpty prepend=" , " property="refund_time">
+					refund_time =#refund_time#
+				</isNotEmpty>
+			where urge_refund_id=#urge_refund_id#
+			
+	</update>
+	
+	<!-- 更新实体信息 -->
+	
+	<update id="updateUrgeRefund" parameterClass="com.l9e.transaction.vo.TuniuUrgeRefund">
+		        UPDATE tuniu_urge_refund  set opt_time = NOW() 
+				<isNotEmpty prepend=" , " property="urge_status">
+					urge_status =#urge_status#
+				</isNotEmpty>
+				<isNotEmpty prepend=" , " property="refund_money">
+					refund_money =#refund_money#
+				</isNotEmpty>
+				<isNotEmpty prepend=" , " property="remark">
+					remark =#remark#
+				</isNotEmpty>
+				<isNotEmpty prepend=" , " property="opt_person">
+					opt_person =#opt_person#
+				</isNotEmpty>
+				<isNotEmpty prepend=" , " property="refund_time">
+					refund_time =#refund_time#
+				</isNotEmpty>
+				<isNotEmpty prepend=" , " property="fail_reason">
+					fail_reason =#fail_reason#
+				</isNotEmpty>		
+				where urge_refund_id=#urge_refund_id#  and cp_id=#cp_id#  and order_id=#order_id#  and out_ticket_billno=#out_ticket_billno#
+	</update>
+	
+	
+	
+	
+	<update id="updateUrgeRefundByOrderId" parameterClass="java.util.HashMap">
+		UPDATE tuniu_urge_refund  set opt_time = NOW() 
+				<isNotEmpty prepend=" , " property="urge_status">
+					urge_status =#urge_status#
+				</isNotEmpty>
+				<isNotEmpty prepend=" , " property="refund_money">
+					refund_money =#refund_money#
+				</isNotEmpty>
+				<isNotEmpty prepend=" , " property="remark">
+					remark =#remark#
+				</isNotEmpty>
+				<isNotEmpty prepend=" , " property="opt_person">
+					opt_person =#opt_person#
+				</isNotEmpty>
+				<isNotEmpty prepend=" , " property="refund_time">
+					refund_time =#refund_time#
+				</isNotEmpty>
+			where order_id=#order_id#  and  cp_id =#cp_id#
+			
+	</update>
+	
+</sqlMap>

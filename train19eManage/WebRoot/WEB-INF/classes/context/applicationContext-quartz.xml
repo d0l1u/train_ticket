@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/mvc  
+	http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+	<context:component-scan base-package="com.l9e.transaction.job"/>
+	
+	<!-- 总管理类,执行调度程序  -->
+	<bean id="startQuertz"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+			
+				<!-- <ref bean="nofiyCpQuartzTime" /> -->
+				<!-- 
+				<ref bean="uploadExcelTime" />
+				<ref bean="updateCheckAutoTime" />
+				<ref bean="tj_Hc_OrderInfo_Time"/>
+				<ref bean="Tj_hc_halfHour_job_Time"/>
+				 -->
+			<!-- 
+			 	<ref bean="qunarStatFirstQuartzTime" />
+			 	-->
+			 	<!-- 
+				<ref bean="needRepayQuartzTime" />
+				<ref bean="userStatQuartzTime" />
+				<ref bean="orderInfoStatQuartzTime"/>
+				<ref bean="orderInfoStatQuartzOneTime"/>
+				<ref bean="orderInfoProvinceTime"/>
+				<ref bean="through_the_auditTime"/>
+				<ref bean="cpInfoCensus_Time"/>
+				<ref bean="tj_userInfo_Time"/>
+				<ref bean="delete_Pics_Time"/>
+				<ref bean="OpenBookRobotJob_Time"/>
+				<ref bean="CloseBookRobotJob_Time"/>
+				<ref bean="ChangeStatus_Time"/>	-->
+				
+			</list>
+		</property>
+	</bean>
+
+	<bean id="nofiyCpQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="notifyCpTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/30 * * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="notifyCpTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="notifyCpJob" />
+		</property>
+		<property name="targetMethod">
+			<value>notifyCp</value>
+		</property>
+	</bean>
+	
+	<!-- 用户续费任务 -->
+	<bean id="needRepayQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="needRepayTimeTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/30 * 1,2 * * ?</value>
+		</property> 
+		<!-- 
+		<property name="cronExpression">
+			<value>0/30 * * * * ?</value>
+		</property>
+		 -->
+	</bean>
+
+	<bean id="needRepayTimeTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="needRepayJob" />
+		</property>
+		<property name="targetMethod">
+			<value>modifyNeedRepay</value>
+		</property>
+	</bean>
+
+	<!-- 每晚执行更新代理商表信息 -->
+	<bean id="userStatQuartzTime"
+	class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="userStatTimeTask"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 30 3 * * ?</value>
+		</property> 
+	</bean>
+	<bean id="userStatTimeTask" 
+	class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+	<property name="targetObject">
+		<ref bean="userStatToUserinfo"/>
+	</property>
+	<property name="targetMethod">
+		<value>queryOrUpdateAndInsertUser</value>
+	</property>
+	</bean>
+	
+	<!-- 每晚执行更新统计前一天订单 -->
+	<bean  id="orderInfoStatQuartzTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="orderinfoStatTimeTask"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 0 3 * * ?</value>
+		</property>
+	</bean>
+	<bean id="orderinfoStatTimeTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="orderInfoToCpStat"/>
+		</property>
+		<property name="targetMethod">
+			<value>queryToInsertOrderStat</value>
+		</property>
+	</bean>
+	
+		<!-- 第一次每晚执行更新统计前一天订单 -->
+	<bean  id="orderInfoStatQuartzOneTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="orderinfoStatTimeOneTask"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 20 1 * * ?</value>
+		</property>
+	</bean>
+	<bean id="orderinfoStatTimeOneTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="orderInfoToCpStatOne"/>
+		</property>
+		<property name="targetMethod">
+			<value>queryToInsertOrderStatOne</value>
+		</property>
+	</bean>
+	<!-- 要调用的工作类 
+	<bean id="notifyCpJob" class="com.l9e.transaction.job.NotifyCpJob">
+	</bean>-->
+	
+	<!-- 定时审核通过 -->
+	<bean id="through_the_auditTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="through_the_auditTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0 0/30 * * * ?</value>
+		</property>
+	</bean>
+	
+	<bean id="through_the_auditTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="through_the_auditJob"/>
+		</property>
+		<property name="targetMethod">
+			<value>queryThrough_the_audit</value>
+		</property>
+	</bean>
+	
+	<!-- 第一次每晚执行更新统计各省订单 -->
+	<bean id="orderInfoProvinceTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="orderInfoProvinceTask"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 0 6 * * ?</value>
+		</property>
+	</bean>
+	<bean id="orderInfoProvinceTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="orderInfoToOrder_province_job"/>
+		</property>
+		<property name="targetMethod">
+			<value>queryToInsertOrderProvince</value>
+		</property>
+	</bean>
+	
+	<!-- 每晚执行更新统计CpTable -->
+	<bean id="cpInfoCensus_Time" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="cpInfoCensusTask"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 0 1 * * ?</value>
+		</property>
+	</bean>
+	<bean id="cpInfoCensusTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="cpInfoCensus_job"/>
+		</property>
+		<property name="targetMethod">
+			<value>queryToCp_Stat</value>
+		</property>
+	</bean>
+	
+	<!-- 每晚执行更新统计tj_userInfo -->
+	<bean id="tj_userInfo_Time" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="tj_userInfoTask"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 0 2 * * ?</value>
+		</property>
+	</bean>
+	<bean id="tj_userInfoTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="tj_userInfo_job"/>
+		</property>
+		<property name="targetMethod">
+			<value>queryTj_UserInfo</value>
+		</property>
+	</bean>
+	
+	<!-- 每晚执行更新统计tj_Hc_OrderInfo 
+	<bean id="tj_Hc_OrderInfo_Time" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="tj_Hc_OrderInfo_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 0 5 * * ?</value>
+		</property>
+	</bean>
+	<bean id="tj_Hc_OrderInfo_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="hc_orderInfo_Job"/>
+		</property>
+		<property name="targetMethod">
+			<value>queryHcToInsertTj</value>
+		</property>
+	</bean>
+	-->
+	
+	<!-- 每月执行清空jchart文件里面的图片 -->
+	<bean id="delete_Pics_Time" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="delete_Pics_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 0 0 15 * ?</value>
+		</property>
+	</bean>
+	<bean id="delete_Pics_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="delete_Pics_Job"/>
+		</property>
+		<property name="targetMethod">
+			<value>deletePics</value>
+		</property>
+	</bean>
+	
+	<!-- 每晚执行生成查询每半个小时的成功数的数据插入到tj_hc_halfHour表中
+	<bean id="Tj_hc_halfHour_job_Time" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="Tj_hc_halfHour_job_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 30 2 * * ?</value>
+		</property>
+	</bean>
+	<bean id="Tj_hc_halfHour_job_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="Tj_hc_halfHour_job"/>
+		</property>
+		<property name="targetMethod">
+			<value>queryHalfHour</value>
+		</property>
+	</bean>
+	 -->
+	<!-- 每天早上自动开启预定机器人功能 -->
+	<bean id="OpenBookRobotJob_Time" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="OpenBookRobotJob_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 50 6 * * ?</value>
+		</property>
+	</bean>
+	<bean id="OpenBookRobotJob_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="OpenBookRobotJob"/>
+		</property>
+		<property name="targetMethod">
+			<value>updateWorkerToOpen</value>
+		</property>
+	</bean>
+	
+	<!-- 每天晚上自动关闭预定机器人功能 -->
+	<bean id="CloseBookRobotJob_Time" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="CloseBookRobotJob_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 0 23 * * ?</value>
+		</property>
+	</bean>
+	<bean id="CloseBookRobotJob_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="CloseBookRobotJob"/>
+		</property>
+		<property name="targetMethod">
+			<value>updateWorkerToClose</value>
+		</property>
+	</bean>
+	
+	<!-- 每天晚上自动开启停用原因为取消订单过多的 -->
+	<bean id="ChangeStatus_Time" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="ChangeStatus_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 30 1 * * ?</value>
+		</property>
+	</bean>
+	<bean id="ChangeStatus_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="ChangeStatus"/>
+		</property>
+		<property name="targetMethod">
+			<value>updateStopStatus</value>
+		</property>
+	</bean>
+	
+	<!-- 以下qunar -->
+	<!-- 每晚执行更新统计前一天订单 -->
+	<bean  id="qunarInfoStatQuartzTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="qunarinfoStatTimeTask"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="qunarinfoStatTimeTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="qunarInfoToCpStat"/>
+		</property>
+		<property name="targetMethod">
+			<value>queryToInsertOrderStat</value>
+		</property>
+	</bean>
+	
+		<!-- 第一次每晚执行更新统计前一天订单 -->
+	<bean  id="qunarStatFirstQuartzTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="qunarStatFirstTask"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 30 4 * * ?</value>
+		</property>
+	</bean>
+	
+	<bean id="qunarStatFirstTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="qunarStatFirst"/>
+		</property>
+		<property name="targetMethod">
+			<value>queryToInsertOrderStatFirst</value>
+		</property>
+	</bean>
+	<!-- 以上qunar -->
+	
+	
+	<bean id="updateCheckAutoTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="updateCheckAutoTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/30 * * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="updateCheckAutoTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="updateCheckAuto_Job" />
+		</property>
+		<property name="targetMethod">
+			<value>queryCheckAutoStatus</value>
+		</property>
+	</bean>
+	
+</beans>

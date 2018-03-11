@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="qunarRefund">
+
+
+	<!-- 获取按条件查询所有的订单 -->
+	<select id="queryRefundTicketList"
+		parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		<isEqual property="liancheng" compareValue="1">
+			SELECT 
+				  qof.refund_seq,
+				  qof.order_id,
+				  qof.cp_id,
+				  qof.refund_12306_seq,
+				  DATE_FORMAT(qo.from_time, '%Y-%m-%d %H:%i:%s') from_time,
+				  DATE_FORMAT(qof.create_time, '%Y-%m-%d %H:%i:%s') create_time,
+				  qof.refund_money,
+				  qof.refuse_reason,
+				  qof.refund_status,
+				  qof.notify_status,
+				  qof.opt_person,qof.return_optlog,
+				  qof.order_source,
+				  qof.order_type 
+				FROM
+				  qunar_orderinfo_refund AS qof 
+				  LEFT JOIN
+				  qunar_orderinfo AS qo 
+				  ON qo.order_id = qof.order_id 
+				WHERE qof.refund_status in ('00','01','02') and qof.order_type='1'
+			union (
+		</isEqual>
+		SELECT 
+		  qof.refund_seq,
+		  qof.order_id,
+		  qof.cp_id,
+		  qof.refund_12306_seq,
+		  DATE_FORMAT(qo.from_time, '%Y-%m-%d %H:%i:%s') from_time,
+		  DATE_FORMAT(qof.create_time, '%Y-%m-%d %H:%i:%s') create_time,
+		  qof.refund_money,
+		  qof.refuse_reason,
+		  qof.refund_status,
+		  qof.notify_status,
+		  qof.opt_person,qof.return_optlog,
+		  qof.order_source,
+		  qof.order_type 
+		FROM
+		  qunar_orderinfo_refund AS qof 
+		  LEFT JOIN
+		  qunar_orderinfo AS qo 
+		  ON qo.order_id = qof.order_id 
+		WHERE 1 = 1 
+			<isNotEmpty prepend=" and " property="order_id">
+				qof.order_id=#order_id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="opt_person">
+				qof.opt_person=#opt_person:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				qof.create_time
+				<![CDATA[>=]]>
+				DATE_FORMAT(#begin_info_time#,'%Y-%m-%d %H:%i:%s')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				qof.create_time
+				<![CDATA[<]]>
+				DATE_ADD(DATE_FORMAT(#end_info_time#,'%Y-%m-%d
+				%H:%i:%s'),INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_seq">
+				qof.refund_seq=#refund_seq#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_12306_seq">
+				qof.refund_12306_seq=#refund_12306_seq#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_status">
+				qof.refund_status in
+				<iterate open="(" close=")" conjunction=","
+					property="refund_status">
+					#refund_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="notify_status">
+				qof.notify_status in
+				<iterate open="(" close=")" conjunction=","
+					property="notify_status">
+					#notify_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_source">
+				qof.order_source = #order_source#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_type">
+				qof.order_type = #order_type#
+			</isNotEmpty>
+		order by qo.from_time
+		<isEqual property="liancheng" compareValue="1">
+		)
+		</isEqual>  
+		LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select>
+
+
+	<!-- 获取按条件查询的订单数 -->
+	<select id="queryRefundTicketCounts"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		select count(*) from qunar_orderinfo_refund as qof
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="order_id">
+				qof.order_id=#order_id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="opt_person">
+				qof.opt_person=#opt_person:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				qof.create_time
+				<![CDATA[>=]]>
+				DATE_FORMAT(#begin_info_time#,'%Y-%m-%d %H:%i:%s')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				qof.create_time
+				<![CDATA[<]]>
+				DATE_ADD(DATE_FORMAT(#end_info_time#,'%Y-%m-%d
+				%H:%i:%s'),INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_seq">
+				qof.refund_seq=#refund_seq#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_12306_seq">
+				qof.refund_12306_seq=#refund_12306_seq#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_status">
+				qof.refund_status in
+				<iterate open="(" close=")" conjunction=","
+					property="refund_status">
+					#refund_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="notify_status">
+				qof.notify_status in
+				<iterate open="(" close=")" conjunction=","
+					property="notify_status">
+					#notify_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_source">
+				qof.order_source = #order_source#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_type">
+				qof.order_type = #order_type#
+			</isNotEmpty>
+			<isEqual property="liancheng" compareValue="1">
+			<isNotEmpty prepend=" and " property="liancheng">
+			qof.refund_status in ('00','01','02') and qof.order_type='1'
+			</isNotEmpty>
+			</isEqual>
+		</dynamic>
+	</select>
+
+	<!-- 按照订单号查询订单信息 -->
+	<select id="queryRefundTicketorderInfo"
+		parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT order_id,train_no,qunar_seat_type,seat_type,
+		pay_money,buy_money,order_status,create_time,order_time,out_ticket_time,
+		out_ticket_type,out_ticket_billno, from_city, to_city,from_time,
+		to_time,channel,order_source FROM qunar_orderinfo where order_id=#order_id#
+	</select>
+	
+	<!-- 查询明细订单退款明细 -->
+	<select id="queryTicketInfo"
+		parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT
+		qor.order_id,qor.cp_id,qor.refund_money,qor.create_time,qor.user_remark,qor.our_remark,
+		qor.refund_12306_seq,qor.refund_status,qor.detail_refund, qor.detail_alter_tickets FROM
+		qunar_orderinfo_refund qor WHERE qor.order_id=#order_id# 
+	</select>
+
+	<!-- 按照订单号查询车票信息 -->
+	<select id="queryRefundTicketcpInfo"
+		parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT cp_id, order_id, user_name, ticket_type, ids_type,
+		user_ids,buy_money, qunar_seat_type,train_box,
+		seat_no,seat_type, out_ticket_billno,
+		alter_seat_type, alter_train_box, alter_seat_no, alter_buy_money, alter_train_no, alter_money, refund_12306_money 
+		FROM qunar_orderinfo_cp
+		where order_id=#order_id# 
+	</select>
+
+	<!-- 按照订单查询退票信息 -->
+	<select id="queryRefundTicketInfo1" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT refund_seq, order_id, refund_money,create_time,
+		refund_money,refund_status, user_remark,notify_status,
+		our_remark,refuse_reason,refund_12306_seq,actual_refund_money,alter_tickets_money,
+		verify_time, opt_person,detail_refund,change_ticket_info,detail_alter_tickets FROM qunar_orderinfo_refund where
+		order_id=#order_id# and refund_seq=#refund_seq# 
+	</select>
+
+
+	<!-- 退款时修改状态 -->
+	<update id="updateRefund" parameterClass="java.util.HashMap">
+		update qunar_orderinfo_refund 
+		set verify_time=now(),
+			our_remark=#out_remark#, 
+			refund_12306_seq=#refund_12306_seq#,
+			refund_status='11',
+			notify_status='00',
+			actual_refund_money=#actual_refund_money#,
+			option_time=now()
+		<isNotEmpty prepend="," property="alter_tickets_money">
+			alter_tickets_money=#alter_tickets_money#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="change_ticket_info">
+			change_ticket_info=#change_ticket_info#
+		</isNotEmpty>,
+		refund_money=#refund_money#, opt_person=#user#, detail_refund=#detail_refund#, detail_alter_tickets=#detail_alter_tickets# where
+		order_id=#order_id# and refund_seq=#refund_seq#
+	</update>
+	
+	<!-- 退款时修改车票的改签信息 -->
+	<update id="updateAlertRefund" parameterClass="java.util.HashMap">
+		update qunar_orderinfo_cp 
+		<dynamic prepend="set">
+			<isNotEmpty prepend=","  property="alter_train_no">
+				 alter_train_no=#alter_train_no#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alter_train_box">
+				 alter_train_box=#alter_train_box#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alter_seat_no">
+				 alter_seat_no=#alter_seat_no#
+			</isNotEmpty>
+			<isNotEmpty  prepend="," property="alter_seat_type">
+				 alter_seat_type=#alter_seat_type#
+			</isNotEmpty>
+			<isNotEmpty  prepend="," property="alter_money">
+				 alter_money=#alter_money#
+			</isNotEmpty>
+			<isNotEmpty  prepend="," property="refund_12306_money">
+				refund_12306_money =#refund_12306_money#
+			</isNotEmpty>
+		</dynamic>
+		where cp_id=#cp_id#
+	</update>
+
+	<!-- 拒绝退款时修改状态 -->
+	<update id="updateRefuse" parameterClass="java.util.HashMap">
+		update qunar_orderinfo_refund 
+		set our_remark=#our_remark#,
+			refuse_reason=#refuse_reason#,
+			verify_time=now(),
+			refund_status='22',
+			notify_status='00', 
+			opt_person=#user#,
+			option_time=now()
+		where
+			order_id=#order_id# and refund_seq=#refund_seq#
+	</update>
+
+	<!-- 更新orderinfo订单信息 -->
+	<update id="updateOrder" parameterClass="java.util.HashMap">
+		update qunar_orderinfo set opt_ren=#user#, opt_time=now() where
+		order_id=#order_id#
+	</update>
+	
+	<!-- 更新refund表中操作人信息 -->
+	<update id="updateRefundOpt" parameterClass="java.util.HashMap">
+		update qunar_orderinfo_refund set opt_person=#user#,option_time=now() 
+		where order_id=#order_id# AND refund_seq=#refund_seq#
+	</update>
+	
+	<!-- 查询日志信息 -->
+	<select id="queryLog" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT log_id,order_id, content, DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') create_time, opt_person FROM
+		qunar_orderinfo_log WHERE order_id=#order_id# ORDER BY
+		create_time DESC
+	</select>
+
+	<!-- 更新日志信息 -->
+	<insert id="insertLog" parameterClass="java.util.HashMap">
+		insert into qunar_orderinfo_log (order_id,content, create_time,
+		opt_person,order_time) values (#order_id#, #content#, now(), #user#, #order_time#)
+	</insert>
+	
+	
+	<!-- 查询联程退票信息 -->
+	<select id="queryLianChengRefundInfo" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+	</select>
+	
+	<!-- 机器改签 -->
+	<update id="updateOrderstatusToRobotGai" parameterClass="java.util.HashMap">
+		update qunar_orderinfo_refund set refund_status=#refund_status#,opt_person=#user#,option_time=now()
+		where order_id=#order_id# AND refund_seq=#refund_seq#
+	</update>
+	
+	<!-- 查询联程票的订单号 -->
+	<select id="queryLianchengOrder_id" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT trip_id FROM qunar_orderinfo_trip WHERE order_id=#order_id#
+	</select>
+	
+	<!-- 查询联程票的订单号 -->
+	<select id="queryOrderCpId" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT cp_id FROM qunar_orderinfo_cp WHERE order_id=#order_id#
+	</select>
+	
+	<!-- 更新通知状态 -->
+	<update id="updateNotify_status" parameterClass="java.util.HashMap">
+		update qunar_orderinfo_refund 
+		set 
+			notify_status='22', 
+			opt_person=#user#,
+			notify_finish_time=now(),
+			option_time=now()
+		where
+			order_id=#order_id# and refund_seq=#refund_seq#
+	</update>
+</sqlMap>

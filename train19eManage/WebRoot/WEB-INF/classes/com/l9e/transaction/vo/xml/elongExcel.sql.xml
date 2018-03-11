@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="elongExcel">
+<!-- 查询所有订单 -->
+	<select id="queryExcelList"  parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		select excel_id ,excel_url ,create_time,excel_name ,excel_channel,excel_type from elong_excel 
+		where 1=1
+		<isNotEmpty prepend=" and " property="begin_info_time">
+			create_time<![CDATA[>=]]>#begin_info_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_info_time">
+			create_time<![CDATA[<]]>DATE_ADD(#end_info_time#,INTERVAL 1 DAY)
+					</isNotEmpty>
+		<isNotEmpty prepend=" and " property="channel">
+			excel_channel in
+				<iterate open="(" close=")" conjunction=","
+					property="channel">
+					#channel[]#
+				</iterate>
+		</isNotEmpty>
+		order by create_time desc LIMIT #everyPagefrom:Integer#,
+		#pageSize:Integer#
+	</select>
+	
+	<select id="queryExcelListCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		select count(1) from elong_excel 
+		where 1=1
+		<isNotEmpty prepend=" and " property="begin_info_time">
+			create_time<![CDATA[>=]]>#begin_info_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_info_time">
+			create_time<![CDATA[<]]>DATE_ADD(#end_info_time#,INTERVAL 1 DAY)
+					</isNotEmpty>
+		<isNotEmpty prepend=" and " property="channel">
+			excel_channel in
+				<iterate open="(" close=")" conjunction=","
+					property="channel">
+					#channel[]#
+				</iterate>
+		</isNotEmpty>
+	</select>
+	
+	
+	<insert id="insertIntoExcel" parameterClass="java.util.HashMap">
+		INSERT INTO elong_excel (excel_url ,create_time,excel_name ,excel_channel,excel_type) 
+		VALUES (#excel_url#,now(),#excel_name#,#excel_channel#,#excel_type#)
+	</insert>
+	
+	<delete id="deleteExcelById" parameterClass="java.lang.String" >
+		DELETE FROM elong_excel WHERE excel_id = #excel_id#
+	</delete>
+	
+	
+	<!-- 查询退款详情 -->
+	<select id="queryTcRefundList" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT 
+		 er.order_id,qo.out_ticket_billno,er.refund_type,
+		 CONVERT(er.refund_money, CHAR) AS refund_money,
+		 DATE_FORMAT(er.create_time, '%Y-%m-%d %H:%i:%s') AS create_time,
+		 DATE_FORMAT(er.verify_time, '%Y-%m-%d %H:%i:%s') AS verify_time
+		FROM
+		  elong_orderinfo_refundstream AS er
+		LEFT JOIN
+		  elong_orderinfo AS qo ON qo.order_id = er.order_id  
+		WHERE 1 = 1 
+		AND er.refund_status='11'
+		AND er.notify_status='22'
+		AND er.channel=#channel#
+		<isNotEmpty prepend=" and " property="begin_time">
+			er.verify_time<![CDATA[>=]]>#begin_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			er.verify_time<![CDATA[<]]>DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		</isNotEmpty>
+	</select>
+	
+	<!-- 查询车票明细-->
+	<select id="getElongAlterCpList" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT 
+		  CONVERT(cp.buy_money,CHAR) AS buy_money,
+		  CONVERT(cp.change_buy_money,CHAR) AS change_buy_money 
+		FROM
+		   elong_change_cp cp
+		WHERE cp.change_id = #change_id:varchar# 
+	</select>
+
+	
+	<!-- 获取按条件查询所有的订单 -->
+	<select id="queryTcAlterList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  change_id,
+		  order_id,
+		  out_ticket_billno,
+		  CONVERT(fee,CHAR) AS fee,
+		  bank_pay_seq,
+		  change_notify_finish_time 
+		FROM
+		  elong_orderinfo_change 
+		WHERE 1 = 1 
+			and change_status ='34'
+			and change_notify_status ='222'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_time">
+					change_notify_finish_time <![CDATA[>=]]>#begin_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+					change_notify_finish_time <![CDATA[<]]> DATE_ADD(#end_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询普通订单信息 -->
+	<select id="queryTcBookList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT order_id,out_ticket_billno,
+			CONVERT(buy_money,CHAR) AS all_buy_money,
+			CONVERT(ticket_num, CHAR) ticket_num,
+			DATE_FORMAT(out_ticket_time, '%Y-%m-%d %H:%i:%s') AS out_ticket_time 
+		FROM elong_orderinfo 
+		WHERE 1=1 
+		and order_status='33' and notice_status='22' and channel=#channel#
+		<isNotEmpty prepend=" and " property="begin_time">
+			out_ticket_time<![CDATA[>=]]>#begin_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			out_ticket_time<![CDATA[<]]>DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		</isNotEmpty>
+	</select>
+	
+	<select id="queryAllBook" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT order_id,out_ticket_time,buy_money,bank_pay_seq FROM cp_orderinfo 
+		where 1=1 
+		<isNotEmpty prepend=" and " property="begin_time">
+			create_time<![CDATA[>=]]>DATE_ADD(#begin_time#,INTERVAL -1 DAY)
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			create_time<![CDATA[<]]>DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		</isNotEmpty>
+			AND order_status ='99' AND manual_order not in ('11','22')
+		<isNotEmpty prepend=" and " property="begin_time">
+			out_ticket_time<![CDATA[>=]]>#begin_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			out_ticket_time<![CDATA[<]]>DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		</isNotEmpty>
+	</select>
+	
+	
+	<!-- 查询同程对账表格 -->
+	<select id="getTcCheckList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  order_id,
+		  out_ticket_billno,
+		  amount,
+		  settlement_type,
+		  quantity,
+		  trade_date,
+		  settlement_date,
+		  channel,
+		  account_balance,
+		  notify_status,
+		  create_time,
+		  opt_person 
+		FROM
+		  elong_billinfo 
+		where 1=1 
+		<isNotEmpty prepend=" and " property="order_id">
+			order_id = #order_id#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="begin_info_time">
+			create_time<![CDATA[>=]]>#begin_info_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_info_time">
+			create_time<![CDATA[<]]>DATE_ADD(#end_info_time#,INTERVAL 1 DAY)
+					</isNotEmpty>
+		<isNotEmpty prepend=" and " property="notify_status">
+			notify_status in
+				<iterate open="(" close=")" conjunction=","
+					property="notify_status">
+					#notify_status[]#
+				</iterate>
+		</isNotEmpty>
+		order by create_time desc 
+		LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select>
+	
+	<!-- 查询同程对账表格数量 -->
+	<select id="getTcCheckCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT count(1) FROM elong_billinfo 
+		where 1=1 
+		<isNotEmpty prepend=" and " property="order_id">
+			order_id = #order_id#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="begin_info_time">
+			create_time<![CDATA[>=]]>#begin_info_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_info_time">
+			create_time<![CDATA[<]]>DATE_ADD(#end_info_time#,INTERVAL 1 DAY)
+					</isNotEmpty>
+		<isNotEmpty prepend=" and " property="notify_status">
+			notify_status in
+				<iterate open="(" close=")" conjunction=","
+					property="notify_status">
+					#notify_status[]#
+				</iterate>
+		</isNotEmpty>
+	</select>
+	
+	<!-- 插入同程对账数据到表格 -->
+	<insert id="tcAddCheck" parameterClass="java.util.HashMap">
+		INSERT INTO elong_billinfo (
+		   create_time
+		<isNotEmpty prepend=" , " property="order_id">
+			order_id
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="out_ticket_billno">
+			out_ticket_billno
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="settlement_type">
+			settlement_type
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="amount">
+			amount
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="quantity">
+			quantity
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="trade_date">
+			trade_date
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="settlement_date">
+			settlement_date
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="channel">
+			channel
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="account_balance">
+			account_balance
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="opt_person">
+			opt_person
+		</isNotEmpty>
+		) VALUES (
+			now()
+		<isNotEmpty prepend=" , " property="order_id">
+			#order_id#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="out_ticket_billno">
+			#out_ticket_billno#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="settlement_type">
+			#settlement_type:Integer#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="amount">
+			#amount#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="quantity">
+			#quantity:Integer#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="trade_date">
+			#trade_date#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="settlement_date">
+			#settlement_date#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="channel">
+			#channel#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="account_balance">
+			#account_balance#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="opt_person">
+			#opt_person#
+		</isNotEmpty>
+		)
+	</insert>
+	
+	
+	<!-- 查询getFileNameById明细-->
+	<select id="getFileNameById" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  content
+		FROM
+		   elong_billinfo_logs 
+		WHERE bill_id='00000' and order_id =#excel_id# AND create_time <![CDATA[>=]]> #today#
+	</select>
+	
+	
+	<insert id="addFileNameLogs" parameterClass="java.util.HashMap">
+		INSERT INTO  elong_billinfo_logs (bill_id,order_id,content,opt_person,create_time) VALUE ('00000',#excel_id#,#filename#,'add+',now())
+	</insert>
+	
+	
+</sqlMap>

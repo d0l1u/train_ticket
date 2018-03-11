@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="elongAlter">
+
+	<!-- 获取按条件查询所有的订单 -->
+	<select id="queryAlterTicketList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  change_id,
+		  order_id,
+		  create_time,
+		  old_ticket_change_serial,
+		  new_ticket_change_serial,
+		  ticket_price_diff_change_serial,
+		  change_diff_money,
+		  change_refund_money,
+		  change_receive_money,
+		  book_ticket_time,
+		  fail_reason,
+		  train_no,
+		  change_train_no,
+		  from_time,
+		  change_from_time,
+		  travel_time,
+		  from_city,
+		  to_city,
+		  out_ticket_billno,
+		  bank_pay_seq,
+		  worker_id,
+		  pay_time,
+		  account_id,
+		  option_time,
+		  opt_ren,
+		  change_status,
+		  change_travel_time,
+		  change_notify_status,
+		  change_notify_finish_time 
+		FROM
+		  elong_orderinfo_change 
+		WHERE 1 = 1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				order_id=#order_id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="out_ticket_billno">
+					out_ticket_billno=#out_ticket_billno#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+					create_time <![CDATA[>=]]> CONCAT(#begin_info_time#, ' 00:00:00') 
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+					create_time <![CDATA[<]]> CONCAT(#end_info_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="change_status">
+				change_status in
+				<iterate open="(" close=")" conjunction="," property="change_status">
+					#change_status[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="change_notify_status">
+				change_notify_status in
+				<iterate open="(" close=")" conjunction="," property="change_notify_status">
+					#change_notify_status[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="change_channel">
+				merchant_id in
+				<iterate open="(" close=")" conjunction="," property="change_channel">
+					#change_channel[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="opt_ren">
+					opt_ren=#opt_ren#
+			</isNotEmpty>
+		</dynamic>
+		order by create_time desc LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select>
+	
+	<!-- 获取按条件查询所有的订单数 -->
+	<select id="queryAlterTicketListCounts" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 	 count(*) FROM  elong_orderinfo_change WHERE 1 = 1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				order_id=#order_id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="out_ticket_billno">
+					out_ticket_billno=#out_ticket_billno#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+					create_time <![CDATA[>=]]> CONCAT(#begin_info_time#, ' 00:00:00') 
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+					create_time <![CDATA[<]]> CONCAT(#end_info_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="change_status">
+				change_status in
+				<iterate open="(" close=")" conjunction="," property="change_status">
+					#change_status[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="change_notify_status">
+				change_notify_status in
+				<iterate open="(" close=")" conjunction="," property="change_notify_status">
+					#change_notify_status[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="change_channel">
+				merchant_id in
+				<iterate open="(" close=")" conjunction="," property="change_channel">
+					#change_channel[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="opt_ren">
+					opt_ren=#opt_ren#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!--  查询订单明细-->
+	<select id="queryAlterInfo" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT 
+		  ec.change_id,
+		  ec.order_id,
+		  ec.create_time,
+		  ec.old_ticket_change_serial,
+		  ec.new_ticket_change_serial,
+		  ec.ticket_price_diff_change_serial,
+		  ec.change_diff_money,
+		  ec.change_refund_money,
+		  ec.change_receive_money,
+		  ec.book_ticket_time,
+		  ec.fail_reason,
+		  ec.train_no,
+		  ec.change_train_no,
+		  ec.from_time,
+		  ec.change_from_time,
+		  ec.travel_time,
+		  ec.from_city,
+		  ec.to_city,
+		  ec.out_ticket_billno,
+		  ec.bank_pay_seq,
+		  ec.worker_id,
+		  ec.pay_time,
+		  ec.account_id,
+		  ec.option_time,
+		  ec.opt_ren,
+		  ec.change_status,
+		  ec.change_travel_time,
+		  ec.change_notify_status,
+		  ec.change_notify_finish_time,
+		  ec.ischangeto,
+		  ec.merchant_id,
+		  ec.hasSeat,
+		  ec.pay_limit_time,
+		  ec.isChooseSeats,
+		  ec.chooseSeats
+		FROM
+		  elong_orderinfo_change ec
+		WHERE ec.change_id = #change_id:varchar# 
+	</select>
+	
+		<!--  查询车票明细-->
+	<select id="queryCpInfo" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT 
+		  cp.cp_id,
+		  cp.new_cp_id,
+		  cp.buy_money,
+		  cp.change_buy_money,
+		  cp.seat_type,
+		  cp.change_seat_type,
+		  cp.ticket_type,
+		  cp.train_box,
+		  cp.change_train_box,
+		  cp.seat_no,
+		  cp.change_seat_no,
+		  cp.ids_type,
+		  cp.user_ids,
+		  cp.user_name,
+		  cp.is_changed 
+		FROM
+		   elong_change_cp cp
+		WHERE cp.change_id = #change_id:varchar# 
+	</select>
+	
+	<!--  查询日志明细-->
+	<select id="queryLogById" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT 
+		  log_id,
+		  order_id,
+		  change_id,
+		  cp_id,
+		  content,
+		  opt_person,
+		  DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') AS create_time  
+		FROM
+		  elong_change_logs 
+		WHERE order_id = #order_id:varchar# 
+	</select>
+	
+	
+	<!-- 退款时修改车票的改签信息 -->
+	<update id="updateAlertCpInfo" parameterClass="java.util.HashMap">
+		update elong_change_cp 
+		<dynamic prepend="set">
+			<isNotEmpty prepend="," property="change_train_box">
+				 change_train_box=#change_train_box#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="change_seat_no">
+				 change_seat_no=#change_seat_no#
+			</isNotEmpty>
+			<isNotEmpty  prepend="," property="change_seat_type">
+				 change_seat_type=#change_seat_type#
+			</isNotEmpty>
+			<isNotEmpty  prepend="," property="change_buy_money">
+				 change_buy_money=#change_buy_money#
+			</isNotEmpty>
+		</dynamic>
+		where cp_id=#cp_id# and order_id=#order_id# and change_id =#change_id#
+	</update>
+	
+	
+	<!-- 退款时修改车票号和金额改签信息 -->
+	<update id="updateAlter" parameterClass="java.util.HashMap">
+		update elong_orderinfo_change 
+		<dynamic prepend="set">
+			<isNotEmpty prepend="," property="opt_ren">
+				 opt_ren=#opt_ren#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alter_status">
+				 change_status=#alter_status#
+			</isNotEmpty>
+			<isNotEmpty  prepend="," property="change_train_no">
+				 change_train_no=#change_train_no#
+			</isNotEmpty>
+			<isNotEmpty  prepend="," property="change_diff_money">
+				 change_diff_money=#change_diff_money#
+			</isNotEmpty>
+			<isNotEmpty  prepend="," property="change_refund_money">
+				 change_refund_money=#change_refund_money#
+			</isNotEmpty>
+			<isNotEmpty  prepend="," property="change_receive_money">
+				 change_receive_money=#change_receive_money#
+			</isNotEmpty>
+			<isNotEmpty  prepend="," property="fail_reason">
+				 fail_reason=#fail_reason#
+			</isNotEmpty>
+			<isNotEmpty  prepend="," property="pay_limit_time">
+				 pay_limit_time=#pay_limit_time#
+			</isNotEmpty>
+			 <isEqual property="alter_status" compareValue="14">
+				 ,book_ticket_time= now()
+			</isEqual>
+			
+			,option_time = now()
+		</dynamic>
+		where order_id=#order_id# and change_id=#change_id#
+	</update>
+	
+	<!-- 锁单修改操作人 -->
+	<update id="updateAlterOrder" parameterClass="java.util.HashMap">
+		update elong_orderinfo_change 
+		set	 opt_ren=#opt_ren# , option_time = now()
+		where order_id=#order_id# and change_id=#change_id#
+	</update>
+	
+	<!-- 添加操作日志 -->
+	<insert id="insertLog" parameterClass="java.util.HashMap">
+		insert into elong_change_logs (order_id ,change_id, content ,opt_person ,create_time 
+		<isNotEmpty  prepend="," property="order_time">
+				 order_time
+		</isNotEmpty>
+		) 
+		value (#order_id:varchar#,#change_id:varchar# ,#content:varchar# ,#opt_person#,now()
+		<isNotEmpty  prepend="," property="order_time">
+				 now()
+		</isNotEmpty>
+		)
+	</insert>
+</sqlMap>

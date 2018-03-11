@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="meituanBook">
+
+	<!-- 查询所有订单 -->
+	<select id="queryAllBookList" resultClass="com.l9e.transaction.vo.MeituanVo">
+		SELECT qo.order_id, CONCAT(CONCAT(qo.from_city,'/'), qo.to_city)
+		AS startAndEnd, qo.train_no, from_time, pay_money, buy_money,
+		order_status, order_time, create_time,channel,
+		out_ticket_time, opt_ren 
+		FROM mt_orderinfo qo
+		ORDER BY qo.create_time DESC
+	</select>
+
+
+	<!-- 按条件查询订单 -->
+	<select id="queryBookList" parameterClass="java.util.HashMap"
+		resultClass="com.l9e.transaction.vo.MeituanVo">
+		SELECT 
+		  qo.order_id,
+		  CONCAT(CONCAT(qo.from_city, '/'),qo.to_city) AS startAndEnd,
+		  qo.train_no,
+		  from_time,
+		  pay_money,
+		  buy_money,
+		  order_level,
+		  order_status,
+		  order_time,
+		  create_time,
+		  out_ticket_time,
+		  opt_ren,channel,
+		  notice_status AS notify_status,
+		  out_ticket_billno,
+		  ticket_num 
+		FROM
+		  mt_orderinfo qo 
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="order_id">
+				order_id=#order_id#
+			</isNotEmpty>
+			<isEmpty property="order_id">
+				<isNotEmpty prepend=" and " property="out_ticket_billno">
+					out_ticket_billno=#out_ticket_billno#
+				</isNotEmpty>
+				<isEmpty property="out_ticket_billno">
+					<isNotEmpty prepend=" and " property="begin_info_time">
+						qo.create_time
+						<![CDATA[>=]]>#begin_info_time#
+					</isNotEmpty>
+					<isNotEmpty prepend=" and " property="end_info_time">
+						qo.create_time
+						<![CDATA[<]]>
+						DATE_ADD(#end_info_time#,INTERVAL 1 DAY)
+					</isNotEmpty>
+						<isNotEmpty prepend=" and " property="order_status">
+							qo.order_status in
+							<iterate open="(" close=")" conjunction="," property="order_status">
+								#order_status[]#
+							</iterate>
+						</isNotEmpty>
+					<isNotEmpty prepend=" and " property="notify_status">
+						notice_status in
+						<iterate open="(" close=")" conjunction=","
+							property="notify_status">
+							#notify_status[]#
+						</iterate>
+					</isNotEmpty>
+					<isNotEmpty prepend=" and " property="channel">
+						channel in
+						<iterate open="(" close=")" conjunction=","
+							property="channel">
+							#channel[]#
+						</iterate>
+					</isNotEmpty>
+				</isEmpty>
+			</isEmpty>
+		</dynamic>
+		order by create_time desc LIMIT #everyPagefrom:Integer#,
+		#pageSize:Integer#
+
+	</select>
+
+
+
+	<update id="updateNotify_status" parameterClass="java.util.HashMap">
+		UPDATE mt_orderinfo AS qo 
+		SET qo.notice_status = '22' ,
+			qo.opt_ren = #opt_ren# 
+		WHERE qo.order_id=#order_id#
+	</update>
+	
+	<update id="updateNotify_Again" parameterClass="java.util.HashMap">
+		UPDATE mt_orderinfo_notify AS qo 
+		SET qo.out_notify_status = '11' ,qo.out_notify_num=0  
+		WHERE qo.order_id=#order_id#
+	</update>
+	
+	<update id="updateNotify_Again1" parameterClass="java.util.HashMap">
+		UPDATE mt_orderinfo AS qo 
+		SET qo.notice_status = '33' ,
+			qo.opt_ren = #opt_ren#,
+			qo.opt_time =NOW()
+		WHERE qo.order_id=#order_id#
+	</update>
+
+	<!-- 查询订单条数 -->
+	<select id="queryBookListCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM mt_orderinfo qo
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="order_id">
+				order_id=#order_id#
+			</isNotEmpty>
+			<isEmpty property="order_id">
+				<isNotEmpty prepend=" and "
+					property="out_ticket_billno">
+					out_ticket_billno=#out_ticket_billno#
+				</isNotEmpty>
+				<isEmpty property="out_ticket_billno">
+					<isNotEmpty prepend=" and "
+						property="begin_info_time">
+						qo.create_time
+						<![CDATA[>=]]>
+						#begin_info_time#
+					</isNotEmpty>
+					<isNotEmpty prepend=" and "
+						property="end_info_time">
+						qo.create_time
+						<![CDATA[<]]>
+						DATE_ADD(#end_info_time#,INTERVAL 1 DAY)
+					</isNotEmpty>
+						<isNotEmpty prepend=" and "
+							property="order_status">
+							order_status in
+							<iterate open="(" close=")" conjunction=","
+								property="order_status">
+								#order_status[]#
+							</iterate>
+						</isNotEmpty>
+					<isNotEmpty prepend=" and " property="notify_status">
+						notice_status in
+						<iterate open="(" close=")" conjunction=","
+							property="notify_status">
+							#notify_status[]#
+						</iterate>
+					</isNotEmpty>
+					<isNotEmpty prepend=" and " property="order_source">
+						order_source in
+						<iterate open="(" close=")" conjunction=","
+							property="order_source">
+							#order_source[]#
+						</iterate>
+					</isNotEmpty>
+					<isNotEmpty prepend=" and " property="channel">
+						channel in
+						<iterate open="(" close=")" conjunction=","
+							property="channel">
+							#channel[]#
+						</iterate>
+					</isNotEmpty>
+				</isEmpty>
+			</isEmpty>
+		</dynamic>
+	</select>
+	
+	
+
+	<!-- 获得定某订单号的详细信息 -->
+	<select id="queryBookOrderInfo" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT 
+		  qo.order_id, qo.notice_status AS notify_status,
+		  qo.from_city,
+		  qo.to_city,
+		  qo.train_no,
+		  qo.from_time,
+		  qo.to_time,
+		  qo.pay_money,
+		  qo.buy_money,
+		  qo.order_status,
+		  qo.order_time,
+		  qo.create_time,
+		  qo.out_ticket_billno,
+		  qo.out_ticket_time,
+		  cp.out_ticket_account,
+		  cp.bank_pay_seq,qo.channel,
+		  qo.opt_ren,qo.channel,
+		  qo.seat_type 
+		FROM
+		  mt_orderinfo AS qo 
+		  LEFT JOIN cp_orderinfo AS cp ON qo.order_id = cp.order_id  
+		WHERE qo.order_id=#order_id#
+	</select>
+
+	<!-- 按照订单号查询车票信息 -->
+	<select id="queryBookCpInfo" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT 
+		  cp_id,
+		  order_id,
+		  user_name,
+		  ticket_type,
+		  ids_type,
+		  user_ids,
+		  buy_money,
+		  elong_seat_type qunar_seat_type,
+		  train_box,
+		  seat_no,
+		  seat_type,
+		  out_ticket_billno,
+		  alter_seat_type,
+		  alter_train_box,
+		  alter_seat_no,
+		  alter_buy_money,
+		  alter_train_no,
+		  alter_money,
+		  refund_12306_money 
+		FROM
+		  mt_orderinfo_cp
+		where order_id=#order_id#
+	</select>
+
+	<!-- 按照订单号查询日志信息 -->
+	<select id="queryBookLog" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT log_id,order_id, content, DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') AS create_time, opt_person FROM
+		mt_orderinfo_logs WHERE order_id=#order_id# ORDER BY
+		create_time DESC
+	</select>
+
+	<!-- 按照订单号查询通知信息 -->
+	<select id="queryBookNotify" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT order_id, cp_notify_status, cp_notify_num,
+		cp_notify_time, cp_notify_finish_time, out_notify_status,
+		out_notify_num, out_notify_finish_time, create_time FROM
+		mt_orderinfo_notify where order_id=#order_id#
+	</select>
+
+	<!-- 更新日志信息 -->
+	<insert id="insertLog" parameterClass="java.util.HashMap">
+		insert into mt_orderinfo_logs (order_id,content, create_time,
+		opt_person) values (#order_id#, #content#, now(), #opt_person#)
+	</insert>
+	
+	<!-- 查询普通订单信息 -->
+	<select id="queryQunarBookCp" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+			SELECT mt.order_id,ec.cp_id,mt.out_ticket_billno,ec.user_name,mt.order_name,
+			CONVERT(ec.pay_money,CHAR) AS pay_money,
+			CONVERT(ec.buy_money,CHAR) AS buy_money,
+			CONVERT(ec.pay_money-ec.buy_money,CHAR) AS differ, 
+			CONVERT(mt.pay_money,CHAR) AS all_pay_money,
+			CONVERT(mt.buy_money,CHAR) AS all_buy_money,
+			CONVERT(mt.pay_money-mt.buy_money,CHAR) AS all_differ, 
+			DATE_FORMAT(mt.order_time,'%Y-%m-%d %H:%i:%s') AS order_time, 
+			DATE_FORMAT(mt.from_time,'%Y-%m-%d %H:%i:%s') AS from_time, mt.channel,
+			DATE_FORMAT(mt.out_ticket_time, '%Y-%m-%d %H:%i:%s') AS out_ticket_time, cp.out_ticket_account,
+			cp.bank_pay_seq, CONVERT(mt.ticket_num, CHAR) ticket_num
+		FROM mt_orderinfo AS mt
+		LEFT JOIN cp_orderinfo AS cp ON mt.order_id=cp.order_id 
+		LEFT JOIN mt_orderinfo_cp AS ec ON mt.order_id=ec.order_id 
+		WHERE 1=1 
+		<isNotEmpty prepend=" and " property="order_id">
+			mt.order_id=#order_id#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="out_ticket_billno">
+			quanr.out_ticket_billno=#out_ticket_billno#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="begin_time">
+			mt.create_time
+			<![CDATA[>=]]>#begin_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			mt.create_time
+			<![CDATA[<]]>
+			DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="order_status">
+			mt.order_status in
+			<iterate open="(" close=")" conjunction=","
+				property="order_status">
+				#order_status[]#
+			</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="notify_status">
+			mt.notice_status in
+			<iterate open="(" close=")" conjunction=","
+				property="notify_status">
+				#notify_status[]#
+			</iterate>
+		</isNotEmpty>
+	</select>
+	
+	<select id="queryRefundTicketName" parameterClass="java.lang.String" resultClass="java.lang.String">
+       SELECT ec.user_name FROM  mt_orderinfo_cp AS ec WHERE ec.cp_id=#cp_id#
+    </select>
+    
+    
+    <!-- 查询退款订单信息 -->
+	<select id="queryRefundTicket" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT 
+		  mt.refund_seq,qo.order_name,
+		  mt.order_id, mt.cp_id,
+		  CONVERT(mt.refund_money, CHAR) AS refund_money,
+		  DATE_FORMAT(mt.create_time, '%Y-%m-%d %H:%i:%s') AS create_time,
+		  DATE_FORMAT(mt.verify_time, '%Y-%m-%d %H:%i:%s') AS verify_time,
+		  DATE_FORMAT(mt.user_time, '%Y-%m-%d %H:%i:%s') AS user_time,
+		  mt.refund_12306_seq,
+		  CONVERT(mt.alter_tickets_money, CHAR) AS alter_tickets_money,
+		  CONVERT(mt.actual_refund_money, CHAR) actual_refund_money,
+		  mt.detail_refund,
+		  mt.detail_alter_tickets,
+		  mt.change_ticket_info,mt.channel,qo.out_ticket_billno,mt.refund_type,
+		  CONVERT(qo.ticket_num, CHAR) ticket_num
+		FROM
+		 mt_orderinfo_refundstream AS mt
+		LEFT JOIN
+		  mt_orderinfo AS qo ON qo.order_id = mt.order_id  
+		WHERE 1 = 1 
+		<isNotEmpty prepend=" and " property="order_id">
+			mt.order_id=#order_id#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="refund_12306_seq">
+			mt.refund_12306_seq=#refund_12306_seq#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="begin_time">
+			mt.verify_time
+			<![CDATA[>=]]>#begin_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			mt.verify_time
+			<![CDATA[<]]>
+			DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="refund_status">
+			mt.refund_status in
+			<iterate open="(" close=")" conjunction=","
+				property="refund_status">
+				#refund_status[]#
+			</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="notify_status">
+				mt.notify_status in
+				<iterate open="(" close=")" conjunction=","
+					property="notify_status">
+					#notify_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+		<isNotEmpty prepend=" and " property="refund_type">
+			mt.refund_type in
+			<iterate open="(" close=")" conjunction=","
+				property="refund_type">
+				#refund_type[]#
+			</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="opt_person">
+			mt.opt_person=#opt_person#
+		</isNotEmpty>
+	</select>
+</sqlMap>

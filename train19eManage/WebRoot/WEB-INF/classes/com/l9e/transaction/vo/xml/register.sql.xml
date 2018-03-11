@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="register">
+
+	<!-- 查询条数 -->
+	<select id="queryRegisterListCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		  SELECT 
+		     COUNT(zc.regist_id)
+		  FROM
+		    hc_orderinfo_regist zc
+		  WHERE 1 = 1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="regist_id">
+				zc.regist_id=#regist_id:INTEGER#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="user_name">
+				zc.user_name=#user_name:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="regist_phone">
+				zc.regist_phone=#regist_phone:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="ids_card">
+				zc.ids_card=#ids_card:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="user_phone">
+				zc.user_phone=#user_phone:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="account_name">
+				zc.account_name=#account_name:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="account_pwd">
+				zc.account_pwd=#account_pwd:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="user_id">
+				zc.user_id=#user_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time">
+				zc.create_time=#create_time:VARCHAR#
+			</isNotEmpty>
+			
+			<isNotEmpty prepend=" and " property="start_create_time">
+				zc.create_time <![CDATA[>=]]> #start_create_time:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_create_time">
+				zc.create_time <![CDATA[<]]> DATE_ADD(#end_create_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			
+			<isNotEmpty prepend=" and " property="opt_person">
+				zc.opt_person=#opt_person:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="description">
+				zc.description=#description:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend = "and" property = "mail">
+				zc.mail=#mail:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend = "and" property = "channel">
+				zc.channel=#channel:VARCHAR#
+			</isNotEmpty>
+			<isNotEqual property="regist_status" compareValue="-1">
+				<isNotEmpty prepend=" and " property="regist_status">
+					regist_status in
+					<iterate open="(" close=")" conjunction=","
+						property="regist_status">
+						#regist_status[]:VARCHAR#
+					</iterate>
+				</isNotEmpty>
+			</isNotEqual>
+			<isNotEqual property="fail_reason" compareValue="-1">
+				<isNotEmpty prepend=" and " property="fail_reason">
+					fail_reason in
+					<iterate open="(" close=")" conjunction=","
+						property="fail_reason">
+						#fail_reason[]:VARCHAR#
+					</iterate>
+				</isNotEmpty>
+			</isNotEqual>
+			<isNotEqual property="account_source" compareValue="-1">
+				<isNotEmpty prepend=" and " property="account_source">
+					account_source in
+					<iterate open="(" close=")" conjunction=","
+						property="account_source">
+						#account_source[]:VARCHAR#
+					</iterate>
+				</isNotEmpty>
+			</isNotEqual>
+			<isNotEqual property="is_output" compareValue="-1">
+				<isNotEmpty prepend=" and " property="is_output">
+					is_output in
+					<iterate open="(" close=")" conjunction=","
+						property="is_output">
+						#is_output[]:VARCHAR#
+					</iterate>
+				</isNotEmpty>
+			</isNotEqual>
+			 <isEqual property="mail_set" compareValue="-1">
+				and (1=2
+			   <isNotEmpty prepend=" or " property="mail_163">
+				 mail like '%@163.com%'
+			  </isNotEmpty>
+			   <isNotEmpty prepend=" or " property="mail_19trip">
+				 mail like '%@19trip.com%'
+			  </isNotEmpty>
+			   <isNotEmpty prepend=" or " property="mail_qita">
+				( mail not like '%@163.com%' and mail not like '%@19trip.com%')
+			  </isNotEmpty>)
+			</isEqual>
+			<isNotEmpty prepend=" and " property="start_regist_time">
+				zc.regist_time <![CDATA[>=]]> #start_regist_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_regist_time">
+				zc.regist_time <![CDATA[<]]> DATE_ADD(#end_regist_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询列表 -->
+	<select id="queryRegisterList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT zc.regist_id,
+			   zc.user_name,
+			   zc.ids_card,
+			   zc.regist_phone,
+			   zc.user_phone,
+			   zc.account_name,
+			   zc.account_pwd,
+			   zc.user_id,
+			   DATE_FORMAT(zc.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+			   zc.opt_person,
+			   zc.regist_status,
+			   zc.description,
+			   zc.mail,cp.pwd,
+			   zc.is_output,
+			   zc.account_source,
+			   zc.fail_reason
+		FROM hc_orderinfo_regist zc
+		LEFT JOIN
+			  cp_orderinfo_mail cp 
+			  ON cp.address = zc.mail 
+		WHERE 1=1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="user_name">
+				zc.user_name=#user_name:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="regist_phone">
+				zc.regist_phone=#regist_phone:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="ids_card">
+				zc.ids_card=#ids_card:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="user_phone">
+				zc.user_phone=#user_phone:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="account_name">
+				zc.account_name=#account_name:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="account_pwd">
+				zc.account_pwd=#account_pwd:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="user_id">
+				zc.user_id=#user_id:VARCHAR#
+			</isNotEmpty>
+			
+			<isNotEmpty prepend=" and " property="create_time">
+				zc.create_time <![CDATA[>=]]> #create_time:VARCHAR#
+			</isNotEmpty>
+			
+			<isNotEmpty prepend=" and " property="start_create_time">
+				zc.create_time <![CDATA[>=]]> #start_create_time:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_create_time">
+				zc.create_time <![CDATA[<]]> DATE_ADD(#end_create_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+
+			<isNotEmpty prepend=" and " property="opt_person">
+				zc.opt_person=#opt_person:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="description">
+				zc.description=#description:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend = "and" property = "mail">
+				zc.mail = #mail:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend = "and" property = "channel">
+				zc.channel=#channel:VARCHAR#
+			</isNotEmpty>
+			<isNotEqual property="account_source" compareValue="-1">
+				<isNotEmpty prepend=" and " property="account_source">
+					zc.account_source in
+					<iterate open="(" close=")" conjunction=","
+						property="account_source">
+						#account_source[]:VARCHAR#
+					</iterate>
+				</isNotEmpty>
+			</isNotEqual>
+      	    <isNotEqual property="regist_status" compareValue="-1">
+				<isNotEmpty prepend=" and " property="regist_status">
+					zc.regist_status in
+					<iterate open="(" close=")" conjunction=","
+						property="regist_status">
+						#regist_status[]:VARCHAR#
+					</iterate>
+				</isNotEmpty>
+			</isNotEqual>
+			<isNotEqual property="is_output" compareValue="-1">
+				<isNotEmpty prepend=" and " property="is_output">
+					zc.is_output in
+					<iterate open="(" close=")" conjunction=","
+						property="is_output">
+						#is_output[]:VARCHAR#
+					</iterate>
+				</isNotEmpty>
+			</isNotEqual>
+			<isNotEqual property="fail_reason" compareValue="-1">
+				<isNotEmpty prepend=" and " property="fail_reason">
+					fail_reason in
+					<iterate open="(" close=")" conjunction=","
+						property="fail_reason">
+						#fail_reason[]:VARCHAR#
+					</iterate>
+				</isNotEmpty>
+			</isNotEqual>
+			 <isEqual property="mail_set" compareValue="-1">
+				and (1=2
+			   <isNotEmpty prepend=" or " property="mail_163">
+				 mail like '%@163.com%'
+			  </isNotEmpty>
+			   <isNotEmpty prepend=" or " property="mail_19trip">
+				 mail like '%@19trip.com%'
+			  </isNotEmpty>
+			   <isNotEmpty prepend=" or " property="mail_qita">
+				( mail not like '%@163.com%' and mail not like '%@19trip.com%')
+			  </isNotEmpty>)
+			</isEqual>
+			
+			<isNotEmpty prepend=" and " property="start_regist_time">
+				zc.regist_time <![CDATA[>=]]> #start_regist_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_regist_time">
+				zc.regist_time <![CDATA[<]]> DATE_ADD(#end_regist_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY zc.create_time DESC
+        LIMIT #everyPagefrom:Integer#, #pageSize:Integer#
+	</select>
+	
+	<!-- 查询明细 -->
+	<select id="queryRegisterInfo" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT zc.regist_id,
+			   zc.user_name,
+			   zc.ids_card,
+			   zc.regist_phone,
+			   zc.user_phone,
+			   zc.account_name,
+			   zc.account_pwd,
+			   zc.user_id,
+			   DATE_FORMAT(zc.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+			   zc.opt_person,
+			   zc.regist_status,
+			   zc.description,
+			   zc.mail,
+			   zc.is_output,
+			   zc.account_source,
+			   zc.fail_reason
+		FROM hc_orderinfo_regist zc
+		WHERE zc.regist_id=#regist_id# 
+	</select>
+	
+		
+	<!-- 注册失败-->
+	<update id="updateRegisterFail" parameterClass="java.util.HashMap">
+		UPDATE hc_orderinfo_regist  
+		SET regist_status='33',
+		fail_reason=#fail_reason#,
+		opt_person=#opt_person:VARCHAR#
+		WHERE regist_id=#regist_id#
+	</update>
+	
+	<!-- 注册成功 -->
+	<update id="updateRegisterSuccess" parameterClass="java.util.HashMap">
+		UPDATE hc_orderinfo_regist 
+		SET regist_status='22',
+			opt_person=#opt_person:VARCHAR#
+		WHERE regist_id=#regist_id#
+	</update>
+	
+	<!-- 注册成功后等级修改 -->
+	<update id="updateRegisterSuccessGrade" parameterClass="java.util.HashMap">
+		UPDATE hc_userinfo
+		SET agent_grade=#agent_grade#
+		WHERE user_id=#user_id# 
+	</update>
+	
+	
+	<!-- 需要核验 -->
+	<update id="updateRegisterCheck" parameterClass="java.util.HashMap">
+		UPDATE hc_orderinfo_regist 
+		SET regist_status=#regist_status#,
+		opt_person=#opt_person:VARCHAR#
+		WHERE regist_id=#regist_id#
+	</update>
+	
+	
+	<!-- 根据regist_id查询出该记录的所有信息 -->
+	<select id="queryRegister" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT regist_id,user_name,regist_phone,ids_card,account_name,account_pwd,mail,regist_status,fail_reason,regist_time,
+		regist_num FROM hc_orderinfo_regist WHERE regist_id=#regist_id#
+	</select>
+	
+	<!-- 将查询出的信息插入到cp_accountinfo表中
+	<insert id="addAccountInfo" parameterClass="java.util.HashMap">
+	   INSERT INTO cp_accountinfo(acc_username,acc_password,
+           acc_status,create_time,priority,channel,
+           opt_person,acc_mail,real_name,id_card)
+       VALUES(#account_name:VARCHAR#,#account_pwd:VARCHAR#,'33',NOW(),
+           0,'19e',#opt_person:VARCHAR#,#mail:VARCHAR#,#user_name:VARCHAR#,#ids_card:VARCHAR#)
+	</insert>
+	 -->
+	 
+	 
+	<!-- 添加新注册信息到hc_orderinfo_regist表中 -->
+	<insert id="addRegister" parameterClass="java.util.HashMap">
+		INSERT INTO hc_orderinfo_regist
+		<dynamic prepend="(">
+			create_time,
+			<isNotEmpty prepend="," property="user_name">
+				user_name
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ids_card">
+				ids_card
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_status">
+				regist_status
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_person">
+				opt_person
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="user_phone">
+				user_phone
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="user_id">
+				user_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="account_name">
+				account_name
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="account_pwd">
+				account_pwd
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="account_source">
+				account_source
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_phone">
+				regist_phone
+			</isNotEmpty>
+			)
+		</dynamic>
+		 values
+		<dynamic prepend="(">
+			now(),
+			<isNotEmpty prepend="," property="user_name">
+				#user_name#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ids_card">
+				#ids_card#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_status">
+				#regist_status#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_person">
+				#opt_person#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="user_phone">
+				#user_phone#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="user_id">
+				#user_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="account_name">
+				#account_name#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="account_pwd">
+				#account_pwd#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="account_source">
+				#account_source#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_phone">
+				#regist_phone#
+			</isNotEmpty>
+			
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 根据身份证号查询该条数据是否存在 -->
+	<select id="queryRegisterIdcard" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT DISTINCT ids_card FROM hc_orderinfo_regist WHERE ids_card=#ids_card#
+	</select>
+	
+	<!-- 更改12306账号和密码 -->
+	<update id="update12306Register" parameterClass="java.util.HashMap">
+		UPDATE hc_orderinfo_regist 
+		SET account_name=#account_name:VARCHAR#,
+		account_pwd=#account_pwd:VARCHAR#,
+		opt_person=#opt_person:VARCHAR#
+		WHERE regist_id=#regist_id#
+	</update>
+	
+	<!-- 导出queryRegisterExcel -->
+	<select id="queryRegisterExcel" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT zc.regist_id,
+			   zc.user_name,
+			   zc.ids_card,
+			   zc.regist_phone,
+			   zc.user_phone,
+			   zc.account_name,
+			   zc.account_pwd,
+			   zc.user_id,
+			   DATE_FORMAT(zc.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+			   zc.opt_person,
+			   zc.regist_status,
+			   zc.description,
+			   zc.mail,cp.pwd,
+			   zc.is_output,
+			   zc.account_source,
+			   zc.fail_reason
+		FROM hc_orderinfo_regist zc
+		LEFT JOIN
+			  cp_orderinfo_mail cp 
+			  ON cp.address = zc.mail 
+		WHERE 1=1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="user_name">
+				zc.user_name=#user_name:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="regist_phone">
+				zc.regist_phone=#regist_phone:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="ids_card">
+				zc.ids_card=#ids_card:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="user_phone">
+				zc.user_phone=#user_phone:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="account_name">
+				zc.account_name=#account_name:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="account_pwd">
+				zc.account_pwd=#account_pwd:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="user_id">
+				zc.user_id=#user_id:VARCHAR#
+			</isNotEmpty>
+			
+			<isNotEmpty prepend=" and " property="create_time">
+				zc.create_time <![CDATA[>=]]> #create_time:VARCHAR#
+			</isNotEmpty>
+			
+			<isNotEmpty prepend=" and " property="start_create_time">
+				zc.create_time <![CDATA[>=]]> #start_create_time:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_create_time">
+				zc.create_time <![CDATA[<]]> DATE_ADD(#end_create_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+
+			<isNotEmpty prepend=" and " property="opt_person">
+				zc.opt_person=#opt_person:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="description">
+				zc.description=#description:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend = "and" property = "mail">
+				zc.mail = #mail:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend = "and" property = "channel">
+				zc.channel=#channel:VARCHAR#
+			</isNotEmpty>
+			<isNotEqual property="account_source" compareValue="-1">
+				<isNotEmpty prepend=" and " property="account_source">
+					zc.account_source in
+					<iterate open="(" close=")" conjunction=","
+						property="account_source">
+						#account_source[]:VARCHAR#
+					</iterate>
+				</isNotEmpty>
+			</isNotEqual>
+      	    <isNotEqual property="regist_status" compareValue="-1">
+				<isNotEmpty prepend=" and " property="regist_status">
+					zc.regist_status in
+					<iterate open="(" close=")" conjunction=","
+						property="regist_status">
+						#regist_status[]:VARCHAR#
+					</iterate>
+				</isNotEmpty>
+			</isNotEqual>
+			<isNotEqual property="is_output" compareValue="-1">
+				<isNotEmpty prepend=" and " property="is_output">
+					zc.is_output in
+					<iterate open="(" close=")" conjunction=","
+						property="is_output">
+						#is_output[]:VARCHAR#
+					</iterate>
+				</isNotEmpty>
+			</isNotEqual>
+			<isNotEqual property="fail_reason" compareValue="-1">
+				<isNotEmpty prepend=" and " property="fail_reason">
+					fail_reason in
+					<iterate open="(" close=")" conjunction=","
+						property="fail_reason">
+						#fail_reason[]:VARCHAR#
+					</iterate>
+				</isNotEmpty>
+			</isNotEqual>
+			 <isEqual property="mail_set" compareValue="-1">
+				and (1=2
+			   <isNotEmpty prepend=" or " property="mail_163">
+				 mail like '%@163.com%'
+			  </isNotEmpty>
+			   <isNotEmpty prepend=" or " property="mail_19trip">
+				 mail like '%@19trip.com%'
+			  </isNotEmpty>
+			   <isNotEmpty prepend=" or " property="mail_qita">
+				( mail not like '%@163.com%' and mail not like '%@19trip.com%')
+			  </isNotEmpty>)
+			</isEqual>
+		</dynamic>
+		ORDER BY zc.create_time DESC
+	</select>
+	
+</sqlMap>

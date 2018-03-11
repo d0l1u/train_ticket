@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="allRefund">
+
+	<!-- 获取按条件查询所有的订单 -->
+	<select id="queryAllRefundList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  cor.order_id,cor.cp_id,cor.account_name, cor.account_pwd,cor.buy_money,cor.refund_seq,
+		  cor.alter_buy_money,cor.refund_money, cor.refund_12306_money,cor.order_status,
+		  DATE_FORMAT(cor.create_time, '%Y-%m-%d %H:%i:%s') create_time,cor.channel,
+		  DATE_FORMAT(cor.from_time, '%Y-%m-%d %H:%i:%s') from_time,con.notify_status,
+		  cor.refund_percent,cor.option_time, cor.opt_ren,cor.out_ticket_billno,
+		  cor.train_no,cor.alter_train_no, cor.from_station,cor.alter_travel_time,
+		  cor.seat_type,cor.alter_seat_type, cor.ticket_type,cor.train_box,cor.refuse_reason,
+		  cor.alter_train_box,cor.seat_no, cor.alter_seat_no,cor.ids_type,cor.alter_diff_money,
+		  cor.user_ids,cor.error_info, cor.return_optlog,cor.user_name,cor.user_remark,cor.refund_type,
+		  cor.refund_12306_seq FROM  cp_orderinfo_refund AS cor 
+		LEFT JOIN cp_orderinfo_refund_notify AS con ON cor.order_id= con.order_id AND cor.cp_id=con.cp_id
+		WHERE 1 = 1 
+			<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				cor.order_id=#order_id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="opt_ren">
+				cor.opt_ren=#opt_ren:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				cor.create_time<![CDATA[>=]]>#begin_info_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				cor.create_time<![CDATA[<]]>DATE_ADD(#end_info_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_seq">
+				cor.refund_seq=#refund_seq#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_12306_seq">
+				cor.refund_12306_seq=#refund_12306_seq#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_status">
+				cor.order_status in
+				<iterate open="(" close=")" conjunction=","
+					property="refund_status">
+					#refund_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="notify_status">
+				con.notify_status in
+				<iterate open="(" close=")" conjunction=","
+					property="notify_status">
+					#notify_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="channel">
+				cor.channel in
+				<iterate open="(" close=")" conjunction=","
+					property="channel">
+					#channel[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			  <isEqual property="urgent_order" compareValue="right_now">
+			   AND cor.from_time<![CDATA[<=]]>DATE_ADD(now(),INTERVAL 48 HOUR)
+		<!--AND(
+				( cor.from_time<![CDATA[>=]]>DATE_ADD(now(),INTERVAL 2 HOUR)
+				AND cor.from_time<![CDATA[<]]>DATE_ADD(now(),INTERVAL 4 HOUR)
+				)
+				OR(
+				 cor.from_time<![CDATA[>=]]>DATE_ADD(now(),INTERVAL 24 HOUR)
+				AND cor.from_time<![CDATA[<]]>DATE_ADD(now(),INTERVAL 26 HOUR)
+				)
+				OR(
+				 cor.from_time<![CDATA[>=]]>DATE_ADD(now(),INTERVAL 48 HOUR)
+				AND cor.from_time<![CDATA[<]]>DATE_ADD(now(),INTERVAL 50 HOUR)
+				)
+				OR(
+				 cor.from_time<![CDATA[>=]]>DATE_ADD(now(),INTERVAL 15 DAY)
+				AND cor.from_time<![CDATA[<]]>DATE_ADD(DATE_ADD(now(),INTERVAL 15 DAY),INTERVAL 2 HOUR)
+				)
+			)-->
+			</isEqual>
+			</dynamic>
+		order by cor.from_time  LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select>
+	
+
+	<!-- 获取按条件查询的订单数 -->
+	<select id="queryAllRefundCounts"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM cp_orderinfo_refund AS cor
+		LEFT JOIN cp_orderinfo_refund_notify AS con ON cor.order_id= con.order_id AND cor.cp_id=con.cp_id
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="order_id">
+				cor.order_id=#order_id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="opt_ren">
+				cor.opt_ren=#opt_ren:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				cor.create_time
+				<![CDATA[>=]]>
+				#begin_info_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				cor.create_time
+				<![CDATA[<]]>
+				DATE_ADD(#end_info_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_seq">
+				cor.refund_seq=#refund_seq#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_12306_seq">
+				cor.refund_12306_seq=#refund_12306_seq#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_status">
+				cor.order_status in
+				<iterate open="(" close=")" conjunction=","
+					property="refund_status">
+					#refund_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="notify_status">
+				con.notify_status in
+				<iterate open="(" close=")" conjunction=","
+					property="notify_status">
+					#notify_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="channel">
+				cor.channel in
+				<iterate open="(" close=")" conjunction=","
+					property="channel">
+					#channel[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			 <isEqual property="urgent_order" compareValue="right_now">
+			 AND cor.from_time<![CDATA[<=]]>DATE_ADD(now(),INTERVAL 48 HOUR)
+		<!-- 	AND(
+				( cor.from_time<![CDATA[>=]]>DATE_ADD(DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s'),INTERVAL 2 HOUR)
+				AND cor.from_time<![CDATA[<]]>DATE_ADD(DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s'),INTERVAL 4 HOUR)
+				)
+				OR(
+				 cor.from_time<![CDATA[>=]]>DATE_ADD(DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s'),INTERVAL 24 HOUR)
+				AND cor.from_time<![CDATA[<]]>DATE_ADD(DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s'),INTERVAL 26 HOUR)
+				)
+				OR(
+				 cor.from_time<![CDATA[>=]]>DATE_ADD(DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s'),INTERVAL 48 HOUR)
+				AND cor.from_time<![CDATA[<]]>DATE_ADD(DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s'),INTERVAL 50 HOUR)
+				)
+				OR(
+				 cor.from_time<![CDATA[>=]]>DATE_ADD(DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s'),INTERVAL 15 DAY)
+				AND cor.from_time<![CDATA[<]]>DATE_ADD(DATE_ADD(DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s'),INTERVAL 15 DAY),INTERVAL 2 HOUR)
+				)
+			)-->
+			</isEqual>
+		</dynamic>
+	</select>
+
+	<!-- 查询明细订单退款明细 -->
+	<select id="queryAllRefundInfo"
+		parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  cor.order_id,cor.cp_id,cor.account_name, cor.account_pwd,cor.buy_money,cor.refund_seq,
+		  cor.alter_buy_money,cor.refund_money, cor.refund_12306_money,cor.order_status,
+		  DATE_FORMAT(cor.create_time, '%Y-%m-%d %H:%i:%s') create_time,cor.channel,
+		  DATE_FORMAT(cor.from_time, '%Y-%m-%d %H:%i:%s') from_time,cor.refund_type,
+		   DATE_FORMAT(cor.out_ticket_time, '%Y-%m-%d %H:%i:%s') out_ticket_time,
+		  cor.refund_percent,cor.option_time, cor.opt_ren,cor.out_ticket_billno,
+		  cor.train_no,cor.alter_train_no, cor.from_station,cor.arrive_station,
+		  cor.alter_travel_time,cor.our_remark,con.notify_status,cor.alter_diff_money,
+		  cor.seat_type,cor.alter_seat_type, cor.ticket_type,cor.train_box,
+		  cor.alter_train_box,cor.seat_no, cor.alter_seat_no,cor.ids_type,cor.refuse_reason,
+		  cor.user_ids,cor.error_info, cor.return_optlog,cor.user_name,cor.user_remark,
+		  cor.refund_12306_seq FROM  cp_orderinfo_refund AS cor 
+		LEFT JOIN cp_orderinfo_refund_notify AS con ON cor.order_id= con.order_id AND cor.cp_id=con.cp_id
+		 WHERE
+		<dynamic prepend=" ">
+		<isNotEmpty prepend=" and " property="order_id">
+			cor.order_id=#order_id#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="cp_id">
+			cor.cp_id=#cp_id#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="refund_seq">
+			cor.refund_seq=#refund_seq#
+		</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 增加操作日志 -->
+	<insert id="addAllRefundlog" parameterClass="java.util.HashMap">
+		INSERT INTO cp_orderinfo_refund_history 
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="order_id">
+				 order_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="cp_id">
+				 cp_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="order_optlog">
+				 order_optlog
+			</isNotEmpty>
+				 ,create_time
+			<isNotEmpty prepend="," property="order_time">
+				 order_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opter">
+				 opter
+			</isNotEmpty>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="order_id">
+				#order_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="cp_id">
+				#cp_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="order_optlog">
+				#order_optlog#
+			</isNotEmpty>
+				,now()
+			<isNotEmpty prepend="," property="order_time">
+				 now()
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opter">
+				#opter#
+			</isNotEmpty>
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 执行退款 -->
+	<update id="updateAllRefundInfo" parameterClass="java.util.HashMap">
+		UPDATE cp_orderinfo_refund
+		<dynamic prepend="SET">
+			order_status='11' , option_time=NOW(),
+			<isNotEmpty prepend=","  property="alter_train_no">
+				 alter_train_no=#alter_train_no#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alter_train_box">
+				 alter_train_box=#alter_train_box#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alter_seat_no">
+				 alter_seat_no=#alter_seat_no#
+			</isNotEmpty>
+			<isNotEmpty  prepend="," property="alter_seat_type">
+				 alter_seat_type=#alter_seat_type#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_money">
+				refund_money=#refund_money:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_12306_money">
+				refund_12306_money=#refund_12306_money:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alter_diff_money">
+				alter_diff_money=#alter_diff_money:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alter_buy_money">
+				alter_buy_money=#alter_buy_money:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="our_remark">
+				our_remark =#our_remark:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_12306_seq">
+				refund_12306_seq =#refund_12306_seq:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_ren">
+				opt_ren =#opt_ren:VARCHAR#
+			</isNotEmpty>
+			,verify_time=NOW()
+		</dynamic>
+			WHERE 1=1 and order_status<![CDATA[<>]]>'22' 
+			 and order_status<![CDATA[<>]]>'11' 
+			 and refund_seq =#refund_seq:VARCHAR# 
+			<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="cp_id">
+				cp_id =#cp_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_id">
+				order_id =#order_id:VARCHAR#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+
+	<!-- 查询退款日志 -->
+	<select id="queryHistroy" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT hs.history_id, hs.order_optlog,
+		DATE_FORMAT(hs.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,hs.opter
+		FROM cp_orderinfo_refund_history hs 
+		WHERE hs.order_id =#order_id:VARCHAR#  AND  (hs.cp_id =#cp_id:VARCHAR# or hs.cp_id is null )
+		order by hs.history_id DESC
+	</select>
+
+	<!-- 拒绝退款时修改状态 -->
+	<update id="updateRefuse" parameterClass="java.util.HashMap">
+		update cp_orderinfo_refund 
+		set our_remark=#our_remark#,
+			verify_time=now(),refuse_reason=#refuse_reason#,
+			order_status='22',
+			opt_ren=#opt_ren#,
+			option_time=NOW()
+			<dynamic prepend="">
+			<isNotEmpty prepend="," property="refund_money">
+			refund_money=#refund_money#
+			</isNotEmpty>
+		    </dynamic> 
+	        where
+			order_id=#order_id# and refund_seq=#refund_seq# and cp_id=#cp_id#
+	</update>
+
+	<!-- 更新refund表中操作人信息 -->
+	<update id="updateRefundOpt" parameterClass="java.util.HashMap">
+		update cp_orderinfo_refund set opt_ren=#opt_ren# 
+		where order_id=#order_id# 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="cp_id">
+				cp_id=#cp_id#
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!-- 增加线下/差额退票 -->
+	<insert id="addAllRefund" parameterClass="java.util.HashMap" >
+		INSERT INTO cp_orderinfo_refund
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="order_id">
+				 order_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_type">
+				 refund_type
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="cp_id">
+				 cp_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_seq">
+				 refund_seq
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_money">
+				 refund_money
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_12306_money">
+				 refund_12306_money
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				 create_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="our_remark">
+				 our_remark
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_12306_seq">
+				 refund_12306_seq
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_status">
+				 order_status
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_ren">
+				 opt_ren
+			</isNotEmpty>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="order_id">
+				#order_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_type">
+				#refund_type#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="cp_id">
+				#cp_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_seq">
+				#refund_seq#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_money">
+				#refund_money#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_12306_money">
+				#refund_12306_money#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				now()
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="our_remark">
+				#our_remark#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_12306_seq">
+				#refund_12306_seq#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_status">
+				#refund_status#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_ren">
+				#opt_ren#
+			</isNotEmpty>
+			
+			)
+		</dynamic>
+	</insert>
+	
+	
+	<!-- 差看退款表总金额 -->
+	<select id="querySumRefundMoney" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT CONVERT(IFNULL(SUM(refund_money),0),char)AS refund_money FROM cp_orderinfo_refund 
+		WHERE  order_id=#order_id# AND cp_id=#cp_id#  AND  order_status <![CDATA[<>]]>'22'
+	</select>
+	<select id="queryelongOrtongcheng" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT CONVERT(IFNULL(SUM(refund_money),0),char)AS refund_money FROM elong_orderinfo_refundstream 
+		WHERE  order_id=#order_id# AND cp_id=#cp_id#  AND refund_status <![CDATA[<>]]>'55' and refund_status <![CDATA[<>]]>'22'
+		AND refund_type IN ('22','33')
+	</select>
+	<select id="queryMeituan" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT CONVERT(IFNULL(SUM(refund_money),0),char)AS refund_money FROM mt_orderinfo_refundstream 
+		WHERE  order_id=#order_id# AND cp_id=#cp_id#  AND refund_status <![CDATA[<>]]>'55' and refund_status <![CDATA[<>]]>'22'
+		AND refund_type IN ('22','33')
+	</select>
+	<select id="queryGaotie" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT CONVERT(IFNULL(SUM(refund_money),0),char)AS refund_money FROM gt_orderinfo_refundstream 
+		WHERE  order_id=#order_id# AND cp_id=#cp_id#  AND refund_status <![CDATA[<>]]>'22'
+		AND refund_type  <![CDATA[<>]]>'1' and  refund_type <![CDATA[<>]]>'3'
+	</select>
+	<select id="queryXiecheng" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT CONVERT(IFNULL(SUM(refund_money),0),char)AS refund_money FROM xc_orderinfo_refundstream 
+		WHERE  order_id=#order_id# AND cp_id=#cp_id#  AND refund_status <![CDATA[<>]]>'22'
+		AND refund_type  <![CDATA[<>]]>'1'
+	</select>
+	<select id="queryTuniu" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT CONVERT(IFNULL(SUM(refund_money),0),char)AS refund_money FROM tuniu_orderinfo_refund 
+		WHERE  order_id=#order_id# AND cp_id=#cp_id#  AND refund_status <![CDATA[<>]]>'22'
+		AND refund_type  IN ('22','33') 
+	</select>
+	
+	<select id="queryl9e" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT CONVERT(IFNULL(SUM(refund_money),0),char)AS refund_money FROM hc_orderinfo_refundstream 
+		WHERE  order_id=#order_id# AND cp_id=#cp_id# AND refund_type <![CDATA[<>]]>'1' 
+		AND refund_status <![CDATA[<>]]>'55' and refund_status <![CDATA[<>]]>'22'
+	</select>
+	
+	
+	<!-- 查询ticket_pay_money -->
+	<select id="queryBuyMoney_TicketPayMoney" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT CONVERT(IFNULL(buy_money,0),CHAR)ticket_pay_money 
+		FROM cp_orderinfo_refund WHERE order_id=#order_id# AND cp_id=#cp_id#
+	</select>
+	
+	<!-- 查询queryRefundMoney -->
+	<select id="queryRefundMoney" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT CONVERT(IFNULL(refund_money,0),CHAR)ticket_refund_money ,refund_seq 
+		FROM cp_orderinfo_refund WHERE order_id=#order_id# and cp_id=#cp_id#
+	</select>
+	
+	<!-- 更新退款通知 -->
+	<update id="updateNotify_Again" parameterClass="java.util.HashMap">
+		UPDATE 
+		  cp_orderinfo_refund_notify AS qo 
+		SET
+		  qo.notify_status = #notify_status#,
+		   <isEqual property="notify_type" compareValue="1">
+		  qo.notify_type=1,
+		   </isEqual>
+		   <isEqual property="notify_type" compareValue="2">
+		  qo.notify_type=2,
+		   </isEqual>
+		 qo.notify_num=0,
+		 qo.notify_time=NOW()
+		WHERE qo.cp_id = #cp_id# AND qo.order_id=#order_id#
+	</update>
+	<!-- 机器改签 ,机器退票，搁置订单-->
+	<update id="updateOrderstatusToRobotGai" parameterClass="java.util.HashMap">
+		UPDATE 
+			  cp_orderinfo_refund 
+			SET
+			  order_status = #refund_status#,
+			opt_ren=#opt_ren# 
+			WHERE order_id = #order_id#  
+			AND cp_id =#cp_id#
+			AND refund_seq=#refund_seq# 
+	</update>
+	
+	<!-- 导出queryAllRefundExcel -->
+	<select id="queryAllRefundExcel" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  cor.order_id,cor.cp_id,cor.account_name, cor.account_pwd,cor.buy_money,cor.refund_seq,
+		  cor.alter_buy_money,cor.refund_money, cor.refund_12306_money,cor.order_status,
+		  DATE_FORMAT(cor.create_time, '%Y-%m-%d %H:%i:%s') create_time,cor.channel,
+		  DATE_FORMAT(cor.from_time, '%Y-%m-%d %H:%i:%s') from_time,con.notify_status,
+		  cor.refund_percent,cor.option_time, cor.opt_ren,cor.out_ticket_billno,
+		  cor.train_no,cor.alter_train_no, cor.from_station,cor.alter_travel_time,cor.arrive_station,
+		  cor.seat_type,cor.alter_seat_type, cor.ticket_type,cor.train_box,
+		  cor.alter_train_box,cor.seat_no, cor.alter_seat_no,cor.ids_type,cor.refuse_reason,
+		  cor.user_ids,cor.error_info, cor.return_optlog,cor.user_name,cor.alter_diff_money,
+		  cor.refund_12306_seq FROM  cp_orderinfo_refund AS cor 
+		LEFT JOIN cp_orderinfo_refund_notify AS con ON cor.order_id= con.order_id AND cor.cp_id=con.cp_id
+			WHERE 1 = 1 
+			<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				cor.order_id=#order_id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="opt_ren">
+				cor.opt_ren=#opt_ren:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				cor.create_time
+				<![CDATA[>=]]>#begin_info_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				cor.create_time
+				<![CDATA[<]]>
+				DATE_ADD(#end_info_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_seq">
+				cor.refund_seq=#refund_seq#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_12306_seq">
+				cor.refund_12306_seq=#refund_12306_seq#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_status">
+				cor.order_status in
+				<iterate open="(" close=")" conjunction=","
+					property="refund_status">
+					#refund_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="notify_status">
+				con.notify_status in
+				<iterate open="(" close=")" conjunction=","
+					property="notify_status">
+					#notify_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="channel">
+				cor.channel in
+				<iterate open="(" close=")" conjunction=","
+					property="channel">
+					#channel[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			</dynamic>
+	</select>
+	<!-- 修改主表中can_refund为1与更新refund_total -->
+	<update id="updateOrderInfo_can_refundTo1_And_refund_total" parameterClass="java.util.HashMap">
+		UPDATE hc_orderinfo SET can_refund='1'
+		<dynamic prepend="">
+			<isNotEmpty prepend="," property="refund_total">
+			refund_total=#refund_total#
+			</isNotEmpty>
+		</dynamic>
+		WHERE order_id=#order_id#
+	</update>
+	
+	<!-- 查询人工出票订单号 -->
+	<select id="queryManualOrderList" resultClass="java.lang.String">
+		SELECT order_id  FROM cp_orderinfo WHERE manual_order='11' AND create_time <![CDATA[>]]>'2015-05-01 00:00:00'
+	</select>
+	
+	<!-- 查询改签单详细信息-->
+	<select id="queryAlterInfo" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT order_id,change_buy_money,cp_id,new_cp_id FROM elong_change_cp 
+		WHERE order_id = #order_id:VARCHAR# and new_cp_id =#new_cp_id:varchar#
+	</select>
+	
+	<select id="queryAllRefund" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  CASE
+		    WHEN refund_type = '11' 
+		    THEN '退票退款' 
+		    WHEN refund_type = '22' 
+		    THEN '线下退票' 
+		    WHEN refund_type = '33' 
+		    THEN '车站退票' 
+		    WHEN refund_type = '44' 
+		    THEN '申请退票' 
+		    WHEN refund_type = '55' 
+		    THEN '改签退票' 
+		    ELSE '其他' 
+		  END AS '类型',
+		  refund_money 
+		FROM
+		  elong_orderinfo_refundstream 
+		WHERE order_id =  #order_id:VARCHAR#
+		  AND refund_status <![CDATA[<>]]> '55' 
+		  AND refund_status <![CDATA[<>]]> '22' 
+		ORDER BY refund_type 
+	</select>
+	
+	<select id="queryCpIdCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(cp.new_cp_id) FROM elong_change_cp cp LEFT JOIN elong_orderinfo_change ec ON ec.order_id = cp.order_id
+		WHERE cp.order_id= #order_id:VARCHAR#  AND ec.change_status = '34'
+	</select>
+	
+	<update id="updateAccountToManual" parameterClass="java.lang.String" >
+		UPDATE cp_accountinfo_check SET check_status = '-2' ,user_id =NULL WHERE account_username=#account_name:varchar#
+	</update>
+</sqlMap>

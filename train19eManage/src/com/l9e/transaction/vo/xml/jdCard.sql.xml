@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="jdCard">
+
+    <!-- 获取按条件查询所有的订单 -->
+	<select id="queryJDCardList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  card_id,card_no,card_pwd,card_money,card_amount,card_status,
+		  create_time,become_due_time,option_time,img_url
+		  
+		  FROM jd_card  
+		
+		WHERE 1 = 1 
+			<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="card_no">
+				card_no=#card_no#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				create_time<![CDATA[>=]]>#begin_info_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				create_time<![CDATA[<]]>DATE_ADD(#end_info_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+	
+			<isNotEmpty prepend=" and " property="card_status">
+				card_status in
+				<iterate open="(" close=")" conjunction=","
+					property="card_status">
+					#card_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			
+		   <isNotEmpty prepend=" and " property="beginBalance">
+		    	card_money >= #beginBalance#
+		   </isNotEmpty>
+		   <isNotEmpty prepend=" and " property="endBalance">
+		    	#endBalance# >= card_money 
+		   </isNotEmpty>
+			 
+			</dynamic>
+		order by option_time DESC  LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select>
+	
+	<!-- 获取按条件查询的订单数 -->
+	<select id="queryJDCardCounts"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM jd_card  
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="card_no">
+				card_no=#card_no#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				create_time<![CDATA[>=]]>#begin_info_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				create_time<![CDATA[<]]>DATE_ADD(#end_info_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+	
+			<isNotEmpty prepend=" and " property="card_status">
+				card_status in
+				<iterate open="(" close=")" conjunction=","
+					property="card_status">
+					#card_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			
+		   <isNotEmpty prepend=" and " property="beginBalance">
+		    	card_money >= #beginBalance#
+		   </isNotEmpty>
+		   <isNotEmpty prepend=" and " property="endBalance">
+		    	#endBalance# >= card_money 
+		   </isNotEmpty>		
+		</dynamic>
+	</select>
+	 <!-- 根据ID查询预付卡信息 -->
+	<select id="queryJDCardById" parameterClass="java.lang.Integer" resultClass="java.util.HashMap">
+		SELECT 
+		  card_id,card_no,card_pwd,card_money,card_amount,card_status,
+		  create_time,become_due_time,option_time,img_url
+		  
+		  FROM jd_card  
+		
+		WHERE card_id=#card_id#
+			
+	</select>
+	
+	<!-- 查询京东预付卡的总金额和总余额 -->
+	<select id="queryJDCardMoney"
+		resultClass="java.util.HashMap">
+		SELECT
+		      CAST(SUM(card_amount) as DECIMAL(10,2)) as total_money,CAST(SUM(card_money) as DECIMAL(10,2)) as total_balance
+		  FROM 
+		  jd_card 		
+	</select>
+	
+	<!-- 新增京东预付卡 -->
+	<insert id="addJDCardInfo" parameterClass="java.util.HashMap">
+	INSERT INTO jd_card 
+	<dynamic prepend="(">
+			<isNotEmpty prepend="," property="card_no">
+				 card_no
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="card_pwd">
+				 card_pwd
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="card_amount">
+				 card_amount
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="card_money">
+				 card_money
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="card_status">
+				 card_status
+			</isNotEmpty>
+				 ,create_time
+			<isNotEmpty prepend="," property="become_due_time">
+				 become_due_time
+			</isNotEmpty>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="card_no">
+				#card_no#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="card_pwd">
+				#card_pwd#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="card_amount">
+				#card_amount#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="card_money">
+				#card_money#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="card_status">
+				#card_status#
+			</isNotEmpty>
+				,now()
+			<isNotEmpty prepend="," property="become_due_time">
+				 #become_due_time#
+			</isNotEmpty>
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 增加操作日志 -->
+	<insert id="addJDRefundlog" parameterClass="java.util.HashMap">
+		INSERT INTO cp_orderinfo_refund_jd_history 
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="order_id">
+				 order_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="cp_id">
+				 cp_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="order_optlog">
+				 order_optlog
+			</isNotEmpty>
+				 ,create_time
+			<isNotEmpty prepend="," property="order_time">
+				 order_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opter">
+				 opter
+			</isNotEmpty>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="order_id">
+				#order_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="cp_id">
+				#cp_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="order_optlog">
+				#order_optlog#
+			</isNotEmpty>
+				,now()
+			<isNotEmpty prepend="," property="order_time">
+				 now()
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opter">
+				#opter#
+			</isNotEmpty>
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 更新京东预付卡信息 -->
+	<update id="updateJDCardInfo" parameterClass="java.util.HashMap">
+	        UPDATE jd_card
+			<dynamic prepend="SET">
+			        
+				<isNotEmpty prepend="," property="card_no">
+				 	card_no=#card_no#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="card_pwd">
+					card_pwd=#card_pwd#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="card_money">
+					card_money=#card_money#
+				</isNotEmpty>
+				<isNotEmpty prepend=","  property="card_amount">
+					card_amount =#card_amount#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="card_status">
+					card_status=#card_status#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="become_due_time">
+					become_due_time=#become_due_time#
+				</isNotEmpty>
+				 ,option_time=now()
+			</dynamic>
+			WHERE card_id=#card_id#
+	</update>
+</sqlMap>

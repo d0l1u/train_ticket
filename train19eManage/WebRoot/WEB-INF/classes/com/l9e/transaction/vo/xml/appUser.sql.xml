@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="appUser">
+	<!-- 查询预订订单条数 -->
+	<select id="queryAppUserListCount" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(user_id)  FROM app_userinfo 
+		WHERE 1 = 1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="user_phone">
+				user_phone=#user_phone:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="user_name">
+				user_name=#user_name:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="user_source">
+				user_source in
+				<iterate open="(" close=")" conjunction="," property="user_source">
+					#user_source[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="weather_able">
+				weather_able in 
+				<iterate open="(" close=")" conjunction="," property="weather_able">
+					#weather_able[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				last_login_time
+				<![CDATA[>=]]>
+				#begin_info_time:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				last_login_time
+				<![CDATA[<]]>
+				DATE_ADD(#end_info_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			
+			<isNotEmpty prepend=" and " property="score_num_begin">
+				score_num<![CDATA[>=]]>#score_num_begin:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="score_num_end">
+				score_num<![CDATA[<]]>#score_num_end:VARCHAR#
+			</isNotEmpty>
+			
+			<isNotEmpty prepend=" and " property="login_num_begin">
+				login_num<![CDATA[>=]]>#login_num_begin:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="login_num_end">
+				login_num<![CDATA[<]]>#login_num_end:VARCHAR#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<!-- 查询预订订单列表 -->
+	<select id="queryAppUserList" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT 
+		  user_id,
+		  user_phone,
+		  user_name,
+		  user_password,
+		  DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') create_time,
+		  weather_able,
+		  DATE_FORMAT(login_time,'%Y-%m-%d %H:%i:%s') login_time,
+		  DATE_FORMAT(last_login_time,'%Y-%m-%d %H:%i:%s') last_login_time,
+		  score_num,
+		  phone_pattern,
+		  user_source channel,
+		  login_num,
+		  CONVERT(weather_able, CHAR) weather_able,
+		  opt_ren 
+		FROM
+		  app_userinfo 
+		WHERE 1 = 1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="user_phone">
+				user_phone=#user_phone:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="user_name">
+				user_name=#user_name:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="user_source">
+				user_source in
+				<iterate open="(" close=")" conjunction="," property="user_source">
+					#user_source[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="weather_able">
+				weather_able in 
+				<iterate open="(" close=")" conjunction="," property="weather_able">
+					#weather_able[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				last_login_time
+				<![CDATA[>=]]>
+				#begin_info_time:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				last_login_time
+				<![CDATA[<]]>
+				DATE_ADD(#end_info_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			
+			<isNotEmpty prepend=" and " property="score_num_begin">
+				score_num<![CDATA[>=]]>#score_num_begin:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="score_num_end">
+				score_num<![CDATA[<]]>#score_num_end:VARCHAR#
+			</isNotEmpty>
+			
+			<isNotEmpty prepend=" and " property="login_num_begin">
+				login_num<![CDATA[>=]]>#login_num_begin:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="login_num_end">
+				login_num<![CDATA[<]]>#login_num_end:VARCHAR#
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY last_login_time DESC LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select>
+
+	<!-- 查询user_id的常用联系人个数 -->
+	<select id="queryLinkerNum" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM app_user_linker WHERE user_id=#user_id# 
+	</select>
+	
+	<!-- 某个user_id的推荐人个数 -->
+	<select id="queryRefereeAccountNum" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM app_userinfo WHERE referee_account=#user_id# 
+	</select>
+	
+	<!-- 查询预订订单信息 -->
+	<select id="queryAppUserInfo" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT user_id,user_phone,user_name,user_password,CONVERT(create_time,CHAR) create_time,weather_able,CONVERT(login_time,CHAR) login_time,
+			CONVERT(last_login_time,CHAR) last_login_time,user_email,CONVERT(score_num,CHAR) score_num,phone_pattern,CONVERT(login_num,CHAR) login_num,
+			CONVERT(weather_able,CHAR) weather_able,12306_name AS name12306,12306_pwd AS pwd12306
+		FROM app_userinfo 
+		WHERE user_id=#user_id:VARCHAR#
+	</select>
+	
+	<!-- 查询预订订单条数 -->
+	<select id="queryAppUserLinkerListCount" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM app_user_linker WHERE user_id=#user_id:VARCHAR#
+	</select>
+	
+	<!-- 查询常用联系人信息 -->
+	<select id="queryAppUserLinkerList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT link_id,link_name,ids_type,ids_card,user_id,passenger_type,CONVERT(create_time,CHAR) create_time,CONVERT(modify_time,CHAR) modify_time,verify_status
+		FROM app_user_linker
+		WHERE user_id=#user_id:VARCHAR#
+		ORDER BY create_time DESC LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select>
+	
+
+	<!-- 更新操作人 -->
+	<update id="updateAppUser" parameterClass="java.util.HashMap">
+		UPDATE app_userinfo
+		<dynamic prepend="SET">
+			<isNotEmpty prepend="," property="user_password">
+				user_password=#user_password#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_ren">
+				opt_ren=#opt_ren#
+			</isNotEmpty>
+		</dynamic>
+		WHERE user_id = #user_id#
+	</update>
+
+	<!-- 删除账号信息 -->
+	<delete id="deleteAppUser" parameterClass="java.lang.String">
+		delete from app_userinfo where user_id=#user_id:VARCHAR#
+	</delete>
+	
+	<!-- 更改用户账号停用或者启用 -->
+	<update id="updateAppUserStop" parameterClass="java.util.HashMap">
+		UPDATE app_userinfo
+		<dynamic prepend="SET">
+			<isNotEmpty prepend="," property="weather_able">
+				weather_able=#weather_able#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_ren">
+				opt_ren=#opt_ren#
+			</isNotEmpty>
+		</dynamic>
+		WHERE user_id = #user_id#
+	</update>
+	
+</sqlMap>

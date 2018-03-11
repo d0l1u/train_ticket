@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd">
+       
+    <!-- 属性文件配置 -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	  <property name="locations">
+			<list>
+				<value>classpath:*.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+       <property name = "url" value = "${durid.url}" />    
+       <property name = "username" value = "${durid.username}" />    
+       <property name = "password" value = "${durid.password}" />    
+       <property name = "driverClassName" value = "${durid.driverClassName}" />    
+       <property name = "filters" value = "${durid.filters}" />    
+       <property name = "maxActive" value = "${durid.maxActive}" />  
+       <property name = "initialSize" value = "${durid.initialSize}" />  
+       <property name = "maxWait" value = "${durid.maxWait}" />  
+       <property name = "minIdle" value = "${durid.minIdle}" />    
+       <property name = "timeBetweenEvictionRunsMillis" value ="${durid.timeBetweenEvictionRunsMillis}" />  
+       <property name = "minEvictableIdleTimeMillis" value ="${durid.minEvictableIdleTimeMillis}" />    
+       <property name = "validationQuery" value = "${durid.validationQuery}" />    
+       <property name = "testWhileIdle" value = "${durid.testWhileIdle}" />    
+       <property name = "testOnBorrow" value = "${durid.testOnBorrow}" />    
+       <property name = "testOnReturn" value = "${durid.testOnReturn}" />    
+       <property name = "maxOpenPreparedStatements" value ="${durid.maxOpenPreparedStatements}" />  
+       <property name = "removeAbandoned" value = "${durid.removeAbandoned}" />  
+       <property name = "removeAbandonedTimeout" value ="${durid.removeAbandonedTimeout}" />  
+       <property name = "logAbandoned" value = "${durid.logAbandoned}" />
+	</bean>
+	
+	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+       <property name="configLocation" value="classpath:sql-map-config.xml" />
+       <property name="dataSource" ref="dataSource" />
+    </bean>
+    
+	<!-- 
+	<bean id="dataSource_2" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+       <property name = "url" value = "${durid_beifen.url}" />    
+       <property name = "username" value = "${durid_beifen.username}" />    
+       <property name = "password" value = "${durid_beifen.password}" />    
+       <property name = "driverClassName" value = "${durid_beifen.driverClassName}" />    
+       <property name = "filters" value = "${durid_beifen.filters}" />    
+       <property name = "maxActive" value = "${durid_beifen.maxActive}" />  
+       <property name = "initialSize" value = "${durid_beifen.initialSize}" />  
+       <property name = "maxWait" value = "${durid_beifen.maxWait}" />  
+       <property name = "minIdle" value = "${durid_beifen.minIdle}" />    
+       <property name = "timeBetweenEvictionRunsMillis" value ="${durid_beifen.timeBetweenEvictionRunsMillis}" />  
+       <property name = "minEvictableIdleTimeMillis" value ="${durid_beifen.minEvictableIdleTimeMillis}" />    
+       <property name = "validationQuery" value = "${durid_beifen.validationQuery}" />    
+       <property name = "testWhileIdle" value = "${durid_beifen.testWhileIdle}" />    
+       <property name = "testOnBorrow" value = "${durid_beifen.testOnBorrow}" />    
+       <property name = "testOnReturn" value = "${durid_beifen.testOnReturn}" />    
+       <property name = "maxOpenPreparedStatements" value ="${durid_beifen.maxOpenPreparedStatements}" />  
+       <property name = "removeAbandoned" value = "${durid_beifen.removeAbandoned}" />  
+       <property name = "removeAbandonedTimeout" value ="${durid_beifen.removeAbandonedTimeout}" />  
+       <property name = "logAbandoned" value = "${durid_beifen.logAbandoned}" />
+	</bean>
+	
+	<bean id="sqlMapClient_2" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+       <property name="configLocation" value="classpath:sql-map-config.xml" />
+       <property name="dataSource" ref="dataSource_2" />
+    </bean>
+ -->
+     
+    <bean id="sqlMapClientTemplate" class="org.springframework.orm.ibatis.SqlMapClientTemplate">
+        <constructor-arg>
+            <ref bean="sqlMapClient" />
+        </constructor-arg>
+    </bean>
+    
+</beans>

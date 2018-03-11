@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="manualfind">
+
+	<!-- 查询条数 -->
+	<select id="queryManualfindCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		select count(*) from cp_orderinfo_find where 1=1 
+	 	<isNotEmpty prepend=" and " property="begin_info_time">
+			create_time<![CDATA[>=]]>#begin_info_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_info_time">
+			create_time<![CDATA[<]]>DATE_ADD(#end_info_time:VARCHAR#,INTERVAL 1 DAY)
+		</isNotEmpty>
+	</select>
+	
+	<!-- 查询表格 -->
+	<select id="queryManualfindList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+	 	select * from cp_orderinfo_find where 1=1 
+	 	<isNotEmpty prepend=" and " property="begin_info_time">
+			create_time<![CDATA[>=]]>#begin_info_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_info_time">
+			create_time<![CDATA[<]]>DATE_ADD(#end_info_time:VARCHAR#,INTERVAL 1 DAY)
+		</isNotEmpty>
+		ORDER BY create_time DESC  LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select>
+</sqlMap>

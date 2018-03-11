@@ -1,0 +1,8 @@
+﻿@charset "utf-8";
+.link_text{border:1px solid #a0c7dd;padding:0 3px;color:#333;height:20px;line-height:20px;}
+.width60{width:60px;}
+.width90{width:90px;}
+.width120{width:120px;}
+.width280{width:280px;}
+
+.book_passager_mes .blue_link{color:#0081cc;cursor:pointer;line-height:24px;}

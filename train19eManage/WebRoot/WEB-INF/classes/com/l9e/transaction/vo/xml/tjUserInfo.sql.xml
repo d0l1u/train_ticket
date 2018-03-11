@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="tjUserInfo">
+	<!-- 统计此表条数是否为零 -->
+	<select id="queryTable_count" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM tj_userInfo
+	</select>
+	<!-- 查询全部省名和No -->
+	<select id="queryAllArea_nameAndArea_no" resultClass="java.util.HashMap">
+		SELECT g.area_name,g.area_no FROM gen_area g WHERE g.area_rank IN (0,1) ORDER BY g.area_no 
+	</select>
+	<!-- 查询表中全部天数 -->
+	<select id="queryAll_date" resultClass="java.util.HashMap">
+		SELECT DISTINCT DATE_FORMAT(hc.apply_time,'%Y-%m-%d')AS apply_time FROM hc_userinfo hc
+	</select>
+	
+	<!-- 查询用户总数 -->
+	<select id="queryUser_total" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM hc_userinfo hc WHERE 1=1 
+		<dynamic prepend="">
+			<isNotEqual compareValue="000000"
+				property="area_no">
+				<isNotEmpty prepend=" and " property="area_no">
+					hc.province_id=#area_no:VARCHAR#
+				</isNotEmpty>
+			</isNotEqual>
+			<isNotEmpty prepend=" and " property="apply_time">
+					DATE_FORMAT(hc.apply_time,'%Y-%m-%d')<![CDATA[<=]]>#apply_time#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询前一天用户总数 -->
+	<select id="queryUser_total_Add" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM hc_userinfo hc WHERE 1=1 
+		<dynamic prepend="">
+			<isNotEqual compareValue="000000"
+				property="area_no">
+				<isNotEmpty prepend=" and " property="area_no">
+					hc.province_id=#area_no:VARCHAR#
+				</isNotEmpty>
+			</isNotEqual>
+			<isNotEmpty prepend=" and " property="date_add">
+					DATE_FORMAT(hc.apply_time,'%Y-%m-%d')<![CDATA[<=]]>#date_add#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询活跃用户数 -->
+	<select id="queryActiveUserNow" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM hc_userinfo hc 
+		WHERE hc.user_id IN (SELECT dealer_id FROM hc_orderinfo 
+			WHERE order_status ='44' AND DATE_FORMAT(create_time,'%Y-%m-%d')=#apply_time#)
+		<dynamic prepend="">
+		<isNotEqual compareValue="000000"
+			property="area_no">
+			<isNotEmpty prepend=" and " property="area_no">
+				hc.province_id=#area_no:VARCHAR#
+			</isNotEmpty>
+		</isNotEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 查询总活跃用户数 -->
+	<select id="queryActiveUserAll" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM hc_userinfo hc 
+		WHERE hc.user_id IN (SELECT dealer_id FROM hc_orderinfo 
+			WHERE order_status ='44')
+		<dynamic prepend="">
+		<isNotEqual compareValue="000000"
+			property="area_no">
+			<isNotEmpty prepend=" and " property="area_no">
+				hc.province_id=#area_no:VARCHAR#
+			</isNotEmpty>
+		</isNotEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 查询前一天活跃用户数 -->
+	<select id="queryActiveUser_Add" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM hc_userinfo hc 
+		WHERE hc.user_id IN (SELECT dealer_id FROM hc_orderinfo 
+			WHERE order_status ='44' AND DATE_FORMAT(create_time,'%Y-%m-%d')=#date_add#)
+		<dynamic prepend="">
+		<isNotEqual compareValue="000000"
+			property="area_no">
+			<isNotEmpty prepend=" and " property="area_no">
+				hc.province_id=#area_no:VARCHAR#
+			</isNotEmpty>
+		</isNotEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 插入统计之后数据 -->
+	<insert id="addTj_User" parameterClass="java.util.HashMap">
+		INSERT INTO tj_userInfo
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="area_no">
+				area_no
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="area_name">
+				area_name
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tj_time">
+				tj_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="user_total">
+				user_total
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="user_increase">
+				user_increase
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="user_rate_increase">
+				user_rate_increase
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="active_user">
+				active_user
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="active_user_total">
+				active_user_total
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="active_increase">
+				active_increase
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="active_rate_increase">
+				active_rate_increase
+			</isNotEmpty>
+			,create_time
+
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="area_no">
+				#area_no#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="area_name">
+				#area_name#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tj_time">
+				#tj_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="user_total">
+				#user_total#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="user_increase">
+				#user_increase#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="user_rate_increase">
+				#user_rate_increase#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="active_user">
+				#active_user#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="active_user_total">
+				#active_user_total#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="active_increase">
+				#active_increase#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="active_rate_increase">
+				#active_rate_increase#
+			</isNotEmpty>
+			,now() )
+		</dynamic>
+	</insert>
+</sqlMap>

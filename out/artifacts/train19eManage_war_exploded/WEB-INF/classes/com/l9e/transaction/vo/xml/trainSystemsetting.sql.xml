@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="trainSystemsetting">
+	
+	
+	
+	<typeAlias alias="systemSetting" type="com.l9e.transaction.vo.SystemSettingVo"></typeAlias>
+	<!-- 查询系统设定 -->
+	<select id="querySystemSetting" resultClass="systemSetting">
+		SELECT * FROM train_system_setting where show_display = '0'  ORDER BY setting_id
+	</select> 
+	
+	<select id="getSystemSettingById" resultClass="systemSetting" parameterClass="java.lang.String">
+		select * from train_system_setting hc 
+		where hc.setting_id=#setting_id#
+	</select>
+	
+	<!-- 修改接口 -->
+	<update id="updateChannel" parameterClass="systemSetting">
+		update train_system_setting hc 
+		set 
+		<isNotEmpty prepend=" " property="setting_value">
+			hc.setting_value=#setting_value#
+		</isNotEmpty>
+		where hc.setting_name='INTERFACE_CHANNEL'
+	</update>
+	
+	<!-- 修改链接超时时间 -->
+	<update id="updateConTimeout" parameterClass="systemSetting">
+		update train_system_setting hc
+		set
+		<isNotEmpty prepend=" " property="setting_value">
+			hc.setting_value=#setting_value#
+		</isNotEmpty>
+		where hc.setting_name='INTERFACE_CON_TIMEOUT'
+	</update>
+	
+	<!-- 更改读超时时间 -->
+	<update id="updateReadTimeout" parameterClass="systemSetting">
+		update train_system_setting hc
+		set
+		<isNotEmpty prepend=" " property="setting_value">
+			hc.setting_value=#setting_value#
+		</isNotEmpty>
+		where hc.setting_name='INTERFACE_READ_TIMEOUT'
+	</update>
+	
+	<!-- 增加一个12306URL -->
+	<insert id="insertURL" parameterClass="systemSetting">
+		insert into train_system_setting (
+			setting_id,setting_name, setting_value, setting_status, setting_desc)
+		value(#setting_id#,#setting_name#,#setting_value#,#setting_status#,#setting_desc#)
+	</insert>
+	
+	<!-- 删除12306URL -->
+	<delete id="deleteURL" parameterClass="systemSetting">
+		delete from train_system_setting 
+		where setting_id=#setting_id#
+	</delete>
+	
+	<update id="updateURL" parameterClass="systemSetting">
+		update train_system_setting hc
+		set
+		<isNotEmpty prepend=" " property="setting_value">
+			hc.setting_value=#setting_value#
+		</isNotEmpty>
+		where hc.setting_id=#setting_id#
+	</update>
+	
+	<update id="changeURLStatus" parameterClass="systemSetting">
+		update train_system_setting hc 
+		set
+		<isNotEmpty prepend=" " property="setting_status">
+			hc.setting_status=#setting_status#
+		</isNotEmpty>
+		where hc.setting_id=#setting_id# 
+	</update>
+
+	<!-- 修改机器人支付控制 -->
+	<update id="updatePayCtrl" parameterClass="systemSetting">
+		update train_system_setting hc
+		set hc.setting_value=#setting_value#
+		where hc.setting_name='robot_pay_ctrl'
+		and hc.setting_id=#setting_id#
+	</update>
+	
+	<!-- 增加操作日志 -->
+	<insert id="addSystemLog" parameterClass="java.util.HashMap">
+		insert into train_system_log (
+			content,create_time, opt_person)
+		value(#content#,NOW(),#opt_person#)
+	</insert>
+	
+	<!-- 切换渠道 -->
+	<update id="updateChannels" parameterClass="systemSetting">
+		update train_system_setting hc set hc.setting_value=
+		#setting_value# where hc.setting_id=#setting_id#
+	</update>
+	
+	<!-- 切换渠道 -->
+	<update id="updateChannelsRh" parameterClass="systemSetting">
+		update rh_system hc set hc.code_channel=#setting_value# 
+	</update>
+	
+	<!-- 查询系统设置操作日志明细 -->
+	<select id="querySystemSetList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') create_time,opt_person,content FROM train_system_log
+		ORDER BY create_time DESC LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select> 
+	
+	<!-- 查询系统设置操作日志条数 -->
+	<select id="querySystemSetListCount" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM train_system_log ORDER BY create_time DESC
+	</select> 
+	
+	<!-- 根据setting_name得到setting_value -->
+	<select id="querySystemRefundAndAlert" resultClass="java.lang.String" parameterClass="java.lang.String">
+		SELECT setting_value FROM train_system_setting WHERE setting_name=#setting_name#
+	</select>
+	
+	
+	<!-- 查询返回日志 -->
+	<select id="querytrain_return_optlog" resultClass="java.util.HashMap">
+		SELECT return_id,return_name,return_value,return_type,return_status,return_join,return_ticket,return_active,return_fail_reason  FROM train_return_optlog 
+	</select> 
+	
+	<!-- 查询返回日志List -->
+	<select id="querytrain_return_optlogList" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		SELECT return_id,return_name,return_value,return_type,return_status,return_join,return_ticket,return_active,return_fail_reason  FROM train_return_optlog 
+	  	where 1=1 
+	  	<dynamic prepend="">
+			<isNotEmpty prepend="and"  property="return_name">
+				 return_name  like CONCAT('%',#return_name#,'%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="return_value">
+				 return_value  like CONCAT('%',#return_value#,'%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and"  property="return_type">
+				 return_type=#return_type#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="return_status">
+				 return_status=#return_status#
+			</isNotEmpty>
+			<isNotEmpty prepend="and"  property="return_join">
+				 return_join=#return_join#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="return_ticket">
+				 return_ticket=#return_ticket#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="return_active">
+				 return_active=#return_active#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="return_fail_reason">
+				 return_fail_reason=#return_fail_reason#
+			</isNotEmpty>
+		</dynamic>
+	  	
+	  	LIMIT #everyPagefrom:Integer#, #pageSize:Integer#
+	  	
+	</select> 
+	<!--  查询返回日志总数 -->
+	<select id="querytrain_return_optlogCount" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT count(1)  FROM train_return_optlog 
+	  	
+	</select>
+	
+	<!-- 修改返回日志 -->
+		<update id="updatetrain_return_optlog" parameterClass="java.util.HashMap">
+		update train_return_optlog 
+		<dynamic prepend="set">
+			<isNotEmpty prepend=","  property="return_name">
+				 return_name=#return_name#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="return_value">
+				 return_value=#return_value#
+			</isNotEmpty>
+			<isNotEmpty prepend=","  property="return_type">
+				 return_type=#return_type#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="return_status">
+				 return_status=#return_status#
+			</isNotEmpty>
+			<isNotEmpty prepend=","  property="return_join">
+				 return_join=#return_join#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="return_ticket">
+				 return_ticket=#return_ticket#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="return_active">
+				 return_active=#return_active#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="return_fail_reason">
+				 return_fail_reason=#return_fail_reason#
+			</isNotEmpty>
+		</dynamic>
+		where return_id=#return_id#
+	</update>
+	<!-- 增加返回日志 -->
+	<insert id="addtrain_return_optlog" parameterClass="java.util.HashMap">
+		INSERT INTO train_return_optlog
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="return_id">
+				 return_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="return_name">
+				 return_name
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="return_value">
+				 return_value
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="return_type">
+				 return_type
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="return_status">
+				 return_status
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="return_join">
+				 return_join
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="return_ticket">
+				 return_ticket
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="return_active">
+				 return_active
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="return_fail_reason">
+				 return_fail_reason
+			</isNotEmpty>
+	
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="return_id">
+				#return_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="return_name">
+				#return_name#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="return_value">
+				#return_value#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="return_type">
+				#return_type#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="return_status">
+				#return_status#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="return_join">
+				#return_join#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="return_ticket">
+				#return_ticket#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="return_active">
+				#return_active#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="return_fail_reason">
+				#return_fail_reason#
+			</isNotEmpty>
+			)
+		</dynamic>
+	</insert>
+	<!-- 查看编号是否存在 -->
+	<select id="queryreturn_optlogById" parameterClass="java.lang.String" 
+	resultClass="java.lang.String">
+	SELECT return_id FROM train_return_optlog  
+	WHERE return_id = #return_id#
+	</select>
+	<!-- 删除返回日志 -->
+	<delete id="deletetrain_return_optlog" parameterClass="java.util.HashMap">
+		delete from train_return_optlog 
+		where return_id=#return_id#
+	</delete>
+	
+	<!-- 增加系统设置 -->
+	<insert id="addSetting"  parameterClass="systemSetting">
+		INSERT INTO train_system_setting
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="setting_id">
+				 setting_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="setting_name">
+				 setting_name
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="setting_value">
+				 setting_value
+			</isNotEmpty>
+				 ,setting_status
+			<isNotEmpty prepend="," property="setting_desc">
+				 setting_desc
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="show_name">
+				 show_name
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="show_type">
+				 show_type
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="show_list">
+				 show_list
+			</isNotEmpty>
+	
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="setting_id">
+				#setting_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="setting_name">
+				 #setting_name#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="setting_value">
+				 #setting_value#
+			</isNotEmpty>
+				, 0
+			<isNotEmpty prepend="," property="setting_desc">
+				 #setting_desc#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="show_name">
+				 #show_name#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="show_type">
+				 #show_type#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="show_list">
+				 #show_list#
+			</isNotEmpty>
+			)
+		</dynamic>
+	</insert>
+	
+		<!-- 查询用户打码权重 -->
+	<select id="queryCodeInfo" resultClass="java.util.HashMap">
+		SELECT CONVERT(code01_weight, CHAR) code01_weight, CONVERT(code02_weight, CHAR) code02_weight, 
+		CONVERT(code03_weight, CHAR) code03_weight, CONVERT(code04_weight, CHAR) code04_weight
+		FROM rh_system
+	</select>
+	
+	<!-- 修改用户打码权重 -->
+	<update id="updateCodeInfo" parameterClass="java.util.HashMap">
+		UPDATE rh_system SET 
+		<isNotEmpty property="code01_weight">
+			code01_weight = #code01_weight#
+		</isNotEmpty> 
+		<isNotEmpty property="code02_weight">
+			,code02_weight = #code02_weight#
+		</isNotEmpty> 
+		<isNotEmpty property="code03_weight">
+			,code03_weight = #code03_weight#
+		</isNotEmpty> 
+		<isNotEmpty property="code04_weight">
+			,code04_weight = #code04_weight#
+		</isNotEmpty> 
+	</update>
+	
+</sqlMap>

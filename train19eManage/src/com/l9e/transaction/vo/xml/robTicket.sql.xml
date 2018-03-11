@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="robTicket">
+
+	<select id="queryRobList" parameterClass="Map" resultClass="HashMap">
+		SELECT
+		aa.order_id,
+		aa.ctrip_order_id,
+		aa.fromTo_zh,
+		aa.train_no,
+		aa.from_time,
+		aa.seat_type,
+		aa.seat_type_accept,
+		aa.pay_time,
+		aa.channel,
+		cp.buy_money,
+		cp.pay_money,
+		cp.buy_money_ext,
+		aa.leak_cut_offTime,
+		cp.OrderTicketPrice,
+		cp.cp_id,
+		aa.order_status,
+		cp.refund_status,
+		aa.create_time,
+		aa.out_ticket_time,
+		aa.refund_time,
+		aa.out_ticket_billno,
+		aa.opt_ren
+		FROM
+		jl_orderinfo aa left join
+		jl_orderinfo_cp cp ON aa.order_id =
+		cp.order_id
+		WHERE 1 = 1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				aa.order_id =
+				#order_id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="ctrip_order_id">
+				aa.ctrip_order_id =
+				#ctrip_order_id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				aa.create_time  <![CDATA[>]]>
+				#begin_info_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				aa.create_time  <![CDATA[<=]]>
+				#end_info_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="out_ticket_billno">
+				aa.out_ticket_billno
+				= #out_ticket_billno#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="orderStatusArr">
+				aa.order_status in
+				<iterate open="(" close=")" conjunction="," property="orderStatusArr">
+					#orderStatusArr[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="channelArr">
+				aa.channel in
+				<iterate open="(" close=")" conjunction="," property="channelArr">
+					#channelArr[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty property="page">
+				limit #page#,#pageSize#
+			</isNotEmpty>
+		</dynamic>
+
+	</select>
+	<select id="queryRobListCount" parameterClass="Map" resultClass="int">
+		SELECT
+		count(1)
+		FROM
+		jl_orderinfo aa left join jl_orderinfo_cp cp ON
+		aa.order_id = cp.order_id
+		WHERE 1 = 1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				aa.order_id =
+				#order_id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="ctrip_order_id">
+				aa.ctrip_order_id =
+				#ctrip_order_id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				aa.create_time  <![CDATA[>]]>
+				#begin_info_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				aa.create_time  <![CDATA[<=]]>
+				#end_info_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="out_ticket_billno">
+				aa.out_ticket_billno
+				= #out_ticket_billno#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="orderStatusArr">
+				aa.order_status in
+				<iterate open="(" close=")" conjunction="," property="orderStatusArr">
+					#orderStatusArr[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="channelArr">
+				aa.channel in
+				<iterate open="(" close=")" conjunction="," property="channelArr">
+					#channelArr[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+
+	<select id="queryHistory" parameterClass="Map" resultClass="HashMap">
+		select * from jl_orderinfo_history where order_id = #order_id#;
+	</select>
+
+	<select id="queryCP" parameterClass="Map" resultClass="HashMap">
+		SELECT
+		cp.cp_id,
+		oi.contact_person,
+		oi.contact_phone,
+		oi.out_ticket_billno,
+		case
+		when cp.ticket_type=0 then '1'
+		else '2'
+		end ticket_type,
+		cp.seat_no,
+		cp.user_name,
+		cp.cert_no,
+		oi.ctrip_order_id
+		FROM
+		hc_rob_orderinfo_cp cp
+		LEFT JOIN hc_rob_orderinfo oi ON cp.order_id =
+		oi.order_id
+		WHERE
+		cp_id =
+		#cp_id#;
+	</select>
+
+	<update id="updateFrontBackCP_Refund" parameterClass="HashMap">
+		UPDATE
+		jl_orderinfo_cp jl,
+		hc_rob_orderinfo_cp hc
+		SET jl.refund_status =
+		#status# ,hc.refund_status =#status#
+		where jl.cp_id = #cp_id# AND
+		hc.cp_id = #cp_id#
+	</update>
+
+	<!-- 插入jl_orderinfo_history表一条日志记录 -->
+	<insert id="insertJlOrderHistory" parameterClass="Map">
+		insert into jl_orderinfo_history
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="order_id">
+				order_id
+			</isNotNull>
+			<isNotNull prepend="," property="order_optlog">
+				order_optlog
+			</isNotNull>
+			<isNotNull prepend="," property="create_time">
+				create_time
+			</isNotNull>
+			<isNotNull prepend="," property="opter">
+				opter
+			</isNotNull>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="order_id">
+				#order_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="order_optlog">
+				#order_optlog:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="create_time">
+				now()
+			</isNotNull>
+			<isNotNull prepend="," property="opter">
+				#opter:VARCHAR#
+			</isNotNull>
+			)
+		</dynamic>
+	</insert>
+	<update id="updateJlOrderInfo" parameterClass="Map">
+		UPDATE
+		jl_orderinfo
+		<dynamic prepend="SET">
+			<isNotEmpty prepend="," property="orderStatus">
+				order_status =
+				#orderStatus:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="paySerialNumber">
+				pay_serial_number =
+				#paySerialNumber:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="optionTime">
+				option_time = NOW()
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_time">
+				pay_time = NOW()
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="channel">
+				channel = #channel#
+			</isNotEmpty>
+		</dynamic>
+		WHERE
+		order_id = #orderId:VARCHAR#
+	</update>
+
+	<select id="queryRobListForExcel" parameterClass="Map"
+		resultClass="HashMap">
+		SELECT
+		t1.order_id,
+		t1.ctrip_order_id,
+		t1.fromTo_zh,
+		t1.train_no,
+		t1.channel,
+		t1.order_status,
+		t1.out_ticket_time,
+		t1.out_ticket_billno,
+		t1.highest_ticket_price_all,
+		t1.real_total_price_all,
+		t1.t_count,
+		t1.service_price,
+		t2.refund_history,
+		t2.refund_total
+		FROM
+		(
+		SELECT
+		aa.order_id,
+		aa.ctrip_order_id,
+		aa.fromTo_zh,
+		aa.train_no,
+		aa.channel,
+		aa.order_status,
+		aa.out_ticket_time,
+		aa.out_ticket_billno,
+		SUM(cp.buy_money) AS highest_ticket_price_all,
+		SUM(cp.OrderTicketPrice) AS real_total_price_all,
+		SUM(cp.buy_money_ext) as service_price,
+		SUM(1) AS t_count
+		FROM
+		jl_orderinfo aa
+		LEFT JOIN jl_orderinfo_cp cp ON cp.order_id = aa.order_id
+		WHERE
+		1 = 1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				aa.order_id =
+				#order_id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="ctrip_order_id">
+				aa.ctrip_order_id =
+				#ctrip_order_id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				aa.out_ticket_time  <![CDATA[>]]>
+				#begin_info_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				aa.out_ticket_time  <![CDATA[<=]]>
+				#end_info_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="out_ticket_billno">
+				aa.out_ticket_billno
+				= #out_ticket_billno#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="orderStatusArr">
+				aa.order_status in
+				<iterate open="(" close=")" conjunction="," property="orderStatusArr">
+					#orderStatusArr[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="channelArr">
+				aa.channel in
+				<iterate open="(" close=")" conjunction="," property="channelArr">
+					#channelArr[]#
+				</iterate>
+			</isNotEmpty>
+
+		</dynamic>
+		GROUP BY
+		aa.order_id
+		) AS t1
+		LEFT JOIN (
+		SELECT
+		GROUP_CONCAT(re.refund_money SEPARATOR "|") as refund_history,
+		sum(re.refund_money)as refund_total,re.order_id
+		FROM
+		jl_ctrip_refund re
+		GROUP BY
+		order_id
+		) as t2 ON t1.order_id = t2.order_id
+	</select>
+
+</sqlMap>

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="mail">
+	<!-- 查询条数 -->
+	<select id="queryMailListCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM cp_orderinfo_mail cp WHERE 1=1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				cp.create_time<![CDATA[>=]]>#begin_info_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				cp.create_time<![CDATA[<]]>DATE_ADD(#end_info_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="address">
+				cp.address=#address:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="status">
+	         	  status in
+		          <iterate open="(" close=")" conjunction="," property="status">
+		            	#status[]:VARCHAR#
+		      	  </iterate>
+	      	 </isNotEmpty>
+	      	 <!-- 
+	      	 <isNotEmpty prepend=" and " property="is_open">
+	         	  is_open in
+		          <iterate open="(" close=")" conjunction="," property="is_open">
+		            	#is_open[]:VARCHAR#
+		      	  </iterate>
+	      	 </isNotEmpty>
+	      	  -->
+	      	   <isEqual property="mail_set" compareValue="-1">
+				and (1=2
+			   <isNotEmpty prepend=" or " property="mail_163">
+				 cp.address like '%@163.com%'
+			  </isNotEmpty>
+			   <isNotEmpty prepend=" or " property="mail_19trip">
+				 cp.address like '%@19trip.com%'
+			  </isNotEmpty>
+			   <isNotEmpty prepend=" or " property="mail_qita">
+				( cp.address not like '%@163.com%' and cp.address not like '%@19trip.com%')
+			  </isNotEmpty>)
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 查询列表 -->
+	<select id="queryMailList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT mail_id,address,pwd,status,create_time,opt_name,opt_time FROM cp_orderinfo_mail cp WHERE 1=1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				cp.create_time<![CDATA[>=]]>#begin_info_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				cp.create_time<![CDATA[<]]>DATE_ADD(#end_info_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="address">
+				cp.address=#address:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="status">
+	         	  status in
+		          <iterate open="(" close=")" conjunction="," property="status">
+		            	#status[]:VARCHAR#
+		      	  </iterate>
+	      	 </isNotEmpty>
+	      	 <!-- 
+	      	 <isNotEmpty prepend=" and " property="is_open">
+	         	  is_open in
+		          <iterate open="(" close=")" conjunction="," property="is_open">
+		            	#is_open[]:VARCHAR#
+		      	  </iterate>
+	      	 </isNotEmpty>
+	      	  -->
+	      	  <isEqual property="mail_set" compareValue="-1">
+				and (1=2
+			   <isNotEmpty prepend=" or " property="mail_163">
+				 cp.address like '%@163.com%'
+			  </isNotEmpty>
+			   <isNotEmpty prepend=" or " property="mail_19trip">
+				 cp.address like '%@19trip.com%'
+			  </isNotEmpty>
+			   <isNotEmpty prepend=" or " property="mail_qita">
+				( cp.address not like '%@163.com%' and cp.address not like '%@19trip.com%')
+			  </isNotEmpty>)
+			</isEqual>
+		</dynamic>
+		ORDER BY create_time DESC  LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select>
+	
+	<!-- 添加邮箱信息到cp_orderinfo_mail表中 -->
+	<insert id="addMail" parameterClass="java.util.HashMap">
+		INSERT INTO cp_orderinfo_mail
+		<dynamic prepend="(">
+			create_time,
+			<isNotEmpty prepend="," property="address">
+				address
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pwd">
+				pwd
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="status">
+				status
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_name">
+				opt_name
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_time">
+				opt_time
+			</isNotEmpty>
+			)
+		</dynamic>
+		 values
+		<dynamic prepend="(">
+			now(),
+			<isNotEmpty prepend="," property="address">
+				#address#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pwd">
+				#pwd#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="status">
+				#status#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_name">
+				#opt_name#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_time">
+				#opt_time#
+			</isNotEmpty>
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 根据id查询该条记录的信息详情 -->
+	<select id="queryMailModify" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT mail_id,address,pwd,status,create_time,opt_name,opt_time FROM cp_orderinfo_mail WHERE mail_id=#mail_id#
+	</select>
+	
+	<!-- 执行修改 -->
+	<update id="updateMail" parameterClass="java.util.HashMap">
+		UPDATE cp_orderinfo_mail 
+		<dynamic prepend="set">
+			opt_time=now(),
+			<isNotEmpty prepend="," property="address">
+				address=#address#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pwd">
+				pwd=#pwd#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_name">
+				opt_name=#opt_name#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="status">
+				status=#status#
+			</isNotEmpty>
+		</dynamic>
+		WHERE mail_id=#mail_id#
+	</update>
+	
+	<!-- 根据邮箱地址查询该邮箱是否存在 -->
+	<select id="queryMailAddress" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT DISTINCT address FROM cp_orderinfo_mail WHERE address=#address#
+	</select>
+	
+	
+	<!-- 导出 -->
+	<select id="queryMailExcel" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT mail_id,address,pwd,status,create_time,opt_name,opt_time FROM cp_orderinfo_mail cp WHERE 1=1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				cp.create_time<![CDATA[>=]]>#begin_info_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				cp.create_time<![CDATA[<]]>DATE_ADD(#end_info_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="address">
+				cp.address=#address:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="status">
+	         	  status in
+		          <iterate open="(" close=")" conjunction="," property="status">
+		            	#status[]:VARCHAR#
+		      	  </iterate>
+	      	 </isNotEmpty>
+	      	 <!-- 
+	      	 <isNotEmpty prepend=" and " property="is_open">
+	         	  is_open in
+		          <iterate open="(" close=")" conjunction="," property="is_open">
+		            	#is_open[]:VARCHAR#
+		      	  </iterate>
+	      	 </isNotEmpty>
+	      	  -->
+	      	  <isEqual property="mail_set" compareValue="-1">
+				and (1=2
+			   <isNotEmpty prepend=" or " property="mail_163">
+				 cp.address like '%@163.com%'
+			  </isNotEmpty>
+			   <isNotEmpty prepend=" or " property="mail_19trip">
+				 cp.address like '%@19trip.com%'
+			  </isNotEmpty>
+			   <isNotEmpty prepend=" or " property="mail_qita">
+				( cp.address not like '%@163.com%' and cp.address not like '%@19trip.com%')
+			  </isNotEmpty>)
+			</isEqual>
+		</dynamic>
+		ORDER BY create_time DESC 
+	</select>
+	
+</sqlMap>

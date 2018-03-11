@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="tj_Opter">
+	
+	<!-- 查询所有操作人 -->
+	<select id="queryAllOpter" resultClass="java.lang.String">
+		SELECT real_name FROM login_userinfo WHERE real_name IS NOT NULL AND user_level=1 AND user_IsOpen='0'
+	</select>
+	<!-- 查询当天统计数据 -->
+	<select id="queryCountTodayByName" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT count(tj_id) FROM tj_opter WHERE opt_person =#userName# AND tj_time=#tj_time#
+	</select>
+	
+	<!-- 添加统计数据 -->
+	<insert id="addNumTodayByName" parameterClass="java.util.HashMap">
+		INSERT INTO tj_opter
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="tj_id">
+				 tj_id
+			</isNotEmpty>
+			,create_time
+			<isNotEmpty prepend="," property="tj_time">
+				tj_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="userName">
+				opt_person
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="," property="channel">
+				<isEqual prepend=" " compareValue="19e" property="channel">
+				refund_total_19e
+				</isEqual>
+				<isEqual prepend=" " compareValue="qunar" property="channel">
+				refund_total_qunar
+				</isEqual>
+				<isEqual prepend=" " compareValue="inner" property="channel">
+				refund_total_inner
+				</isEqual>
+				<isEqual prepend=" " compareValue="elong" property="channel">
+				refund_total_elong
+				</isEqual>
+				<isEqual prepend=" " compareValue="tongcheng" property="channel">
+				refund_total_tongcheng
+				</isEqual>
+				<isEqual prepend=" " compareValue="ext" property="channel">
+				refund_total_ext
+				</isEqual>
+				<isEqual prepend=" " compareValue="app" property="channel">
+				refund_total_app
+				</isEqual>
+				<isEqual prepend=" " compareValue="meituan" property="channel">
+				refund_total_meituan
+				</isEqual>
+				<isEqual prepend=" " compareValue="gtgj" property="channel">
+				refund_total_gtgj
+				</isEqual>
+				<isEqual prepend=" " compareValue="tuniu" property="channel">
+				refund_total_tuniu
+				</isEqual>
+				<isEqual prepend=" " compareValue="ctrip" property="channel">
+				refund_total_ctrip
+				</isEqual>
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="," property="all">
+				<isEqual prepend=" " compareValue="out_ticket" property="all">
+				out_ticket_total
+				</isEqual>
+				<isEqual prepend=" " compareValue="refund" property="all">
+				refund_total
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="type">
+				<isEqual prepend=" " compareValue="differ" property="type">
+				refund_total_differ
+				</isEqual>
+				<isEqual prepend=" " compareValue="failure" property="type">
+				refund_total_failure
+				</isEqual>
+				<isEqual prepend=" " compareValue="verify" property="type">
+				refund_total_verify 
+				</isEqual>
+				<isEqual prepend=" " compareValue="refuse" property="type">
+				refund_total_refuse
+				</isEqual>
+				<isEqual prepend=" " compareValue="holdon" property="type">
+				refund_total_holdon
+				</isEqual>
+			</isNotEmpty>
+			)
+		</dynamic>
+		 values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="tj_id">
+				 #tj_id#
+			</isNotEmpty>
+				,NOW()
+			<isNotEmpty prepend="," property="tj_time">
+				#tj_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="userName">
+				#userName#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="channel">
+				1
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="all">
+				1
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="type">
+				1
+			</isNotEmpty>
+			)
+		</dynamic>
+	</insert>
+	
+	
+	<!-- 修改统计数据 -->
+	<update id="updateNumTodayByName" parameterClass="java.util.HashMap">
+		update tj_opter 
+		<dynamic prepend="set"> 
+			<isNotEmpty prepend="," property="channel">
+				<isEqual prepend=" " compareValue="19e" property="channel">
+				refund_total_19e = refund_total_19e+1
+				</isEqual>
+				<isEqual prepend=" " compareValue="qunar" property="channel">
+				refund_total_qunar = refund_total_qunar+1
+				</isEqual>
+				<isEqual prepend=" " compareValue="inner" property="channel">
+				refund_total_inner = refund_total_inner+1
+				</isEqual>
+				<isEqual prepend=" " compareValue="elong" property="channel">
+				refund_total_elong = refund_total_elong+1
+				</isEqual>
+				<isEqual prepend=" " compareValue="tongcheng" property="channel">
+				refund_total_tongcheng = refund_total_tongcheng+1
+				</isEqual>
+				<isEqual prepend=" " compareValue="ext" property="channel">
+				refund_total_ext = refund_total_ext+1
+				</isEqual>
+				<isEqual prepend=" " compareValue="app" property="channel">
+				refund_total_app = refund_total_app+1
+				</isEqual>
+				<isEqual prepend=" " compareValue="meituan" property="channel">
+				refund_total_meituan = refund_total_meituan+1
+				</isEqual>
+				<isEqual prepend=" " compareValue="gtgj" property="channel">
+				refund_total_gtgj = refund_total_gtgj+1
+				</isEqual>
+				<isEqual prepend=" " compareValue="tuniu" property="channel">
+				refund_total_tuniu = refund_total_tuniu+1
+				</isEqual>
+				<isEqual prepend=" " compareValue="ctrip" property="channel">
+				refund_total_ctrip = refund_total_ctrip+1
+				</isEqual>
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="," property="all">
+				<isEqual prepend=" " compareValue="out_ticket" property="all">
+				out_ticket_total = out_ticket_total +1
+				</isEqual>
+				<isEqual prepend=" " compareValue="refund" property="all">
+				refund_total = refund_total+1
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="type">
+				<isEqual prepend=" " compareValue="differ" property="type">
+				refund_total_differ = refund_total_differ+1
+				</isEqual>
+				<isEqual prepend=" " compareValue="failure" property="type">
+				refund_total_failure = refund_total_failure+1
+				</isEqual>
+				<isEqual prepend=" " compareValue="verify" property="type">
+				refund_total_verify = refund_total_verify+1
+				</isEqual>
+				<isEqual prepend=" " compareValue="refuse" property="type">
+				refund_total_refuse = refund_total_refuse+1
+				</isEqual>
+				<isEqual prepend=" " compareValue="holdon" property="type">
+				refund_total_holdon = refund_total_holdon+1
+				</isEqual>
+			</isNotEmpty>
+		</dynamic>
+		where DATE_FORMAT(tj_time,'%Y-%m-%d')=#tj_time# and opt_person=#userName#
+	</update>
+	
+</sqlMap>

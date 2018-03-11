@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="checkprice">
+	
+	<!-- 插入支付宝明细 -->
+	<insert id="addAlipayInfo" parameterClass="java.util.HashMap">
+		INSERT INTO check_price_alipayinfo 
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="bank_pay_seq">
+				 bank_pay_seq
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_time">
+				 pay_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_money">
+				 refund_money
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_money">
+				 pay_money
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alipay_type">
+				 alipay_type
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alipay_id">
+				 alipay_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_person">
+				 opt_person
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="check_seq">
+				 check_seq
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				 create_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="add_status">
+				 add_status
+			</isNotEmpty>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="bank_pay_seq">
+				 #bank_pay_seq#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_time">
+				 #pay_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_money">
+				 #refund_money#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_money">
+				 #pay_money#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alipay_type">
+				 #alipay_type#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alipay_id">
+				 #alipay_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_person">
+				 #opt_person#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="check_seq">
+				 #check_seq#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				 now()
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="add_status">
+				 #add_status#
+			</isNotEmpty>
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 插入支付宝明细列表
+	<insert id="addAlipayInfoList" parameterClass="java.util.List">
+		
+		INSERT INTO check_price_alipayinfo 
+		(
+				 bank_pay_seq,
+				 pay_time,
+				 refund_money,
+				 pay_money,
+				 alipay_type,
+				 alipay_id,
+				 opt_person,
+				 check_seq,
+				 create_time
+		)
+		VALUES
+		<iterate conjunction ="," >
+		(
+        #list[].bank_pay_seq:VARCHAR #,
+        #list[].pay_time:VARCHAR #,
+        #list[].refund_money:VARCHAR #,
+        #list[].pay_money:VARCHAR #,
+        #list[].alipay_type:VARCHAR #,
+        #list[].alipay_id:VARCHAR #,
+        #list[].opt_person:VARCHAR #,
+        #list[].check_seq:VARCHAR #,
+        now()
+    	)
+    	</iterate>
+	</insert> -->
+
+	<!-- 插入支付宝余额 -->
+	<insert id="addAlipayBalance" parameterClass="java.util.HashMap">
+		INSERT INTO alipay_perday_account_balance 
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="pay_time">
+				 pay_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alipay_id">
+				 alipay_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="account_balance">
+				 account_balance
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				 create_time
+			</isNotEmpty>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="pay_time">
+				 #pay_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alipay_id">
+				 #alipay_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="account_balance">
+				 #account_balance#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				 now()
+			</isNotEmpty>
+			)
+		</dynamic>
+	</insert>
+
+	<!-- 查询支付宝明细表流水号是否已存在 -->
+	<select id="queryAlipayCounts" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		select count(1) from check_price_alipayinfo where bank_pay_seq = #bank_pay_seq:varchar# AND alipay_type =#alipay_type:varchar#
+	</select>
+
+	<!-- 查询出票订单 -->
+	<select id="queryOutTicketList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		 co.check_id,
+		 co.order_id,
+		 co.bank_pay_seq,
+		 co.out_ticket_time,
+		 ca.alipay_id,
+		 co.out_ticket_price,
+		 ca.pay_money,
+		 ca.pay_time,
+		 co.ticket_type,
+		 co.opt_person, 
+		 co.channel
+		 FROM  check_price_orderinfo co 
+		 LEFT JOIN  check_price_alipayinfo ca ON co.bank_pay_seq = ca.bank_pay_seq 
+		 WHERE 1=1 
+		<isNotEmpty prepend=" and " property="order_id">
+			co.order_id =#order_id:varchar#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="channel">
+				co.channel in
+				<iterate open="(" close=")" conjunction=","
+					property="channel">
+					#channel[]:VARCHAR#
+				</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="query_type">
+			co.ticket_type =#query_type:varchar#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="begin_info_time">
+			co.create_time<![CDATA[>=]]>DATE_FORMAT(#begin_info_time#,'%Y-%m-%d %H:%i:%s')
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_info_time">
+			co.create_time<![CDATA[<]]>DATE_ADD(DATE_FORMAT(#end_info_time#,'%Y-%m-%d %H:%i:%s'),INTERVAL 1 DAY)
+		</isNotEmpty>
+		<isEqual property="check_status" compareValue="C1">
+		  and ca.add_status is not null AND ca.alipay_type ='11'
+		  AND  co.out_ticket_price =  ca.pay_money
+		</isEqual>
+		<isEqual property="check_status" compareValue="C2">
+		  and (ca.add_status is null or (co.out_ticket_price <![CDATA[<>]]> ca.pay_money AND ca.alipay_type ='11'))
+		</isEqual>	
+		ORDER BY co.create_time  LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select>
+	
+	<!-- 查询出票订单总数 -->
+	<select id="queryOutTicketCounts" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  count(1) 
+		FROM  check_price_orderinfo co 
+		LEFT JOIN  check_price_alipayinfo ca ON co.bank_pay_seq = ca.bank_pay_seq 
+		WHERE 1=1 
+		<isNotEmpty prepend=" and " property="order_id">
+			co.order_id =#order_id:varchar#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="channel">
+				co.channel in
+				<iterate open="(" close=")" conjunction=","
+					property="channel">
+					#channel[]:VARCHAR#
+				</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="query_type">
+			co.ticket_type =#query_type:varchar#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="begin_info_time">
+			co.create_time<![CDATA[>=]]>DATE_FORMAT(#begin_info_time#,'%Y-%m-%d %H:%i:%s')
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_info_time">
+			co.create_time<![CDATA[<]]>DATE_ADD(DATE_FORMAT(#end_info_time#,'%Y-%m-%d %H:%i:%s'),INTERVAL 1 DAY)
+		</isNotEmpty>
+		<isEqual property="check_status" compareValue="C1">
+		  and ca.add_status is not null AND ca.alipay_type ='11'
+		  AND  co.out_ticket_price =  ca.pay_money
+		</isEqual>
+		<isEqual property="check_status" compareValue="C2">
+		  and (ca.add_status is null or (co.out_ticket_price <![CDATA[<>]]> ca.pay_money AND ca.alipay_type ='11'))
+		</isEqual>	
+	</select>
+	
+	<!-- 查询支付宝每日余额总数 -->
+	<select id="queryAlipayBalanceCounts" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  count(1) 
+		FROM  alipay_perday_account_balance  
+		WHERE 1=1 
+		<isNotEmpty prepend=" and " property="alipay_id">
+			alipay_id =#alipay_id:varchar#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="begin_info_time">
+			pay_time<![CDATA[>=]]>DATE_FORMAT(#begin_info_time#,'%Y-%m-%d')
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_info_time">
+			pay_time<![CDATA[<]]>DATE_ADD(DATE_FORMAT(#end_info_time#,'%Y-%m-%d'),INTERVAL 1 DAY)
+		</isNotEmpty>
+	</select>
+	
+	<!-- 查询支付宝每日余额 -->
+	<select id="queryAlipayBalanceList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		 pay_time,
+		 alipay_id,
+		 account_balance
+		 FROM  alipay_perday_account_balance 
+		 WHERE 1=1 
+		<isNotEmpty prepend=" and " property="begin_info_time">
+			pay_time<![CDATA[>=]]>DATE_FORMAT(#begin_info_time#,'%Y-%m-%d')
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_info_time">
+			pay_time<![CDATA[<]]>DATE_ADD(DATE_FORMAT(#end_info_time#,'%Y-%m-%d'),INTERVAL 1 DAY)
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="alipay_id">
+			alipay_id =#alipay_id:varchar#
+		</isNotEmpty>
+		ORDER BY check_id  LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select>
+	
+	<!-- 导出支付宝每日余额 -->
+	<select id="queryOutAlipayBalanceExcel" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		 pay_time,
+		 alipay_id,
+		 account_balance
+		 FROM  alipay_perday_account_balance 
+		 WHERE 1=1 
+		<isNotEmpty prepend=" and " property="begin_info_time">
+			pay_time<![CDATA[>=]]>DATE_FORMAT(#begin_info_time#,'%Y-%m-%d')
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_info_time">
+			pay_time<![CDATA[<]]>DATE_ADD(DATE_FORMAT(#end_info_time#,'%Y-%m-%d'),INTERVAL 1 DAY)
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="alipay_id">
+			alipay_id =#alipay_id:varchar#
+		</isNotEmpty>
+		ORDER BY check_id
+	</select>
+	
+	
+	
+	<!-- 出票订单Excel -->
+	<select id="queryOutTicketExcel" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  co.order_id,
+		  co.bank_pay_seq,
+		  co.out_ticket_time as ticket_time,
+		  ca.alipay_id,
+		  co.out_ticket_price AS money,
+		  ca.pay_money AS alipay_money,
+		  ca.pay_time as alipay_time,
+		  co.ticket_type,
+		  co.opt_person, 
+		  co.channel
+		 FROM  check_price_orderinfo co 
+		 LEFT JOIN  check_price_alipayinfo ca ON co.bank_pay_seq = ca.bank_pay_seq 
+		 WHERE 1=1 
+		<isNotEmpty prepend=" and " property="order_id">
+			co.order_id =#order_id:varchar#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="channel">
+				co.channel in
+				<iterate open="(" close=")" conjunction=","
+					property="channel">
+					#channel[]:VARCHAR#
+				</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="query_type">
+			co.ticket_type =#query_type:varchar#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="begin_info_time">
+			co.create_time<![CDATA[>=]]>DATE_FORMAT(#begin_info_time#,'%Y-%m-%d %H:%i:%s')
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_info_time">
+			co.create_time<![CDATA[<]]>DATE_ADD(DATE_FORMAT(#end_info_time#,'%Y-%m-%d %H:%i:%s'),INTERVAL 1 DAY)
+		</isNotEmpty>
+		<isEqual property="check_status" compareValue="C1">
+		  and ca.add_status is not null AND ca.alipay_type ='11'
+		  AND  co.out_ticket_price =  ca.pay_money
+		</isEqual>
+		<isEqual property="check_status" compareValue="C2">
+		  and (ca.add_status is null or (co.out_ticket_price <![CDATA[<>]]> ca.pay_money AND ca.alipay_type ='11'))
+		</isEqual>
+	</select>
+	
+	<!-- 修改流水号 -->
+	<update id="updateSeqById" parameterClass="java.util.HashMap">
+		update check_price_orderinfo set bank_pay_seq =#bank_pay_seq#,opt_person=#opt_person#,option_time=now() where order_id=#order_id# and ticket_type=#ticket_type#
+	</update>
+	
+	<!-- 修改表状态 -->
+	<update id="updateTicketById" parameterClass="java.util.HashMap">
+		update check_price_orderinfo set ticket_type =#ticket_type#,opt_person=#opt_person#,option_time=now()
+		 where check_id=#check_id:Integer# 
+	</update>
+	
+	
+	<!-- 导出支付宝列表 -->
+	<select id="queryAlipayExcel" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  ca.check_id,
+		  ca.bank_pay_seq,
+		  ca.pay_money,
+		  ca.refund_money,
+		  ca.pay_money,
+		  DATE_FORMAT(ca.pay_time,'%Y-%m-%d %H:%i:%s') AS pay_time,
+		  ca.alipay_type,
+		  ca.alipay_id,
+		  ca.opt_person,
+		  co.order_id, 
+		  co.channel
+		FROM  check_price_alipayinfo ca LEFT JOIN check_price_orderinfo co ON co.bank_pay_seq = ca.bank_pay_seq 
+		WHERE ca.alipay_type =#query_type:varchar# AND co.order_id IS NULL
+		<isNotEmpty prepend=" and " property="begin_info_time">
+			ca.create_time<![CDATA[>=]]>DATE_FORMAT(#begin_info_time#,'%Y-%m-%d %H:%i:%s')
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_info_time">
+			ca.create_time<![CDATA[<]]>DATE_ADD(DATE_FORMAT(#end_info_time#,'%Y-%m-%d %H:%i:%s'),INTERVAL 1 DAY)
+		</isNotEmpty>
+		ORDER BY ca.create_time
+	</select>
+	
+	<!-- 修改流水号 -->
+	<update id="updateOrderInfo" parameterClass="java.util.HashMap">
+		update check_price_orderinfo set bank_pay_seq =#bank_pay_seq#,opt_person=#opt_person#,option_time=now() where order_id=#order_id# and ticket_type=#ticket_type#
+	</update>
+	
+	
+	<!-- 查询退票订单 -->
+	<select id="queryRefundTicketList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		 co.check_id,
+		  ca.bank_pay_seq,
+		  co.order_id,
+		  IFNULL(co.refund_price,0) as refund_price,
+		  ca.create_time,
+		  (select IFNULL(SUM(refund_money),0) from check_price_alipayinfo where bank_pay_seq = ca.bank_pay_seq ) as refund_money,
+		  co.opt_person, 
+		  co.channel
+		FROM check_price_alipayinfo ca 
+		LEFT JOIN check_price_orderinfo co ON ca.bank_pay_seq = co.bank_pay_seq
+		WHERE alipay_type ='22'
+		<isNotEmpty prepend=" and " property="order_id">
+			co.order_id =#order_id:varchar#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="channel">
+				co.channel in
+				<iterate open="(" close=")" conjunction=","
+					property="channel">
+					#channel[]:VARCHAR#
+				</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="begin_info_time">
+			ca.create_time<![CDATA[>=]]>DATE_FORMAT(#begin_info_time#,'%Y-%m-%d %H:%i:%s')
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_info_time">
+			ca.create_time<![CDATA[<]]>DATE_ADD(DATE_FORMAT(#end_info_time#,'%Y-%m-%d %H:%i:%s'),INTERVAL 1 DAY)
+		</isNotEmpty>
+		<isEqual property="check_status" compareValue="T1">
+			 and IFNULL(co.refund_price,0) = (select IFNULL(SUM(refund_money),0) from check_price_alipayinfo where bank_pay_seq = ca.bank_pay_seq )
+		</isEqual>
+		<isEqual property="check_status" compareValue="T2">
+			 and IFNULL(co.refund_price,0) <![CDATA[>]]> (select IFNULL(SUM(refund_money),0) from check_price_alipayinfo where bank_pay_seq = ca.bank_pay_seq )
+		</isEqual>
+		<isEqual property="check_status" compareValue="T3">
+			 and IFNULL(co.refund_price,0) <![CDATA[<]]> (select IFNULL(SUM(refund_money),0) from check_price_alipayinfo where bank_pay_seq = ca.bank_pay_seq )
+		</isEqual>
+		GROUP BY ca.bank_pay_seq
+		ORDER BY ca.create_time  LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select>
+	
+	<!-- 查询退票订单总数 -->
+	<select id="queryRefundTicketCounts" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  count(1)
+		FROM (
+		SELECT count(1) FROM check_price_alipayinfo ca 
+		LEFT JOIN check_price_orderinfo co ON ca.bank_pay_seq = co.bank_pay_seq
+		WHERE alipay_type ='22'
+		<isNotEmpty prepend=" and " property="order_id">
+			co.order_id =#order_id:varchar#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="channel">
+				co.channel in
+				<iterate open="(" close=")" conjunction=","
+					property="channel">
+					#channel[]:VARCHAR#
+				</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="begin_info_time">
+			ca.create_time<![CDATA[>=]]>DATE_FORMAT(#begin_info_time#,'%Y-%m-%d %H:%i:%s')
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_info_time">
+			ca.create_time<![CDATA[<]]>DATE_ADD(DATE_FORMAT(#end_info_time#,'%Y-%m-%d %H:%i:%s'),INTERVAL 1 DAY)
+		</isNotEmpty>
+		<isEqual property="check_status" compareValue="T1">
+			 and IFNULL(co.refund_price,0)  = (select IFNULL(SUM(refund_money),0) from check_price_alipayinfo where bank_pay_seq = ca.bank_pay_seq )
+		</isEqual>
+		<isEqual property="check_status" compareValue="T2">
+			 and IFNULL(co.refund_price,0)  <![CDATA[>]]> (select IFNULL(SUM(refund_money),0) from check_price_alipayinfo where bank_pay_seq = ca.bank_pay_seq )
+		</isEqual>
+		<isEqual property="check_status" compareValue="T3">
+			 and IFNULL(co.refund_price,0)  <![CDATA[<]]> (select IFNULL(SUM(refund_money),0) from check_price_alipayinfo where bank_pay_seq = ca.bank_pay_seq )
+		</isEqual>
+		GROUP BY ca.bank_pay_seq)AS temp
+	</select>
+	
+	<!-- 退票订单Excel -->
+	<select id="queryRefundTicketExcel" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  ca.bank_pay_seq,
+		  co.order_id,
+		  IFNULL(co.refund_price,0) as refund_price,
+		   ca.create_time,ca.alipay_id,DATE_FORMAT(ca.pay_time,'%Y-%m-%d %H:%i:%s') AS alipay_time,
+		  (select IFNULL(SUM(refund_money),0) from check_price_alipayinfo where bank_pay_seq = ca.bank_pay_seq ) as refund_money,
+		  co.opt_person, 
+		  co.channel
+		FROM check_price_alipayinfo ca 
+		LEFT JOIN check_price_orderinfo co ON ca.bank_pay_seq = co.bank_pay_seq
+		WHERE alipay_type ='22'
+		<isNotEmpty prepend=" and " property="order_id">
+			co.order_id =#order_id:varchar#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="channel">
+				co.channel in
+				<iterate open="(" close=")" conjunction=","
+					property="channel">
+					#channel[]:VARCHAR#
+				</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="begin_info_time">
+			ca.create_time<![CDATA[>=]]>DATE_FORMAT(#begin_info_time#,'%Y-%m-%d %H:%i:%s')
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_info_time">
+			ca.create_time<![CDATA[<]]>DATE_ADD(DATE_FORMAT(#end_info_time#,'%Y-%m-%d %H:%i:%s'),INTERVAL 1 DAY)
+		</isNotEmpty>
+		<isEqual property="check_status" compareValue="T1">
+			 and IFNULL(co.refund_price,0)  = (select IFNULL(SUM(refund_money),0) from check_price_alipayinfo where bank_pay_seq = ca.bank_pay_seq )
+		</isEqual>
+		<isEqual property="check_status" compareValue="T2">
+			 and IFNULL(co.refund_price,0)  <![CDATA[>]]> (select IFNULL(SUM(refund_money),0) from check_price_alipayinfo where bank_pay_seq = ca.bank_pay_seq )
+		</isEqual>
+		<isEqual property="check_status" compareValue="T3">
+			 and IFNULL(co.refund_price,0)  <![CDATA[<]]> (select IFNULL(SUM(refund_money),0) from check_price_alipayinfo where bank_pay_seq = ca.bank_pay_seq )
+		</isEqual>
+		GROUP BY ca.bank_pay_seq
+		ORDER BY ca.create_time 
+	</select>
+	
+	
+	<!-- 查询待更新的退款订单列表 -->
+	<select id="queryNeedRefund" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  co.order_id,co.channel
+		FROM check_price_alipayinfo ca 
+		LEFT JOIN check_price_orderinfo co ON ca.bank_pay_seq = co.bank_pay_seq
+		WHERE alipay_type ='22' and co.order_id is not null and co.channel is not null 
+			 and IFNULL(co.refund_price,0) 
+			  <![CDATA[<>]]> (select IFNULL(SUM(refund_money),0) from check_price_alipayinfo where bank_pay_seq = ca.bank_pay_seq )
+		GROUP BY ca.bank_pay_seq
+	</select>
+	
+	<!-- 修改退款金额 -->
+	<update id="updateRefundPrice" parameterClass="java.util.HashMap">
+		update check_price_orderinfo set refund_price =#refund_price#,opt_person=#opt_person#,option_time=now() 
+		where order_id=#order_id# 
+	</update>
+	
+	<!-- 查询退款金额 -->
+	<select id="queryl9eRefund" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT SUM(refund_money) FROM hc_orderinfo_refundstream WHERE order_id =#order_id# AND refund_status ='44'  AND refund_type!='2'
+	</select>
+	<select id="queryElongRefund" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT SUM(refund_money) FROM elong_orderinfo_refundstream WHERE order_id =#order_id# AND refund_status ='11'
+	</select>
+	<select id="queryGtRefund" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT SUM(refund_money) FROM gt_orderinfo_refundstream WHERE order_id =#order_id# AND refund_status ='33'
+	</select>
+	<select id="queryExtRefund" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT SUM(refund_money) FROM ext_orderinfo_refundstream WHERE order_id =#order_id# AND refund_status IN ('11','33') AND refund_type!='4'
+	</select>
+	<select id="queryXcRefund" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT SUM(refund_money) FROM xc_orderinfo_refundstream WHERE order_id =#order_id# AND refund_status ='33'
+	</select>
+	<select id="queryMtRefund" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT SUM(refund_money) FROM mt_orderinfo_refundstream WHERE order_id =#order_id# AND refund_status ='11'
+	</select>
+	<select id="queryTuniuRefund" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT SUM(refund_money) FROM tuniu_orderinfo_refund WHERE order_id =#order_id# AND refund_status ='11'
+	</select>
+	<select id="queryQunarRefund" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT SUM(refund_money) FROM qunar_orderinfo_refund WHERE order_id =#order_id# AND refund_status ='11'
+	</select>
+	<select id="queryInnerRefund" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT SUM(refund_money) FROM inner_orderinfo_refundstream WHERE order_id =#order_id# AND refund_status ='44'
+	</select>
+	<select id="queryAppRefund" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT SUM(refund_money) FROM app_orderinfo_refundstream WHERE order_id =#order_id# AND refund_status IN ('11','33')
+	</select>
+	<!-- 查询上传的支付宝 -->
+	<select id="selectAlipay" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		select distinct(alipay_id) from check_price_alipayinfo where <![CDATA[create_time>=#date# and create_time<=CONCAT(#date#,'23:59:59')]]>and alipay_id like CONCAT(#alipaySort#,'%') 
+	</select>
+	
+</sqlMap>

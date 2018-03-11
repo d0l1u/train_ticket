@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="common">
+
+	<!-- 查询代理商ID -->
+	<select id="getUser" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+		select u.User from user u where u.Host=#value#
+	</select>
+	
+	<select id="getProvince" resultClass="com.l9e.transaction.vo.AreaVo">
+		SELECT area_no, area_name FROM gen_area where area_rank=1 order by area_id asc
+	</select>
+	
+	<select id="getCity" parameterClass="java.lang.String" resultClass="com.l9e.transaction.vo.AreaVo">
+		SELECT area_no, area_name FROM gen_area where area_rank=2 and area_parentno=#provinceid# order by area_id asc
+	</select>
+	
+	<select id="getArea"  parameterClass="java.lang.String" resultClass="com.l9e.transaction.vo.AreaVo">
+		SELECT area_no, area_name FROM gen_area  where area_rank=3 and area_parentno=#cityid# order by area_id asc
+	</select>
+
+</sqlMap>

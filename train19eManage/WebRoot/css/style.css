@@ -1,0 +1,297 @@
+﻿@charset "utf-8";
+/* CSS Document */
+body,ul,li,p,h2,h3,h4,h5,dl,dt,dd,table,tr,td,option,textarea,span,button,img{margin:0;padding:0;border:0;font-size:12px;font-family:"宋体";}
+body{color:#555;}
+li{list-style:none;}
+table{border-collapse:collapse;border-spacing:0;}
+a{text-decoration:none;}
+input,select{font-size:12px;}
+textarea{resize:none;overflow-y:hidden;}
+.oz{overflow:hidden;zoom:1;}
+.spacer{content:".";height:0;clear:both;visibility:hidden;font-size:0;line-height:0;}
+*:focus{outline:none;}
+
+.content{margin:0 auto 20px;width:920px;position:relative;/*float:right;*/}
+.content1{margin:0 auto 20px;width:716px;position:relative;}
+.btn,.btn1,.btn2{border:0;cursor:pointer;text-align:center;}
+
+button{cursor:pointer;}
+h2{height:35px;}
+h2 span{float:left;display:block;height:35px;}
+.nav_left_bg{background:url(../images/nav_left_bg.png) no-repeat;width:5px;}
+.nav_mid_bg{background:url(../images/nav_mid_bg.png) repeat-x;color:#333;line-height:36px;width:682px;padding-left:4px ;}
+.nav_right_bg{background:url(../images/nav_right_bg.png) no-repeat;width:5px;}
+/**预订页 start**/
+/*左边内容 start*/
+.content .left_con{float:left;width:716px;}
+.nav{height:36px;border-bottom:1px solid #50aad2;}
+.nav li{line-height:36px;float:left;width:100px;text-align:center;background:url(../images/sprites.png) no-repeat 0 -42px ;margin-right:2px;}
+.nav li a:link,.nav li a:visited{display:block;width:100px;height:36px;color:#0088cc;font:bold 14px/36px "宋体";}
+.nav li a:hover{text-decoration:underline;}
+.nav li.current{background:url(../images/sprites.png) no-repeat 0 0;}
+.nav li.current a:link,.nav li.current a:visited{color:#fff;}
+.ser_tab{width:694px;border:1px solid #dadada;border-top-width:2px;margin:10px auto;}
+.ser_tab .tab{float:left;}
+.ser_tab .tab li{color:#07679c;text-align:center;background:url(../images/sprites.png) no-repeat -109px -89px;width:108px;height:35px;border:1px solid #dadada;border-width:1px 1px 0px 0;line-height:35px;}
+.ser_tab .tab li.current{color:#f60;font:bold 12px/35px "宋体";background:none;border-left:2px solid #f90;border-width:0 0 0 2px;}
+.ser_tab .tab li.no_border{border-bottom-width:0;}
+.ser_tab .tab_list{width:583px;float:right;}
+.ser_tab table{width:366px;margin:4px 0 0 4px;float:left;}
+.ser_tab .text{width:93px;height:21px;line-height:23px;padding-left:5px;border:1px solid #dadada;color:#555;}
+.ser_tab th{text-align:right;font-weight:normal;padding-right:10px; width:100px;white-space:nowrap;}
+.ser_tab tr{height:30px;vertical-align:middle;}
+.ser_tab .btn{width:100px;height:38px;background:url(../images/sprites.png) no-repeat -109px 0;cursor:pointer;}
+.notice{margin:4px 0 0 14px;width:186px;background:url(../images/line_bg.png) no-repeat left center;float:left;}
+ .notice h3{font:bold 14px/30px "宋体";color:#333;text-align:center;}
+ .notice li{margin-left:28px;padding-left:12px;background:url(../images/li_dot.png) no-repeat left center;line-height:20px;}
+ .notice a:link,.notice a:visited{color:#333;}
+ .notice a:hover{color:#f60;}
+.ser_term{width:696px;margin:0 auto;}
+/*.ser_term .nav_mid_bg{width:682px;}*/
+.ser_term h2{font-weight:normal;font-size:12px;}
+.ser_term h2 strong{color:#1996cc;padding:0 3px;font-size:14px;}
+.ser_term h2 .amount{float:right;padding-right:4px;}
+.ser_termt h2 .amount strong{color:#f00;}
+.ser_term .box{border:1px solid #dadada;}
+/*搜索条件 start*/
+.sel_checkbox{ width:664px;/*height: 90px;*/ margin:5px;padding:5px 10px; color:#666;overflow:hidden; font-family: Arial,SimSun;}
+.sel_checkbox li,.sel_checkbox2 li{ width:100%;height:20px;float:left;margin:5px 0; }
+.sel_checkbox li strong,.sel_checkbox2 li strong{float: left; line-height: 20px;}
+.sel_checkbox li input ,.sel_checkbox2 li input{margin-left:5px; float: left;}
+.sel_checkbox li label ,.sel_checkbox2 li label{float: left;line-height: 20px; font-family: simsun}
+.sel_checkbox .choose_all,.sel_checkbox2 .choose_all{background:#8EA6D4;color: #fff;width:30px;height:17px;overflow: hidden;cursor: pointer;line-height: 17px;*line-height: 18px;text-align: center;margin-left:5px;*margin-left:0;border-radius:5px;-webkit-border-radius: 5px;-moz-border-radius: 5px;}
+span.xianshi_box,span.shouhui_box{float: right;width:75px;height: 22px;cursor: pointer;line-height: 22px;padding-right:15px;font-weight:normal;color:#005bac; cursor: pointer; text-align: right;}
+
+.xianshi_box{background: url(../images/s_img201203.gif) no-repeat 82px -92px;}
+.shouhui_box{background: url(../images/s_img201203.gif) no-repeat 82px -114px;}
+
+/*搜索条件 end*/
+/*搜索结果显示 start*/
+/*.ser_result h3{background:url(../images/nav_bg.jpg) repeat-x;height:35px;line-height:35px;border:1px solid #dadada;border-width:1px 0;}*/
+.ser_result{border:1px solid #dadada;border-top-width:0;width:694px;margin:0 auto;}
+.ser_result table{width:694px;color:#333;}
+.ser_result td{padding:3px 0 3px 10px ;text-align:center;}
+.ser_result table span{line-height:20px;}
+.ser_result tr{border-bottom:1px dotted #dadada;}
+.ser_result .tit{background:url(../images/nav_bg.jpg) repeat-x;height:35px;line-height:33px;border-bottom:1px solid #dadada;}
+.ser_result input.btn1,.ser_result input.btn2{cursor:pointer;width:71px;height:28px;color:#fff;font:normal 12px/28px "宋体";background:url(../images/sprites.png) no-repeat;}
+.ser_result input.btn1{background-position: 0 -96px;}
+.ser_result input.btn2{background-position: 0 -130px;}
+.ser_result .checi{color:#f00;}
+.ser_result .adr{text-align:left;padding-left:30px;}
+.ser_result .seat{padding-left:50px;text-align:left;width:126px;}
+.ser_result .adr span{background:url(../images/sprites.png) no-repeat;padding-left:17px;}
+.ser_result .adr .start{background-position:0 -173px;}
+.ser_result .adr .pass{background-position:0 -203px;}
+.ser_result .adr .end{background-position:0 -188px;}
+/*搜索结果显示 end*/
+/*左边内容 end */
+
+/*右边内容 start*/
+.content .right_con{width:194px;float:right;}
+.right_con .ban1{width:194px;height:164px;}
+.right_con .user_level{width:194px;}
+.right_con h2{height:35px;}
+.right_con h2 span{float:left;display:block;height:35px;line-height:33px;}
+.right_con .nav_mid_bg{width:172px;color:#333;padding-right:8px;font-weight:bold;font-size:14px;}
+.right_con .nav_mid_bg strong{color:#555;font-size:12px;font-weight:normal;float:right;}
+.right_con .user_level ul{border:1px solid #dadada;}
+.right_con .user_level li{border-bottom:1px dashed #dadada;padding:4px 0 4px 10px;}
+.right_con .user_level li span{color:#f00;font-weight:bold;padding:0 2px;}
+.right_con .user_level .li_last{border-bottom:0;}
+.right_con .user_level dl{width:182px;overflow:hidden;line-height:22px;}
+.right_con .user_level dt{float:left;}
+.right_con .user_level dd{float:left;}
+.right_con .user_level .name{color:#0081cc;}
+.right_con .user_level .profit{padding-left:20px;}
+.right_con .exper ul{border:1px solid #dadada;}
+.right_con .exper li{line-height:24px;padding-left:18px;background:url(../images/li_arrow.png) no-repeat 8px center;}
+
+.right_con .exper li a:link,.right_con .exper li a:visited{color:#333;}
+.right_con .exper li a:hover,.right_con .exper li a:visited{color:#f60;}
+.right_con .ban2{width:194px;height:181px;}
+/*右边内容 end*/
+/**预订页 end**/
+
+
+/**投诉建议页 start**/
+.advice{margin:20px auto 10px;width:696px;}
+.advice .nav_mid_bg {color:#0089ca;font-size:14px;}
+.advice .con1{border:1px solid #dadada;padding:34px 0 16px ;}
+.advice .con1 dl{width:554px;margin:0 auto 20px;}
+.advice .con1 dt{float:left;line-height:18px;text-align:right;width:100px;}
+.advice .con1 .dt_nr{padding-right:28px;width:72px;}
+.advice .con1 dd{float:left;}
+.advice select{width:147px;}
+.advice textarea{padding:6px;border:1px solid #dadada; resize:none;width:433px;height:188px;positon:absolute;z-index:-1; }
+.advice .dd_jian{position:relative;}
+.advice .dd_jian span{position:absolute;top:6px;left:-15px;z-index:2;background:url(../images/jian.png) no-repeat;display:inline-block;width:16px;height:35px;}
+p{text-align:center;}
+.advice .btn{margin:0 6px;background:url(../images/sprites.png) no-repeat -109px -130px;width:96px;height:37px;cursor:pointer;font:bold 14px/37px "宋体";text-align:center;color:#fff;}
+.advice .con2{border:1px solid #dadada;border-top-width:0;}
+.advice h3{line-height:50px;font-size:14px;padding-left:6px;}
+.advice .ques{padding:0 10px 20px;}
+.advice .con2 dl{padding-left:40px;border-bottom:1px dotted #dadada;}
+.advice .con2 dl.no_border{border-bottom:0;}
+.advice .con2 dt{line-height:30px;padding-top:6px;}
+.advice .con2 span{float:left;line-height:16px;text-align:center;background:url(../images/sprites.png) 0 -254px no-repeat;width:16px;height:16px;display:inline-block;padding-right:10px;margin-top:4px;}
+.advice .con2 dd{line-height:20px;padding-left:26px;line-height:30px;}
+
+/**投诉建议页 end**/
+
+
+
+/**预订信息页 start**/
+.addr{font:bold 14px/30px "宋体";color:#333;}
+.ticket_mes .text{padding-left:3px;width:102px;border:1px solid #9dc5dc;height:18px;background:url(../images/sprites.png) no-repeat 90px -230px;}
+.ticket_mes span{font-weight:normal;}
+.ticket_mes .btn{width:47px;height:22px;line-height:22px;color:#fff;background:url(../images/sprites.png) no-repeat -109px -173px;}
+.book_passager_mes .table_list{width:570px;/*width:664px;*/margin:10px 0 10px 14px;}
+.book_passager_mes table td{padding:6px 3px;text-align:center;line-height:30px;}
+.book_passager_mes .text{border:1px solid #a0c7dd;padding:0 3px;color:#333;}
+.book_passager_mes .text_name{width:60px;height:20px;line-height:20px;}
+.book_passager_mes .text_id{width:110px;height:20px;}
+/*.book_passager_mes .add_person{line-height:24px;}
+.book_passager_mes .add_person span{color:#0081cc;cursor:pointer;}*/
+.adult td,.child td.border{border-bottom:1px dashed #dadada;}
+.book_passager_mes .table_list table{width:466px;}
+.book_passager_mes .no_border{border-bottom:0;}
+.star{color:#f00;}
+.delivery_pos{position:relative;overflow:hidden;}
+.delivery_pos .add_person{position:absolute;top:20px;right:20px;}
+.delivery_pos .add_person span{color:#0081cc;cursor:pointer;line-height:24px;}
+
+#tickets-way{position:relative;}
+#tickets-way  .pub_table{display:none;}
+#tickets-way .pub_table.current{display:block;}
+#tickets-way h5{height:31px;position:absolute;top:0;left:0;}
+#tickets-way h5 span{border-bottom:1px solid #dadada;font:bold 14px/31px "宋体";background:url(../images/sprites.png) no-repeat 0 -276px;color:#555;display:inline-block;float:left;cursor:pointer;width:152px;height:31px;text-align:center;}
+#tickets-way h5 span.current{background:none;border-bottom:none;}
+#tickets-way .pub_con{padding-top:31px;}
+.tijiao .btn{width:117px;height:40px;text-align:center;margin:0 auto;font:bold 14px/40px "宋体";color:#fff;background:url(../images/sprites.png) no-repeat 0 -314px;}
+p.tijiao{text-align:center;padding:10px 0 20px;}
+/*添加信息模块*/
+
+/**预订信息页 end**/
+
+
+
+/**退订页面 start**/
+.debook{margin:10px auto;width:696px;}
+.debook h2 span{font-size:14px;}
+.debook dl{line-height:40px;padding:0 20px;border:1px solid #dadada;font:bold 14px/40px "宋体";}
+.debook dt{float:left;}
+.debook dd{float:right;}
+.debook table{border:1px solid #dadada;border-top-width:0;width:696px;text-align:center;color:#333;}
+.debook tr{line-height:44px;}
+.debook tr.con{color:#555;line-height:20px;}
+.debook .way{color:#f60;}
+.debook .btn{margin: 0 2px;font-size:12px;color:#fff;width:47px;height:22px;background:url(../images/sprites.png) no-repeat -109px -173px;text-align:center;line-height:22px;}
+.debook .pad1{padding-left:3px;}
+/**退订页面 end**/
+
+/**提醒通告模块 start**/
+.notice_weak_box{width:694px;border:1px solid #dadada;border-top-width:2px;margin:10px auto;}
+.weak_box{width:482px;float:left;}
+.weak_box h3{color:#f60;font-size:14px;line-height:26px;padding-left:20px;}
+.weak_box li{padding-left:16px;margin-left:30px;line-height:20px;}
+/**提醒通告模块 end**/
+
+
+/**订单号查询模块 start**/
+.order_num{padding:10px 0 10px 54px;}
+.order_num dt{float:left;font:bold 14px/30px "宋体";margin-right:13px;}
+.order_num dd{float:left;line-height:30px;}
+.order_num .dd_text{margin-right:48px;}
+.order_num .dd_text input{width:210px;height:30px;line-height:;border:1px solid #dadada;}
+.order_num .dd_btn input{border:0;width:101px;height:39px;text-align:center;line-height:39px;background:url(../images/sprites.png) no-repeat -109px -44px;}
+/**订单号查询模块 end**/
+
+
+/**订单信息模块 start**/
+.pub_order_mes,.pub_passager_mes,.pub_self_take_mes,.pub_debook_mes,.pub_delivery_mes,.book_passager_mes{width:696px;}
+.pub_con{border:1px solid #dadada;overflow:hidden;}
+.pub_table{margin:10px 0;}
+.pub_yuliu{width:152px;text-align:center;}
+.pub_yuliu strong{font:bold 40px/40px "宋体";}
+.pub_table td{height:36px;}
+.border_top{border-top:1px dashed #dadada;}
+.pas1 p{margin:0 10px;}
+/**订单信息模块 end**/
+
+
+
+/**车站自提模块 start**/
+.pub_self_take_mes .pub_yuliu{padding-right:0;}
+.pub_self_take_mes td{padding-right:30px;}
+/**车站自提模块 end**/
+
+
+/**配送退订模块 start**/
+.pub_delivery_mes .pub_yuliu{padding-right:0;}
+.pub_delivery_mes td{padding-right:30px;}
+.delivery_debook .pub_con table{width:auto;}
+/**配送退订模块 start**/
+
+
+/**退票信息模块 start**/
+.pub_debook_mes table{width:682px;}
+.pub_debook_mes td{line-height:30px;padding:6px 0;}
+.pub_debook_mes .btn3{margin:0 10px;border:0;background:url(../images/sprites.png) no-repeat 0 -96px;font:;height:28px;width:71px;font-size:14px;line-height:28px;text-align:center;color:#fff;cursor:pointer;}
+.pub_debook_mes .tip{color:#f00;width:214px;line-height:20px;}
+.pub_debook_mes .price{font-weight:bold;color:#f60;}
+.pub_debook_mes textarea{border:1px solid #9ec5dc;width:410px;height:90px;}
+.pub_debook_mes .pub_yuliu{width:90px;}
+.pub_debook_mes .btn{width:117px;height:40px;text-align:center;margin:0 auto;font:bold 14px/40px "宋体";color:#fff;background:url(../images/sprites.png) no-repeat 0 -314px;}
+.pub_debook_mes p{text-align:center;padding:10px 0 20px;}
+/**退票信息模块  end**/
+
+/**我要加盟模块 start**/
+.join_us{border:1px solid #dadada;margin:0 10px;}
+.join_us .flow_pic{background:url(../images/flow_pic.png) no-repeat -4px -126px;width:673px;margin:20px auto;}
+.join_us .join_us_ul{height:33px;background:url(../images/nav_mid_bg.png) repeat-x left bottom ;border-bottom:1px solid #dadada;}
+.join_us .join_us_ul li{float:left;width:100px;height:34px;font:normal 13px/34px "宋体";text-align:center;}
+.join_us .join_us_ul li.current{background:#fff;font-weight:bold;position:relative;top:1px;}
+.join_us .join_us_ul li.current1{border:1px solid #dadada;border-width:0 1px;}
+.join_us .join_us_ul a:link,.join_us .join_us_ul a:visited{color:#333;}
+.join_us .flow_pic li{float:left;text-align:right;padding-top:75px;height:20px;}
+.join_us .flow1{width:120px;}
+.join_us .flow2{width:164px;}
+.join_us .flow3{width:163px;}
+.join_us .flow_pic .flow4{width:172px;text-align:center;padding-left:50px;}
+.join_us li.current1{background:url(../images/flow_pic.png) -4px -11px no-repeat;color:#2ea6d8;}
+.join_us li.current2{background:url(../images/flow_pic.png) -124px -11px no-repeat;color:#2ea6d8;}
+.join_us li.current3{background:url(../images/flow_pic.png) -288px -11px no-repeat;color:#2ea6d8;}
+.join_us li.current4{background:url(../images/flow_pic.png) -452px -11px no-repeat;color:#2ea6d8;}
+
+.join_us table.user_mes{width:444px;margin:0 auto;table-layout:fixed;}
+.join_us .user_mes th{font-weight:normal;text-align:right;}
+
+.join_us .user_mes tr.dizhi td{line-height:20px;}
+.join_us .user_mes td{height:34px;line-height:34px;}
+.join_us .user_mes .text{border:1px solid #9dc5dc;width:140px;height:20px;}
+.join_us .user_mes .addr{width:310px;height:20px;line-height:20px;padding:0 4px;}
+.tip_color{color:#f00;}
+.join_us .user_kinds{border:1px solid #dadada;width:646px;text-align:center;border-collapse:collapse;margin:30px auto;}
+.join_us .user_kinds tr,.join_us .user_kinds td{border:1px solid #dadada;padding:4px;}
+.join_us .xuanze tr:hover{background-color:#cef2fa;}
+.join_us .buy_btn{background:url(../images/sprites.png) no-repeat 0 -499px;text-align:center;color:#fff;font:bold 12px/26px "宋体";width:65px;height:26px;}
+.join_us .user_kinds .td_detail{text-align:left;width:300px;padding:4px 16px;line-height:18px;}
+.join_us p{text-align:center;margin:30px 0;}
+.join_us .step{background:url(../images/sprites.png) no-repeat 0 -458px;width:103px;height:35px;color:#fff;font:bold 14px/35px "宋体";}
+.join_us .state{line-height:24px;border-bottom:1px dotted #dadada;width:672px;margin:0 auto;padding-bottom:20px;}
+.join_us .state strong{padding-right:10px;background:url(../images/sprites.png) no-repeat 0 -407px;display:inline-block;width:21px;height:28px;}
+.join_us .state span{color:#f60;font-size:16px;font-weight:bold;padding:0 10px;}
+.join_us .pay_state{color:#2ea6d7;font-weight:bold;}
+/**我要加盟模块 end**/
+/**后台样式 start**/
+.back_tui{margin:20px 0;}
+.price1 input{width:40px;}
+.log a:link,.log a:visited{color:#2EA6D8;}
+.log a:hover{color:#f60;}
+/**后台样式 end**/
+
+
+h4{font:bold 14px/31px "宋体";color:#555;background:url(../images/sprites.png) no-repeat 0 -276px;width:152px;height:31px;text-align:center;}
+.mb10{margin-bottom:10px;}
+.mb10_all{margin:10px auto;}

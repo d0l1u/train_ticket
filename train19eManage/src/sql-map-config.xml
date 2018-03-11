@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+  <!--<sqlMap>元素用于包括SQL Map映射文件和其他的SQL Map配置文件。-->
+	<settings useStatementNamespaces="true" cacheModelsEnabled="true"
+		enhancementEnabled="true" lazyLoadingEnabled="true" />
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/common.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/book.sql.xml"/>
+  	 
+  	<sqlMap resource="com/l9e/transaction/vo/xml/job.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/receiveNotify.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/acquire.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/account.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/complain.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/system.sql.xml"/>
+
+  	<sqlMap resource="com/l9e/transaction/vo/xml/joinUs.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/notice.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/worker.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/repay.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/statToUserinfo.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/orderInfoToCpStat.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/orderStat.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/orderInfoToCpStatOne.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/systemsetting.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/orderForExcel.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/refundStation.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/refundTicket.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/insurance.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/through_the_audit.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/orderInfoToOrder_province.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/login.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/cpInfoCensus.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/cpStat.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/tjUserInfo.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/userStat.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/hcStat.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/jfree.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/tj_Opter.sql.xml"/>
+  	
+ 	<sqlMap resource="com/l9e/transaction/vo/xml/opterStat.sql.xml"/>
+
+  	<sqlMap resource="com/l9e/transaction/vo/xml/dataMaintain.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/ticketPrice.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/file.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/register.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/mail.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/balance.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/questionorder.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/allRefund.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/compete.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/channeltj.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/accounttj.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/oldOrder.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/failtj.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/elongStation.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/remind.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/outTicketTj.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/acquire2.sql.xml"/>
+  	 
+  	<sqlMap resource="com/l9e/transaction/vo/xml/ctrip.sql.xml"/>
+  	  
+  	<sqlMap resource="com/l9e/transaction/vo/xml/ctripAccount.sql.xml"/>
+  	 
+  	<sqlMap resource="com/l9e/transaction/vo/xml/elongAlter.sql.xml"/>
+  	  
+  	<sqlMap resource="com/l9e/transaction/vo/xml/elongExcel.sql.xml"/>
+  	
+  	<!-- 以下为qunar管理 -->
+  	<sqlMap resource="com/l9e/transaction/vo/xml/qunarbook.sql.xml"/>
+  	<sqlMap resource="com/l9e/transaction/vo/xml/qunarsetting.sql.xml"/>
+  	<sqlMap resource="com/l9e/transaction/vo/xml/qunarexcel.sql.xml"/>
+	<sqlMap resource="com/l9e/transaction/vo/xml/qunarRefund.sql.xml"/>
+  	<sqlMap resource="com/l9e/transaction/vo/xml/qunarstat.sql.xml"/>
+  	<sqlMap resource="com/l9e/transaction/vo/xml/qunarInfoToCpStat.sql.xml"/>
+  	<sqlMap resource="com/l9e/transaction/vo/xml/qunarstatfirst.sql.xml"/>
+
+    <!-- 以下为内嵌管理管理 -->
+  	<sqlMap resource="com/l9e/transaction/vo/xml/innerBook.sql.xml"/>
+  	<sqlMap resource="com/l9e/transaction/vo/xml/innerNotice.sql.xml"/>
+  	<sqlMap resource="com/l9e/transaction/vo/xml/innerRefund.sql.xml"/>
+  	<sqlMap resource="com/l9e/transaction/vo/xml/innerSystemsetting.sql.xml"/>
+  	 
+  	 <!-- 以下为对外商户管理 -->
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/extBook.sql.xml"/>
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/extRefund.sql.xml"/>
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/extNotice.sql.xml"/>
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/extInsurance.sql.xml"/>
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/extSystemsetting.sql.xml"/>
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/extSetting.sql.xml"/>
+  	 
+  	 <!-- 以下为高铁管家管理 -->
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/gtBook.sql.xml"/>
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/gtRefund.sql.xml"/>
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/gtStation.sql.xml"/>
+  	 
+  	 <!-- 以下携程管理 -->
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/xcBook.sql.xml"/>
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/xcRefund.sql.xml"/>
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/xcStation.sql.xml"/>
+  	 
+  	 <!-- 以下为app管理 -->
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/appBook.sql.xml"/>
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/appRefund.sql.xml"/>
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/appInsurance.sql.xml"/>
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/appComplain.sql.xml"/>
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/appNotice.sql.xml"/>
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/appUser.sql.xml"/>
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/appSystemsetting.sql.xml"/>
+  	 
+  	 <!-- 保险管理汇总 -->
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/allInsurance.sql.xml"/>
+  	 
+  	 <!-- 投诉管理汇总 -->
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/allComplain.sql.xml"/>
+  	 
+  	 <!-- 以下艺龙管理 -->
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/elongBook.sql.xml"/>
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/elongRefund.sql.xml"/>
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/elongSetting.sql.xml"/>
+  	 
+  	 <!-- 机器人管理 -->
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/robotsetting.sql.xml"/>
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/robotSetNew.sql.xml"/>
+  	 
+  	 <!-- 系统管理整合 -->
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/trainSystemsetting.sql.xml"/>
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/updateCheckAuto.sql.xml"/>
+  	  
+  	 <!-- 以下美团管理 -->
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/meituanBook.sql.xml"/>
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/meituanRefund.sql.xml"/>
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/meituanStation.sql.xml"/>
+  	  
+  	 <!-- 以下途牛管理 -->
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/tuniuBook.sql.xml"/>
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/tuniuRefund.sql.xml"/>
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/tuniuStation.sql.xml"/>
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/tuniuUrgeRefund.sql.xml"/>
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/manualfind.sql.xml"/>
+  	 <sqlMap resource="com/l9e/transaction/vo/xml/psOrder.sql.xml"/>
+  	 
+  	  <sqlMap resource="com/l9e/transaction/vo/xml/checkprice.sql.xml"/>
+
+
+  	  <sqlMap resource="com/l9e/transaction/vo/xml/accountStatistics.sql.xml"/>
+  	  
+  	  <!--抢票管理 -->
+  	  <sqlMap resource="com/l9e/transaction/vo/xml/robTicket.sql.xml"/>
+  	  
+  	  <!--京东退票管理 -->
+  	  <sqlMap resource="com/l9e/transaction/vo/xml/jdRefund.sql.xml"/>
+  	  
+  	  <!--京东预付卡管理 -->
+  	  <sqlMap resource="com/l9e/transaction/vo/xml/jdCard.sql.xml"/>
+  	  
+  	  <sqlMap resource="com/l9e/transaction/vo/xml/proxyIp.sql.xml"/>
+  	  
+ </sqlMapConfig>

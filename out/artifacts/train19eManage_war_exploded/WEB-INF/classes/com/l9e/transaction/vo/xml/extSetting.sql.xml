@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="extSetting">
+	
+	<typeAlias alias="extSetting" type="com.l9e.transaction.vo.ExtSettingVo"></typeAlias>
+	
+	<!-- 查询上画管理列表总条数 -->
+	<select id="queryExtSettingListCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM ext_merchantinfo WHERE merchant_id IS NOT NULL
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="merchant_id">
+				merchant_id=#merchant_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="merchant_name">
+				merchant_name=#merchant_name:VARCHAR#
+			</isNotEmpty>
+		</dynamic>
+	</select> 
+	
+	<!-- 查询上画管理列表 -->
+	<select id="queryExtSettingList" parameterClass="java.util.HashMap" resultClass="extSetting">
+		SELECT * FROM ext_merchantinfo WHERE merchant_id IS NOT NULL
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="merchant_id">
+				merchant_id=#merchant_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="merchant_name">
+				merchant_name=#merchant_name:VARCHAR#
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY create_time DESC
+		LIMIT #everyPagefrom:Integer#, #pageSize:Integer#
+	</select> 
+	
+	<!-- 更新商户状态 -->
+	<update id="updateMerchantStatus" parameterClass="java.util.HashMap">
+		UPDATE ext_merchantinfo
+		<dynamic prepend="SET">
+			<isNotEmpty prepend="," property="merchant_status">
+				merchant_status=#merchant_status#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="merchant_stop_reason">
+				merchant_stop_reason=#merchant_stop_reason#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_person">
+				opt_person=#opt_person#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_time">
+				opt_time=now()
+			</isNotEmpty>
+		</dynamic>
+		WHERE merchant_id = #merchant_id#
+	</update>
+	
+	<!-- 增加合作商户信息  -->
+	<insert id="addMarchantInfo" parameterClass="java.util.HashMap" >
+		INSERT INTO ext_merchantinfo
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="merchant_id">
+				 merchant_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_type">
+				 pay_type
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="merchant_name">
+				 merchant_name
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_order_fee">
+				 pay_order_fee
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="md5_type">
+				 md5_type
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="merchant_fee">
+				 merchant_fee
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="bx_company">
+				 bx_company
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="sms_channel">
+				 sms_channel
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="sign_key">
+				 sign_key
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="spare_ticket_amount">
+				 spare_ticket_amount
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="stop_buyTicket_time">
+				 stop_buyTicket_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="merchant_status">
+				 merchant_status
+			</isNotEmpty>
+				 ,create_time
+			<isNotEmpty prepend="," property="opt_time">
+				 opt_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_person">
+				 opt_person
+			</isNotEmpty>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="merchant_id">
+				#merchant_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_type">
+				 #pay_type#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="merchant_name">
+				 #merchant_name#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_order_fee">
+				 #pay_order_fee#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="md5_type">
+				 #md5_type#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="merchant_fee">
+				 #merchant_fee#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="bx_company">
+				 #bx_company#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="sms_channel">
+				 #sms_channel#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="sign_key">
+				 #sign_key#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="spare_ticket_amount">
+				 #spare_ticket_amount#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="stop_buyTicket_time">
+				 #stop_buyTicket_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="merchant_status">
+				 #merchant_status#
+			</isNotEmpty>
+				 ,now()
+			<isNotEmpty prepend="," property="opt_time">
+				 #opt_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_person">
+				 #opt_person#
+			</isNotEmpty>
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 根据商户编号查看是否存在 -->
+	<select id="queryMarchantId" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT merchant_id FROM ext_merchantinfo WHERE merchant_id=#merchant_id#
+	</select>
+	
+	<!-- 根据商户编号查询该商户的所有信息  明细 -->
+	<select id="queryMerchantInfo" parameterClass="java.lang.String" resultClass="extSetting">
+		SELECT * FROM ext_merchantinfo WHERE merchant_id=#merchant_id:VARCHAR#
+	</select>
+	
+	<!-- 修改商户的信息 -->
+	<update id="updateMarchantInfo" parameterClass="java.util.HashMap">
+		UPDATE ext_merchantinfo
+		<dynamic prepend="SET">
+			<isNotEmpty prepend="," property="pay_type">
+				pay_type=#pay_type#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="merchant_fee">
+				merchant_fee=#merchant_fee#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="bx_company">
+				bx_company=#bx_company#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="sms_channel">
+				sms_channel=#sms_channel#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="spare_ticket_amount">
+				spare_ticket_amount=#spare_ticket_amount#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="stop_buyTicket_time">
+				stop_buyTicket_time=#stop_buyTicket_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="verify_status">
+				verify_status=#verify_status#
+			</isNotEmpty>
+				,opt_time=now()
+			<isNotEmpty prepend="," property="opt_person">
+				opt_person=#opt_person#
+			</isNotEmpty>
+		</dynamic>
+		WHERE merchant_id = #merchant_id#
+	</update>
+	
+	<!-- 增加合作商户操作日志信息  -->
+	<insert id="addMarchantLog" parameterClass="java.util.HashMap" >
+		INSERT INTO ext_merchant_log
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="merchant_id">
+				 merchant_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="merchant_name">
+				 merchant_name
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="content">
+				 content
+			</isNotEmpty>
+				 ,create_time
+			<isNotEmpty prepend="," property="opt_person">
+				 opt_person
+			</isNotEmpty>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="merchant_id">
+				#merchant_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="merchant_name">
+				 #merchant_name#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="content">
+				 #content#
+			</isNotEmpty>
+				 ,now()
+			<isNotEmpty prepend="," property="opt_person">
+				 #opt_person#
+			</isNotEmpty>
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 查询商户操作日志的总条数 -->
+	<select id="queryMarchantLogListCount" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM ext_merchant_log
+	</select>
+	
+	<!-- 查询商户操作日志列表 -->
+	<select id="queryMarchantLogList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT merchant_id,merchant_name,content,create_time,opt_person FROM ext_merchant_log
+		ORDER BY create_time DESC
+		LIMIT #everyPagefrom:Integer#, #pageSize:Integer#
+	</select>
+</sqlMap>

@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ticketPrice">
+
+	<!-- 查询条数 -->
+	<select id="queryTicketPriceCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM t_zjpj_a t WHERE 1=1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="cc">
+				cc LIKE CONCAT('%', #cc#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fz">
+				fz LIKE CONCAT( #fz#, '%') 
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dz">
+	         	dz LIKE CONCAT( #dz#, '%') 
+	      	 </isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询列表 -->
+	<select id="queryTicketPriceList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT t.xh,t.cc,t.fz,t.dz,t.yz,t.rz,t.yws,t.ywz,t.ywx,t.rws,t.rwx,t.rz1,t.rz2,t.swz,t.tdz,t.gws,t.gwx,t.dws,t.dwx FROM t_zjpj_a t WHERE 1=1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="cc">
+				cc LIKE CONCAT('%', #cc#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fz">
+				fz LIKE CONCAT( #fz#, '%') 
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dz">
+	         	dz LIKE CONCAT( #dz#, '%') 
+	      	 </isNotEmpty>
+		</dynamic>
+		ORDER BY t.xh LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select>
+	
+	<!-- 查询修改页面信息 -->
+	<select id="queryTicketPriceModify" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT t.xh,t.cc,t.fz,t.dz,t.yz,t.rz,t.yws,t.ywz,t.ywx,t.rws,t.rwx,t.rz1,t.rz2,t.swz,t.tdz,t.gws,t.gwx,t.dws,t.dwx  FROM t_zjpj_a t WHERE 1=1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="cc">
+				cc LIKE CONCAT('%', #cc#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fz">
+				fz LIKE CONCAT( #fz#, '%') 
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="dz">
+	         	dz LIKE CONCAT( #dz#, '%') 
+	      	 </isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 执行修改 -->
+	<update id="updateTicketPrice" parameterClass="java.util.HashMap">
+		UPDATE t_zjpj_a 
+		<dynamic prepend="set">
+			<isNotEmpty prepend="," property="new_cc">
+				cc=#new_cc#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="new_fz">
+				fz=#new_fz#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="new_dz">
+				dz=#new_dz#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="yz">
+				yz=#yz#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="rz">
+				rz=#rz#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="yws">
+				yws =#yws#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ywz">
+				ywz =#ywz#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ywx">
+				ywx =#ywx#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="rws">
+				rws =#rws#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="rwx">
+				rwx =#rwx#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="rz1">
+				rz1 =#rz1#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="rz2">
+				rz2 =#rz2#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="swz">
+				swz =#swz#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tdz">
+				tdz =#tdz#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="gws">
+				gws =#gws#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="gwx">
+				gwx =#gwx#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="dws">
+				dws =#dws#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="dwx">
+				dwx =#dwx#
+			</isNotEmpty>
+		</dynamic>
+		WHERE 	cc LIKE CONCAT('%', #cc#, '%') 
+			AND fz LIKE CONCAT( #fz#, '%') 
+			AND dz LIKE CONCAT( #dz#, '%') 
+	</update>
+	
+	<!-- 查询添加票价，查看车次cc、发站fz和到站dz存在的条数 -->
+	<select id="queryTicketPriceCheci" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM (SELECT cc,fz,dz FROM t_zjpj_a WHERE 1=1 and cc LIKE CONCAT('%', #cc#, '%') AND fz=#fz# AND dz=#dz#)a
+	</select>
+	
+	<!-- 插入新增的票价信息 -->
+	<insert id="addTicketPrice" parameterClass="java.util.HashMap">
+		INSERT INTO t_zjpj_a
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="cc">
+				cc
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fz">
+				fz
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="dz">
+				dz
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="yz">
+				yz
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="rz">
+				rz
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="yws">
+				yws
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ywz">
+				ywz
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ywx">
+				ywx
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="rws">
+				rws
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="rwx">
+				rwx
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="rz1">
+				rz1
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="rz2">
+				rz2
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="swz">
+				swz
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tdz">
+				tdz
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="gws">
+				gws
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="gwx">
+				gwx
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="dws">
+				dws
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="dwx">
+				dwx
+			</isNotEmpty>
+			)
+		</dynamic>
+		 values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="cc">
+				#cc#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fz">
+				#fz#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="dz">
+				#dz#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="yz">
+				#yz#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="rz">
+				#rz#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="yws">
+				#yws#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ywz">
+				#ywz#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ywx">
+				#ywx#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="rws">
+				#rws#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="rwx">
+				#rwx#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="rz1">
+				#rz1#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="rz2">
+				#rz2#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="swz">
+				#swz#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tdz">
+				#tdz#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="gws">
+				#gws#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="gwx">
+				#gwx#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="dws">
+				#dws#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="dwx">
+				#dwx#
+			</isNotEmpty>
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 插入票价的日志信息 -->
+	<insert id="addTicletPriceLogs" parameterClass="java.util.HashMap">
+		INSERT INTO t_zjpj_a_logs
+		<dynamic prepend="(">
+			create_time,
+			<isNotEmpty prepend="," property="fz">
+				fz
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="dz">
+				dz
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_name">
+				opt_name
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="before_data">
+				before_data
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="after_data">
+				after_data
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_type">
+				opt_type
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="cc">
+				cc
+			</isNotEmpty>
+			)
+		</dynamic>
+		 values
+		<dynamic prepend="(">
+			now(),
+			<isNotEmpty prepend="," property="fz">
+				#fz#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="dz">
+				#dz#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_name">
+				#opt_name#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="before_data">
+				#before_data#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="after_data">
+				#after_data#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_type">
+				#opt_type#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="cc">
+				#cc#
+			</isNotEmpty>
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 删除 -->
+	<delete id="deleteTicketPrice" parameterClass="java.util.HashMap">
+	DELETE  FROM  t_zjpj_a  WHERE 	
+			xh =#xh# 
+			AND cc LIKE CONCAT('%', #cc#, '%') 
+			AND fz LIKE CONCAT( #fz#, '%') 
+			AND dz LIKE CONCAT( #dz#, '%')  
+			ORDER BY RAND() LIMIT 1
+	</delete>
+	
+	<!-- 查询票价管理操作日志条数 -->
+	<select id="queryTicketPriceLogListCount" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM t_zjpj_a_logs ORDER BY create_time DESC
+	</select>
+	
+	<!-- 查询票价管理操作日志明细 -->
+	<select id="queryTicketPriceLogList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') create_time,
+			opt_name,
+			cc,
+			fz,
+			dz,
+			before_data,
+			after_data,
+			opt_type
+		FROM t_zjpj_a_logs
+		ORDER BY create_time DESC LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select> 
+</sqlMap>
