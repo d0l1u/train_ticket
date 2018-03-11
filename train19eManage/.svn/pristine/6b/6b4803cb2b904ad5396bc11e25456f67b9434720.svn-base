@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="robotSetNew">
+
+	<select id="queryRobotSetCount" parameterClass="java.util.HashMap"  resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(cw.worker_name)
+		FROM
+		  cp_workerinfo cw 
+		WHERE cw.worker_type = #worker_type:Integer# 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="worker_name">
+				  cw.worker_name like CONCAT('%',#worker_name:VARCHAR#,'%')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="worker_status">
+				 cw.worker_status in
+				<iterate open="(" close=")" conjunction=","
+					property="worker_status">
+					#worker_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="stop_reason">
+				 cw.stop_reason in
+				<iterate open="(" close=")" conjunction=","
+					property="stop_reason">
+					#stop_reason[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="worker_region">
+				 cw.worker_region in
+				<iterate open="(" close=")" conjunction=","
+					property="worker_region">
+					#worker_region[]:INTEGER#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="worker_vendor">
+				 cw.worker_vendor in
+				<iterate open="(" close=")" conjunction=","
+					property="worker_vendor">
+					#worker_vendor[]:INTEGER#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="worker_language">
+				 cw.worker_language_type in
+				<iterate open="(" close=")" conjunction=","
+					property="worker_language">
+					#worker_language[]:INTEGER#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="queryRobotSetList" parameterClass="java.util.HashMap"  resultClass="java.util.HashMap">
+		SELECT 
+		  cw.worker_id, cw.worker_name, cw.stop_reason,
+		  COUNT(cr.order_id) AS order_num,
+		  <!--  IFNULL(ROUND((COUNT(cr.order_id)/COUNT(DISTINCT(DATE_FORMAT(cr.create_time,'%Y-%m-%d HH')))),1),0) AS order_num,-->
+		  IFNULL(ROUND(AVG(TIME_TO_SEC(TIMEDIFF(cr.release_time,cr.request_time)))/60,2),0)*60 AS robot_xl,
+		  cw.worker_status,
+		  cw.worker_ext,
+		  cw.app_valid,
+		  cw.worker_region,
+		  cw.worker_vendor,
+		  cw.worker_describe,
+		  cw.worker_language_type,
+		  cw.pay_device_type,
+		  cw.public_ip,
+		  0 AS yestoday_num,
+		  0 AS today_num
+		
+		FROM
+		  cp_workerinfo cw 
+		  LEFT JOIN
+		  cp_workerinfo_report cr 
+		  ON cw.worker_id = cr.worker_id
+		
+		WHERE cw.worker_type = #worker_type:Integer#      
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="worker_name">
+				 cw.worker_name like CONCAT('%',#worker_name:VARCHAR#,'%')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="worker_status">
+				 cw.worker_status in
+				<iterate open="(" close=")" conjunction=","
+					property="worker_status">
+					#worker_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="stop_reason">
+				 cw.stop_reason in
+				<iterate open="(" close=")" conjunction=","
+					property="stop_reason">
+					#stop_reason[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="worker_region">
+				 cw.worker_region in
+				<iterate open="(" close=")" conjunction=","
+					property="worker_region">
+					#worker_region[]:INTEGER#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="worker_vendor">
+				 cw.worker_vendor in
+				<iterate open="(" close=")" conjunction=","
+					property="worker_vendor">
+					#worker_vendor[]:INTEGER#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="worker_language">
+				 cw.worker_language_type in
+				<iterate open="(" close=")" conjunction=","
+					property="worker_language">
+					#worker_language[]:INTEGER#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		GROUP BY cw.worker_id ORDER BY cw.worker_id DESC 
+		LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select>
+	
+	<update id="changeStatus" parameterClass="java.util.HashMap">
+		UPDATE 
+		  cp_workerinfo 
+		SET
+		  <isNotEmpty prepend=" " property="worker_status">
+				worker_status = #worker_status:VARCHAR# ,
+		  </isNotEmpty>
+		  <isNotEmpty prepend=" " property="worker_name">
+				worker_name = #worker_name:VARCHAR# ,
+		  </isNotEmpty>
+		  <isNotEmpty prepend=" " property="worker_ext">
+				worker_ext = #worker_ext:VARCHAR# ,
+		  </isNotEmpty>
+		  <isNotEmpty prepend=" " property="worker_priority">
+				worker_priority = #worker_priority:INTEGER# ,
+		  </isNotEmpty>
+		  <isNotEmpty prepend=" " property="spare_thread">
+				spare_thread = #spare_thread:INTEGER# ,
+		  </isNotEmpty>
+		  <isNotEmpty prepend=" " property="robot_con_timeout">
+				robot_con_timeout = #robot_con_timeout:VARCHAR# ,
+		  </isNotEmpty>
+		  <isNotEmpty prepend=" " property="robot_read_timeout">
+				robot_read_timeout = #robot_read_timeout:VARCHAR# ,
+		  </isNotEmpty>
+		  <isNotEmpty prepend=" " property="stop_reason">
+				stop_reason = #stop_reason:VARCHAR# ,
+		  </isNotEmpty>
+		   <isNotEmpty prepend=" " property="app_valid">
+				app_valid = #app_valid:INTEGER# ,
+		  </isNotEmpty>
+		  <isNotEmpty prepend=" " property="pay_device_type">
+				pay_device_type = #pay_device_type:VARCHAR# ,
+		  </isNotEmpty>
+		   <isNotEmpty prepend=" " property="worker_vendor">
+				worker_vendor = #worker_vendor:INTEGER# ,
+		  </isNotEmpty>
+		   <isNotEmpty prepend=" " property="worker_region">
+				worker_region = #worker_region:INTEGER# ,
+		  </isNotEmpty>
+		   <isNotEmpty prepend=" " property="worker_describe">
+				worker_describe = #worker_describe:VARCHAR# ,
+		  </isNotEmpty>
+		  <isNotEmpty prepend=" " property="worker_language">
+				worker_language_type = #worker_language:VARCHAR# ,
+		  </isNotEmpty>
+		  <isNotEmpty prepend=" " property="public_ip">
+				public_ip = #public_ip:VARCHAR# ,
+		  </isNotEmpty>
+		  opt_name = #opt_name#,
+		  option_time = NOW() 
+		WHERE worker_id = #worker_id#
+	</update>
+	
+	<!-- 更换支付宝账号 -->
+	<update id="changeAlipayAccount" parameterClass="java.util.HashMap">
+		UPDATE 
+		  cp_cardinfo 
+		SET
+		  <isNotEmpty prepend=" " property="change_worker_id">
+				worker_id = #change_worker_id:VARCHAR#
+		  </isNotEmpty>
+		WHERE worker_id = #worker_id# 
+	</update>
+	
+	<!-- 更换支付宝账号账户类型 -->
+	<update id="changeAlipayAccountType" parameterClass="java.util.HashMap">
+		UPDATE 
+		  cp_workerinfo 
+		SET
+		  	pay_device_type = 1
+		WHERE worker_id = #worker_id# 
+	</update>
+	
+	<!-- 插入日志信息 -->
+	<insert id="insertLog" parameterClass="java.util.HashMap">
+		insert into cp_workerinfo_log
+		<dynamic prepend="(">
+				<isNotEmpty prepend="," property="content">
+				 	content
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="opt_person">
+					opt_person
+				</isNotEmpty>
+					,create_time,worker_id
+			)
+		</dynamic>
+		 values
+		<dynamic prepend="(">
+				<isNotEmpty prepend="," property="content">
+				 	#content:VARCHAR#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="opt_person">
+					#opt_person:VARCHAR#
+				</isNotEmpty>
+					,now(),#worker_id:VARCHAR#
+			)
+		</dynamic>
+	</insert>
+	
+	<select id="queryWorkerLog" parameterClass="java.lang.String"  resultClass="java.util.HashMap">
+		SELECT 
+		 content,DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s')AS create_time,opt_person,worker_id 
+		FROM
+		  cp_workerinfo_log  
+		WHERE worker_id = #worker_id# order by create_time desc limit 10
+	</select>
+	
+	<select id="queryRobotSetInfo" parameterClass="java.lang.String"  resultClass="java.util.HashMap">
+		SELECT 
+		 worker_name,worker_id,worker_type,worker_priority,worker_status,worker_ext,spare_thread,robot_con_timeout,robot_read_timeout,
+		 app_valid,worker_region,pay_device_type,worker_vendor,worker_describe,worker_language_type,public_ip
+		FROM
+		  cp_workerinfo  
+		WHERE worker_id = #worker_id#
+	</select>
+	
+	<select id="queryReportLog" parameterClass="java.lang.String"  resultClass="java.util.HashMap">
+		SELECT 
+		 order_id,DATE_FORMAT(request_time,'%Y-%m-%d %H:%i:%s')AS request_time,opt_type,worker_id 
+		FROM
+		  cp_workerinfo_report  
+		WHERE worker_id = #worker_id# order by create_time desc limit 10
+	</select>
+	
+	<delete id="deleteByWorkId" parameterClass="java.util.HashMap">
+		DELETE FROM cp_workerinfo WHERE worker_id = #worker_id# limit 1
+	</delete>
+	
+	<!-- 查询支付宝账号列表 -->
+	<select id="queryZhanghaoList"  resultClass="java.util.HashMap">
+		SELECT DISTINCT(card_no) AS card_no FROM cp_cardinfo ORDER BY card_no ASC
+	</select>
+	
+	<!-- 添加验证码 -->
+	<insert id="addVerificationCode" parameterClass="java.util.HashMap">
+		INSERT INTO cp_workercode_info
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="worker_id">
+				worker_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="verification_code">
+				verification_code
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				create_time
+			</isNotEmpty>
+		)
+		</dynamic>
+		 values
+		 <dynamic prepend="(">
+			<isNotEmpty prepend="," property="worker_id">
+				#worker_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="verification_code">
+				#verification_code#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				now()
+			</isNotEmpty>
+		)
+		</dynamic>
+	</insert>
+	
+	<!-- 查询验证码最近时间 -->
+	<select id="queryVerificationCode" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT create_time FROM cp_workercode_info 
+		WHERE worker_id=#worker_id# AND verification_code=#verification_code# 
+		AND create_time <![CDATA[>]]> DATE_SUB(NOW(), INTERVAL 10 MINUTE)
+	</select>
+	
+</sqlMap>

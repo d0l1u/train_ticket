@@ -1,0 +1,4 @@
+thread.corePoolSize=20
+thread.maxPoolSize=500
+thread.queueCapacity=1000
+thread.keepAliveSeconds=120

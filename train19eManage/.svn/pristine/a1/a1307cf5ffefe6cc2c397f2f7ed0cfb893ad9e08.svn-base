@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="orderStat">
+	<!-- 查询总条数 -->
+	<select id="queryOrderStatListCount" parameterClass="java.util.HashMap" 
+	resultClass="java.lang.Integer">
+		SELECT COUNT(1) 
+		FROM hc_statInfo AS cs WHERE 1=1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_time">
+				cs.order_time<![CDATA[>=]]>
+				#begin_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+				cs.order_time<![CDATA[<]]>DATE_ADD(#end_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY cs.stat_id DESC
+	</select>
+	
+	<!-- 查询列表 -->
+	<select id="queryOrderStatList" parameterClass="java.util.HashMap" 
+	resultClass="java.util.HashMap">
+		SELECT DATE_FORMAT(cs.order_time,'%Y-%m-%d') AS order_time ,cs.succeed_cgl,cs.succeed_sbl,
+		cs.out_ticket_succeed,cs.out_ticket_defeated,cs.order_count,cs.ticket_count,cs.pay_defeated,
+		cs.succeed_money,cs.defeated_money,cs.bx_count,cs.bx_countMoney,cs.succeed_odds,
+		cs.preparative_count,cs.refund_count
+		FROM hc_statInfo AS cs WHERE 1=1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_time">
+				cs.order_time<![CDATA[>=]]>
+				#begin_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+				cs.order_time<![CDATA[<]]>DATE_ADD(#end_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+		</dynamic>
+		GROUP BY order_time ORDER BY cs.stat_id DESC 
+		LIMIT #everyPagefrom:Integer#, #pageSize:Integer#
+	</select>
+	
+	<!-- 查询当天审核状态 -->
+	<select id="queryJoinList" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT estate FROM hc_userinfo hc WHERE DATE_FORMAT(hc.apply_time,'%Y-%m-%d') = #create_time#
+	</select>
+	
+	<!-- 查询图表需要的参数 -->
+	<!-- 15日内交易报表 -->
+	<select id="queryPictureLineParam"  resultClass="java.util.HashMap">
+		SELECT DATE_FORMAT(cs.order_time,'%Y-%m-%d')AS order_time,cs.out_ticket_succeed FROM hc_statInfo cs 
+		WHERE order_time BETWEEN DATE_SUB(CURDATE(), INTERVAL 15 DAY) AND CURDATE()
+	</select>
+	
+	<!-- 总体小时报表 -->
+	<select id="queryAllHour" resultClass="java.util.HashMap">
+		SELECT  DATE_FORMAT(create_time, '%H')AS h_time, COUNT(DATE_FORMAT(create_time, '%H'))AS order_count FROM hc_orderinfo 
+	    WHERE order_status='44'  AND  DATE_FORMAT(create_time,'%Y-%m-%d')<![CDATA[<>]]> CURDATE() GROUP BY DATE_FORMAT(create_time, '%H')		
+	</select>
+	
+	<!-- 当条小时报表 -->
+	<select id="queryThisDayHour" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT  DATE_FORMAT(create_time, '%H')AS h_time, COUNT(DATE_FORMAT(create_time, '%H'))AS order_count FROM hc_orderinfo 
+	    WHERE order_status='44' AND DATE_FORMAT(create_time,'%Y-%m-%d')=#create_time# GROUP BY DATE_FORMAT(create_time, '%H')		
+	</select>
+	
+	<!-- 查询当天各省销售总计条数 -->
+	<select id="queryProvinceCountPagein" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) 
+		FROM hc_orderinfo hc 
+		LEFT JOIN gen_area a ON hc.at_province_id=a.area_no
+		WHERE hc.order_status='44' AND DATE_FORMAT(create_time,'%Y-%m-%d')=#create_time#
+		GROUP BY a.area_name 
+	</select>
+	
+	<!-- 查询当天各省销售总计 -->
+	<select id="queryProvinceCount" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT COUNT(hc.order_id)AS hc_count,(a.area_name)AS provinceName ,a.area_no FROM hc_orderinfo hc 
+		LEFT JOIN gen_area a ON hc.at_province_id=a.area_no
+		WHERE hc.order_status='44' AND DATE_FORMAT(create_time,'%Y-%m-%d')=#create_time#
+		GROUP BY a.area_name ORDER BY hc_count DESC 
+	</select>
+	
+	<!-- 查询当天各省销售的票数 -->
+	<select id="queryProvinceTicket" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(cp.cp_id)ticket FROM hc_orderinfo_cp cp WHERE cp.order_id IN
+		(SELECT hc.order_id FROM hc_orderinfo hc WHERE hc.at_province_id IN 
+		(SELECT gen.area_no FROM gen_area gen LEFT JOIN hc_orderinfo h ON gen.area_no=h.at_province_id 
+		WHERE gen.area_rank=1 AND gen.area_name=#provinceName# )
+		AND hc.order_status='44' AND DATE_FORMAT(hc.create_time,'%Y-%m-%d')=#create_time#) 
+	</select>
+	
+	<!-- 查询日小时报表 -->
+	<select id="queryDateTimeDetail" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT  DATE_FORMAT(create_time,'%m-%d')AS day_stat ,DATE_FORMAT(create_time,'%H')AS hour_stat,COUNT(DATE_FORMAT(create_time,'%H'))AS order_count 
+		FROM hc_orderinfo hc 
+		WHERE order_status='44' AND 
+		(create_time BETWEEN DATE_SUB(#create_time#, INTERVAL 3 DAY) AND #create_time#)  
+		GROUP BY DATE_FORMAT(create_time,'%m-%d'), DATE_FORMAT(create_time,'%H')
+	</select>
+	
+	<!-- 查询各省的审核情况 -->
+	<select id="queryEstateCount" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT hc.estate FROM hc_userinfo hc WHERE hc.province_id=#area_no#
+	</select>
+	
+	<!-- 查询当天各省的活跃用户个数 -->
+	<select id="queryProvinceActiveAgent" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM(
+		SELECT DISTINCT hu.user_id FROM hc_userinfo hu  
+		LEFT JOIN hc_orderinfo hc ON hc.dealer_id=hu.user_id  
+		WHERE hc.order_id IS NOT NULL  
+		AND hu.province_id=(SELECT gen.area_no FROM gen_area gen WHERE gen.area_rank=1 AND gen.area_name=#provinceName# ) 
+		AND DATE_FORMAT(create_time,'%Y-%m-%d')=#create_time#)AS a
+	</select>
+	
+	<!-- 查询本省当天每小时订单数 -->
+	<select id="showProvinceSellChart" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT DATE_FORMAT(create_time, '%Y-%m-%d')AS day_time,DATE_FORMAT(create_time, '%H')AS h_time, COUNT(DATE_FORMAT(create_time, '%H'))AS order_count 
+		FROM hc_orderinfo WHERE order_status='44' AND DATE_FORMAT(create_time,'%Y-%m-%d')=#create_time#
+		AND at_province_id=(SELECT gen.area_no FROM gen_area gen WHERE gen.area_rank='1' AND gen.area_no=#province_id#) GROUP BY DATE_FORMAT(create_time, '%H')
+	</select>
+	
+	<!-- 查询当天活跃数 -->
+	<select id="queryActiveUser" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM(
+		SELECT DISTINCT hu.user_id FROM hc_userinfo hu  
+		LEFT JOIN hc_orderinfo hc ON hc.dealer_id=hu.user_id  
+		WHERE hc.order_id IS NOT NULL  
+		AND DATE_FORMAT(hc.create_time,'%Y-%m-%d') =#create_time#)AS a
+	</select>
+	
+	<!-- 查询Hc_statInfo_province表 -->
+	<select id="queryHc_statInfo_provinceList" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT DATE_FORMAT(hp.order_time,'%Y-%m-%d')AS order_time,hp.province_name,hp.province_id,hp.user_count,hp.activeAgent,
+		hp.apply_count,hp.not_pass,hp.wait_pass,hp.order_count,hp.ticket_count,hp.bx_count,hp.bx_Money_Sum,hp.succeed_money,hp.defeated_money, 
+		hp.succeed_count,hp.defeated_count,hp.pay_fall,hp.want_outTicket FROM hc_statInfo_province hp 
+		WHERE hp.order_time=#create_time# ORDER BY hp.succeed_count DESC
+	</select>
+	
+	<!-- 查询各省当日销售情况 -->
+	<select id="queryOrderCount" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT hc.order_status FROM hc_orderinfo hc 
+		WHERE hc.at_province_id=#area_no# AND DATE_FORMAT(create_time,'%Y-%m-%d')=#create_time#
+	</select>
+	
+	<!-- 查询各省总票数 -->
+	<select id="queryTicketCount" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT SUM(ticket_count) FROM hc_statInfo_province h WHERE h.province_id=#area_no#
+	</select>
+
+	<select id="querySupervise_nameToArea_no" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT area_no,area_name FROM gen_area WHERE area_name=#area_name# AND area_rank='1'
+	</select>
+	
+	<!-- 省级代理List查询条数 -->
+	<select id="querySuperviseAreaCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) 
+		FROM hc_statInfo_province p WHERE 1=1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_time">
+				p.order_time<![CDATA[>=]]>
+				#begin_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+				p.order_time<![CDATA[<]]>DATE_ADD(#end_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isEqual compareValue="-1" property="province_id">
+				<isNotEmpty prepend=" and " property="supervise_name_List">
+					province_name in
+					<iterate open="(" close=")" conjunction=","
+						property="supervise_name_List">
+						#supervise_name_List[]:VARCHAR#
+					</iterate>
+				</isNotEmpty>
+			</isEqual>
+			<isNotEqual compareValue="-1" property="province_id">
+				<isNotEmpty prepend=" and " property="province_id">
+					province_id =#province_id#
+				</isNotEmpty>
+			</isNotEqual>
+		</dynamic>
+	</select>
+	<!-- 省级代理List -->
+	<select id="querySuperviseAreaList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT DATE_FORMAT(p.order_time,'%Y-%m-%d')AS order_time,p.province_name,p.province_id,p.user_count,p.activeAgent,
+		p.apply_count,p.not_pass,p.wait_pass,p.order_count,p.ticket_count,p.bx_count,p.bx_Money_Sum,p.succeed_count,p.defeated_count,
+		p.want_outTicket,p.pay_fall,p.succeed_money,p.defeated_money
+		FROM hc_statInfo_province p WHERE 1=1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_time">
+				p.order_time<![CDATA[>=]]>
+				#begin_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+				p.order_time<![CDATA[<]]>DATE_ADD(#end_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isEqual compareValue="-1" property="province_id">
+				<isNotEmpty prepend=" and " property="supervise_name_List">
+					province_name in
+					<iterate open="(" close=")" conjunction=","
+						property="supervise_name_List">
+						#supervise_name_List[]:VARCHAR#
+					</iterate>
+				</isNotEmpty>
+			</isEqual>
+			<isNotEqual compareValue="-1" property="province_id">
+				<isNotEmpty prepend=" and " property="province_id">
+					province_id =#province_id#
+				</isNotEmpty>
+			</isNotEqual>
+		</dynamic>
+		ORDER BY p.order_time DESC LIMIT #everyPagefrom:Integer#, #pageSize:Integer#
+	</select>
+</sqlMap>

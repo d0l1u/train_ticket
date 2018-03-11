@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/flt_web/flt_web.iml" filepath="$PROJECT_DIR$/flt_web/flt_web.iml" />
       <module fileurl="file://$PROJECT_DIR$/train19eManage/train19eManage.iml" filepath="$PROJECT_DIR$/train19eManage/train19eManage.iml" />
       <module fileurl="file://$PROJECT_DIR$/train19etripTuniu/train19etripTuniu.iml" filepath="$PROJECT_DIR$/train19etripTuniu/train19etripTuniu.iml" />
       <module fileurl="file://$PROJECT_DIR$/train_gt/train_gt.iml" filepath="$PROJECT_DIR$/train_gt/train_gt.iml" />

@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="allInsurance">
+	
+	<!-- 查询条数 -->
+	<select id="queryInsuranceListCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		  FROM
+		    cp_orderinfo_bx bx 
+		    LEFT JOIN
+		    cp_orderinfo cp 
+		    ON bx.order_id = cp.order_id 
+		  WHERE cp.order_status = '99'
+		  and	bx.bx_type = '1'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				bx.order_id=#order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="telephone">
+				bx.telephone=#telephone:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_create_time">
+				bx.create_time <![CDATA[>=]]> #begin_create_time:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_create_time">
+				bx.create_time <![CDATA[<]]> DATE_ADD(#end_create_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="bx_channel">
+			bx.bx_channel in
+			<iterate open="(" close=")" conjunction=","
+					property="bx_channel">
+					#bx_channel[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="bx_code">
+				bx.bx_code=#bx_code:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="bx_status">
+				bx.bx_status in
+				<iterate open="(" close=")" conjunction=","
+					property="bx_status">
+					#bx_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="channel">
+				cp.channel in
+				<iterate open="(" close=")" conjunction=","
+					property="channel">
+					#channel[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询列表 -->
+	<select id="queryInsuranceList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  bx.bx_id,
+		  bx.order_id,
+		  bx.cp_id,
+		  bx.from_name,
+		  bx.to_name,
+		  bx.user_name,
+		  bx.create_time,
+		  bx.telephone,
+		  bx.bx_status,
+		  bx.bx_channel,
+		  bx.pay_money,
+		  bx.buy_money,
+		  bx.effect_date,
+		  bx.train_no,
+		  bx.bx_code,
+		  bx.fail_reason,
+    	  cp.channel
+		FROM
+		  cp_orderinfo_bx bx 
+		  LEFT JOIN
+		  cp_orderinfo cp
+		  ON bx.order_id = cp.order_id 
+		WHERE cp.order_status = '99'
+		 and	bx.bx_type = '1'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				bx.order_id=#order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="telephone">
+				bx.telephone=#telephone:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_create_time">
+				bx.create_time <![CDATA[>=]]> #begin_create_time:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_create_time">
+				bx.create_time <![CDATA[<]]> DATE_ADD(#end_create_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+				<isNotEmpty prepend=" and " property="bx_channel">
+				bx.bx_channel in
+				<iterate open="(" close=")" conjunction=","
+						property="bx_channel">
+						#bx_channel[]:VARCHAR#
+					</iterate>
+				</isNotEmpty>
+			<isNotEmpty prepend=" and " property="bx_code">
+				bx.bx_code=#bx_code:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fail_reason">
+				bx.fail_reason=#fail_reason:VARCHAR#
+			</isNotEmpty>
+				<isNotEmpty prepend=" and " property="bx_status">
+					bx.bx_status in
+					<iterate open="(" close=")" conjunction=","
+						property="bx_status">
+						#bx_status[]:VARCHAR#
+					</iterate>
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="channel">
+					cp.channel in
+					<iterate open="(" close=")" conjunction=","
+						property="channel">
+						#channel[]:VARCHAR#
+					</iterate>
+				</isNotEmpty>
+		</dynamic>
+		ORDER BY bx.create_time DESC LIMIT #everyPagefrom:Integer#, #pageSize:Integer#
+	</select>
+	
+	<!-- 查询预订订单信息 -->
+	<select id="queryAllBookOrderInfo" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT 
+		  cp.order_id,
+		  cp.order_status,
+		  cp.pay_money,
+		  DATE_FORMAT(cp.pay_time, '%Y-%m-%d %H:%i:%s' ) AS pay_time,
+		  cp.out_ticket_billno,
+		  cp.out_ticket_type,
+		  DATE_FORMAT(cp.out_ticket_time, '%Y-%m-%d %H:%i:%s' ) AS out_ticket_time,
+		  NULL AS fund_type,
+		  cp.from_city,
+		  cp.to_city,
+		  DATE_FORMAT(cp.from_time, '%H:%i') AS from_time,
+		  DATE_FORMAT(cp.to_time, '%H:%i') AS to_time,
+		  cp.travel_time,
+		  cp.pay_money,
+		  cp.bank_pay_seq AS bank_pay_seq,
+		  ps.link_name,
+		  ps.link_phone,
+		  ps.link_mail,
+		  cp.train_no,
+		  cp.seat_type,
+		  ps.link_address,
+		  ps.pay_money,
+		  ps.ps_status,
+		  cp.buy_money,
+		  ps.ps_billno,
+		  ps.ps_company 
+		FROM
+		  cp_orderinfo cp 
+		  LEFT JOIN
+		  cp_orderinfo_ps ps 
+		  ON cp.order_id = ps.order_id
+		WHERE
+		  cp.order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 查询明细 -->
+	<select id="queryInsuranceInfo" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  bx.bx_id,
+		  bx.order_id,
+		  bx.cp_id,
+		  bx.from_name,
+		  bx.to_name,
+		  bx.ids_type,
+		  bx.user_name,
+		  bx.user_ids,
+		  bx.create_time,
+		  bx.telephone,
+		  bx.bx_status,
+		  bx.bx_code,
+		  bx.pay_money,
+		  bx.buy_money,
+		  bx.bx_channel,
+		  bx.effect_date,
+		  bx.train_no 
+		FROM
+		  cp_orderinfo_bx bx 
+		WHERE bx.order_id=#order_id# AND bx.bx_id=#bx_id#
+	</select>
+	
+	<!-- 添加日志 -->
+	<insert id="addLog" parameterClass="java.util.HashMap">
+		INSERT INTO cp_orderinfo_bx_history (
+		  order_id,
+		  order_optlog,
+		  create_time,
+		  opter,
+		  bx_code
+		) 
+		VALUES
+		  (#order_id#,#log#,NOW(),#opt_person#,#bx_code#) 
+	</insert>
+	
+	<!-- 查询日志 -->
+	<select id="queryLog" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT 
+		  hs.history_id,
+		  hs.order_optlog,
+		  DATE_FORMAT(
+		    hs.create_time, '%Y-%m-%d %H:%i:%s') AS create_time,
+		  hs.opter 
+		FROM
+		  cp_orderinfo_bx_history hs 
+		WHERE hs.order_id = #order_id:VARCHAR#
+		ORDER BY hs.create_time ASC 
+	</select>
+	
+	<!-- 重新投保 -->
+	<update id="updateInsuranceStatusSendAgain" parameterClass="java.util.HashMap">
+		UPDATE 
+		  cp_orderinfo_bx bx 
+		SET
+		  bx.bx_status = #bx_status# WHERE bx.bx_id=#bx_id# AND bx.order_id=#order_id# 
+   	</update>
+	
+	<!-- 退保 -->
+	<update id="updateInsuranceStatusNeedCancel" parameterClass="java.util.HashMap">
+		UPDATE 
+		  cp_orderinfo_bx bx 
+		SET
+		  bx.bx_status = #bx_status# WHERE bx.bx_id=#bx_id# AND bx.order_id=#order_id# 
+  	</update>
+  	
+  	
+  	<!-- 批量重新投保 -->
+	<update id="plUpdateAgain" parameterClass="java.util.HashMap">
+		UPDATE 
+		  cp_orderinfo_bx bx 
+		SET
+		  bx.bx_status =0 WHERE bx.bx_status=5 and create_time>='2015-08-12'
+   	</update>
+</sqlMap>

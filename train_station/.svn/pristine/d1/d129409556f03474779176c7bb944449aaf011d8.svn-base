@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="station">
+	<!-- 通过typeAlias使得我们在下面使用Student实体类的时候不需要写包名 -->
+	<typeAlias alias="station" type="com.l9e.transaction.vo.Station" />
+
+	<select id="queryStation" parameterClass="java.util.HashMap"
+		resultClass="com.l9e.transaction.vo.Station">
+		select station_id as stationId, station_code as stationCode,
+		station_name as
+		stationName, station_pinyin as stationPinyin,
+		first_letters_of_station
+		as firstLettersOfStation, city, level,
+		abbreviated_station as
+		abbreviatedStation from station where 1 = 1
+		<isNotEmpty prepend=" and " property="stationName">
+			station_name=#stationName:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="stationCode">
+			station_code =
+			#stationCode:VARCHAR#
+		</isNotEmpty>
+	</select>
+
+	<select id="queryStationFromZm" parameterClass="java.util.HashMap"
+		resultClass="com.l9e.transaction.vo.Station">
+		select lh as stationCode, zmhz as stationName,py as
+		firstLettersOfStation, city from t_zm where 1 = 1
+		<isNotEmpty prepend=" and " property="stationName">
+			zmhz=#stationName:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="stationCode">
+			lh =
+			#stationCode:VARCHAR#
+		</isNotEmpty>
+	</select>
+
+	<update id="updateStation" parameterClass="com.l9e.transaction.vo.Station">
+		update station set status = #status:VARCHAR#,
+		station_name=#stationName:VARCHAR#, station_pinyin =
+		#stationPinyin:VARCHAR#,
+		first_letters_of_station=#firstLettersOfStation:VARCHAR#,
+		abbreviated_station=#abbreviatedStation:VARCHAR#
+		where station_code =
+		#stationCode:VARCHAR#
+		<isNotEmpty prepend=" and " property="stationId">
+			station_id=#stationId:Integer#
+		</isNotEmpty>
+	</update>
+
+	<update id="updateStationOfZm" parameterClass="com.l9e.transaction.vo.Station">
+		update t_zm set
+		zmhz=#stationName:VARCHAR#, py=#firstLettersOfStation:VARCHAR# where
+		lh = #stationCode:VARCHAR#
+	</update>
+
+	<insert id="insertStation" parameterClass="com.l9e.transaction.vo.Station">
+		insert station
+		(station_code, station_name, first_letters_of_station,
+		station_pinyin,
+		abbreviated_station, status) value
+		(#stationCode:VARCHAR#,
+		#stationName:VARCHAR#,
+		#firstLettersOfStation:VARCHAR#,
+		#stationPinyin:VARCHAR#,
+		#abbreviatedStation:VARCHAR#,
+		#status:VARCHAR#)
+	</insert>
+
+	<insert id="insertStationIntoZm" parameterClass="com.l9e.transaction.vo.Station">
+		insert into
+		t_zm
+		(lh, zmhz, py,city) value
+		(#stationCode:VARCHAR#,
+		#stationName:VARCHAR#,
+		#firstLettersOfStation:VARCHAR#, #city:VARCHAR#)
+	</insert>
+</sqlMap>

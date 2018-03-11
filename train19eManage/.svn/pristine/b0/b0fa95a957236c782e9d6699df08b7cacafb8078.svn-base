@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="orderInfoToCpStatOne">
+
+	<!-- 查询总数 -->
+	<select id="query_Hc_StatInfo" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM hc_statInfo
+	</select>
+	<!-- 查询最大和最小时间 -->
+	<select id="queryDate" resultClass="java.util.HashMap">
+		SELECT DATE_FORMAT(MAX(create_time),'%Y-%m-%d')AS
+		max_time,DATE_FORMAT(MIN(create_time),'%Y-%m-%d')AS min_time
+		FROM hc_orderinfo
+	</select>
+	<!-- 查询时间 -->
+	<select id="createDateList" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT DISTINCT DATE_FORMAT(create_time,'%Y-%m-%d')AS create_time  FROM
+		hc_orderinfo WHERE 1=1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="min_time">
+				create_time<![CDATA[>=]]>
+				#min_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="max_time">
+				create_time<![CDATA[<]]>DATE_ADD(#max_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 查询当天支付失败的个数 -->
+	<select id="queryPre_pay_defeated" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM hc_orderinfo WHERE order_status='99' AND DATE_FORMAT(create_time,'%Y-%M-%D')=DATE_FORMAT(#date_time#,'%Y-%M-%D')
+	</select>
+
+	<!-- 查询当天总条数 -->
+	<select id="queryPre_day_order_count"
+		parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM hc_orderinfo WHERE
+		DATE_FORMAT(create_time,'%Y-%M-%D')=DATE_FORMAT(#date_time#,'%Y-%M-%D')
+	</select>
+
+	<!-- 查询当天的票数 -->
+	<select id="queryPre_ticket_count" parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM hc_orderinfo_cp cp LEFT JOIN hc_orderinfo hc ON cp.order_id=hc.order_id WHERE 
+		DATE_FORMAT(hc.create_time,'%Y-%M-%D')=DATE_FORMAT(#create_time#,'%Y-%M-%D') AND hc.order_status='44'
+	</select>
+
+	<!-- 查询当天订单失败的条数 -->
+	<select id="queryPre_day_out_ticket_defeated"
+		parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM hc_orderinfo WHERE order_status ='45' AND
+		DATE_FORMAT(create_time,'%Y-%M-%D')=DATE_FORMAT(#date_time#,'%Y-%M-%D')
+	</select>
+
+	<!-- 查询当天订单成功的条数 -->
+	<select id="queryPre_day_out_ticket_succeed"
+		parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM hc_orderinfo WHERE order_status ='44' AND
+		DATE_FORMAT(create_time,'%Y-%M-%D')=DATE_FORMAT(#date_time#,'%Y-%M-%D')
+	</select>
+
+	<!-- 查询当天订单成功的总价钱 -->
+	<select id="queryPre_succeed_money"
+		parameterClass="java.lang.String" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(ticket_pay_money),0) FROM hc_orderinfo WHERE
+		order_status ='44' AND
+		DATE_FORMAT(create_time,'%Y-%M-%D')=DATE_FORMAT(#date_time#,'%Y-%M-%D')
+	</select>
+
+	<!-- 查询当天订单失败的总价钱 -->
+	<select id="queryPre_defeated_money"
+		parameterClass="java.lang.String" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(ticket_pay_money),0) FROM hc_orderinfo WHERE
+		order_status ='45' AND
+		DATE_FORMAT(create_time,'%Y-%M-%D')=DATE_FORMAT(#date_time#,'%Y-%M-%D')
+	</select>
+
+	<!-- 统计预下单的个数 -->
+	<select id="queryPre_preparative_count"
+		parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM hc_orderinfo WHERE order_status='00' AND
+		DATE_FORMAT(create_time,'%Y-%M-%D')=DATE_FORMAT(#date_time#,'%Y-%M-%D')
+	</select>
+
+	<!-- 统计退款完成的个数 -->
+	<select id="queryPre_refund_count" parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM (
+		SELECT DISTINCT order_id FROM hc_orderinfo_refundstream 
+		WHERE refund_status='44' AND
+		DATE_FORMAT(refund_time,'%Y-%M-%D')=DATE_FORMAT(#date_time#,'%Y-%M-%D')
+		AND refund_type <![CDATA[<>]]>2
+		)AS A
+	</select>
+
+
+	<!-- 查看当天出售的保险总数 -->
+	<select id="queryPre_bx_count" parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM cp_orderinfo_bx WHERE bx_status IN(2,5) AND order_channel='19e' AND
+		DATE_FORMAT(create_time,'%Y-%M-%D')=DATE_FORMAT(#date_time#,'%Y-%M-%D')
+	</select>
+
+	<!-- 查看当天出售保险的总价钱 -->
+	<select id="queryPre_bx_countMoney"
+		parameterClass="java.lang.String" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(pay_money),0) FROM cp_orderinfo_bx WHERE
+		bx_status IN(2,5) AND order_channel='19e' AND
+		DATE_FORMAT(create_time,'%Y-%M-%D')=DATE_FORMAT(#date_time#,'%Y-%M-%D')
+	</select>
+	
+	<!-- 查询天活跃数 -->
+	<select id="queryPre_activeAgent" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM(
+		SELECT DISTINCT hu.user_id FROM hc_userinfo hu  
+		LEFT JOIN hc_orderinfo hc ON hc.dealer_id=hu.user_id  
+		WHERE hc.order_id IS NOT NULL  
+		AND DATE_FORMAT(hc.create_time,'%Y-%m-%d') = DATE_FORMAT(#date_time#,'%Y-%m-%d'))AS a
+	</select>
+	
+	<!-- 插入统计完成的信息 -->
+	<insert id="addOrderInfoToCpStat"
+		parameterClass="java.util.HashMap">
+		INSERT INTO hc_statInfo
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="out_ticket_succeed">
+				out_ticket_succeed
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="out_ticket_defeated">
+				out_ticket_defeated
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="preparative_count">
+				preparative_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_defeated">
+				pay_defeated
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_count">
+				refund_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ticket_count">
+				ticket_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="order_count">
+				order_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="succeed_money">
+				succeed_money
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="defeated_money">
+				defeated_money
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="bx_count">
+				bx_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="bx_countMoney">
+				bx_countMoney
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="succeed_odds">
+				succeed_odds
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="defeated_odds">
+				defeated_odds
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="succeed_cgl">
+				succeed_cgl
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="succeed_sbl">
+				succeed_sbl
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="order_time">
+				order_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="activeAgent">
+				activeAgent
+			</isNotEmpty>
+			,create_time
+
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="out_ticket_succeed">
+				#out_ticket_succeed#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="out_ticket_defeated">
+				#out_ticket_defeated#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="preparative_count">
+				#preparative_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_defeated">
+				#pay_defeated#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_count">
+				#refund_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ticket_count">
+				#ticket_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="order_count">
+				#order_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="succeed_money">
+				#succeed_money#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="defeated_money">
+				#defeated_money#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="bx_count">
+				#bx_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="bx_countMoney">
+				#bx_countMoney#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="succeed_odds">
+				#succeed_odds#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="defeated_odds">
+				#defeated_odds#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="succeed_cgl">
+				#succeed_cgl#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="succeed_sbl">
+				#succeed_sbl#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="order_time">
+				#order_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="activeAgent">
+				#activeAgent#
+			</isNotEmpty>
+			,now() )
+		</dynamic>
+	</insert>
+</sqlMap>

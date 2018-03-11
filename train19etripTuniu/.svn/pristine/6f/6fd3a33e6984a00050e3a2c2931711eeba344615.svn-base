@@ -1,0 +1,11 @@
+msm_url=http://20.1.2.112:18090/sendSms
+identityURL=http://10.3.12.95:18070/l9helper/interface.do
+
+robotUrl=http://120.26.6.116:8091/RunScript
+checkUrl=http://120.26.6.116:18090/RunScript
+changeUrl=http://43.241.225.165:8080/RunScript
+
+#帐号服务
+accountUrl=http://10.16.22.31:19020/accountN/getChannelAccount
+
+captchaResultUrl=http://www.19trip.com/tuniuCaptcha/tuniu/captcha

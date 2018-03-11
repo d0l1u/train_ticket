@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="tuniuTimeOutOrder">
+	<!-- 查询预订订单列表 -->
+	<select id="queryTuniuBookList" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT tuniu.order_id, tuniu.from_city, tuniu.to_city,
+			CONVERT(tuniu.pay_money, CHAR) AS pay_money, tuniu.order_status,
+			DATE_FORMAT(tuniu.from_time,'%Y-%m-%d %H:%i:%s') AS from_time,
+			DATE_FORMAT(tuniu.out_ticket_time,'%Y-%m-%d %H:%i:%s') AS out_ticket_time, tuniu.train_no, 
+			tuniu.out_ticket_billno, tuniu.opt_ren, 
+			CONVERT(bo.notify_status, CHAR) AS notify_status_book,
+			CONVERT(ou.notify_status, CHAR) AS notify_status_out,
+			DATE_FORMAT(tuniu.create_time,'%Y-%m-%d %H:%i:%s') AS create_time, tuniu.ticket_num
+		FROM tuniu_orderinfo AS tuniu 
+		LEFT JOIN tuniu_notify_book bo ON bo.order_id=tuniu.order_id
+		LEFT JOIN tuniu_notify_out ou  ON ou.order_id=tuniu.order_id
+		WHERE 1 = 1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				tuniu.order_id=#order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				tuniu.create_time
+				<![CDATA[>=]]>
+				#begin_info_time:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				tuniu.create_time
+				<![CDATA[<]]>
+				DATE_ADD(#end_info_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_status">
+				tuniu.order_status in
+				<iterate open="(" close=")" conjunction=","
+					property="order_status">
+					#order_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="notify_status">
+				(
+				bo.notify_status in
+				<iterate open="(" close=")" conjunction=","
+					property="notify_status_book">
+					#notify_status_book[]:VARCHAR#
+				</iterate>
+				or	ou.notify_status in
+				<iterate open="(" close=")" conjunction=","
+					property="notify_status_out">
+					#notify_status_out[]:VARCHAR#
+				</iterate>
+				)
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY tuniu.create_time DESC LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select>
+
+
+	<!-- 查询预订订单信息 -->
+	<select id="queryTuniuBookOrderInfo" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">				
+		SELECT 
+		  tuniu.order_id,
+		  tuniu.order_status,
+		  tuniu.pay_money,
+		  tuniu.out_ticket_billno,
+		  DATE_FORMAT(tuniu.out_ticket_time,'%Y-%m-%d %H:%i:%s') AS out_ticket_time,
+		  tuniu.from_city,
+		  tuniu.to_city,
+		  tuniu.from_time,
+		  tuniu.to_time,
+		  tuniu.pay_money,
+		  tuniu.train_no,
+		  tuniu.buy_money,
+		  tuniu.out_ticket_billno 
+		FROM
+		  tuniu_orderinfo AS tuniu 
+		WHERE tuniu.order_id=#order_id:VARCHAR#
+	</select>
+
+	<!-- 查询预订订单条数 -->
+	<select id="queryTuniuBookListCount" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(tuniu.order_id) FROM tuniu_orderinfo AS tuniu 
+		LEFT JOIN tuniu_notify_book bo ON bo.order_id=tuniu.order_id
+		LEFT JOIN tuniu_notify_out ou  ON ou.order_id=tuniu.order_id
+		WHERE 1 = 1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				tuniu.order_id=#order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				tuniu.create_time
+				<![CDATA[>=]]>
+				#begin_info_time:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				tuniu.create_time
+				<![CDATA[<]]>
+				DATE_ADD(#end_info_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_status">
+				tuniu.order_status in
+				<iterate open="(" close=")" conjunction=","
+					property="order_status">
+					#order_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="notify_status">
+				(
+				bo.notify_status in
+				<iterate open="(" close=")" conjunction=","
+					property="notify_status_book">
+					#notify_status_book[]:VARCHAR#
+				</iterate>
+				or	ou.notify_status in
+				<iterate open="(" close=")" conjunction=","
+					property="notify_status_out">
+					#notify_status_out[]:VARCHAR#
+				</iterate>
+				)
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 更新操作人 -->
+	<update id="updateTuniuEndOpt_Ren" parameterClass="java.util.HashMap">
+		UPDATE tuniu_orderinfo
+		<dynamic prepend="SET">
+			<isNotEmpty prepend="," property="opt_ren">
+				opt_ren=#opt_ren#
+			</isNotEmpty>
+		</dynamic>
+		WHERE order_id = #order_id#
+	</update>
+
+	<!-- 查询预订订单-车票 -->
+	<select id="queryTuniuBookOrderInfoCp" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT 
+  			cp.cp_id,
+  			cp.order_id,
+  			cp.user_name,
+  			cp.train_box,
+  			cp.seat_no,
+  			cp.ticket_type,
+  			cp.ids_type,
+  			cp.user_ids,
+  			cp.telephone,
+  			cp.create_time,
+  			cp.pay_money,
+  			cp.buy_money,
+  			cp.seat_type
+		FROM
+  			tuniu_orderinfo_cp cp 
+		WHERE cp.order_id=#order_id:VARCHAR#
+	</select>
+
+	<!-- 查询预订订单-保险 -->
+	<select id="queryTuniuBookOrderInfoBx" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT bx.bx_id,bx.order_id,bx.from_name,bx.to_name,bx.ids_type,bx.user_name,
+			bx.user_ids,bx.create_time,bx.modify_time,bx.telephone,bx.bx_status,
+			bx.bx_code,bx.bx_billno,bx.pay_money,bx.buy_money 
+		FROM cp_orderinfo_bx bx
+		WHERE bx.order_id=#order_id:VARCHAR#
+	</select>
+
+	<!-- 查询预订订单-历史记录 -->
+	<select id="queryTuniuHistroyByOrderId" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT hs.history_id, hs.order_optlog,
+			DATE_FORMAT(hs.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+			hs.opter 
+		FROM tuniu_orderinfo_history hs 
+		WHERE hs.order_id=#order_id:VARCHAR# order by hs.create_time asc
+	</select>
+
+	<!-- 查询退款明细 -->
+	<select id="queryTuniuOutTicketInfo" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT hm.order_id,hm.refund_money,
+			DATE_FORMAT(hm.create_time,'%Y-%m-%d %H:%i:%s')AS create_time,
+			hm.refund_time,hm.user_remark,hm.our_remark,
+			hm.refund_plan_time, hm.refund_status,
+			hm.opt_person,hm.refund_type 
+		FROM tuniu_orderinfo_refundstream hm 
+		where hm.order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 增加操作日志 -->
+	<insert id="addTuniuUserAccount" parameterClass="java.util.HashMap">
+		INSERT INTO tuniu_orderinfo_history (order_id,order_optlog,create_time,opter)
+		VALUES(#order_id#,#userAccount#,NOW(),#user#)
+	</insert>
+	
+	<!-- 查询预订订单信息 -->
+	<select id="queryBookOrderInfo" parameterClass="java.lang.String" resultClass="java.util.HashMap">		
+		SELECT hc.order_id,hc.order_status,hc.pay_money,
+			DATE_FORMAT(hc.pay_time,'%Y-%m-%d %H:%i:%s') AS pay_time,
+			hc.out_ticket_billno,hc.out_ticket_type,
+			DATE_FORMAT(hc.out_ticket_time,'%Y-%m-%d %H:%i:%s') AS out_ticket_time, 
+			NULL AS fund_type,hc.from_station from_city,hc.arrive_station to_city,
+			DATE_FORMAT(hc.from_time,'%H:%i') AS from_time, 
+			DATE_FORMAT(hc.arrive_time,'%H:%i') AS to_time,hc.travel_time, 
+			CONVERT(hc.ticket_pay_money,CHAR) AS ticket_pay_money,
+			CONVERT(hc.bx_pay_money,CHAR) AS bx_pay_money,
+			hc.pay_money,hc.train_no,
+			hc.seat_type, hc.buy_money,
+			IFNULL(hc.refund_deadline_ignore,0)AS refund_deadline_ignore,
+			hc.refund_total
+		FROM tuniu_orderinfo hc 
+		WHERE hc.order_id=#order_id:VARCHAR#
+	</select>
+	
+	
+	<!-- 查询超时订单的总条数 -->
+	<select id="queryTuniuTimeOutListCount" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(tuniu.order_id) FROM tuniu_order_pushtimeout AS tuniu 
+		WHERE 1 = 1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				tuniu.order_id=#order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				tuniu.create_time
+				<![CDATA[>=]]>
+				#begin_info_time:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				tuniu.create_time
+				<![CDATA[<]]>
+				DATE_ADD(#end_info_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="status">
+				tuniu.status in
+				<iterate open="(" close=")" conjunction=","
+					property="status">
+					#status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="deal_status">
+				(
+				tuniu.deal_status in
+				<iterate open="(" close=")" conjunction=","
+					property="deal_status">
+					#deal_status[]:VARCHAR#
+				</iterate>
+				)
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询超时订单记录 -->
+	<select id="queryTuniuTimeOutList" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT 
+		CAST(tuniu.push_id AS CHAR) AS push_id,
+		tuniu.order_id   AS  order_id,
+		CAST(tuniu.status AS CHAR)  AS status,
+		tuniu.msg AS msg,
+		tuniu.updateTime  AS updateTime,
+		tuniu.deal_status AS deal_status,
+		DATE_FORMAT(tuniu.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+		tuniu.opt_person  AS opt_person
+		FROM tuniu_order_pushtimeout AS tuniu
+		WHERE 1 = 1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				tuniu.order_id=#order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				tuniu.create_time
+				<![CDATA[>=]]>
+				#begin_info_time:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				tuniu.create_time
+				<![CDATA[<]]>
+				DATE_ADD(#end_info_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="status">
+				tuniu.status in
+				<iterate open="(" close=")" conjunction=","
+					property="status">
+					#status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="deal_status">
+				(
+				tuniu.deal_status in
+				<iterate open="(" close=")" conjunction=","
+					property="deal_status">
+					#deal_status[]:VARCHAR#
+				</iterate>
+				)
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY tuniu.create_time DESC LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select>
+	
+	
+	<update id="changeDealStatus" parameterClass="java.util.HashMap">
+		UPDATE  tuniu_order_pushtimeout  SET  deal_status=#deal_status:VARCHAR# ,opt_person =#opt_ren:VARCHAR#
+		WHERE  order_id =#order_id:VARCHAR# 
+		<dynamic prepend=" ">
+			<isNotEmpty prepend=" and " property="changeId">
+				changeId =#changeId:VARCHAR# 
+			</isNotEmpty>
+		</dynamic>
+		and  status=#type_status:INTEGER#
+	</update>
+	
+	
+	
+	
+</sqlMap>

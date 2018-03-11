@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="remind">
+	<!-- 查询各渠道未退款数量 -->
+	<select id="query19eFailCount"  resultClass="java.lang.Integer">
+		SELECT COUNT(1) 
+		FROM hc_orderinfo_refundstream hm LEFT JOIN hc_orderinfo ho ON ho.order_id=hm.order_id
+		WHERE hm.refund_status IN ('00','03','07','09')   AND ho.from_time>NOW()
+	</select>
+	
+	<select id="queryQunarFailCount"  resultClass="java.lang.Integer">
+		 SELECT COUNT(1) FROM
+		  qunar_orderinfo_refund AS qof 
+		WHERE qof.refund_status in ('03','33','07')
+
+
+	</select>
+	
+	<select id="queryExtFailCount"  resultClass="java.lang.Integer">
+		SELECT COUNT(1) 
+		FROM ext_orderinfo_refundstream hm 
+		WHERE hm.refund_status = '00' 
+
+	</select>
+	
+	<select id="queryB2CFailCount"  resultClass="java.lang.Integer">
+		SELECT COUNT(1) 
+		FROM app_orderinfo_refundstream hm 
+		WHERE hm.refund_status= '00'
+		
+	</select>
+	
+	<select id="queryinnerFailCount"  resultClass="java.lang.Integer">
+		 SELECT COUNT(1) 
+		FROM inner_orderinfo_refundstream hm 
+		WHERE hm.refund_status='00'   
+	</select>
+	
+	<select id="queryElongFailCount"  resultClass="java.lang.Integer">
+ 		SELECT COUNT(1) 
+		FROM elong_orderinfo_refundstream hm 
+		WHERE hm.channel='elong' AND
+		hm.refund_status in ('03','33','07','72','73')
+
+	</select>
+	<select id="queryTcFailCount"  resultClass="java.lang.Integer">
+ 		SELECT COUNT(1) 
+		FROM elong_orderinfo_refundstream hm 
+		WHERE hm.channel='tongcheng' AND 	hm.refund_status in ('03','33','07','72','73')
+	</select>
+	
+	<select id="queryAllRefundCount"  parameterClass="java.lang.String" resultClass="java.lang.Integer">
+ 		SELECT COUNT(1) FROM cp_orderinfo_refund where order_status in ('03','07','33') AND	channel = #channel#
+	</select>
+	
+	<select id="querycomplainCount"  resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(cc.complain_id) 
+		FROM
+		  cp_complain cc
+		WHERE cc.reply_season='00'
+	</select>
+	<select id="querybxCount"  resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		    cp_orderinfo_bx bx 
+		    LEFT JOIN
+		    cp_orderinfo cp 
+		    ON bx.order_id = cp.order_id 
+		  WHERE cp.order_status = '99'
+		  AND	bx.bx_type = '1' AND bx.bx_status='0'
+	</select>
+	
+	<!-- 查询启动机器人数 -->
+	<select id="queryRobotCount" resultClass="java.util.HashMap">
+		SELECT COUNT(1) as count,worker_type FROM cp_workerinfo WHERE worker_status = '00' GROUP BY worker_type
+	</select>
+	<!-- 查询各渠道通知失败数量 -->
+    <select id="bookQunarCount"  resultClass="java.lang.Integer">
+	SELECT COUNT(1) FROM qunar_orderinfo WHERE ext_field1='0'
+	</select>
+	<select id="bookElongCount"  resultClass="java.lang.Integer">
+	SELECT COUNT(1) FROM elong_orderinfo WHERE channel='elong' AND notice_status='33'
+	</select>
+	<select id="bookTcCount"  resultClass="java.lang.Integer">
+	SELECT COUNT(1) FROM elong_orderinfo WHERE channel='tongcheng' AND notice_status='33'
+	</select>
+	<select id="bookExtCount"  resultClass="java.lang.Integer">
+	SELECT COUNT(1) FROM ext_orderinfo ext 
+	LEFT JOIN ext_orderinfo_returnnotify fy ON fy.order_id=ext.order_id 
+	WHERE fy.notify_status='44' 
+	</select>
+	<!-- 新增查询美团，高铁，途牛通知失败数量 -->
+	<select id="bookGtCount"  resultClass="java.lang.Integer">
+	SELECT COUNT(1) FROM gt_orderinfo_returnnotify WHERE notify_status='44' and create_time>'2017-08-01'
+	</select>
+	
+	<select id="bookMtCount"  resultClass="java.lang.Integer">
+	SELECT COUNT(1) FROM mt_orderinfo WHERE notice_status='33' and create_time>'2017-08-01'
+	</select>
+	
+	<select id="bookTuniuCount"  resultClass="java.lang.Integer">
+	 SELECT (SELECT COUNT(1) FROM tuniu_notify_book WHERE notify_status='33' AND create_time>'2017-08-01')+(SELECT COUNT(1) FROM tuniu_notify_out WHERE notify_status='33' AND create_time>'2017-08-01') AS  number
+	</select>
+	
+	<select id="refundQunarCount"  resultClass="java.lang.Integer">
+	SELECT COUNT(1) FROM qunar_orderinfo_refund WHERE notify_status='33'
+	</select>
+	<select id="refundElongCount"  resultClass="java.lang.Integer">
+	SELECT COUNT(1) FROM elong_orderinfo_refundstream WHERE notify_status='33' AND channel='elong' 
+	</select>
+	<select id="refundTcCount"  resultClass="java.lang.Integer">
+	SELECT COUNT(1) FROM elong_orderinfo_refundstream WHERE notify_status='33' AND channel='tongcheng' 
+	</select>
+	<select id="refundExtCount"  resultClass="java.lang.Integer">
+	SELECT COUNT(1) FROM ext_orderinfo_refundstream ext 
+	LEFT JOIN ext_orderinfo_refundnotify fy ON fy.order_id=ext.order_id 
+	WHERE fy.notify_status='44'
+	</select>
+	
+	
+	<!-- 打码 -->
+	<!-- 去哪打码方式 -->
+	<select id="codeQunarType" resultClass="java.lang.String"  parameterClass="java.lang.String" >
+		select setting_value from train_system_setting where setting_name='qunar_play_code'
+	</select>
+		<!-- 当前未打码数 -->
+	<select id="queryUncode" resultClass="java.lang.Integer"  parameterClass="java.lang.String" >
+		select count(1) from rh_picture where finish_time is null and effect_time > now() and channel=#channel#
+	</select>
+		<!-- 当前打码人数 -->
+	<select id="queryAdminCurrentNameCount" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM (SELECT username,real_name FROM rh_user WHERE login_status='1'  
+		AND DATE_FORMAT(last_login_time,'%Y-%m-%d')=DATE_FORMAT(CURDATE(),'%Y-%m-%d')) AS temp
+	</select>
+	
+	<!-- 查询当天打码总数信息 -->
+	<select id="queryCodeCountToday" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM rh_picture WHERE DATE_FORMAT(create_time,'%Y-%m-%d')=DATE_FORMAT(NOW(),'%Y-%m-%d') 
+		AND opt_ren IN (SELECT username FROM rh_user )
+	</select>
+	
+	<!-- 查询当天打码正确1总数信息 -->
+	<select id="queryCodeToday" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM rh_picture WHERE DATE_FORMAT(create_time,'%Y-%m-%d')=DATE_FORMAT(NOW(),'%Y-%m-%d') 
+		AND result_status='1' AND opt_ren IN (SELECT username FROM rh_user )
+	</select>
+	
+	<!-- 查询某用户当天的打码总条数 -->
+	<select id="queryAdminCurrentNameCount2" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM (SELECT username,real_name FROM rh_user WHERE login_status='1'  AND DATE_FORMAT(last_login_time,'%Y-%m-%d')=DATE_FORMAT(CURDATE(),'%Y-%m-%d')  
+		<dynamic prepend="and ">
+			<isNotEmpty prepend=" and " property="department">
+				department=#department#
+			</isNotEmpty>
+			<isEqual compareValue="99" property="department">
+				and department NOT IN ('4','5','00')
+			</isEqual>
+	    </dynamic>
+		) AS temp
+	</select>
+	
+		<!-- 查询各个部门的未打码总数 -->
+	<select id="queryWaitCodeQueenCount" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM rh_picture WHERE STATUS='00' AND effect_time>NOW() AND channel='19e' AND department=#department:varchar#
+	</select>
+	
+	<select id="alterCount" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM elong_orderinfo_change WHERE change_status IN ('13','33') 
+	</select>
+	
+	<select id="queryAccountList" resultClass="java.util.HashMap">
+		SELECT status,COUNT(1) AS num FROM cp_orderinfo_modify_phone GROUP BY status
+	</select>
+	
+	<select id="queryAccountMarginList" resultClass="java.util.HashMap">
+		SELECT channel,count(a.acc_id) as number FROM cp_accountinfo AS a WHERE a.book_num<![CDATA[<=]]>#book_num:INTEGER# AND a.acc_status='33' 
+	 AND is_alive='1'  AND contact_num <![CDATA[<=]]> #contact_num:INTEGER# GROUP BY channel
+	</select>
+	
+	<select id="queryAccountContactList" resultClass="java.util.HashMap">
+		SELECT channel,SUM(a.contact_num) AS number1,SUM(15-a.contact_num) AS number2 FROM cp_accountinfo AS a WHERE a.book_num<![CDATA[<=]]>#book_num:INTEGER# AND a.acc_status='33' 
+	 AND is_alive='1'  AND contact_num <![CDATA[<=]]> #contact_num:INTEGER# GROUP BY channel
+	</select>
+	
+	<select id="queryOrderNumber" resultClass="java.lang.Integer">
+		SELECT COUNT(order_id) FROM cp_orderinfo WHERE create_time<![CDATA[>=]]>DATE_SUB(NOW(),INTERVAL 1 MINUTE)
+	</select>
+	
+	<select id="queryRobotNumber"  parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM cp_workerinfo WHERE worker_type = 1 AND worker_status = #worker_status:VARCHAR#
+	</select>
+	
+	<!-- 查询支付宝余额 -->
+	<select id="queryZhifubaoMoney"   resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+	      SELECT DISTINCT(card_no)as zhifubao,card_remain FROM cp_cardinfo  
+	      WHERE card_no like concat('%',#name#,'%')
+	      <isEqual compareValue="kuyou" property="name">
+	     	 and card_no <![CDATA[>=]]>'huochepiaokuyou02@19e.com.cn' AND card_no <![CDATA[<=]]> 'huochepiaokuyou31@19e.com.cn'
+	      </isEqual>
+	      <isEqual compareValue="19e" property="name">
+	     	 and  card_no <![CDATA[>=]]>'huochepiao19e02@163.com' AND card_no <![CDATA[<=]]> 'huochepiao19e31@163.com'
+	      </isEqual>
+	      order by card_no asc
+	</select>
+	
+</sqlMap>

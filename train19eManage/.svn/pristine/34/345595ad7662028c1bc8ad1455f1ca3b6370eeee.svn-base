@@ -1,0 +1,1032 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="orderForExcel">
+
+	<!-- 查询火车票订单 -->
+	<select id="getOrderForExcelList" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		SELECT ho.order_id,ho.out_ticket_billno,
+		ho.create_time AS create_time,ho.out_ticket_time AS out_ticket_time ,
+		ho.bx_pay_money,ho.server_pay_money,ho.ticket_pay_money,
+		 ho.buy_money,ho.pay_money,
+		(ho.ticket_pay_money-ho.buy_money) AS differ,
+		ho.ticket_num,
+		ho.order_status
+		FROM hc_orderinfo ho 
+		left join cp_orderinfo cp on ho.order_id = cp.order_id 
+		WHERE 1=1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				ho.order_id=#order_id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				ho.create_time
+				<![CDATA[>=]]>
+				DATE_FORMAT(#begin_info_time#,'%Y-%m-%d %H:%i:%s')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				ho.create_time
+				<![CDATA[<]]>
+				DATE_ADD(DATE_FORMAT(#end_info_time#,'%Y-%m-%d
+				%H:%i:%s'),INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_status">
+				ho.order_status in
+				<iterate open="(" close=")" conjunction=","
+					property="order_status">
+					#order_status[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="out_ticket_billno">
+				ho.out_ticket_billno=#out_ticket_billno#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="at_province_id">
+				ho.at_province_id=#at_province_id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="at_city_id">
+				ho.city_id=#at_city_id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_out_time">
+				ho.out_ticket_time <![CDATA[>=]]> DATE_FORMAT(#begin_out_time#,'%Y-%m-%d %H:%i:%s')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_out_time">
+				ho.out_ticket_time <![CDATA[<]]> DATE_ADD(DATE_FORMAT(#end_out_time#,'%Y-%m-%d
+				%H:%i:%s'),INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_source">
+				<iterate open="(" close=")" conjunction=" or " property="order_source">
+					ho.order_id LIKE  CONCAT( #order_source[]:VARCHAR#, '%' ) 
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="manual_order">
+				cp.manual_order=#manual_order#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 退票管理Excel参数查询 -->
+	<select id="getOrderForExcelRefundList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  hm.order_id,
+		  hm.eop_order_id,
+		  hm.cp_id,
+		  hm.refund_money,
+		  hm.actual_refund_money,
+		  DATE_FORMAT(hm.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+		  DATE_FORMAT(hm.verify_time,'%Y-%m-%d %H:%i:%s') AS verify_time,
+		  DATE_FORMAT(hm.refund_plan_time,'%Y-%m-%d %H:%i:%s') AS refund_plan_time,
+		  (hu.user_phone) AS dealer_phone,
+		  hm.alter_tickets_money,
+		  hm.refund_12306_seq,
+		  hm.change_ticket_info
+		FROM
+		  hc_orderinfo_refundstream hm 
+		  LEFT JOIN
+		  hc_orderinfo h 
+		  ON h.order_id = hm.order_id 
+		  LEFT JOIN
+		  hc_userinfo hu 
+		  ON h.dealer_id = hu.user_id 
+		WHERE 1 = 1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				hm.order_id=#order_id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_create_time">
+				hm.create_time
+				<![CDATA[>=]]>
+				DATE_FORMAT(#begin_create_time#,'%Y-%m-%d %H:%i:%s')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_create_time">
+				hm.create_time
+				<![CDATA[<]]>
+				DATE_ADD(DATE_FORMAT(#end_create_time#,'%Y-%m-%d
+				%H:%i:%s'),INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_status">
+				hm.refund_status in
+				<iterate open="(" close=")" conjunction=","
+					property="refund_status">
+					#refund_status[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_type">
+				hm.refund_type in
+				<iterate open="(" close=")" conjunction=","
+					property="refund_type">
+					#refund_type[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_source">
+				<iterate open="(" close=")" conjunction=" or " property="order_source">
+					hm.order_id LIKE  CONCAT( #order_source[]:VARCHAR#, '%' ) 
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<!-- 查询保险明细 -->
+	<select id="queryBxInfo" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT COUNT(1)AS bx_count,ROUND(b.pay_money) AS bx_info 
+		FROM cp_orderinfo_bx b WHERE b.order_id=#order_id# AND b.bx_status IN (2,5) GROUP BY b.pay_money
+	</select>
+	
+	<!-- 员工考核统计明细 -->
+	<select id="getOrderForExcelOpterList" parameterClass="java.util.HashMap" 
+		resultClass="java.util.HashMap">
+		SELECT t.tj_time,t.opt_person,t.out_ticket_total,t.refund_total,t.refund_total_meituan ,
+ 		t.refund_total_19e ,t.refund_total_qunar,t.refund_total_ext ,t.refund_total_app,t.refund_total_inner,
+			t.refund_total_elong,t.refund_total_tongcheng ,t.refund_total_gtgj,t.refund_total_tuniu,
+			t.refund_total_ctrip,t.refund_total_differ,t.refund_total_failure,t.refund_total_verify  
+			,t.refund_total_refuse,t.refund_total_holdon
+ 		FROM tj_opter t WHERE 1=1 
+ 		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="opt_person">
+				opt_person=#opt_person#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_time">
+				tj_time
+				<![CDATA[>=]]>
+				DATE_FORMAT(#begin_time#,'%Y-%m-%d %H:%i:%s')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+				tj_time
+				<![CDATA[<]]>
+				DATE_ADD(DATE_FORMAT(#end_time#,'%Y-%m-%d
+				%H:%i:%s'),INTERVAL 1 DAY)
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY t.create_time DESC
+	</select>
+	
+	<!-- 查询出票统计-详细Excel参数 -->
+	<select id="getOrderForExcelProvinceStatList"  parameterClass="java.lang.String" 
+		resultClass="java.util.HashMap">
+		SELECT DATE_FORMAT(hp.order_time,'%Y-%m-%d')AS order_time,hp.province_name,hp.province_id,hp.user_count,hp.activeAgent,
+		hp.apply_count,hp.not_pass,hp.wait_pass,hp.order_count,hp.ticket_count,hp.bx_count,hp.bx_Money_Sum,hp.succeed_money,hp.defeated_money, 
+		hp.succeed_count,hp.defeated_count,hp.pay_fall,hp.want_outTicket FROM hc_statInfo_province hp 
+		WHERE hp.order_time=#create_time# ORDER BY hp.province_id	
+	</select>
+	
+	<!-- 查询截止当日各省销售票数总计 -->
+	<select id="queryProvinceTicketAndMoney" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT CONVERT(IFNULL(SUM(ticket_count),0),CHAR)AS ticket_count, CONVERT(IFNULL(SUM(today_money),0),CHAR)AS today_money FROM hc_statInfo_province 
+		WHERE province_name=#province_name# AND DATE_FORMAT(order_time,'%Y-%m-%d')<![CDATA[<=]]>#create_time#
+	</select>
+	
+	<!-- 合作商户 预订订单列表 -->
+	<select id="queryExtBookList" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT ho.order_id,ho.out_ticket_billno,ho.merchant_id AS dealer_phone,
+		ho.from_station AS from_city, ho.arrive_station AS to_city,ho.train_no,
+		CONCAT(CONVERT(DATE_FORMAT(ho.travel_time,'%Y-%m-%d'),CHAR),' ',ho.from_time,':00') AS from_time, 
+		ho.pay_time,ho.eop_order_id,
+		ho.create_time AS create_time,ho.out_ticket_time,ho.bx_pay_money,
+		ho.ticket_pay_money, ho.buy_money,cp.error_info,
+		(ho.ticket_pay_money-ho.buy_money) AS differ,
+		ho.order_status,ho.pay_money,ho.ticket_num,
+		cp.out_ticket_account,cp.bank_pay_seq
+		FROM ext_orderinfo ho
+		LEFT JOIN cp_orderinfo cp ON cp.order_id=ho.order_id 
+		LEFT JOIN ext_merchantinfo me ON me.merchant_id=ho.merchant_id
+		LEFT JOIN ext_orderinfo_returnnotify fy ON fy.order_id=ho.order_id
+		WHERE 1=1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				ho.order_id=#order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="user_phone">
+				ho.merchant_id=#user_phone:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="out_ticket_billno">
+				ho.out_ticket_billno=#out_ticket_billno:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				ho.create_time
+				<![CDATA[>=]]>
+				#begin_info_time:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				ho.create_time
+				<![CDATA[<]]>
+				DATE_ADD(#end_info_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_status">
+				ho.order_status in
+				<iterate open="(" close=")" conjunction=","
+					property="order_status">
+					#order_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="notify_status">
+				fy.notify_status in
+				<iterate open="(" close=")" conjunction=","
+					property="notify_status">
+					#notify_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="merchant_id">
+	         	  ho.merchant_id in
+		          <iterate open="(" close=")" conjunction="," property="merchant_id">
+		            	#merchant_id[]:VARCHAR#
+		      	  </iterate>
+	      	</isNotEmpty>
+		</dynamic>
+		ORDER BY ho.create_time DESC 
+	</select>
+	
+	<!-- 合作商户:退票管理Excel参数查询 -->
+	<select id="getOrderForExcelExtRefundList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  hm.order_id,
+		  h.eop_order_id,
+		  hm.cp_id,
+		  hm.refund_money,
+		  hm.actual_refund_money,
+		  DATE_FORMAT(hm.create_time, '%Y-%m-%d %H:%i:%s') AS create_time,
+		  DATE_FORMAT(hm.verify_time, '%Y-%m-%d %H:%i:%s') AS verify_time,
+		  DATE_FORMAT(hm.refund_plan_time, '%Y-%m-%d %H:%i:%s') AS refund_plan_time,
+		  (h.merchant_id) AS dealer_phone,
+		  hm.alter_tickets_money,
+		  hm.refund_12306_seq,
+		  hm.change_ticket_info,
+		  h.ticket_num
+		FROM
+		  ext_orderinfo_refundstream hm LEFT JOIN ext_orderinfo h ON h.order_id = hm.order_id 
+		  LEFT JOIN hc_userinfo hu ON h.merchant_id = hu.user_id 
+		  LEFT JOIN ext_orderinfo_refundnotify fy ON fy.refund_seq=hm.refund_seq 
+	    WHERE 1=1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				hm.order_id=#order_id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_create_time">
+				hm.create_time
+				<![CDATA[>=]]>
+				DATE_FORMAT(#begin_create_time#,'%Y-%m-%d %H:%i:%s')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_create_time">
+				hm.create_time
+				<![CDATA[<]]>
+				DATE_ADD(DATE_FORMAT(#end_create_time#,'%Y-%m-%d
+				%H:%i:%s'),INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_status">
+				hm.refund_status in
+				<iterate open="(" close=")" conjunction=","
+					property="refund_status">
+					#refund_status[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="notify_status">
+				fy.notify_status in
+				<iterate open="(" close=")" conjunction=","
+					property="notify_status">
+					#notify_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_type">
+				hm.refund_type in
+				<iterate open="(" close=")" conjunction=","
+					property="refund_type">
+					#refund_type[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="merchant_id">
+	         	  h.merchant_id in
+		          <iterate open="(" close=")" conjunction="," property="merchant_id">
+		            	#merchant_id[]:VARCHAR#
+		      	  </iterate>
+	      	</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 统一-保险管理Excel参数查询 -->
+	<select id="getOrderForExcelAllInsuranceList" parameterClass="java.util.HashMap"  resultClass="java.util.HashMap">
+		SELECT 
+		  bx.bx_id,
+		  bx.order_id,
+		  bx.cp_id,
+		  bx.create_time,
+		  bx.effect_date,
+		  bx.pay_money,
+		  bx.bx_code,
+		  bx.bx_channel 
+		FROM
+		  cp_orderinfo_bx bx 
+		  LEFT JOIN
+		  cp_orderinfo cp 
+		  ON bx.order_id = cp.order_id 
+		WHERE 1 = 1 
+		  AND cp.order_status = '99' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				bx.order_id=#order_id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="telephone">
+				bx.telephone=#telephone#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_time">
+				bx.create_time
+				<![CDATA[>=]]>
+				DATE_FORMAT(#begin_time#,'%Y-%m-%d %H:%i:%s')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+				bx.create_time
+				<![CDATA[<]]>
+				DATE_ADD(DATE_FORMAT(#end_time#,'%Y-%m-%d
+				%H:%i:%s'),INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="bx_code">
+				bx.bx_code=#bx_code#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="bx_status">
+				bx.bx_status in
+				<iterate open="(" close=")" conjunction=","
+					property="bx_status">
+					#bx_status[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="bx_channel">
+				bx.bx_channel in
+				<iterate open="(" close=")" conjunction=","
+					property="bx_channel">
+					#bx_channel[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="channel">
+				bx.order_channel in
+				<iterate open="(" close=")" conjunction=","
+					property="channel">
+					#channel[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY bx.create_time ASC
+	</select>
+	
+	<!-- app 预订订单列表 -->
+	<select id="queryAppBookList" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT ho.order_id,ac.out_ticket_billno,ho.user_id AS dealer_phone,
+		ac.from_station AS from_city, ac.arrive_station AS to_city,ac.train_no,
+		CONCAT(CONVERT(DATE_FORMAT(ac.travel_time,'%Y-%m-%d'),CHAR),' ',ac.from_time,':00') AS from_time, 
+		ho.pay_time,ho.pay_type,
+		ho.create_time AS create_time,ho.finish_time out_ticket_time,ho.bx_pay_money,
+		(ho.pay_money-ho.bx_pay_money) ticket_pay_money, 
+		ho.buy_money,
+		(ho.pay_money-ho.bx_pay_money-ho.buy_money) AS differ,
+		ho.order_status,ho.pay_money,
+		cp.out_ticket_account,cp.bank_pay_seq
+		FROM app_orderinfo ho
+		LEFT JOIN cp_orderinfo cp 
+		ON cp.order_id=ho.order_id 
+		LEFT JOIN app_orderinfo_cp ac ON ac.order_id=ho.order_id
+		WHERE 1=1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				ho.order_id=#order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="user_phone">
+				ho.merchant_id=#user_phone:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="out_ticket_billno">
+				ho.out_ticket_billno=#out_ticket_billno:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				ho.create_time
+				<![CDATA[>=]]>
+				#begin_info_time:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				ho.create_time
+				<![CDATA[<]]>
+				DATE_ADD(#end_info_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_status">
+				ho.order_status in
+				<iterate open="(" close=")" conjunction=","
+					property="order_status">
+					#order_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="pay_type">
+				ho.pay_type in
+				<iterate open="(" close=")" conjunction=","
+					property="pay_type">
+					#pay_type[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		GROUP BY order_id 
+		ORDER BY ho.create_time DESC 
+	</select>
+
+	<!-- app:退票管理Excel参数查询 -->
+	<select id="getOrderForExcelAppRefundList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  hm.order_id,
+		  hm.cp_id,
+		  hm.refund_money,
+		  hm.actual_refund_money,
+		  DATE_FORMAT(hm.create_time, '%Y-%m-%d %H:%i:%s') AS create_time,
+		  DATE_FORMAT(hm.verify_time, '%Y-%m-%d %H:%i:%s') AS verify_time,
+		  DATE_FORMAT(hm.refund_plan_time, '%Y-%m-%d %H:%i:%s') AS refund_plan_time,
+		  (au.user_phone) AS dealer_phone,
+		  hm.alter_tickets_money,
+		  hm.refund_12306_seq,
+		  hm.change_ticket_info,
+		  hm.bank_account,hm.bank_openName,hm.bank_type,hm.bank_username
+		FROM
+		  app_orderinfo_refundstream hm LEFT JOIN app_orderinfo h ON h.order_id = hm.order_id 
+		LEFT JOIN app_userinfo au ON au.user_id=h.user_id 
+		WHERE 1=1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				hm.order_id=#order_id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_create_time">
+				hm.create_time
+				<![CDATA[>=]]>
+				DATE_FORMAT(#begin_create_time#,'%Y-%m-%d %H:%i:%s')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_create_time">
+				hm.create_time
+				<![CDATA[<]]>
+				DATE_ADD(DATE_FORMAT(#end_create_time#,'%Y-%m-%d
+				%H:%i:%s'),INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_status">
+				hm.refund_status in
+				<iterate open="(" close=")" conjunction=","
+					property="refund_status">
+					#refund_status[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_type">
+				hm.refund_type in
+				<iterate open="(" close=")" conjunction=","
+					property="refund_type">
+					#refund_type[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 查询内嵌预订订单列表 -->
+	<select id="queryInnerBookList" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT ho.order_id,ho.out_ticket_billno,ho.user_id AS dealer_phone,
+		ho.from_city, ho.to_city,ho.train_no,ho.from_time,ho.pay_time,
+		ho.create_time AS create_time,ho.out_ticket_time,ho.bx_pay_money,
+		ho.ticket_pay_money, ho.buy_money,ho.inner_channel,
+		(ho.ticket_pay_money-ho.buy_money) AS differ,
+		ho.order_status,ho.pay_money,cp.error_info,
+		cp.out_ticket_account,cp.bank_pay_seq
+		FROM inner_orderinfo ho
+		LEFT JOIN cp_orderinfo cp 
+		ON cp.order_id=ho.order_id 
+		WHERE 1=1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				ho.order_id=#order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="user_phone">
+				ho.user_id=#user_phone:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="out_ticket_billno">
+				ho.out_ticket_billno=#out_ticket_billno:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				ho.create_time
+				<![CDATA[>=]]>
+				#begin_info_time:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				ho.create_time
+				<![CDATA[<]]>
+				DATE_ADD(#end_info_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_status">
+				ho.order_status in
+				<iterate open="(" close=")" conjunction=","
+					property="order_status">
+					#order_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="inner_channel">
+				ho.inner_channel in
+				<iterate open="(" close=")" conjunction=","
+					property="inner_channel">
+					#inner_channel[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			
+		</dynamic>
+		ORDER BY ho.create_time DESC 
+	</select>
+	
+	<!-- inner退票管理Excel参数查询 -->
+	<select id="getOrderForExcelInnerRefundList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  hm.order_id,
+		  hm.cp_id,
+		  hm.refund_money,
+		  hm.actual_refund_money,
+		  DATE_FORMAT(hm.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+		  DATE_FORMAT(hm.verify_time,'%Y-%m-%d %H:%i:%s') AS verify_time,
+		  DATE_FORMAT(hm.refund_plan_time,'%Y-%m-%d %H:%i:%s') AS refund_plan_time,
+		  (h.user_id) AS user_id,
+		  hm.alter_tickets_money,
+		  hm.refund_12306_seq,
+		  change_ticket_info
+		FROM
+		  inner_orderinfo_refundstream hm 
+		  LEFT JOIN
+		  inner_orderinfo h 
+		  ON h.order_id = hm.order_id 
+		  LEFT JOIN
+		  hc_userinfo hu 
+		  ON h.user_id = hu.user_id 
+		WHERE 1 = 1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				hm.order_id=#order_id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_create_time">
+				hm.create_time
+				<![CDATA[>=]]>
+				DATE_FORMAT(#begin_create_time#,'%Y-%m-%d %H:%i:%s')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_create_time">
+				hm.create_time
+				<![CDATA[<]]>
+				DATE_ADD(DATE_FORMAT(#end_create_time#,'%Y-%m-%d
+				%H:%i:%s'),INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_status">
+				hm.refund_status in
+				<iterate open="(" close=")" conjunction=","
+					property="refund_status">
+					#refund_status[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_type">
+				hm.refund_type in
+				<iterate open="(" close=")" conjunction=","
+					property="refund_type">
+					#refund_type[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="inner_channel">
+				h.inner_channel in
+				<iterate open="(" close=")" conjunction=","
+					property="inner_channel">
+					#inner_channel[]#
+				</iterate>
+			</isNotEmpty>
+			
+		</dynamic>
+	</select>
+	
+	
+	<!-- 对账管理导出 -->
+	<select id="getBalancAccountExcelList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select ba.stream_id ,ba.cw_seq ,ba.yw_seq ,ba.sh_order_id ,ba.sp_name ,DATE_FORMAT(ba.sp_create_time,'%Y-%m-%d %T') sp_create_time,
+		ba.user_account ,ba.in_money ,ba.out_money ,ba.surplus_money ,ba.channel ,
+		ba.business_status ,ba.remark ,ba.our_account ,ba.order_id  ,ba.create_time ,ba.refund_result
+		from cp_balance_account ba
+		where 1=1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				ba.sp_create_time
+				<![CDATA[>=]]>
+				#begin_info_time:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				ba.sp_create_time
+				<![CDATA[<]]>
+				DATE_ADD(#end_info_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY ba.stream_id 
+	</select>	
+
+
+<!-- 获取按条件查询所有的订单 -->
+	<select id="getElongAlterExcelList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  change_id,
+		  order_id,
+		  create_time,
+		  old_ticket_change_serial,
+		  new_ticket_change_serial,
+		  ticket_price_diff_change_serial,
+		  change_diff_money,
+		  change_refund_money,
+		  change_receive_money,
+		  totalpricediff,
+		  fee,
+		  book_ticket_time,
+		  fail_reason,
+		  train_no,
+		  change_train_no,
+		  from_time,
+		  change_from_time,
+		  travel_time,
+		  from_city,
+		  to_city,
+		  out_ticket_billno,
+		  bank_pay_seq,
+		  worker_id,
+		  pay_time,
+		  account_id,
+		  option_time,
+		  opt_ren,
+		  change_status,
+		  change_travel_time,
+		  change_notify_status,
+		  change_notify_finish_time 
+		FROM
+		  elong_orderinfo_change 
+		WHERE 1 = 1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				order_id=#order_id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="out_ticket_billno">
+					out_ticket_billno=#out_ticket_billno#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+					create_time <![CDATA[>=]]> CONCAT(#begin_info_time#, ' 00:00:00') 
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+					create_time <![CDATA[<]]> CONCAT(#end_info_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="change_status">
+				change_status in
+				<iterate open="(" close=")" conjunction="," property="change_status">
+					#change_status[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="change_notify_status">
+				change_notify_status in
+				<iterate open="(" close=")" conjunction="," property="change_notify_status">
+					#change_notify_status[]#
+				</iterate>
+			</isNotEmpty> 
+			<isNotEmpty prepend=" and " property="merchant_id">
+				merchant_id in
+				<iterate open="(" close=")" conjunction="," property="merchant_id">
+					#merchant_id[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="opt_ren">
+					opt_ren=#opt_ren#
+			</isNotEmpty>
+		</dynamic>
+		order by create_time desc 
+	</select>
+	
+		<!--  查询车票明细-->
+	<select id="getElongAlterCpList" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT 
+		  cp.cp_id,
+		  cp.new_cp_id,
+		  cp.buy_money,
+		  cp.change_buy_money,
+		  cp.seat_type,
+		  cp.change_seat_type,
+		  cp.ticket_type,
+		  cp.train_box,
+		  cp.change_train_box,
+		  cp.seat_no,
+		  cp.change_seat_no,
+		  cp.ids_type,
+		  cp.user_ids,
+		  cp.user_name,
+		  cp.is_changed 
+		FROM
+		   elong_change_cp cp
+		WHERE cp.change_id = #change_id:varchar# 
+	</select>
+	
+	
+	
+	<!-- 查询携程订单 -->
+	<select id="getCtripExcelList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT hc.order_id, 			
+				DATE_FORMAT(ct.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+				ct.ctrip_order_id,
+				hc.out_ticket_billno,hc.order_status,hc.manual_order,
+				hc.from_city, hc.to_city,hc.train_no,
+				CONVERT(hc.buy_money,CHAR) AS buy_money,
+				CONVERT(hc.pay_money,CHAR) AS pay_money,
+				DATE_FORMAT(hc.out_ticket_time,'%Y-%m-%d %H:%i:%s') AS out_ticket_time,
+				DATE_FORMAT(hc.pay_time,'%Y-%m-%d %H:%i:%s') AS pay_time,
+				hc.channel,DATE_FORMAT(hc.from_time,'%Y-%m-%d %H:%i:%s') AS from_time
+				FROM ctrip_orderinfo ct  
+				LEFT JOIN cp_orderinfo hc ON hc.order_id = ct.order_id 
+			WHERE 1=1 
+		  <dynamic prepend="">
+		   <isNotEmpty prepend=" and " property="order_id">
+		              ct.order_id=#order_id#
+		   </isNotEmpty>
+		   <isNotEmpty prepend=" and " property="ctrip_order_id">
+		              ct.ctrip_order_id=#ctrip_order_id#
+		   </isNotEmpty>
+		    <isNotEmpty prepend=" and " property="begin_info_time">
+		              ct.create_time<![CDATA[>]]>CONCAT(#begin_info_time#,' 00:00:00')
+		   </isNotEmpty>
+		    <isNotEmpty prepend=" and " property="end_info_time">
+		    		  ct.create_time<![CDATA[<]]>CONCAT(#end_info_time#,' 23:59:59')
+		   </isNotEmpty>
+		    <isNotEmpty prepend=" and " property="go_status">
+		         	  ct.go_status in
+			          <iterate open="(" close=")" conjunction="," property="go_status">
+			            	#go_status[]:VARCHAR#
+			      	  </iterate>
+		   </isNotEmpty>
+		  </dynamic>
+	</select>
+	
+	
+	<!-- 查询高铁管家预订订单列表 -->
+	<select id="queryGtBookList" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT gt.order_id, gt.from_station AS from_city, gt.arrive_station AS to_city,gt.eop_order_id,
+			CONVERT(gt.ticket_pay_money, CHAR) AS ticket_pay_money,gt.merchant_order_id,
+			CONVERT(gt.bx_pay_money, CHAR) AS bx_pay_money,fy.notify_status,
+			CONVERT(gt.buy_money, CHAR) AS buy_money,
+			CONVERT(gt.pay_money, CHAR) AS pay_money, gt.order_status,
+			DATE_FORMAT(gt.pay_time, '%Y-%m-%d %H:%i:%s') AS pay_time,
+			DATE_FORMAT(gt.out_ticket_time,'%Y-%m-%d %H:%i:%s') AS out_ticket_time, gt.train_no, 
+			CONCAT(CONVERT(DATE_FORMAT(gt.travel_time,'%Y-%m-%d'),CHAR),' ',gt.from_time,':00') AS from_time, 
+			gt.out_ticket_billno,gt.out_ticket_type, gt.opt_ren, 
+			DATE_FORMAT(gt.create_time,'%Y-%m-%d %H:%i:%s') AS create_time, gt.ticket_num
+		FROM gt_orderinfo AS gt 
+		LEFT JOIN gt_orderinfo_returnnotify fy ON fy.order_id=gt.order_id
+		WHERE 1 = 1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				gt.order_id=#order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="merchant_order_id">
+	         	  gt.merchant_order_id =#merchant_order_id:VARCHAR#
+	      	</isNotEmpty>
+			<isNotEmpty prepend=" and " property="out_ticket_billno">
+				gt.out_ticket_billno=#out_ticket_billno:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				gt.create_time<![CDATA[>=]]>#begin_info_time:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				gt.create_time<![CDATA[<]]>DATE_ADD(#end_info_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_status">
+				gt.order_status in
+				<iterate open="(" close=")" conjunction=","
+					property="order_status">
+					#order_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="notify_status">
+				fy.notify_status in
+				<iterate open="(" close=")" conjunction=","
+					property="notify_status">
+					#notify_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY gt.create_time DESC 
+	</select>
+
+
+<!-- 查询高铁管家退款列表 -->
+	<select id="queryGtRefundList" parameterClass="java.util.HashMap" 
+	resultClass="java.util.HashMap">
+		SELECT hm.stream_id,hm.order_id,hm.refund_type,hm.refund_money,hm.refund_status,hm.refund_seq, 
+		hm.opt_person,fy.notify_num,fy.notify_id,fy.notify_status,hm.merchant_order_id,
+		DATE_FORMAT(hm.create_time,'%Y-%m-%d %H:%i:%s')AS create_time,hm.cp_id,hm.refund_percent,hm.change_ticket_info,
+		DATE_FORMAT(hm.refund_plan_time,'%Y-%m-%d %H:%i:%s')AS refund_plan_time,hm.actual_refund_money,
+		CONVERT(hn.ticket_num,CHAR) ticket_num,hm.return_optlog,
+		CONCAT(DATE_FORMAT( hn.travel_time, '%Y-%m-%d ' ),hn.from_time ) from_time
+		FROM gt_orderinfo_refundstream hm 
+		LEFT JOIN gt_orderinfo hn ON hm.order_id= hn.order_id 
+		LEFT JOIN gt_orderinfo_refundnotify fy ON fy.refund_seq=hm.refund_seq
+		WHERE 1=1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				hm.order_id=#order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="merchant_order_id">
+				hm.merchant_order_id=#merchant_order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_seq">
+				hm.refund_seq=#refund_seq:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_12306_seq">
+				hm.refund_12306_seq=#refund_12306_seq:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="opt_person">
+				hm.opt_person=#opt_person:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_create_time">
+				hm.create_time <![CDATA[>=]]> #begin_create_time:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_create_time">
+				hm.create_time <![CDATA[<]]> DATE_ADD(#end_create_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_type">
+				hm.refund_type in
+				<iterate open="(" close=")" conjunction=","
+					property="refund_type">
+					#refund_type[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+		    <isNotEmpty prepend=" and " property="refund_status">
+				hm.refund_status in
+				<iterate open="(" close=")" conjunction=","
+					property="refund_status">
+					#refund_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			 <isNotEmpty prepend=" and " property="notify_status">
+				fy.notify_status in
+				<iterate open="(" close=")" conjunction=","
+					property="notify_status">
+					#notify_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			
+		</dynamic>
+		ORDER BY hm.create_time DESC
+	</select>
+	
+	<!-- 查询携程管理预订订单列表 -->
+	<select id="queryXcBookList" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT xc.order_id, xc.from_station AS from_city, xc.arrive_station AS to_city,xc.eop_order_id,
+			CONVERT(xc.ticket_pay_money, CHAR) AS ticket_pay_money,xc.merchant_order_id,
+			CONVERT(xc.bx_pay_money, CHAR) AS bx_pay_money,fy.notify_status,
+			CONVERT(xc.pay_money, CHAR) AS pay_money,
+			CONVERT(xc.buy_money, CHAR) AS buy_money, xc.order_status,
+			DATE_FORMAT(xc.pay_time, '%Y-%m-%d %H:%i:%s') AS pay_time,
+			DATE_FORMAT(xc.out_ticket_time,'%Y-%m-%d %H:%i:%s') AS out_ticket_time, xc.train_no, 
+			CONCAT(CONVERT(DATE_FORMAT(xc.travel_time,'%Y-%m-%d'),CHAR),' ',xc.from_time,':00') AS from_time, 
+			xc.out_ticket_billno,xc.out_ticket_type, xc.opt_ren, 
+			DATE_FORMAT(xc.create_time,'%Y-%m-%d %H:%i:%s') AS create_time, xc.ticket_num
+		FROM xc_orderinfo AS xc 
+		LEFT JOIN xc_orderinfo_returnnotify fy ON fy.order_id=xc.order_id
+		WHERE 1 = 1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				xc.order_id=#order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="merchant_order_id">
+	         	  xc.merchant_order_id =#merchant_order_id:VARCHAR#
+	      	</isNotEmpty>
+			<isNotEmpty prepend=" and " property="out_ticket_billno">
+				xc.out_ticket_billno=#out_ticket_billno:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				xc.create_time<![CDATA[>=]]>#begin_info_time:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				xc.create_time<![CDATA[<]]>DATE_ADD(#end_info_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_status">
+				xc.order_status in
+				<iterate open="(" close=")" conjunction=","
+					property="order_status">
+					#order_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="notify_status">
+				fy.notify_status in
+				<iterate open="(" close=")" conjunction=","
+					property="notify_status">
+					#notify_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY xc.create_time DESC 
+	</select>
+
+
+<!-- 查询高铁管家退款列表 -->
+	<select id="queryXcRefundList" parameterClass="java.util.HashMap" 
+	resultClass="java.util.HashMap">
+		SELECT hm.stream_id,hm.order_id,hm.refund_type,hm.refund_money,hm.refund_status,hm.refund_seq, 
+		hm.opt_person,fy.notify_num,fy.notify_id,fy.notify_status,hm.merchant_order_id,
+		DATE_FORMAT(hm.create_time,'%Y-%m-%d %H:%i:%s')AS create_time,hm.cp_id,hm.refund_percent,hm.change_ticket_info,
+		DATE_FORMAT(hm.refund_plan_time,'%Y-%m-%d %H:%i:%s')AS refund_plan_time,hm.actual_refund_money,
+		CONVERT(hn.ticket_num,CHAR) ticket_num,hm.return_optlog,
+		CONCAT(DATE_FORMAT( hn.travel_time, '%Y-%m-%d ' ),hn.from_time ) from_time
+		FROM xc_orderinfo_refundstream hm 
+		LEFT JOIN xc_orderinfo hn ON hm.order_id= hn.order_id 
+		LEFT JOIN xc_orderinfo_refundnotify fy ON fy.refund_seq=hm.refund_seq
+		WHERE 1=1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				hm.order_id=#order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="merchant_order_id">
+				hm.merchant_order_id=#merchant_order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_seq">
+				hm.refund_seq=#refund_seq:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_12306_seq">
+				hm.refund_12306_seq=#refund_12306_seq:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="opt_person">
+				hm.opt_person=#opt_person:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_create_time">
+				hm.create_time <![CDATA[>=]]> #begin_create_time:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_create_time">
+				hm.create_time <![CDATA[<]]> DATE_ADD(#end_create_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_type">
+				hm.refund_type in
+				<iterate open="(" close=")" conjunction=","
+					property="refund_type">
+					#refund_type[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+		    <isNotEmpty prepend=" and " property="refund_status">
+				hm.refund_status in
+				<iterate open="(" close=")" conjunction=","
+					property="refund_status">
+					#refund_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			 <isNotEmpty prepend=" and " property="notify_status">
+				fy.notify_status in
+				<iterate open="(" close=")" conjunction=","
+					property="notify_status">
+					#notify_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			
+		</dynamic>
+		ORDER BY hm.create_time DESC
+	</select>
+	
+	<!-- 途牛导出excel  -->
+	<select id="queryTuniuBookExcelList" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT tuniu.order_id, tuniu.from_city, tuniu.to_city,
+			CONVERT(tuniu.pay_money, CHAR) AS pay_money, tuniu.order_status,
+			DATE_FORMAT(tuniu.from_time,'%Y-%m-%d %H:%i:%s') AS from_time,
+			DATE_FORMAT(tuniu.out_ticket_time,'%Y-%m-%d %H:%i:%s') AS out_ticket_time, tuniu.train_no, 
+			tuniu.out_ticket_billno, tuniu.opt_ren, 
+			CONVERT(bo.notify_status, CHAR) AS notify_status_book,
+			CONVERT(ou.notify_status, CHAR) AS notify_status_out,
+			DATE_FORMAT(tuniu.create_time,'%Y-%m-%d %H:%i:%s') AS create_time, tuniu.ticket_num
+		FROM tuniu_orderinfo AS tuniu 
+		LEFT JOIN tuniu_notify_book bo ON bo.order_id=tuniu.order_id
+		LEFT JOIN tuniu_notify_out ou  ON ou.order_id=tuniu.order_id
+		WHERE 1 = 1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				tuniu.order_id=#order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				tuniu.create_time
+				<![CDATA[>=]]>
+				#begin_info_time:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				tuniu.create_time
+				<![CDATA[<]]>
+				DATE_ADD(#end_info_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_status">
+				tuniu.order_status in
+				<iterate open="(" close=")" conjunction=","
+					property="order_status">
+					#order_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="notify_status">
+				(
+				bo.notify_status in
+				<iterate open="(" close=")" conjunction=","
+					property="notify_status_book">
+					#notify_status_book[]:VARCHAR#
+				</iterate>
+				or	ou.notify_status in
+				<iterate open="(" close=")" conjunction=","
+					property="notify_status_out">
+					#notify_status_out[]:VARCHAR#
+				</iterate>
+				)
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY tuniu.create_time DESC
+	</select>
+	
+</sqlMap>

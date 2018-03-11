@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="joinUs">
+	<!-- 查询条目 -->
+	<select id="queryJoinUsListCount" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT 
+		    COUNT(hcu.user_id)
+		  FROM
+		    hc_userinfo AS hcu 
+		    LEFT JOIN
+		    hc_userorder_tj hct 
+		    ON hcu.user_id = hct.user_id 
+		  WHERE 1 = 1   
+		<dynamic prepend="">
+			<isNotEqual compareValue="000000" property="province_id">
+				<isNotEmpty prepend=" and " property="province_id">
+					hcu.province_id=#province_id:VARCHAR#
+				</isNotEmpty>
+			</isNotEqual>
+			<isNotEqual compareValue="000000" property="province_id">
+				<isNotEmpty prepend=" and " property="city_id">
+					hcu.city_id=#city_id:VARCHAR#
+				</isNotEmpty>
+			</isNotEqual>
+			<isNotEqual compareValue="000000" property="province_id">
+				<isNotEmpty prepend=" and " property="district_id">
+					hcu.district_id=#district_id:VARCHAR#
+				</isNotEmpty>
+			</isNotEqual>
+			<isNotEmpty prepend=" and " property="beginInfo_time">
+				hcu.apply_time<![CDATA[>=]]>
+				#beginInfo_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="endInfo_time">
+				hcu.apply_time<![CDATA[<]]>DATE_ADD(#endInfo_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_pay_time">
+				hct.last_pay_time<![CDATA[>=]]>#begin_pay_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_pay_time">
+				hct.last_pay_time<![CDATA[<]]>DATE_ADD(#end_pay_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_auditing_time">
+				hcu.auditing_time<![CDATA[>=]]>
+				#begin_auditing_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_auditing_time">
+				hcu.auditing_time<![CDATA[<]]>DATE_ADD(#end_auditing_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_num_begin">
+				hct.pay_pre_count<![CDATA[>=]]>#order_num_begin:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_num_end">
+				hct.pay_pre_count<![CDATA[<=]]>#order_num_end:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_num">
+				hct.pay_pre_count=#order_num:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="user_name">
+				hcu.user_name=#user_name:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="user_phone">
+				hcu.user_phone=#user_phone:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="estate">
+				estate in
+				<iterate open="(" close=")" conjunction="," property="estate">
+					#estate[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shop_type">
+				hcu.shop_type in
+				<iterate open="(" close=")" conjunction="," property="shop_type">
+					#shop_type[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY hcu.apply_time
+		DESC 
+	</select>
+	
+	<!-- 查询总状态条数 -->
+	<select id="queryJoinUsEstateCount" 
+		resultClass="java.lang.String">
+		SELECT
+		hcu.estate
+		FROM hc_userinfo AS hcu 
+
+	</select>
+	
+	<!-- 查询加盟列表 默认:按照申请时间查询 -->
+	<select id="queryJoinUsList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  hcu.user_id,
+		  hcu.user_name,
+		  hcu.user_phone,
+		  hcu.estate,
+		  hcu.shop_type,
+		  hcu.shop_name,
+		  hcu.agent_grade,
+		  
+		  DATE_FORMAT( hcu.apply_time,'%Y-%m-%d %H:%i:%s' ) AS apply_time,
+		  DATE_FORMAT(hcu.auditing_time, '%Y-%m-%d %H:%i:%s' ) AS auditing_time,
+		  IFNULL(hcu.user_level, 2) user_level,
+		  hcu.opt_person,
+		  hct.this_month_total,
+		  hct.pre_month_total,hct.pay_now_count,hct.pay_pre_count,
+		  DATE_FORMAT( hct.last_pay_time,'%Y-%m-%d %H:%i:%s' ) AS create_timeInfo,
+		  DATE_FORMAT( hct.last_pay_time, '%Y-%m-%d %H:%i:%s') AS last_create_timeInfo,
+		  IFNULL(hct.last_pay_money, 0) AS pay_money,
+		  hcu.province_id ,
+		  hcu.city_id ,
+		  hcu.district_id  
+		FROM
+		  hc_userinfo AS hcu 
+		  LEFT JOIN
+		  hc_userorder_tj hct 
+		  ON hcu.user_id = hct.user_id 
+		 WHERE 1=1
+		<dynamic prepend="">
+			<isNotEqual compareValue="000000" property="province_id">
+				<isNotEmpty prepend=" and " property="province_id">
+					hcu.province_id=#province_id:VARCHAR#
+				</isNotEmpty>
+			</isNotEqual>
+			<isNotEqual compareValue="000000" property="province_id">
+				<isNotEmpty prepend=" and " property="city_id">
+					hcu.city_id=#city_id:VARCHAR#
+				</isNotEmpty>
+			</isNotEqual>
+			<isNotEqual compareValue="000000" property="province_id">
+				<isNotEmpty prepend=" and " property="district_id">
+					hcu.district_id=#district_id:VARCHAR#
+				</isNotEmpty>
+			</isNotEqual>
+			<isNotEmpty prepend=" and " property="beginInfo_time">
+				hcu.apply_time<![CDATA[>=]]>
+				#beginInfo_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="endInfo_time">
+				hcu.apply_time<![CDATA[<]]>DATE_ADD(#endInfo_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			
+			<isNotEmpty prepend=" and " property="begin_pay_time">
+				hct.last_pay_time<![CDATA[>=]]>
+				#begin_pay_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_pay_time">
+				hct.last_pay_time<![CDATA[<]]>DATE_ADD(#end_pay_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_auditing_time">
+				hcu.auditing_time<![CDATA[>=]]>
+				#begin_auditing_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_auditing_time">
+				hcu.auditing_time<![CDATA[<]]>DATE_ADD(#end_auditing_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_num_begin">
+				hct.pay_pre_count<![CDATA[>=]]>#order_num_begin:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_num_end">
+				hct.pay_pre_count<![CDATA[<=]]>#order_num_end:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="user_name">
+				hcu.user_name=#user_name:VARCHAR#
+			</isNotEmpty>
+			
+			<isNotEmpty prepend=" and " property="user_name">
+				hcu.user_id=#user_id:VARCHAR#
+			</isNotEmpty>
+			
+			<isNotEmpty prepend=" and " property="user_phone">
+				hcu.user_phone=#user_phone:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="estate">
+				estate in
+				<iterate open="(" close=")" conjunction=","
+					property="estate">
+					#estate[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="shop_type">
+				hcu.shop_type in
+				<iterate open="(" close=")" conjunction="," property="shop_type">
+					#shop_type[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="agent_grade">
+				hcu.agent_grade in
+				<iterate open="(" close=")" conjunction="," property="agent_grade">
+					#agent_grade[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY hcu.apply_time
+		DESC LIMIT #everyPagefrom:Integer#, #pageSize:Integer#
+	</select>
+	
+	<!-- 查询加盟列表 默认:按照申请时间查询
+	<select id="queryJoinUsList" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT 
+		  hcu.user_id,
+		  hcu.user_name,
+		  hcu.user_phone,
+		  hcu.estate,
+		  hcu.shop_type,
+		  hcu.shop_name,
+		  DATE_FORMAT( hcu.apply_time,'%Y-%m-%d %H:%i:%s' ) AS apply_time,
+		  DATE_FORMAT(hcu.auditing_time, '%Y-%m-%d %H:%i:%s' ) AS auditing_time,
+		  IFNULL(hcu.user_level, 2) user_level,
+		  hcu.opt_person,
+		  hct.this_month_total,
+		  hct.pre_month_total,
+		  DATE_FORMAT( hct.last_pay_time,'%Y-%m-%d %H:%i:%s' ) AS create_timeInfo,
+		  DATE_FORMAT( hct.last_pay_time, '%Y-%m-%d %H:%i:%s') AS last_create_timeInfo,
+		  IFNULL(hct.last_pay_money, 0) AS pay_money,
+		  hcu.province_id ,
+		  hcu.city_id ,
+		  hcu.district_id  
+		FROM
+		  hc_userinfo AS hcu 
+		  LEFT JOIN
+		  hc_userorder_tj hct 
+		  ON hcu.user_id = hct.user_id 
+		 WHERE 1=1
+		<dynamic prepend="">
+			<isNotEqual compareValue="000000" property="province_id">
+				<isNotEmpty prepend=" and " property="province_id">
+					hcu.province_id=#province_id:VARCHAR#
+				</isNotEmpty>
+			</isNotEqual>
+			<isNotEqual compareValue="000000" property="province_id">
+				<isNotEmpty prepend=" and " property="city_id">
+					hcu.city_id=#city_id:VARCHAR#
+				</isNotEmpty>
+			</isNotEqual>
+			<isNotEqual compareValue="000000" property="province_id">
+				<isNotEmpty prepend=" and " property="district_id">
+					hcu.district_id=#district_id:VARCHAR#
+				</isNotEmpty>
+			</isNotEqual>
+			<isNotEmpty prepend=" and " property="beginInfo_time">
+				hcu.apply_time<![CDATA[>=]]>
+				#beginInfo_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="endInfo_time">
+				hcu.apply_time<![CDATA[<]]>DATE_ADD(#endInfo_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			
+			<isNotEmpty prepend=" and " property="begin_pay_time">
+				hct.last_pay_time<![CDATA[>=]]>
+				#begin_pay_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_pay_time">
+				hct.last_pay_time<![CDATA[<]]>DATE_ADD(#end_pay_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			
+			<isNotEmpty prepend=" and " property="user_name">
+				hcu.user_name=#user_name:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="user_phone">
+				hcu.user_phone=#user_phone:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="estate">
+				estate in
+				<iterate open="(" close=")" conjunction=","
+					property="estate">
+					#estate[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY hcu.apply_time
+		DESC LIMIT #everyPagefrom:Integer#, #pageSize:Integer#
+	</select>
+	 -->
+	
+
+	<!-- 查询修改详细 -->
+
+	<select id="queryUpdateJoinUsInfo" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT
+		user_id,user_name,user_phone,user_address,province_id,city_id,district_id,agent_grade,
+		user_qq,estate,product_id,jm_order_id,ifnull(user_level,'2')as
+		user_level,shop_type,shop_name,shop_short_name FROM hc_userinfo WHERE user_id = #user_id#
+	</select>
+
+	<!-- 修改加盟信息 -->
+	<update id="updateJoinUsInfo"
+		parameterClass="com.l9e.transaction.vo.JoinUsVo">
+		update hc_userinfo
+		<dynamic prepend="set">
+			<isNotEmpty prepend="," property="user_name">
+				user_name=#user_name:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="user_phone">
+				user_phone=#user_phone:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="user_address">
+				user_address =#user_address#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="province_id">
+				province_id =#province_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="city_id">
+				city_id =#city_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="district_id">
+				district_id =#district_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="user_qq">
+				user_qq =#user_qq#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="shop_name">
+				shop_name =#shop_name#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="shop_type">
+				shop_type =#shop_type#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="shop_short_name">
+				shop_short_name =#shop_short_name#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="estate">
+				estate = #estate#
+			</isNotEmpty>
+		</dynamic>
+		WHERE user_id=#user_id#
+	</update>
+
+	<!-- 删除加盟信息 -->
+	<delete id="deleteJoinUs"
+		parameterClass="com.l9e.transaction.vo.JoinUsVo">
+		DELETE FROM hc_userinfo WHERE user_id = #user_id#
+	</delete>
+
+	<!-- 查询加盟商详细信息 上部分 -->
+	<select id="queryJoinDetailUp" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  hcu.user_id,
+		  hcu.user_phone,
+		  hcu.user_name,
+		  hcu.user_address,
+		  hcu.user_qq,hcu.agent_grade,
+		  DATE_FORMAT(hcu.auditing_time, '%Y-%m-%d %H:%i:%s') AS auditing_time,
+		  hcu.shop_name,
+		  DATE_FORMAT(hcu.begin_time, '%Y-%m-%d %H:%i:%s') AS begin_time,
+		  DATE_FORMAT(hcu.end_time, '%Y-%m-%d %H:%i:%s') AS end_time,
+		  hcu.opt_person,
+		  DATE_FORMAT(hcu.apply_time, '%Y-%m-%d %H:%i:%s') AS apply_time,
+		  hcu.shop_type,
+		  hcu.shop_short_name,
+		  IFNULL(hcu.user_level, 2) user_level,
+		  hcp.sale_type,
+		  hcp.DESCRIBE,
+		  hcp.sale_price,
+		  DATE_FORMAT(hco.opt_time,'%Y-%m-%d %H:%i:%s') AS opt_time,
+		  hco.opt_ren,
+		  (gec.area_no) CITY_RANK,
+		  (gec.area_name) CITY_NAME,
+		  (gep.area_no) PROVINCE_RANK,
+		  (gep.area_name) PROVINCE_NAME,
+		  (ged.area_name) DISTRICT_NAME,
+		  (ged.area_no) DISTRICT_RANK 
+		FROM
+		  hc_userinfo AS hcu 
+		  LEFT JOIN
+		  gen_area AS gep 
+		  ON gep.area_no = hcu.province_id 
+		  AND gep.area_rank = 1 
+		  LEFT JOIN
+		  gen_area AS gec 
+		  ON gec.area_no = hcu.city_id 
+		  AND gec.area_rank = 2 
+		  LEFT JOIN
+		  gen_area AS ged 
+		  ON ged.area_no = hcu.district_id 
+		  AND ged.area_rank = 3 
+		  LEFT JOIN
+		  hc_productinfo AS hcp 
+		  ON hcu.product_id = hcp.product_id 
+		  LEFT JOIN
+		  hc_orderinfo AS hco 
+		  ON hcu.user_id = hco.dealer_id 
+		WHERE hcu.user_id = #user_id#
+	</select>
+	
+	<!-- 明细页面用户实名制信息条数 -->	
+	<select id="ueryUserRegistInfoCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(user_id)
+		FROM hc_orderinfo_regist
+		WHERE user_id = #user_id#
+		ORDER BY create_time
+	</select>
+	
+	<!-- 明细页面用户实名制信息 列表-->
+	<select id="queryUserRegistInfo" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT user_name,ids_card,user_phone,regist_status,create_time
+		FROM hc_orderinfo_regist
+		WHERE user_id = #user_id#
+		ORDER BY create_time
+	</select>
+	
+	<!-- 修改操作人 -->
+	<update id="updateOpt_ren" parameterClass="java.util.HashMap">
+		UPDATE hc_userinfo SET opt_person=#user# WHERE user_id=#user_id#
+	</update>
+	<!-- 修改操作时间 -->
+	<update id="updateOpt_time" parameterClass="java.util.HashMap">
+		UPDATE hc_orderinfo SET opt_time=now() WHERE dealer_id=#user_id#
+	</update>
+	
+	<!-- 查询最后订单时间和金额 -->
+	<select id="lastCreateTime" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT hc.dealer_id,DATE_FORMAT(hc.create_time,'%Y-%m-%d
+		%H:%i:%s')AS create_time, hc.pay_money FROM hc_orderinfo hc
+		WHERE hc.order_status IN('44','88') AND hc.dealer_id=#user_id# ORDER BY
+		create_time DESC LIMIT 0,1
+
+	</select>
+
+	<!-- 查询加盟商详细信息 下部分开始 -->
+
+	<!-- 查询本月销售记录 -->
+	<select id="queryJoinDetailRightDown"
+		parameterClass="java.lang.String"
+		resultClass="com.l9e.transaction.vo.JoinDetailVo">
+		SELECT hc.dealer_id,DATE_FORMAT(hc.create_time,'%Y-%m-%d
+		%H:%i:%s')AS create_time,hc.pay_money FROM hc_orderinfo hc WHERE
+		DATE_FORMAT(create_time,'%Y-%M')= DATE_FORMAT(NOW(),'%Y-%M') AND
+		hc.order_status IN('44','88') AND hc.dealer_id=#user_id# ORDER BY
+		create_time DESC
+	</select>
+
+	<!-- 查询上个月的销售记录 -->
+	<select id="queryJoinDetailLeftDown"
+		parameterClass="java.lang.String"
+		resultClass="com.l9e.transaction.vo.JoinDetailVo">
+		SELECT hc.dealer_id,DATE_FORMAT(hc.create_time,'%Y-%m-%d
+		%H:%i:%s')AS create_time,hc.pay_money FROM hc_orderinfo hc WHERE
+		DATE_FORMAT(create_time,'%Y-%M')=
+		DATE_FORMAT(DATE_SUB(CURDATE(),INTERVAL 1 MONTH),'%Y-%M') AND
+		hc.order_status IN('44','88') AND hc.dealer_id=#user_id# ORDER BY
+		create_time DESC
+	</select>
+
+	<!-- 查询本月销售总额 -->
+	<select id="sumNowMouthMoney" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT IFNULL(SUM(hc.pay_money),0.00)AS sumNow FROM hc_orderinfo
+		hc WHERE DATE_FORMAT(create_time,'%Y-%M')=
+		DATE_FORMAT(NOW(),'%Y-%M') AND hc.order_status IN('44','88') AND
+		hc.dealer_id=#user_id#
+	</select>
+
+	<!-- 查询上月销售总额 -->
+	<select id="sumPreMouthMoney" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT IFNULL(SUM(hc.pay_money),0.00)AS sumPre FROM hc_orderinfo
+		hc WHERE DATE_FORMAT(create_time,'%Y-%M')=
+		DATE_FORMAT(DATE_SUB(CURDATE(),INTERVAL 1 MONTH),'%Y-%M') AND
+		hc.order_status IN('44','88') AND hc.dealer_id=#user_id#
+	</select>
+	<!-- 查询加盟商详细信息 下部分结束 -->
+
+	<!-- 查询加盟商品明细条目 -->
+	<select id="queryUserOrderCount" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) 
+		FROM hc_jm_order AS hc LEFT JOIN hc_productinfo AS hp ON
+		hc.product_id = hp.product_id LEFT JOIN hc_userinfo AS hcu ON
+		hcu.user_id = hc.user_id WHERE hc.user_id=#user_id# AND
+		hc.order_status='11'
+	</select>
+
+	<!-- 查询加盟商品明细 -->
+	<select id="queryUserOrder" parameterClass="java.lang.String"
+		resultClass="com.l9e.transaction.vo.JoinDetailVo">
+		SELECT
+		hc.order_id,hc.user_id,hcu.user_name,hc.product_id,hc.order_status,hc.pay_money,hp.name
+		FROM hc_jm_order AS hc LEFT JOIN hc_productinfo AS hp ON
+		hc.product_id = hp.product_id LEFT JOIN hc_userinfo AS hcu ON
+		hcu.user_id = hc.user_id WHERE hc.user_id=#user_id# AND
+		hc.order_status='11'
+	</select>
+
+	<!-- 查询非免费用户详细信息 -->
+	<select id="queryUserEstate" parameterClass="java.lang.String"
+		resultClass="com.l9e.transaction.vo.JoinUsVo">
+		SELECT u.jm_order_id, u.product_id,u.user_id ,u.estate FROM
+		hc_userinfo u WHERE u.user_id=#user_id# 
+	</select>
+
+	<!-- 修改订单状态为等待退款 -->
+	<update id="updateOrderStatus" parameterClass="java.util.HashMap">
+		UPDATE hc_jm_order SET order_status=33 WHERE user_id=#user_id#
+		AND product_id=#product_id# AND order_id=#order_id# AND
+		order_status=12
+
+	</update>
+
+	<!-- 修改加盟为审核通过时开始计算时间 -->
+	<update id="updateJoinTime" parameterClass="java.lang.String">
+		UPDATE hc_userinfo hc SET hc.begin_time=NOW(),
+		hc.end_time=DATE_ADD(NOW(), INTERVAL 30 DAY) WHERE
+		hc.user_id=#user_id#
+
+	</update>
+
+	<!-- 查询用户的审核状态 -->
+	<select id="queryGetEstate" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+		SELECT ifnull(h.estate,00)estate FROM hc_userinfo h WHERE
+		h.user_id=#user_id#
+	</select>
+
+	<!-- 省市联动 -->
+
+	<!-- 查询全部省信息 -->
+	<select id="getProvince"
+		resultClass="com.l9e.transaction.vo.AreaVo">
+		SELECT area_no, area_name FROM gen_area WHERE area_rank=1 ORDER
+		BY area_id ASC
+	</select>
+
+	<!-- 根据省id查询本省的所有市信息 -->
+	<select id="getCity" parameterClass="java.lang.String"
+		resultClass="com.l9e.transaction.vo.AreaVo">
+		SELECT area_no, area_name FROM gen_area WHERE area_rank=2 AND
+		area_parentno=#provinceid# ORDER BY area_id ASC
+	</select>
+
+	<!-- 根据市id查询本市的所有区信息 -->
+	<select id="getArea" parameterClass="java.lang.String"
+		resultClass="com.l9e.transaction.vo.AreaVo">
+		SELECT area_no, area_name FROM gen_area WHERE area_rank=3 AND
+		area_parentno=#cityid# ORDER BY area_id ASC
+	</select>
+	
+	<!-- 修改审核状态为审核通过 -->
+	<update id="updateEstatePass" parameterClass="java.lang.String">
+		UPDATE hc_userinfo SET estate=33,auditing_time=NOW()
+		 WHERE user_id=#user_id# 
+	</update>
+	<!-- 修改审核状态为审核未通过 -->
+	<update id="updateEstateNot" parameterClass="java.lang.String">
+		UPDATE hc_userinfo SET estate=22
+		 WHERE user_id=#user_id# 
+	</update>
+	
+	<select id="querySupervise_nameToArea_no" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT area_no,area_name FROM gen_area WHERE area_name=#area_name# AND area_rank='1'
+	</select>
+
+</sqlMap>

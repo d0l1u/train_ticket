@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/mvc  
+	http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+	<context:component-scan base-package="com.l9e.transaction.job"/>
+
+	<!-- 总管理类,执行调度程序  -->
+	<bean id="startQuertz"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<!-- <ref bean="orderResultQuartzTime"/> -->
+				<!--<ref bean="orderBookQuartzTime"/> -->
+				<!--<ref bean="refundStreamQuartzTime" /> -->
+				<!--<ref bean="eopRefundStreamQuartzTime" /> -->
+				<!--<ref bean="sendQuartzTime" /> -->
+				<!--<ref bean="sendOutSysPayTime" /> -->
+				<!--<ref bean="orderRepeatPayQuartzTime" /> -->
+				<!--<ref bean="orderPayResultQuartzTime" /> -->
+				<!--<ref bean="sendRefundQuartzTime"/> -->
+				<!--<ref bean="changeNoticeQuartzTime"/> -->
+			</list> 
+		</property>
+	</bean>
+	
+	<!-- 退款流水 -->
+	<bean id="refundStreamQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="refundStreamTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/15 * * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="refundStreamTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="refundStreamJob" />
+		</property>
+		<property name="targetMethod">
+			<value>refund</value>
+		</property>
+	</bean>
+	
+	<!-- eop退款流水 -->
+	<bean id="eopRefundStreamQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="eopRefundStreamTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/10 * * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="eopRefundStreamTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="eopRefundStreamJob" />
+		</property>
+		<property name="targetMethod">
+			<value>refundEop</value>
+		</property>
+	</bean>
+	<!-- 发货通知 -->
+	<bean id="sendQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="sendTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/3 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="sendTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="sendJob" />
+		</property>
+		<property name="targetMethod">
+			<value>send</value>
+		</property>
+	</bean>
+	
+	<!-- 发货并通知出票系统支付 -->
+	<bean id="sendOutSysPayTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="sendOutSysPayTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/30 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="sendOutSysPayTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="sendOutSysPayJob" />
+		</property>
+		<property name="targetMethod">
+			<value>send</value>
+		</property>
+	</bean>
+	<!-- 订单结果通知合作商户 -->
+	<bean id="orderResultQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="orderResultTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0/20 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="orderResultTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="orderResultJob" />
+		</property>
+		<property name="targetMethod">
+			<value>sendMerchantResultData</value>
+		</property>
+	</bean>
+	
+	<!-- 订单预定结果通知合作商户 -->
+	<bean id="orderBookQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="orderBookTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0/30 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="orderBookTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="orderBookJob" />
+		</property>
+		<property name="targetMethod">
+			<value>sendMerchantBookData</value>
+		</property>
+	</bean>
+	
+	<!-- 订单重新支付结果通知合作商户 -->
+	<bean id="orderRepeatPayQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="orderRepeatPayTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0/20 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="orderRepeatPayTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="reatPayJob" />
+		</property>
+		<property name="targetMethod">
+			<value>sendPayResultData</value>
+		</property>
+	</bean>
+	
+	<!-- 订单支付结果异步通知合作商户 -->
+	<bean id="orderPayResultQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="orderPayResultTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0/10 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="orderPayResultTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="orderPayJob" />
+		</property>
+		<property name="targetMethod">
+			<value>sendPayResult</value>
+		</property>
+	</bean>
+	
+	<!-- 退货通知 -->
+	<bean id="sendRefundQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="sendRefundTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0/15 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="sendRefundTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="sendRefundJob" />
+		</property>
+		<property name="targetMethod">
+			<value>sendRefund</value>
+		</property>
+	</bean>
+	<!-- 改签通知 -->
+	<bean id="changeNoticeQuartzTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="changeNoticeTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/15 * * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="changeNoticeTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="changeNoticeJob" />
+		</property>
+		<property name="targetMethod">
+			<value>changeNotice</value>
+		</property>
+	</bean>
+	
+	<!-- 测试环境自动出票，退票任务 -->
+	 <bean id="textOutTicketQuartzTime"
+                class="org.springframework.scheduling.quartz.CronTriggerBean">
+                <property name="jobDetail">
+                        <ref bean="textOutTicketTask" />
+                </property>
+                <property name="cronExpression">
+                        <value>0/10 * * * * ?</value>
+                </property>
+        </bean>
+        <bean id="textOutTicketTask"
+                class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+                <property name="targetObject">
+                        <ref bean="textOutTicket" />
+                </property>
+                <property name="targetMethod">
+                        <value>outsend</value>
+                </property>
+        </bean>
+	
+</beans>

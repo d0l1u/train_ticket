@@ -1,0 +1,32 @@
+# For JBoss: Avoid to setup Log4J outside $JBOSS_HOME/server/default/deploy/log4j.xml!
+# For all other servers: Comment out the Log4J listener in web.xml to activate Log4J.
+log4j.rootLogger=INFO,stdout,R
+
+log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+log4j.appender.stdout.layout.ConversionPattern=[%d{yyyy-MM-dd HH:mm:ss SS}][%t][%c{1}-%L]- %m%n
+
+
+
+
+#------------------logfile
+#log4j.appender.R=org.apache.log4j.RollingFileAppender
+log4j.appender.R=org.apache.log4j.DailyRollingFileAppender
+log4j.appender.R.DatePattern = '.'yyyy-MM-dd 
+log4j.appender.R.File=c:/log/train_gt/train_gt.log
+#log4j.appender.R.MaxFileSize=1024KB
+#log4j.appender.R.MaxBackupIndex=10
+log4j.appender.R.layout=org.apache.log4j.PatternLayout
+log4j.appender.R.layout.ConversionPattern=[%d{yyyy-MM-dd HH:mm:ss SS}][%t][%c{1}-%L]- %m%n
+#---------------------------
+
+
+log4j.logger.com.ibatis=DEBUG 
+log4j.logger.com.ibatis.common.jdbc.SimpleDataSource=DEBUG 
+log4j.logger.com.ibatis.common.jdbc.ScriptRunner=DEBUG 
+log4j.logger.com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate=DEBUG 
+#log4j.logger.java.sql.Connection=DEBUG 
+#log4j.logger.java.sql.Statement=DEBUG 
+#log4j.logger.java.sql.PreparedStatement=DEBUG 
+
+log4j.logger.com.l9e.common.ExceptionHandler=DEBUG

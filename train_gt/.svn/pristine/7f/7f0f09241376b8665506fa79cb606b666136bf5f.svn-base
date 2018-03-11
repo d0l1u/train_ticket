@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="receiveNotify">
+
+	<!-- 保存出票接口返回信息-订单 -->
+	<update id="updateOrderWithCpNotify" parameterClass="java.util.HashMap">
+		UPDATE gt_orderinfo hc 
+			SET hc.order_status=#order_status:VARCHAR#
+			<isNotEmpty prepend="," property="buy_money">
+				hc.buy_money=#buy_money:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="out_ticket_billno">
+				hc.out_ticket_billno=#out_ticket_billno:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="out_ticket_time">
+				hc.out_ticket_time=NOW() 
+			</isNotEmpty>
+			WHERE hc.order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 保存出票接口返回信息-车票订单 -->
+	<update id="updateCpOrderWithCpNotify" parameterClass="java.util.HashMap">
+		UPDATE gt_orderinfo_cp cp 
+		SET cp.buy_money=#buy_money:DECIMAL#,
+			cp.train_box=#train_box:VARCHAR#,
+			cp.seat_no=#seat_no:VARCHAR#
+			<isNotEmpty prepend="," property="seat_type">
+				cp.seat_type=#seat_type:INTEGER#
+			</isNotEmpty>
+		WHERE cp.cp_id=#cp_id:VARCHAR#
+	</update>
+	
+	<insert id="addOrderResultNotify" parameterClass="java.util.HashMap">
+		insert into gt_orderinfo_returnnotify
+		<dynamic prepend="(">
+			order_id,
+			create_time,
+			notify_num,
+			<isNotNull prepend="," property="refund_type">
+				refund_type
+			</isNotNull>
+			<isNotNull prepend="," property="refund_amount">
+				refund_amount
+			</isNotNull>
+			<isNotNull prepend="," property="fail_reason">
+				fail_reason
+			</isNotNull>
+			<isNotNull prepend="," property="is_travel">
+				is_travel
+			</isNotNull>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			#order_id:VARCHAR#,
+			NOW(),
+			0,
+			<isNotNull prepend="," property="refund_type">
+				#refund_type:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="refund_amount">
+				#refund_amount:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="fail_reason">
+				#fail_reason:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="is_travel">
+				#is_travel:VARCHAR#
+			</isNotNull>
+			)
+		</dynamic>
+	</insert>
+	<!-- 查询处理完成需要通知给合作商户的订单 -->
+	<select id="findOrderResultNotify" resultClass="java.util.HashMap">
+		SELECT order_id,refund_type,refund_amount,fail_reason,is_travel 
+		FROM gt_orderinfo_returnnotify eo 
+		WHERE (eo.notify_status='00' OR (eo.notify_status='11' AND 
+			DATE_ADD(eo.notify_time, INTERVAL 3 MINUTE)<![CDATA[<=]]>NOW()))
+			AND eo.notify_num <![CDATA[<]]>10
+			ORDER BY eo.create_time DESC
+			LIMIT 0,20
+	</select>
+	<!-- 更新订单处理结果通知开始时间和通知次数 -->
+	<update id="updateOrderResultNotifyStartNum" parameterClass="java.lang.String">
+		UPDATE gt_orderinfo_returnnotify 
+		SET notify_num = notify_num+1,
+			notify_time = NOW()
+		WHERE order_id=#order_id:VARCHAR#
+	</update>
+	<!-- 更新订单处理结果通知开始时间和通知次数 -->
+	<update id="updateOrderReturnStatus" parameterClass="java.util.HashMap">
+		UPDATE gt_orderinfo_returnnotify 
+		SET notify_status=#new_status:VARCHAR# 
+		WHERE order_id=#order_id:VARCHAR# AND notify_status=#old_status:VARCHAR#
+	</update>
+	
+	<!-- 更新订单处理结果通知成功时间，订单通知状态 -->
+	<update id="updateOrderResultNotify" parameterClass="java.util.HashMap">
+		UPDATE gt_orderinfo_returnnotify 
+		SET notify_status=#notify_status#
+			<isEqual prepend="," compareValue="22" property="notify_status">
+				notify_finish_time = NOW()
+			</isEqual>
+		WHERE order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 更新订处理结果，开始通知状态 ,返回是否更新成功-->
+	<update id="updateOrderResultStatus" parameterClass="java.util.HashMap">
+	 UPDATE gt_orderinfo_returnnotify 
+	  <dynamic prepend="set">
+			<isNotEmpty prepend="," property="new_status">
+				notify_status=#new_status:VARCHAR#
+			</isNotEmpty>
+	  </dynamic>
+		WHERE order_id=#order_id:VARCHAR# AND notify_status=#old_status:VARCHAR#
+	</update>
+	
+	
+	<!-- 新增待重新申请平台支付接口数据 -->
+	<insert id="addPayResultNotify" parameterClass="java.util.HashMap">
+		INSERT INTO gt_orderinfo_paynotify
+		<dynamic prepend="(">
+			order_id,
+			pay_type,
+			create_time,
+			notify_status,
+			fail_reason
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			#order_id:VARCHAR#,
+			#pay_type:VARCHAR#,
+			NOW(),
+			'33',
+			#fail_reason:VARCHAR#
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 查询需要重新支付的订单 -->
+	<select id="findPayResultNotify" resultClass="java.util.HashMap">
+		SELECT order_id ,pay_type 
+		FROM gt_orderinfo_paynotify eo 
+		WHERE eo.notify_status='11' AND 
+			DATE_ADD(eo.notify_time, INTERVAL 3 MINUTE)<![CDATA[<=]]>NOW() 
+			ORDER BY eo.create_time DESC
+			LIMIT 0,5
+	</select>
+	
+	<!-- 更新订单重新支付结果 -->
+	<update id="updatePayResultNotifyStatus" parameterClass="java.util.HashMap">
+		UPDATE gt_orderinfo_paynotify 
+		SET notify_status = '33',fail_reason=#fail_reason:VARCHAR# 
+		WHERE order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 更新订单支付结果通知成功时间，订单通知状态 -->
+	<update id="updatePayResultNotify" parameterClass="java.lang.String">
+		UPDATE gt_orderinfo_paynotify 
+		SET notify_status='22',
+			notify_finish_time = NOW()
+		WHERE order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 查询平台退款通知是否存在该订单的改签差额数据 -->
+	<select id="queryEopRefundNotifyAlterNum" parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		SELECT count(1) FROM gt_orderinfo_refundeopnotify 
+		WHERE refund_seq=#refund_seq:VARCHAR#
+	</select>
+	
+	<!-- 更新平台退票结果-->
+	<update id="updateEopRefundResult" parameterClass="java.util.HashMap">
+		UPDATE gt_orderinfo_refundeopnotify 
+		SET refund_status=#refund_status:VARCHAR#,
+			success_refund_money = #success_refund_money:VARCHAR#,
+			eop_refund_time = #eop_refund_time:VARCHAR#
+		WHERE eop_order_id=#eop_order_id:VARCHAR#
+	</update>
+	
+	<!-- 新增退款异步通知合作商户数据 -->
+	<insert id="addEopRefundNotify" parameterClass="java.util.HashMap">
+		INSERT INTO gt_orderinfo_refundeopnotify
+		<dynamic prepend="(">
+			order_id,
+			eop_order_id,
+			refund_seq,
+			refund_money,
+			refund_reason,
+			notify_url,
+			create_time,
+			notify_num,
+			notify_status,
+			notify_time
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			#order_id:VARCHAR#,
+			#eop_order_id:VARCHAR#,
+			#refund_seq:VARCHAR#,
+			#refund_money:VARCHAR#,
+			#refund_reason:VARCHAR#,
+			#eop_refund_url:VARCHAR#,
+			NOW(),
+			0,
+			'11',
+			NOW()
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 开始通知商户预定结果-->
+	<update id="updateOrderBookStatus" parameterClass="java.util.HashMap">
+		UPDATE gt_orderinfo_booknotify 
+		SET notify_status=#notify_status:VARCHAR#,notify_time = NOW()
+		WHERE order_id=#order_id:VARCHAR# and notify_status = #old_notify_status:VARCHAR#
+	</update>
+	<!-- 更新预定通知状态 -->
+	<update id="updateOrderGtBookNotifyStatus" parameterClass="java.util.HashMap">
+		UPDATE gt_orderinfo_booknotify 
+		SET notify_status=#notify_status:VARCHAR#,notify_time = NOW()
+		WHERE order_id=#order_id:VARCHAR# and notify_status = #current_notify_status:VARCHAR#
+	</update>
+	
+	
+	<!-- 查询需要通知商户预定结果的订单 -->
+	<select id="findOrderBookNotify" resultClass="java.util.HashMap">
+			SELECT order_id,notify_url,merchant_id    
+			FROM gt_orderinfo_booknotify eo 
+			WHERE eo.notify_status='11' AND DATE_ADD(eo.notify_time, INTERVAL 5 SECOND)<![CDATA[<=]]>NOW() 
+			AND eo.notify_num  <![CDATA[<]]>5
+			ORDER BY eo.create_time DESC  LIMIT 0,10
+	</select>
+	
+	<!-- 更新订单预定结果通知开始时间和通知次数 -->
+	<update id="updateOrderBookNotifyStartNum" parameterClass="java.lang.String">
+		UPDATE gt_orderinfo_booknotify 
+		SET notify_num = notify_num+1,
+			notify_time = NOW()
+		WHERE order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 更新订单预定结果通知完成 -->
+	<update id="updateOrderBookNotifyFinish" parameterClass="java.lang.String">
+		UPDATE gt_orderinfo_booknotify 
+		SET notify_status = '22',
+			notify_finish_time = NOW()
+		WHERE order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 查询预定通知的状态 -->
+	<select id="queryBookNotifyStatus"  parameterClass="java.lang.String" resultClass="java.lang.String">
+	  SELECT   notify_status  FROM gt_orderinfo_booknotify  WHERE  order_id =#order_id:VARCHAR#  limit 1	
+	</select>
+	
+	
+	<!-- 新增平台eop发货并通知出票系统支付数据 -->
+	<insert id="addEopAndPayNotify" parameterClass="java.util.HashMap">
+		INSERT INTO gt_orderinfo_eopandpaynotify
+		<dynamic prepend="(">
+			order_id,
+			eop_order_id,
+			pay_money,
+			pay_type,
+			notify_time,
+			create_time
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			#order_id:VARCHAR#,
+			#eop_order_id:VARCHAR#,
+			#pay_money:VARCHAR#,
+			#pay_type:VARCHAR#,
+			NOW(),
+			NOW()
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 查询需要通知eop支付的订单 -->
+	<select id="queryEopAndPayNotify" resultClass="java.util.HashMap">
+		SELECT order_id,send_notify_url,eop_order_id,pay_money,pay_type,CONVERT(notify_num,CHAR) notify_num     
+		FROM gt_orderinfo_eopandpaynotify eo 
+		WHERE eo.notify_status = 00 OR (eo.notify_status='11' AND 
+			DATE_ADD(eo.notify_time, INTERVAL 15 SECOND)<![CDATA[<=]]>NOW()
+			AND eo.notify_num <![CDATA[<]]> 5)
+			ORDER BY eo.create_time DESC
+			LIMIT 0,10
+	</select>
+	
+	<!-- eop支付完成后更新通知平台发货和支付表 -->
+	<update id="updateEopAndPayNotifyInfo" parameterClass="java.util.HashMap">
+		UPDATE gt_orderinfo_eopandpaynotify 
+		SET notify_time = NOW(),
+			send_notify_url = #send_notify_url:VARCHAR# 
+		WHERE order_id=#order_id:VARCHAR# and eop_order_id=#eop_order_id:VARCHAR#
+	</update>
+	
+	<!-- 通知平台发货和支付完成 -->
+	<update id="updateEopAndPayNotifyFinish" parameterClass="java.util.HashMap">
+		UPDATE gt_orderinfo_eopandpaynotify 
+		SET notify_finish_time = NOW(),notify_num = notify_num + 1,
+			notify_status = '22' 
+		WHERE order_id=#order_id:VARCHAR# 
+		<isNotEmpty prepend=" and " property="eop_order_id">
+			eop_order_id=#eop_order_id:VARCHAR#
+		</isNotEmpty>
+	</update>
+	
+	<!-- 通知平台发货和支付失败，更新通知次数 -->
+	<update id="updateEopAndPayNotifyNums" parameterClass="java.util.HashMap">
+		UPDATE gt_orderinfo_eopandpaynotify 
+		SET notify_time = NOW(),
+			notify_status = #notify_status:VARCHAR#,
+			notify_num = notify_num+1 
+		WHERE order_id=#order_id:VARCHAR# and eop_order_id=#eop_order_id:VARCHAR#
+	</update>
+	
+	<!-- 插入支付异步结果通知商户  -->
+	<insert id="insertPayReturnNotify" parameterClass="java.util.HashMap">
+		insert into gt_orderinfo_payresultnotify
+		<dynamic prepend="(">
+			order_id,
+			create_time,
+			notify_num,
+			notify_time,
+			<isNotNull prepend="," property="order_status">
+				pay_status
+			</isNotNull>
+			<isNotNull prepend="," property="fail_reason">
+				fail_reason
+			</isNotNull>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			#order_id:VARCHAR#,
+			NOW(),
+			0,
+			NOW(),
+			<isNotNull prepend="," property="order_status">
+				#order_status:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="fail_reason">
+				#fail_reason:VARCHAR#
+			</isNotNull>
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 接受支付结果通知商户的反馈，更新通知状态 -->
+	<update id="updateOrderPayNotifyFinish" parameterClass="java.util.HashMap">
+		UPDATE gt_orderinfo_payresultnotify 
+		SET notify_time = NOW(),
+			notify_status = #notify_status:VARCHAR# 
+		WHERE order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 查询需要通知商户支付结果的订单 -->
+	<select id="findOrderPayNotify" resultClass="java.util.HashMap">
+		SELECT order_id,fail_reason,pay_status,pay_number  
+		FROM gt_orderinfo_payresultnotify eo 
+		WHERE eo.notify_status='11' AND eo.notify_time <![CDATA[<=]]>NOW()
+			AND eo.notify_num <![CDATA[<]]> 5
+			ORDER BY eo.create_time DESC
+			LIMIT 0,10
+	</select>
+	
+	<!-- 更新支付结果通知商户 的次数 -->
+	<update id="updatePayReturnNotifyNums" parameterClass="java.lang.String">
+		UPDATE gt_orderinfo_payresultnotify 
+		SET notify_time = NOW(),
+			notify_num = notify_num+1 
+		WHERE order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 查询出票结果异步通知商户次数 -->
+	<select id="queryOrderResultNotifyStartNum" parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		SELECT notify_num  
+		FROM gt_orderinfo_returnnotify eo 
+		WHERE eo.order_id = #order_id#
+	</select>
+	
+	<!-- 查询商户id by orderId -->
+	
+	<select id="queryMerchantIdByOrderId" resultClass="java.lang.String">
+		SELECT merchant_id FROM gt_orderinfo WHERE order_id =#orderId#
+	</select>
+	 
+</sqlMap>

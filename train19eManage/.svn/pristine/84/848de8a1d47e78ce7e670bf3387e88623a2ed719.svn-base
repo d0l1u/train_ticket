@@ -1,0 +1,602 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="elongRefund">
+
+	<!-- 获取按条件查询所有的订单 -->
+	<select id="queryRefundTicketList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT DISTINCT
+		  qof.refund_seq,
+		  qof.stream_id,
+		  qof.order_id,
+		  qof.cp_id,
+		  eoc.pay_money AS change_buy_money,
+		  qof.refund_12306_seq,
+		  DATE_FORMAT(qo.from_time, '%Y-%m-%d %H:%i:%s') from_time,
+		  DATE_FORMAT(qof.create_time, '%Y-%m-%d %H:%i:%s') create_time,
+		  qof.refund_money,
+		  qof.refuse_reason,qof.return_optlog,
+		  qof.refund_status,
+		  qof.notify_status,
+		  qof.refund_type,
+		  qof.actual_refund_money,
+		  qof.refund_percent,qof.detail_refund,
+		  qof.opt_person, qof.channel,
+		   DATE_FORMAT(qof.user_time, '%Y-%m-%d %H:%i:%s') user_time,
+		  qo.ticket_num
+		FROM
+		  elong_orderinfo_refundstream AS qof 
+		  LEFT JOIN
+		  elong_orderinfo AS qo 
+		  ON qo.order_id = qof.order_id
+		  LEFT JOIN elong_orderinfo_cp AS eoc
+		  ON qo.order_id = eoc.order_id
+		WHERE 1 = 1 
+			<isNotEmpty prepend=" and " property="order_id">
+				qof.order_id=#order_id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="opt_person">
+				qof.opt_person=#opt_person:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				qof.create_time
+				<![CDATA[>=]]>#begin_info_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				qof.create_time
+				<![CDATA[<]]>
+				DATE_ADD(#end_info_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_seq">
+				qof.refund_seq=#refund_seq#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_12306_seq">
+				qof.refund_12306=#refund_12306_seq#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_status">
+				qof.refund_status in
+				<iterate open="(" close=")" conjunction=","
+					property="refund_status">
+					#refund_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="notify_status">
+				qof.notify_status in
+				<iterate open="(" close=")" conjunction=","
+					property="notify_status">
+					#notify_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_type">
+				qof.refund_type in
+				<iterate open="(" close=")" conjunction=","
+					property="refund_type">
+					#refund_type[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="channel">
+				qof.channel in
+				<iterate open="(" close=")" conjunction=","
+					property="channel">
+					#channel[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+		order by qo.from_time  LIMIT #everyPagefrom:Integer#,
+		#pageSize:Integer#
+	</select>
+
+
+	<!-- 获取按条件查询的订单数 -->
+	<select id="queryRefundTicketCounts"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM elong_orderinfo_refundstream AS qof
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="order_id">
+				qof.order_id=#order_id#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="opt_person">
+				qof.opt_person=#opt_person:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				qof.create_time
+				<![CDATA[>=]]>#begin_info_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				qof.create_time
+				<![CDATA[<]]>
+				DATE_ADD(#end_info_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_seq">
+				qof.refund_seq=#refund_seq#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_12306_seq">
+				qof.refund_12306=#refund_12306_seq#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_status">
+				qof.refund_status in
+				<iterate open="(" close=")" conjunction="," property="refund_status">
+					#refund_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="notify_status">
+				qof.notify_status in
+				<iterate open="(" close=")" conjunction="," property="notify_status">
+					#notify_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="refund_type">
+				qof.refund_type in
+				<iterate open="(" close=")" conjunction="," property="refund_type">
+					#refund_type[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_source">
+				qof.order_source = #order_source#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="channel">
+				qof.channel in
+				<iterate open="(" close=")" conjunction=","
+					property="channel">
+					#channel[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 按照订单号查询订单信息 -->
+	<select id="queryRefundTicketorderInfo" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT order_id,train_no,elong_seat_type,seat_type,channel,
+		pay_money,buy_money,order_status,create_time,order_time,out_ticket_time,
+		out_ticket_billno, from_city, to_city,from_time,to_time 
+		FROM elong_orderinfo  
+		WHERE order_id=#order_id#
+	</select>
+	
+	<!-- 查询明细订单退款明细 -->
+	<select id="queryTicketInfo"
+		parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT qor.stream_id,qor.order_id,qor.cp_id,qor.refund_money,qor.create_time,qor.user_remark,qor.our_remark, qor.channel,
+		  qor.refund_12306_seq,qor.refund_status,qor.detail_refund, qor.detail_alter_tickets,qor.refund_type 
+		FROM elong_orderinfo_refundstream qor  
+		WHERE qor.order_id=#order_id# 
+	</select>
+
+	<!-- 按照订单号查询车票信息 -->
+	<select id="queryRefundTicketcpInfo"
+		parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT cp_id, order_id, user_name, ticket_type, ids_type,user_ids,buy_money, elong_seat_type,
+		train_box,seat_no,seat_type, out_ticket_billno,alter_seat_type, 
+		alter_train_box, alter_seat_no, alter_buy_money, alter_train_no, alter_money, refund_12306_money 
+		FROM elong_orderinfo_cp
+		where order_id=#order_id# 
+	</select>
+
+	<!-- 按照订单查询退票信息 -->
+	<select id="queryRefundTicketInfo1" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT stream_id,refund_seq, order_id, refund_money,create_time,channel,
+		refund_money,refund_status, user_remark,refund_type,notify_status,
+		our_remark,refuse_reason,refund_12306_seq,actual_refund_money,alter_tickets_money,
+		verify_time, opt_person,detail_refund,change_ticket_info,detail_alter_tickets 
+		FROM elong_orderinfo_refundstream 
+		WHERE order_id=#order_id# and cp_id=#cp_id# and refund_seq=#refund_seq# 
+	</select>
+
+
+	<!-- 退款时修改状态 -->
+	<update id="updateRefund" parameterClass="java.util.HashMap">
+		update elong_orderinfo_refundstream 
+		set verify_time=now(),
+			notify_status='00',
+			actual_refund_money=#actual_refund_money#
+		<isNotEmpty prepend="," property="refund_status">
+			refund_status=#refund_status#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="refund_12306_seq">
+			refund_12306_seq=#refund_12306_seq#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="our_remark">
+			our_remark=#our_remark#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="alter_tickets_money">
+			alter_tickets_money=#alter_tickets_money#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="change_ticket_info">
+			change_ticket_info=#change_ticket_info#
+		</isNotEmpty>,
+		refund_money=#refund_money#, opt_person=#user#, detail_refund=#detail_refund#, detail_alter_tickets=#detail_alter_tickets# 
+		WHERE 1=1 and (refund_status='03' or refund_status='07' or refund_status='33' or refund_status='72'or refund_status='73'or refund_status='44')
+		 and order_id=#order_id# and refund_seq=#refund_seq#
+	</update>
+	
+	<!-- 退款时修改车票的改签信息 -->
+	<update id="updateAlertRefund" parameterClass="java.util.HashMap">
+		update elong_orderinfo_cp 
+		<dynamic prepend="set">
+			<isNotEmpty prepend=","  property="alter_train_no">
+				 alter_train_no=#alter_train_no#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alter_train_box">
+				 alter_train_box=#alter_train_box#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alter_seat_no">
+				 alter_seat_no=#alter_seat_no#
+			</isNotEmpty>
+			<isNotEmpty  prepend="," property="alter_seat_type">
+				 alter_seat_type=#alter_seat_type#
+			</isNotEmpty>
+			<isNotEmpty  prepend="," property="alter_money">
+				 alter_money=#alter_money#
+			</isNotEmpty>
+			<isNotEmpty  prepend="," property="refund_12306_money">
+				refund_12306_money =#refund_12306_money#
+			</isNotEmpty>
+		</dynamic>
+		where cp_id=#cp_id#
+	</update>
+
+	<!-- 拒绝退款时修改状态 -->
+	<update id="updateRefuse" parameterClass="java.util.HashMap">
+		update elong_orderinfo_refundstream 
+		set our_remark=#our_remark#,
+			refuse_reason=#refuse_reason#,
+			verify_time=now(),
+			refund_status='22',
+			notify_status='00', 
+			opt_person=#user# 
+		where
+			order_id=#order_id# and refund_seq=#refund_seq#
+	</update>
+
+	<!-- 更新orderinfo订单信息 -->
+	<update id="updateOrder" parameterClass="java.util.HashMap">
+		update elong_orderinfo set opt_ren=#user#, opt_time=now() 
+		where order_id=#order_id#
+	</update>
+	
+	<!-- 更新refund表中操作人信息 -->
+	<update id="updateRefundOpt" parameterClass="java.util.HashMap">
+		update elong_orderinfo_refundstream set opt_person=#user# 
+		where order_id=#order_id# 
+	</update>
+	
+	<!-- 查询日志信息 -->
+	<select id="queryLog" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT log_id,order_id, content, DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') create_time, opt_person 
+		FROM elong_orderinfo_logs 
+		WHERE order_id=#order_id# 
+		ORDER BY create_time DESC
+	</select>
+
+	<!-- 更新日志信息 -->
+	<insert id="insertLog" parameterClass="java.util.HashMap">
+		insert into elong_orderinfo_logs (order_id,content, create_time,opt_person,order_time) 
+		values (#order_id#, #content#, now(), #user#, #order_time#)
+	</insert>
+	<!-- 增加操作日志order_id -->
+	<insert id="addTicket_log" parameterClass="java.util.HashMap">
+		insert into elong_orderinfo_logs (order_id,content, create_time,opt_person) 
+		values (#order_id#, #content#, now(), #opt_person#)
+	</insert>
+	
+	
+	<!-- 机器改签 -->
+	<update id="updateOrderstatusToRobotGai" parameterClass="java.util.HashMap">
+		UPDATE elong_orderinfo_refundstream set refund_status=#refund_status#,opt_person=#user# 
+		WHERE order_id=#order_id#  AND refund_seq=#refund_seq#
+	</update>
+	
+	<!-- 查询联程票的订单号 -->
+	<select id="queryLianchengOrder_id" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT trip_id FROM qunar_orderinfo_trip WHERE order_id=#order_id#
+	</select>
+	
+	<!-- 查询联程票的订单号 -->
+	<select id="queryOrderCpId" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT cp_id FROM elong_orderinfo_cp WHERE order_id=#order_id#
+	</select>
+	
+	<!-- 增加线下退票 -->
+	<insert id="queryRefundTicketAdd" parameterClass="java.util.HashMap" >
+		INSERT INTO elong_orderinfo_refundstream
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="order_id">
+				 order_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_type">
+				 refund_type
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="cp_id">
+				 cp_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_seq">
+				 refund_seq
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_money">
+				 refund_money
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="actual_refund_money">
+				 actual_refund_money
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				 create_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="our_remark">
+				 our_remark
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_12306_seq">
+				 refund_12306_seq
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_status">
+				 refund_status
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_person">
+				 opt_person
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="channel">
+				 channel
+			</isNotEmpty>
+			
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="order_id">
+				#order_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_type">
+				#refund_type#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="cp_id">
+				#cp_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_seq">
+				#refund_seq#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_money">
+				#refund_money#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="actual_refund_money">
+				#actual_refund_money#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				now()
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="our_remark">
+				#our_remark#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_12306_seq">
+				#refund_12306_seq#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_status">
+				#refund_status#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_person">
+				#opt_person#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="channel">
+				 #channel#
+			</isNotEmpty>
+		
+			)
+		</dynamic>
+	</insert>
+	
+	
+		<!-- 增加车站退票 -->
+	<insert id="addElongStation" parameterClass="java.util.HashMap" >
+		INSERT INTO elong_orderinfo_refundstream
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="order_id">
+				 order_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_type">
+				 refund_type
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="cp_id">
+				 cp_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_seq">
+				 refund_seq
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_money">
+				 refund_money
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="detail_refund">
+				 detail_refund
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				 create_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="our_remark">
+				 our_remark
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_12306_seq">
+				 refund_12306_seq
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_status">
+				 refund_status
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_person">
+				 opt_person
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="channel">
+				 channel
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="notify_status">
+				 notify_status
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="user_time">
+				 user_time
+			</isNotEmpty>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="order_id">
+				#order_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_type">
+				'33'
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="cp_id">
+				#cp_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_seq">
+				#refund_seq#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_money">
+				#refund_money#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="detail_refund">
+				#detail_refund#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				now()
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="our_remark">
+				#our_remark#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_12306_seq">
+				#refund_12306_seq#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_status">
+				#refund_status#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_person">
+				#opt_person#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="channel">
+				 #channel#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="notify_status">
+				 #notify_status#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="user_time">
+				 #user_time#
+			</isNotEmpty>
+			)
+		</dynamic>
+	</insert>
+	
+	
+	<!-- 查询order_id是否存在  -->
+	<select id="queryRefundTicketOrderId" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT order_id FROM elong_orderinfo WHERE order_id=#order_id#  
+	</select>
+	
+	<!-- 查询cp_id是否存在  -->
+	<select id="queryRefundTicketCpId" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT DISTINCT cp_id FROM elong_orderinfo_cp WHERE order_id=#order_id# AND cp_id=#cp_id#
+	</select>
+	
+		<!-- 查询存在  -->
+	<select id="queryRefundTicket" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT DISTINCT p.cp_id,p.user_name,p.buy_money,CASE WHEN p.pay_money IS NULL THEN p.buy_money  ELSE p.pay_money END AS change_buy_money,o.channel  FROM elong_orderinfo_cp p,elong_orderinfo o WHERE
+		p.order_id=o.order_id AND p.order_id=#order_id# 
+	</select>
+	
+	
+	<!-- 查询cp_id是否已经生成退款  -->
+	<select id="queryCpidIsRefund" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT cp_id FROM elong_orderinfo_refundstream WHERE order_id=#order_id# AND cp_id=#cp_id#
+		<dynamic prepend="">
+			<isNotEmpty prepend="and" property="refund_status">
+				refund_status <![CDATA[<>]]> '22' AND  refund_status <![CDATA[<>]]>'55'
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询cp_id是否已经生成退款  -->
+	<select id="queryCpidIsRefundNum" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT count(cp_id) FROM elong_orderinfo_refundstream WHERE order_id=#order_id# AND cp_id=#cp_id#
+		<dynamic prepend="">
+			<isNotEmpty prepend="and" property="refund_status">
+				refund_status <![CDATA[<>]]> '22' AND  refund_status <![CDATA[<>]]>'55'
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询是否为出票成功订单  -->
+	<select id="queryStatusByOrderId" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT order_status FROM elong_orderinfo WHERE order_id=#order_id#
+	</select>
+	
+	<!-- 查询是否为出票成功订单  -->
+	<select id="queryMoneyByCpId" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT pay_money,buy_money	FROM elong_orderinfo_cp WHERE order_id=#order_id# and cp_id=#cp_id#
+	</select>
+	
+	
+	<!-- 退款重新通知 -->
+	<update id="updateNotify_Again" parameterClass="java.util.HashMap">
+		UPDATE elong_orderinfo_refundstream AS qo 
+		SET qo.notify_status = '00' ,qo.refund_money =#refundMoney# ,qo.notify_num=0,qo.opt_person=#opt_person#
+		WHERE qo.stream_id=#stream_id#
+	
+	</update>
+	
+	<!-- 差看退款表总金额 -->
+	<select id="querySumRefundMoney" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT CONVERT(IFNULL(SUM(refund_money),0),char)AS refund_money FROM elong_orderinfo_refundstream 
+		WHERE  order_id=#order_id# AND cp_id=#cp_id#  AND refund_status <![CDATA[<>]]>'55' and refund_status <![CDATA[<>]]>'22'
+	</select>
+	
+	<!-- 差看退款表总金额   用户-->
+	<select id="querySumYhRefundMoney" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT CONVERT(IFNULL(SUM(refund_money),0),char)AS refund_money FROM elong_orderinfo_refundstream 
+		WHERE  order_id=#order_id# AND cp_id=#cp_id#  AND refund_status <![CDATA[<>]]>'55' and refund_status <![CDATA[<>]]>'22'
+		AND refund_type='11'
+	</select>
+	
+	<!-- 差看退款表总金额  线下-->
+	<select id="querySumXxRefundMoney" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT CONVERT(IFNULL(SUM(refund_money),0),char)AS refund_money FROM elong_orderinfo_refundstream 
+		WHERE  order_id=#order_id# AND cp_id=#cp_id#  AND refund_status <![CDATA[<>]]>'55' and refund_status <![CDATA[<>]]>'22'
+		AND refund_type='22'
+	</select>
+	
+	<!-- 查询buy_money和ticket_pay_money -->
+	<select id="queryBuyMoney_TicketPayMoney" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT CONVERT(IFNULL(pay_money,0),char)ticket_pay_money ,CONVERT(IFNULL(buy_money,0),CHAR)ticket_buy_money 
+		FROM elong_orderinfo_cp WHERE order_id=#order_id# AND cp_id=#cp_id#
+	</select>
+	
+	<!-- 查询queryRefundMoney -->
+	<select id="queryRefundMoney" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT CONVERT(IFNULL(refund_money,0),CHAR)ticket_refund_money ,stream_id 
+		FROM elong_orderinfo_refundstream WHERE stream_id=#stream_id#
+	</select>
+	
+	<!-- 假删除-->
+	<update id="deleteOrder" parameterClass="java.util.HashMap">
+		UPDATE elong_orderinfo_refundstream AS qo 
+		SET qo.notify_status = '22',qo.refund_status = '22',qo.opt_person=#opt_person#
+		WHERE qo.stream_id=#stream_id# and qo.order_id=#order_id# and qo.cp_id=#cp_id#
+		and qo.refund_seq=#refund_seq#
+	
+	</update>
+	
+	
+	<!-- 查询存在  -->
+	<select id="queryChangeRefundTicket" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT DISTINCT p.new_cp_id AS cp_id,p.user_name,p.change_buy_money,'tongcheng' AS channel FROM elong_orderinfo_change o
+		LEFT JOIN  elong_change_cp p ON p.change_id=o.change_id 
+	    WHERE o.change_status ='34' AND p.order_id=#order_id# 
+	</select>
+	
+	<!-- 查询改签单的buy_money和ticket_pay_money -->
+	<select id="queryChangeMoney" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT '0' AS ticket_pay_money ,CONVERT(IFNULL(change_buy_money,0),CHAR)ticket_buy_money 
+		FROM elong_change_cp WHERE order_id=#order_id# AND new_cp_id=#cp_id#
+	</select>
+	
+	<!-- 查询是否为改签单 -->
+	<select id="queryIsAlter" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT cp.new_cp_id FROM elong_change_cp cp 
+		LEFT JOIN  elong_orderinfo_change eo ON cp.change_id=eo.change_id 
+		WHERE eo.change_status ='34' AND cp.order_id=#order_id# AND cp.cp_id=#cp_id# 
+	</select>
+	
+	
+</sqlMap>
