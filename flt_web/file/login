@@ -1,0 +1,31 @@
+Accept: */*
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US, en; q=0.8, zh-Hans-CN; q=0.5, zh-Hans; q=0.3
+Cache-Control: no-cache
+Connection: Keep-Alive
+Cookie: rmbUser=true; userName=mzs; passWord=mzs; JSESSIONID=C578F95392EA92223720CB768B488A9E
+Host: localhost:8080
+Referer: http://localhost:8080/
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko
+X-Requested-With: XMLHttpRequest
+
+
+http://localhost:8080/login/login.do?user_name=mzs&password=mzs&checkCode=16Ll&version=Mon Mar 12 2018 13:25:38 GMT+0800 (ä¸­å½æ åæ¶é´)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
