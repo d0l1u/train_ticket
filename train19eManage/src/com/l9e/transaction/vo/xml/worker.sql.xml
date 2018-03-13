@@ -240,9 +240,9 @@
 	<update id="updateComNo" parameterClass="java.util.HashMap">
 		UPDATE cp_cardinfo
 			SET 
-			<isNotEmpty prepend=" " property="com_no">
+			<!--<isNotEmpty prepend=" " property="com_no">-->
 					com_no=#com_no:VARCHAR#
-			</isNotEmpty>
+			<!--</isNotEmpty>-->
 			WHERE 
 			worker_id=#worker_id# 
 	</update>

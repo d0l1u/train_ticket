@@ -290,6 +290,7 @@ public class RobotSetNewController extends BaseController{
 		String pay_device_type=this.getParam(request, "pay_device_type");
 		String zhifubaoNew  = this.getParam(request, "zhifubao");
 		String com_no  = this.getParam(request, "com_no");
+		String com_no_orgin=workerService.queryComNo(worker_id);
 		String worker_region  = this.getParam(request, "worker_region");
 		String worker_vendor  = this.getParam(request, "worker_vendor");
 		String worker_describe  = this.getParam(request, "worker_describe");
@@ -328,8 +329,8 @@ public class RobotSetNewController extends BaseController{
 		if(!pay_device_type.equals(String.valueOf(worker.get("pay_device_type")))){
 			content.append("【支付类型："+pay_device_type+"更换前为："+String.valueOf(worker.get("pay_device_type"))+"】");
 		}
-		if(!com_no.equals(String.valueOf(worker.get("com_no")))){
-			content.append("【猫池com端口："+com_no+"更换前为："+String.valueOf(worker.get("com_no"))+"】");
+		if(!com_no.equals(String.valueOf(com_no_orgin))){
+			content.append("【猫池com端口："+com_no+"更换前为："+String.valueOf(com_no_orgin)+"】");
 		}
 		if(!worker_vendor.equals(String.valueOf(worker.get("worker_vendor")))){
 			content.append("【机器提供商："+worker_vendor+"更换前为："+String.valueOf(worker.get("worker_vendor"))+"】");
@@ -351,18 +352,18 @@ public class RobotSetNewController extends BaseController{
 			paramMap.put("zhifubaoNew", zhifubaoNew);
 			paramMap.put("zhifubao", zhifubao);
 			
-			if(StringUtils.isNotEmpty(com_no)){
-				
+			/*if(StringUtils.isNotEmpty(com_no)){*/
+
 				paMap.put("com_no", com_no);
 				paMap.put("worker_id", worker_id);
-				
+
 				try {
 					//更新短信猫口
 					workerService.updateComNo(paMap);
 				} catch (Exception e) {
 					logger.info("更新短信猫口失败",e);
 				}
-			}
+			/*}*/
 				
 			if(!zhifubaoNew.equals(zhifubao)){
 				if("".equals(zhifubaoNew)){
@@ -409,7 +410,7 @@ public class RobotSetNewController extends BaseController{
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("com_no", com_no);
 		
-		if(workerService.queryComNoCount(paramMap)==0){
+		if(workerService.queryComNoCount(paramMap)<=1){
 			result = "yes";
 		}else{
 			result = "no";

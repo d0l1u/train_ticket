@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component jdk="1.7" jdk_type="JavaSDK">
+<component LANGUAGE_LEVEL="JDK_1_6" jdk="1.7" jdk_type="JavaSDK">
 	<output-test url="file://$MODULE_DIR$/WebRoot/WEB-INF/classes"/>
 	<exclude-output/>
 	<contentEntry url="file://$MODULE_DIR$"/>
@@ -60,7 +60,7 @@
 	<lib name="ezmorph-1.0.4.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/train19eManage/WebRoot/WEB-INF/lib/ezmorph-1.0.4.jar!/"/>
 	</lib>
-	<lib name="druid-1.1.0" scope="COMPILE">
+	<lib name="druid-1.1.0.jar" scope="COMPILE">
 		<relative-module-cls project-related="jar://$PROJECT_DIR$/train19eManage/WebRoot/WEB-INF/lib/druid-1.1.0.jar!/"/>
 	</lib>
 	<lib name="hiiposm_engine_simple_2.0.0.26.jar" scope="COMPILE">
