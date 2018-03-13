@@ -353,7 +353,6 @@ public class RobotSetNewController extends BaseController{
 			paramMap.put("zhifubao", zhifubao);
 			
 			/*if(StringUtils.isNotEmpty(com_no)){*/
-
 				paMap.put("com_no", com_no);
 				paMap.put("worker_id", worker_id);
 
@@ -519,7 +518,7 @@ public class RobotSetNewController extends BaseController{
 				worker.put("opt_person",opt_person);
 				try {
 					 //切换账号类型为App支付
-					 robotSetNewService.changeAlipayAccountType(worker);
+				//	 robotSetNewService.changeAlipayAccountType(worker); //目前只有PC端java支付
 					 //切换账号
 					 robotSetNewService.changeAlipayAccount(worker);
 				} catch (Exception e) {
