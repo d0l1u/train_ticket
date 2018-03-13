@@ -353,6 +353,7 @@ public class RobotSetNewController extends BaseController{
 			paramMap.put("zhifubao", zhifubao);
 			
 			/*if(StringUtils.isNotEmpty(com_no)){*/
+			
 				paMap.put("com_no", com_no);
 				paMap.put("worker_id", worker_id);
 
