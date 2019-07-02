@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+    <servlet>
+        <servlet-name>InitConfigServlet</servlet-name>
+        <servlet-class>
+            com.l9e.common.InitConfigServlet
+        </servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>queryTicket</servlet-name>
+        <servlet-class>com.l9e.servlet.QueryTicketServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>queryTicket</servlet-name>
+        <url-pattern>/queryTicket</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>mobileQueryTicket</servlet-name>
+        <servlet-class>com.l9e.servlet.MobileQueryTicketServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>mobileQueryTicket</servlet-name>
+        <url-pattern>/mobileQueryTicket</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>queryNoPriceTicket</servlet-name>
+        <servlet-class>com.l9e.servlet.QueryTicketNoPriceServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>queryNoPriceTicket</servlet-name>
+        <url-pattern>/queryNoPriceTicket</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>soukdQueryTicket</servlet-name>
+        <servlet-class>com.l9e.servlet.SoukdQueryTicketServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>soukdQueryTicket</servlet-name>
+        <url-pattern>/soukdQueryTicket</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>tcQueryTicket</servlet-name>
+        <servlet-class>com.l9e.servlet.TcQueryTicketServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>tcQueryTicket</servlet-name>
+        <url-pattern>/tcQueryTicket</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>tcQueryPrice</servlet-name>
+        <servlet-class>com.l9e.servlet.TcQueryTicketPriceServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>tcQueryPrice</servlet-name>
+        <url-pattern>/tcQueryTicketPrice</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>tcQueryTrainInfo</servlet-name>
+        <servlet-class>com.l9e.servlet.TcQueryTrainInfoServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>tcQueryTrainInfo</servlet-name>
+        <url-pattern>/tcQueryTrainInfo</url-pattern>
+    </servlet-mapping>
+</web-app>

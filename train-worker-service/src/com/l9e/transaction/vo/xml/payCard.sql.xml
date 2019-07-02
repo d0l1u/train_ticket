@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="payCard">
+
+	<!-- 查询支付账号信息  -->
+	<select id="selectPayCard" parameterClass="Map" resultClass="com.l9e.transaction.vo.PayCard">
+		SELECT
+			card_id cardId,
+			card_no cardNo,
+			card_pwd password,
+			pay_type payType,
+			card_phone phone,
+			card_status payStatus,
+			worker_id workerId
+		FROM
+			cp_cardinfo
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="AND" property="workerId">
+				worker_id = #workerId:INTEGER#
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty property="limit">
+				LIMIT #limit:INTEGER#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 更新支付账号信息 -->
+	<update id="updatePayCard" parameterClass="com.l9e.transaction.vo.PayCard">
+		UPDATE
+			cp_cardinfo
+		<dynamic prepend="SET">
+			<isNotEmpty prepend="," property="workerId">
+				worker_id = #workerId:INTEGER#
+			</isNotEmpty>
+		</dynamic>
+		WHERE
+			card_id = #cardId:INTEGER#
+	</update>
+</sqlMap>

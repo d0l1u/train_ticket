@@ -1,0 +1,289 @@
+@charset "utf-8";
+/* CSS Document */
+/*
+ *@description:火车票微信H5移动端样式表
+ *@author:Zhang Xu 2014-05-07 移动端页面0.1版
+*/
+
+
+/*业务线导航 start*/
+.sub-nav-wrap{background-color:#0690ce;}
+.sub-nav-wrap h2{height:70px;line-height:70px;text-align:center;color:#fff;font-size:28px;font-weight: 500;}
+/*业务线导航 end*/
+/*首页 start*/
+.select-city-wrap{padding:10px;}
+.select-city-wrap dt,.select-city-wrap dd{float:left;}
+.select-city-wrap .city-con{position:relative;padding:5px 0;border:1px solid #ddd;background-color:#fff;}
+.select-city-wrap .label1{padding-left:10px;height:48px;line-height:48px;}
+.select-city-wrap .city-input{width:90%;position: relative;height: 36px;vertical-align: middle;background-color: white;margin:5px 0 0 5px;border-radius: 5px;border: 1px solid #bbb;}
+.select-city-wrap .input-box{width: 100%;border: 0;line-height: 22px;margin-top:7px;outline: 0;vertical-align: middle;padding-left: 5px;font-size:16px;box-sizing:border-box;}
+.select-city-wrap .select-operate{display: inline-block;width: 32px;height: 29px;overflow: hidden;position: absolute;right: 3px;top:50%;margin-top:-14px;}
+.select-city-wrap .arrow-icon{display: inline-block;width:8px;height:14px;overflow: hidden;position: absolute;right: 6px;top:7px;background-position:-10px -54px;background-size:190px 150px;}
+.select-city-wrap .change-city{position:absolute;top:50%;right:15px;margin-top:-30px;width:30px;height:60px;}
+.select-city-wrap .change-city .change-img{background:url(/images/change-icon.png) no-repeat center;display: block;height: 60px;background-size: 100% 100%;width: 100%;}
+.select-city-wrap .set-date{margin: 10px 0 10px 0;line-height: 25px;padding: 10px;position: relative;border: 1px solid #ddd;}
+.select-city-wrap .set-date .date{padding-left:10px;}
+.select-city-wrap .lalbe2{padding-left:10px;}
+.select-city-wrap .date-con{float:left;}
+.select-city-wrap .set-date .select-operate{float:right;}
+.ser-box,.btn-box{position:relative;height:50px;}
+.ser-box .btn,.btn-box .btn{background-color: #ff8a00;border-radius:4px;height:50px;line-height:50px;width:100%;font-size:24px;font-weight: 500;}
+.ser-field{padding:10px;}
+/*首页 end*/
+/*查询城市页 start*/
+.search-city-wrap{}
+.search-input-box{background-color:#e0e0e0;padding:10px;}
+.search-field{height:36px;background: #ffffff;border-radius: 4px;position: relative;}
+.search-field:before,.search-field:after{position: absolute;content:"";z-index: 9;}
+.search-field:before{left: 6px;top: 8px;width: 12px;height: 12px;border: 1px solid #bcbcbc;border-radius: 50%;}
+.search-field:after{left: 20px;top: 18px;width: 1px;height: 8px;background: #bcbcbc;
+	-webkit-transform: rotate(-45deg);
+	-moz-transform: rotate(-45deg);
+	-ms-transform: rotate(-45deg);
+	-o-transform: rotate(-45deg);
+	transform: rotate(-45deg);
+}
+.search-field span{display: block;height: 100%;padding-left:30px;border-radius: 4px;}
+.search-field .city-input{width: 100%;height: 36px;line-height: 36px;background-color: #fff;border: none;font-size: 20px;border-radius: 4px;}
+.city-list li{padding: 0.5em 10px;font-size:20px;}
+.hot-city{height:35px;border-bottom: 1px solid #f2f2f2;line-height: 35px;color: #333333;border: none;font-size: 15px;background: #fff;}
+.city-list .list-item{position:relative;height:30px;line-height:30px;border-bottom: 1px solid #d0d0d0;background-color:#e0e0e0 ;}
+.city-active:before,.city-active:after{background: url(/images/sprite.png) no-repeat;background-size: 285px 225px;}
+.city-list .city-active:after{content: "";position: absolute;top: 50%;right: 10px;width: 29px;height: 29px;margin-top: -9px;background-position: -93px -44px;}
+/*查询城市页 end*/
+/*车次列表及信息页 start*/
+.train-select{padding-top:10px;}
+.train-detail-wrap{padding-top:10px;}
+.train-detail-hd{height:35px;padding:0 10px;background-color:#34a6da;border-bottom:1px solid #9ed3eb;}
+.train-detail-hd span{color:#fff;line-height:35px;font-size:18px;}
+.train-detail-hd .starttime{padding-left:30px;}
+.train-detail-wrap .tickets-kinds{background-color:#fff;margin-bottom:10px;}
+.calendar-select{position:relative;height:50px;padding:0 10px;border-bottom: 1px solid #c8c7cc;background-color: #34a6da;}
+.left-arrow,.right-arrow{width:44px;height:100%;}
+.left-arrow .pic,.right-arrow .pic{margin-top:10px;width:18px;height:33px;}
+/*.left-arrow .pic{margin-left:0;background-position:-81px -29px;}
+.right-arrow .pic{margin-left:32px;background-position: -96px -29px;}*/
+.left-arrow .pic{margin-left:0;background-position:-121px -108px;}
+.right-arrow .pic{margin-left:16px;background-position: -144px -108px;}
+.calendar-select .center-date{position:absolute;left:50%;margin-left:-106px;width:212px;text-align:center;}
+.calendar-select .center-date span{line-height:50px;font-size:22px;color:#fff;}
+.train-list{background-color:#fff;}
+.train-list .train-item{border-bottom: 1px solid #c8c7cc;}
+.train-list .train-item:nth-child(2n){background-color: #f0f0f0;}
+.train-list ul{padding:10px;font-size: 15px;position: relative;}
+.train-list li{float:left;}
+.train-num{width:68px;}
+.train-num span{font-size:28px;}
+.train-mes{width:200px;}
+.trainicon{display:inline-block;width: 18px;height: 18px;line-height:18px;padding: 2px;text-align: center;font-family: "STHEITI";font-size: 18px;font-weight: bold;color: #fff;margin-right: 5px;}
+.train-mes .start{background-color:#f0781e;}
+.train-mes .pass{background-color:#239301;}
+.train-mes .end{background-color:#0790CE;}
+.train-mes .time{color:#656acd;line-height:18px;}
+.train-mes .station-name{color:#585858;padding-left:4px;}
+.train-mes span{font-size:18px;}
+.train-list .tickets-amount{float:right;}
+.tickets-amount p{font-size:18px;text-align: center;}
+.tickets-amount span{display:block;margin:0 auto;width:56px;height:28px;padding:0 3px;line-height:28px;color:#fff;background-color:#3a92e2;font-size:18px;text-align: center;border-radius: 3px;}
+.tickets-amount .noticket{background-color:#ddd;color:#333;}
+.train-list .seats{margin:0 10px;padding:10px 0;border-top:1px solid #c8c7cc;}
+.train-list .seats em{color:#f60;font-style: normal;}
+.train-list .seats span{padding-right:10px;font-size:16px;}
+.site-mes-wrap{width:100%;height:111px;background:url(/images/station-bg.png) no-repeat;background-size:320px 111px;}
+.tickets-kinds{padding:10px;}
+.tickets-kinds table{width:100%;}
+.tickets-kinds td{height:40px;line-height:40px;border-top:1px solid #c8c7cc;font-size:18px;}
+.tickets-kinds .first-tr td{border-top:none;}
+.tickets-kinds .operate {width:54px;}
+.tickets-kinds .operate .btn{width:52px;height:24px;border:2px solid #ff8a00;border-radius: 2px; color:#ff8a00;background-color: #fff;font-size:18px;line-height:24px;}
+.rmb-icon{font-style: normal;}
+.stationlist{background-color:#fff;margin-bottom:30px;}
+.stationlist table{width: 100%;}
+.stationlist th,.stationlist td{height:30px;line-height:40px;font-size:18px;text-align: center;}
+.stationlist th{background-color:#34a6da;color:#fff;}
+.stationlist td{border-bottom:1px solid #c8c7cc;}
+.stationlist table tr:nth-child(2n) td{background-color: #f0f0f0;}
+.stationlist th:nth-child(1),.stationlist td:nth-child(1),.stationlist th:nth-child(2),.stationlist td:nth-child(2){text-align: left;}
+.stationlist th:nth-child(1),.stationlist td:nth-child(1){padding-left:5%;}
+.stationlist .station-name{width:32%;}
+.stationlist .arrival-time,.stationlist .departure-time{width:21%;}
+.stationlist .hightlight-txt{color:#34a6da;}
+/*车次列表及信息页 end*/
+/*填写订单页 start*/
+.fill-order-wrap,.public-select-wrap,.public-new-wrap,.public-bg-wrap{padding:10px;}
+.tickets-mes-wrap{margin-bottom:10px;padding:10px 10px 0;border-bottom:1px solid #c8c7cc;background-color: #fff;}
+.tickets-mes-wrap .tickets-mes{position:relative;margin:10px 0;padding-bottom:10px;border-bottom:1px solid #c8c7cc;}
+.start-mes{text-align: center;}
+.start-mes .station-name,.end-mes .station-name{font-size:28px;}
+.start-mes .time1,.end-mes .time2{color:#f75c5c;font-size:20px;font-weight:500;}
+.tickets-mes-wrap .tickets-mes .kinds-seat,.tickets-mes-wrap .tickets-mes .price{font-size: 20px;line-height:36px;}
+.end-mes .time2{color:#333;}
+.end-mes{text-align: center;}
+.other-mes{position:absolute;top:0;left:50%;margin-left:-39px;width:102px;padding:10px 0;background:url(/images/fromto-icon.png) no-repeat center 33px;background-size:75px 14px;text-align: center;}
+.other-mes .checi{font-size:18px;color:#3a92e2;}
+.other-mes .date{display:inline-block;padding-top:14px;font-size:18px;}
+.tickets-mes-wrap .price em{font-size:20px;color:#ff8a00;}
+.tickets-mes-wrap .price b{font-size:20px;color:#ff8a00;font-weight: 500;}
+.tickets-intro{margin:0 10px;} 
+.tickets-intro h4{padding-bottom:0px;color:#3a92e2;font-size:14px;text-align: center;font-weight: 400;line-height:16px;height:26px;}
+.tickets-intro .slide-down,.tickets-intro .slide-up{margin:4px auto 0;display:block;width:23px;height:8px;background:url(/images/sprite.png) no-repeat;background-size:190px 150px;}
+.tickets-intro .slide-down{background-position:-119px -36px;}
+.tickets-intro .slide-up{background-position:-119px -45px;}
+.tickets-intro .intro-con{border-top:1px solid #e6e6e6;padding-top:4px;}
+.tickets-intro p{padding-bottom:6px;color:#555;line-height:18px;}
+.tickets-intro h5{font-weight:500;font-size:14px;}
+/*选择收件人、乘客等公共模块 start*/
+.mes-mod,.contact-wrap {margin:10px 0;border-top:1px solid #c8c7cc;border-bottom:1px solid #c8c7cc;background-color: #fff;}
+.mes-mod .add-mes{padding:10px;border-bottom:1px solid #c8c7cc;color:#486596;line-height:36px;font-size:22px;}
+.add-icon{float:right;width:25px;height:25px;background-position:-157px -36px;background-size:190px 150px;}
+.mes-mod .mes-con{margin:0 10px;}
+.mes-mod .nobt{border-top: none;}
+.mes-mod li{padding:10px 0;border-top:1px solid #e2e2e2;overflow: hidden;}
+.mes-mod .mes-con .tickets-kind,.mes-mod .mes-con .tel-num{padding-left:30px;color:#486596;font-size:18px;}
+.edit-icon{width:21px;height:22px;background-position:-157px -67px;margin-top:10px;background-size:190px 150px;}
+.cancel-icon{width:23px;height:23px;background-position:-157px -94px;margin:10px 10px 0 0 ;background-size:190px 150px;}
+.contact-wrap .insure-select .con span{color:#ff8a00;font-size:18px;line-height:25px;white-space: nowrap;}
+.order-sum{position:fixed;bottom:0;left:0;width:100%;padding:4px 0;background-color:#fff;}
+.order-sum .order-box{position:relative;padding:0 10px;height:100%;}
+.order-sum .submit-order{position:absolute;top:50%;right:10px;margin-top:-16px;width:105px;height:36px;background-color:#ff921c;border-radius: 3px;font-size:20px;}
+.order-sum .all-money{line-height:36px;font-size:20px;}
+.order-sum .all-money b{color:#f80;font-size:20px;font-weight:normal;}
+.public-select-wrap .mes-mod{margin-top:0;}
+.public-select-wrap .check-box{padding:10px 10px 0 0;}
+.public-select-wrap .mes-detail span,.detail-mes1 span{line-height:20px;font-size:16px;}
+.public-select-wrap .check-box input,.check-input{width:16px;height:16px;border:0;zoom:1.5;}
+.public-select-wrap .check-box .checked{background-position:-119px -78px;}
+/*选择收件人、乘客等公共模块 end*/
+.guest-message h3{font:600 20px/30px "Microsoft yahei";margin-bottom:10px;} 
+.guest-message .guest-con{margin-bottom:10px;padding-top:10px;background-color:#fff;border-top:1px solid #c8c7cc;border-bottom:1px solid #c8c7cc;}
+.guest-message .tit{padding:0 10px;}
+.guest-message .tit span{font-size:16px;}
+.guest-message .tit b{font-weight:normal;padding:0 3px;}
+.guest-message .tickets-type{padding-left:30px;}
+.guest-message .select-mod .name{font-size:16px;color:#333;}
+.guest-message .select-mod .con input{font-size:16px;}
+.add-guest-wrap{padding-right:10px;border-top:1px solid #c8c7cc;}
+.add-guest{position:relative;float:right;height:44px;line-height:44px;padding-left:41px;}
+.add-guest:after{content: ' ';position: absolute;top: 50%;left: 10px;width: 25px;height: 25px;margin-top:-12px;background: url(/images/sprite.png) no-repeat -157px -36px;background-size: 190px 150px;}
+.guest-message .delete-guest{position:relative;padding-left:41px;}
+.guest-message .delete-guest:after{content:'';position:absolute;top:50%;left:12px;margin-top:-12px;width: 23px;height: 23px;background: url(/images/sprite.png) no-repeat -157px -94px;background-size: 190px 150px;}
+.contact-wrap .borderb{border-bottom:1px solid #c8c7cc;}
+.protocol{padding-bottom:70px;}
+.protocol a{margin:0 4px;}
+/*新增乘客信息*/
+.public-newbox,.public-box{border-top:1px solid #c8c7cc;border-bottom:1px solid #c8c7cc;background-color:#fff;}
+/*选择列表模块 start*/
+.select-mod{position:relative;padding:10px 0;margin:0 10px;overflow:hidden;border-bottom:1px solid #c8c7cc;}
+.select-mod .name{float:left;width:106px;font-weight:normal;color:#333;line-height:30px;font-size:16px;}
+.select-mod .con{float:left;position:relative;padding-left:10px;width: 58%;}
+.select-mod .con span{font-size:20px;line-height:30px;}
+.select-mod .con input{width:100%;padding:4px 0;border:none;line-height:22px;font-size:20px;}
+.select-arrow{position:absolute;top:50%;right:0;margin-top:-10px;width:14px;height:21px;background-position:-15px -81px;}
+/*选择列表模块 end*/
+.insure-select{border-bottom:none;}
+.id-num{border-bottom: none;}
+/*填写订单页 end*/
+/*套餐选择页 start*/
+.insurance-wrap{background-color: #ECEDEF;padding:10px 0;}
+.insurance-wrap .insurance-select{border-top:1px solid #c8c7cc;background-color: #fff;}
+.insurance-wrap .insurance-select li{padding:0 10px;border-bottom:1px solid #c8c7cc;}
+.intro-insurance{border-top:1px solid #c8c7cc;padding:10px 0;color:#80848b;font-size:18px;}
+.insurance-select .insurance-mes{padding:10px 0;}
+.insurance-mes .txt{color:#486596;font-size:24px;}
+.insurance-mes .price{padding-left:40px;font-size:24px;color:#ff9000;}
+.check-input{margin-right:10px;}
+.insurance-receipt,.post-mes{border-top:1px solid #c8c7cc;border-bottom:1px solid #c8c7cc;background-color: #fff;}
+.insurance-receipt{padding:8px 10px;height:48px;}
+.insurance-receipt h4{font-size:24px;line-height: 48px;font-weight: normal;}
+.insurance-receipt .switch{line-height: 48px;}
+.saved-mes{padding:0 10px;border-bottom:1px solid #c8c7cc;}
+.saved-mes li{position:relative;padding:10px 0;border-top:1px solid #c8c7cc;}
+.saved-mes .nobt{border-top:none;}
+.saved-mes span{display: inline-block;font-size:20px;}
+.saved-mes .span2{color:#486596;}
+.create-new-mes{padding:10px;}
+.create-new-mes .add-post-mes{color: #333;line-height:36px;font-size:24px;}
+/*.post-mes{background-color: #fff;border-bottom:1px solid #c8c7cc;border-top:1px solid #c8c7cc;}*/
+/*套餐选择页 end*/
+/*订单支付页 start*/
+.order-num-12306{height:30px;line-height:30px;padding:9px 20px 0;background-color: #0c64b4;color:#fff;font-size:18px;}
+.order-mes-hd{height:40px;background-color: #0c64b4;font-weight:500;}
+.order-mes-hd .train-num{padding-left:20px;line-height: 40px;color:#e5ebf4;font-size:18px;}
+.order-mes-hd .time{padding-right:20px;line-height: 40px;color:#e5ebf4;font-size:18px;}
+.order-mes-mod .station-mes{width:100%;position:relative;padding:10px 0;} 
+.order-mes-mod .station-mes .station-name{font-size:24px;}
+.order-mes-mod .station-mes .time{color:#6c6c6c;font-size:18px;}
+.order-mes-mod .start-station{padding-left:20px;text-align: left;}
+.order-mes-mod .end-station{padding-right:20px;text-align: right;}
+.order-mes-mod .station-icon{position:absolute;top:50%;left:50%;margin:-10px 0 0 -49px;width:99px;height:21px;background-position:-54px -83px;}
+.order-mes-mod .tickets-detail{margin:0 10px;border-top:1px solid #c8c7cc;}
+.order-mes-mod .tickets-detail span{padding:10px;font-size: 18px;}
+.order-mes-mod .tickets-kinds{color:#486596;}
+.order-mes-mod .tickets-price{color:#ff8a00;}
+.passenger-mes-mod{border-top:1px solid #c8c7cc;padding:10px 20px;}
+.passenger-mes-mod p{overflow: hidden;}
+.passenger-mes-mod p span{font-size:20px;line-height:30px;}
+.passenger-mes-mod .insurance-state strong,.order-mes-mod .order-detail .insurance-state strong{font-weight:500;color:#3a92e2;}
+.pay-box{position:fixed;bottom:0;left:0;width:100%;height:129px;background-color: #f6f5f1;text-align: center;}
+.order-mes-mod .order-detail{padding:10px 20px;border-top:1px solid #c8c7cc;}
+.order-mes-mod .order-detail .tickets-price{color:#333;}
+.order-mes-mod .order-detail .tickets-price strong{color:#f80;font-weight: 500;}
+.order-mes-mod .order-detail .first-p{padding-bottom:4px;overflow: hidden;}
+.order-mes-mod .order-detail span{font-size:18px;}
+.order-mes-mod .order-time strong{font-weight: 500;color:#486596;}
+.passenger-order-mes{margin:10px 0;background-color:#fff;}
+.passenger-order-mes li{overflow: hidden;padding:10px;border-bottom: 1px solid #c8c7cc;}
+.passenger-order-mes .tickets-kind{padding-left:15px;}
+.passenger-order-mes .detail-mes2{text-align: right;}
+.passenger-order-mes .detail-mes2 p{font-size:18px;}
+.order-state{margin-top:10px;padding:0 10px;}
+.order-state .warn-state{color:#f70000;font-size:20px;line-height:26px;}
+.order-state .warn-icon{float:left;margin-right:4px;width:26px;height:26px;background:url(/images/sprite.png) no-repeat 0 -154px;}
+.order-state .reason dt{font-weight:700;}
+.order-state .reason{padding-top:10px;}
+.order-state .reason dt,.order-state .reason dd{font-size:18px;}
+.order-mes-mod .passenger-order-mes{border-top:1px solid #c8c7cc;margin:0 20px;padding:10px 0;}
+.order-mes-mod .passenger-order-mes span{font-size:20px;}
+.order-mes-mod .id-num{font-size:18px;}
+.order-mes-box{margin-top:10px;border-bottom:1px solid #c8c7cc;background-color: #fff;}
+.order-mes-box .order-detail{border-top:0;}
+.order-mes-box .tip{margin:0 10px;padding:10px;border-top:1px solid #c8c7cc;}
+.order-mes-box .tip span{font-size:18px;}
+.order-mes-box .refunding{color:#f80;font-size:16px;}
+.order-mes-box .refunded{color:#3a92e2;}
+.order-mes-box .tip .price{color:#f80;font-weight: 500;font-size:18px;}
+/*订单支付页 end*/
+/*查看订单 start*/
+.view-order-wrap .order-status{color:#3992e2;font-size:18px;}
+.view-order-wrap .order-time{font-size:18px;color:#838383;}
+.view-order-wrap .order-succeed{color:#12c93b;}
+.view-order-wrap .order-failed{color:#ef0000;}
+.view-order-wrap .checi{font-size:20px;}
+.view-order-wrap{padding-top:10px;}
+.view-order-wrap ul{background-color: #fff;}
+.view-order-wrap li{border-bottom:1px solid #c8c7cc;overflow:hidden;padding:10px;}
+.view-order-wrap p{overflow: hidden;}
+.view-order-wrap li span{line-height:30px;font-size:22px;}
+
+/*查看订单 end*/
+/*个人中心页 start*/
+.user-center-wrap{padding:10px;background-color:#ECEDEF;}
+.user-center,.other-center {background-color: #fff;}
+.user-center-wrap li{padding:0 10px;height:60px;border-top:1px solid #c8c7cc;overflow: hidden;}
+.user-center-wrap .nobt{border-top:none;}
+.user-center-wrap h3{float:left;color:#333;font:500 28px/60px "Microsoft yahei";}
+.user-center-wrap .more-arrow{float:right;margin-top:22px;width:11px;height:18px;background:url(/images/sprite.png) no-repeat 0 -143px;background-size:285px 225px; }
+.other-center{margin-top:10px;}
+/*个人中心页 end*/
+/*弹窗提示 start*/
+.pop-tip{padding:0 10px;}
+.pop-hd{height:60px;padding-left:20px;background-color:#0390CE;color:#fff;font:24px/60px "Microsoft yahei";}
+.pop-con{padding:30px 20px 20px;background-color:#fff;}
+.pop-tip .txt-tip{font-size:20px;}
+.pop-tip .ok-btn,.pop-tip .cancel-btn,.pop-tip .confirm-btn{width:48%;height:44px;font-size:20px;line-height:44px;text-align: center;}
+.pop-tip .ok-btn{background-color:#f60;float:left;}
+.pop-tip .cancel-btn{background-color:#cccdcd;color:#333;float:right;}
+.pop-tip .operate-group{padding-top:20px;}
+.pop-tip .confirm-btn{width:100%;background-color:#f60;}
+/*弹窗提示 end*/
+.nobb{border-bottom:none;}

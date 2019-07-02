@@ -1,0 +1,1098 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="order">
+
+	<!-- 订单 -->
+	<insert id="addOrderInfo" parameterClass="com.l9e.transaction.vo.OrderInfo">
+		insert into app_orderinfo
+		<dynamic prepend="(">
+			order_id,
+			<isNotNull prepend="," property="order_name">
+				order_name
+			</isNotNull>
+			<isNotNull prepend="," property="pay_money">
+				pay_money
+			</isNotNull>
+			<isNotNull prepend="," property="ticket_pay_money">
+				ticket_pay_money
+			</isNotNull>
+			<isNotNull prepend="," property="bx_pay_money">
+				bx_pay_money
+			</isNotNull>
+			<isNotNull prepend="," property="ps_pay_money">
+				ps_pay_money
+			</isNotNull>
+			<isNotNull prepend="," property="out_ticket_type">
+				out_ticket_type
+			</isNotNull>			
+			<isNotNull prepend="," property="order_status">
+				order_status
+			</isNotNull>
+				,create_time
+			<isNotNull prepend="," property="cm_phone">
+				cm_phone
+			</isNotNull>
+			<isNotNull prepend="," property="train_no">
+				train_no
+			</isNotNull>
+			<isNotNull prepend="," property="from_city">
+				from_city
+			</isNotNull>
+			<isNotNull prepend="," property="to_city">
+				to_city
+			</isNotNull>
+			<isNotNull prepend="," property="from_time">
+				from_time
+			</isNotNull>
+			<isNotNull prepend="," property="to_time">
+				to_time
+			</isNotNull>
+			<isNotNull prepend="," property="travel_time">
+				travel_time
+			</isNotNull>
+			<isNotNull prepend="," property="seat_type">
+				seat_type
+			</isNotNull>
+			<isNotNull prepend="," property="ext_seat">
+				ext_seat
+			</isNotNull>
+			<isNotNull prepend="," property="user_id">
+				user_id
+			</isNotNull>
+			<isNotNull prepend="," property="channel">
+				channel
+			</isNotNull>
+
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			#order_id:VARCHAR#,
+			<isNotNull prepend="," property="order_name">
+				#order_name:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="pay_money">
+				#pay_money:DECIMAL#
+			</isNotNull>
+			<isNotNull prepend="," property="ticket_pay_money">
+				#ticket_pay_money:DECIMAL#
+			</isNotNull>
+			<isNotNull prepend="," property="bx_pay_money">
+				#bx_pay_money:DECIMAL#
+			</isNotNull>
+			<isNotNull prepend="," property="ps_pay_money">
+				#ps_pay_money:DECIMAL#
+			</isNotNull>
+			<isNotNull prepend="," property="out_ticket_type">
+				#out_ticket_type:INTEGER#
+			</isNotNull>
+			<isNotNull prepend="," property="order_status">
+				#order_status:VARCHAR#
+			</isNotNull>
+				,NOW()
+			<isNotNull prepend="," property="cm_phone">
+				#cm_phone:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="train_no">
+				#train_no:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="from_city">
+				#from_city:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="to_city">
+				#to_city:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="from_time">
+				STR_TO_DATE(#from_time:VARCHAR#,'%Y-%m-%d %H:%i:%s')
+			</isNotNull>
+			<isNotNull prepend="," property="to_time">
+				STR_TO_DATE(#to_time:VARCHAR#,'%Y-%m-%d %H:%i:%s')
+			</isNotNull>
+			<isNotNull prepend="," property="travel_time">
+				STR_TO_DATE(#travel_time:VARCHAR#,'%Y-%m-%d')
+			</isNotNull>
+			<isNotNull prepend="," property="seat_type">
+				#seat_type:DECIMAL#
+			</isNotNull>
+			<isNotNull prepend="," property="ext_seat">
+				#ext_seat:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="user_id">
+				#user_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="channel">
+				#channel:VARCHAR#
+			</isNotNull>
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 车票 -->
+	<insert id="addOrderInfoCp" parameterClass="com.l9e.transaction.vo.OrderInfoCp">
+		insert into app_orderinfo_cp
+		<dynamic prepend="(">
+			cp_id,
+			<isNotNull prepend="," property="order_id">
+				order_id
+			</isNotNull>
+			<isNotNull prepend="," property="user_name">
+				user_name
+			</isNotNull>
+			<isNotNull prepend="," property="ticket_type">
+				ticket_type
+			</isNotNull>
+			<isNotNull prepend="," property="ids_type">
+				ids_type
+			</isNotNull>
+			<isNotNull prepend="," property="user_ids">
+				user_ids
+			</isNotNull>
+			<isNotNull prepend="," property="telephone">
+				telephone
+			</isNotNull>
+			,create_time
+			<isNotNull prepend="," property="pay_money">
+				pay_money
+			</isNotNull>
+			<isNotNull prepend="," property="seat_type">
+				seat_type
+			</isNotNull>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			#cp_id:VARCHAR#,
+			<isNotNull prepend="," property="order_id">
+				#order_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="user_name">
+				#user_name:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="ticket_type">
+				#ticket_type:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="ids_type">
+				#ids_type:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="user_ids">
+				#user_ids:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="telephone">
+				#telephone:VARCHAR#
+			</isNotNull>
+			,NOW()
+			<isNotNull prepend="," property="pay_money">
+				#pay_money:DECIMAL#
+			</isNotNull>
+			<isNotNull prepend="," property="seat_type">
+				#seat_type:DECIMAL#
+			</isNotNull>
+			
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 保险 -->
+	<insert id="addOrderInfoBx" parameterClass="com.l9e.transaction.vo.OrderInfoBx">
+		insert into app_orderinfo_bx
+		<dynamic prepend="(">
+			bx_id,
+			<isNotNull prepend="," property="order_id">
+				order_id
+			</isNotNull>
+			<isNotNull prepend="," property="cp_id">
+				cp_id
+			</isNotNull>
+			<isNotNull prepend="," property="from_name">
+				from_name
+			</isNotNull>
+			<isNotNull prepend="," property="to_name">
+				to_name
+			</isNotNull>
+			<isNotNull prepend="," property="ids_type">
+				ids_type
+			</isNotNull>
+			<isNotNull prepend="," property="user_name">
+				user_name
+			</isNotNull>
+			<isNotNull prepend="," property="user_ids">
+				user_ids
+			</isNotNull>
+			,create_time
+			<isNotNull prepend="," property="bx_status">
+				bx_status
+			</isNotNull>
+			<isNotNull prepend="," property="pay_money">
+				pay_money
+			</isNotNull>
+			<isNotNull prepend="," property="product_id">
+				product_id
+			</isNotNull>
+			<isNotNull prepend="," property="effect_date">
+				effect_date
+			</isNotNull>
+			<isNotNull prepend="," property="train_no">
+				train_no
+			</isNotNull>
+			<isNotNull prepend="," property="telephone">
+				telephone
+			</isNotNull>
+			<isNotNull prepend="," property="bx_channel">
+				bx_channel
+			</isNotNull>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			#bx_id:VARCHAR#,
+			<isNotNull prepend="," property="order_id">
+				#order_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="cp_id">
+				#cp_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="from_name">
+				#from_name:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="to_name">
+				#to_name:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="ids_type">
+				#ids_type:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="user_name">
+				#user_name:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="user_ids">
+				#user_ids:VARCHAR#
+			</isNotNull>
+			,NOW()
+			<isNotNull prepend="," property="bx_status">
+				#bx_status:DECIMAL#
+			</isNotNull>
+			<isNotNull prepend="," property="pay_money">
+				#pay_money:DECIMAL#
+			</isNotNull>
+			<isNotNull prepend="," property="product_id">
+				#product_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="effect_date">
+				#effect_date:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="train_no">
+				#train_no:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="telephone">
+				#telephone:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="bx_channel">
+				#bx_channel:VARCHAR#
+			</isNotNull>
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 配送 -->
+	<insert id="addOrderInfoPs" parameterClass="com.l9e.transaction.vo.OrderInfoPs">
+		insert into app_orderinfo_ps
+		<dynamic prepend="(">
+			order_id,
+			<isNotNull prepend="," property="pay_money">
+				pay_money
+			</isNotNull>
+			<isNotNull prepend="," property="buy_money">
+				buy_money
+			</isNotNull>
+			<isNotNull prepend="," property="ps_status">
+				ps_status
+			</isNotNull>
+				,create_time
+			<isNotNull prepend="," property="link_name">
+				link_name
+			</isNotNull>
+			<isNotNull prepend="," property="link_phone">
+				link_phone
+			</isNotNull>
+			<isNotNull prepend="," property="link_address">
+				link_address
+			</isNotNull>
+			<isNotNull prepend="," property="link_mail">
+				link_mail
+			</isNotNull>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			#order_id:VARCHAR#,
+			<isNotNull prepend="," property="pay_money">
+				#pay_money:DECIMAL#
+			</isNotNull>
+			<isNotNull prepend="," property="buy_money">
+				#buy_money:DECIMAL#
+			</isNotNull>
+			<isNotNull prepend="," property="ps_status">
+				#ps_status:VARCHAR#
+			</isNotNull>
+				,NOW()
+			<isNotNull prepend="," property="link_name">
+				#link_name:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="link_phone">
+				#link_phone:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="link_address">
+				#link_address:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="link_mail">
+				#link_mail:DECIMAL#
+			</isNotNull>
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 根据订单号查询订单信息 -->
+	<select id="queryOrderInfo" parameterClass="java.lang.String"
+		resultClass="com.l9e.transaction.vo.OrderInfo">
+		SELECT hc.order_id,hc.order_status,hc.train_no,hc.from_city,hc.to_city,DATE_FORMAT(hc.from_time,'%H:%i') AS from_time,
+			DATE_FORMAT(hc.to_time,'%H:%i') AS to_time,DATE_FORMAT(hc.travel_time,'%Y-%m-%d') AS travel_time,hc.out_ticket_billno,
+			DATE_FORMAT(hc.pay_time,'%Y-%m-%d %H:%i:%s') AS pay_time,
+			DATE_FORMAT(hc.out_ticket_time,'%Y-%m-%d %H:%i:%s') AS out_ticket_time,
+			DATE_FORMAT(hc.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+			DATE_FORMAT(hc.from_time,'%Y-%m-%d %H:%i:%s') AS from_to_time,
+			hc.seat_type,hc.ticket_pay_money,hc.bx_pay_money,
+			hc.ps_pay_money,hc.pay_money,hc.buy_money,hc.out_ticket_type,
+			hc.can_refund,hc.ext_seat,hc.cm_phone 
+			FROM app_orderinfo hc 
+		WHERE hc.order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 根据订单号查询配送信息 -->
+	<select id="queryOrderInfoPs" parameterClass="java.lang.String"
+		resultClass="com.l9e.transaction.vo.OrderInfoPs">
+		SELECT hc.order_id, hc.ps_billno, hc.ps_company, hc.pay_money, hc.buy_money, 
+			hc.ps_status, hc.link_name, hc.link_phone, hc.link_address, hc.link_mail 
+			FROM app_orderinfo_ps hc
+		WHERE hc.order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 根据订单号查询车票以及保险信息 -->
+	<select id="queryOrderDetailList" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT cp.order_id,cp.cp_id,cp.seat_type,CONVERT(TRUNCATE(cp.pay_money,1),CHAR) AS cp_pay_money,CONVERT(cp.buy_money,CHAR) AS cp_buy_money,cp.train_box,cp.seat_no,
+			CONVERT(cp.ticket_type,CHAR) AS ticket_type,cp.user_name,CONVERT(cp.ids_type,CHAR) AS ids_type,cp.user_ids,cp.train_box,cp.seat_no,
+			bx.bx_id,bx.bx_billno,bx.bx_code,TRUNCATE(bx.pay_money,1) AS bx_pay_money,p.product_id,p.NAME AS bx_name
+			FROM app_orderinfo_cp cp
+			LEFT JOIN app_orderinfo_bx bx
+			ON cp.order_id=bx.order_id
+			AND cp.cp_id=bx.cp_id
+			LEFT JOIN app_productinfo p
+			ON bx.product_id=p.product_id
+		WHERE cp.order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 查询订单列表 -->
+	<select id="queryOrderList" parameterClass="java.util.HashMap"
+		resultClass="com.l9e.transaction.vo.OrderInfo">
+		SELECT hc.order_id,hc.order_status,hc.train_no,hc.from_city,hc.to_city,DATE_FORMAT(hc.from_time,'%H:%i') AS from_time,
+			DATE_FORMAT(hc.to_time,'%H:%i') AS to_time,DATE_FORMAT(hc.travel_time,'%Y-%m-%d') AS travel_time,hc.out_ticket_billno,
+			DATE_FORMAT(hc.pay_time,'%Y-%m-%d %H:%i:%s') AS pay_time,
+			DATE_FORMAT(hc.out_ticket_time,'%Y-%m-%d %H:%i:%s') AS out_ticket_time,
+			hc.seat_type,hc.ticket_pay_money,hc.bx_pay_money,
+			hc.ps_pay_money,hc.pay_money,hc.buy_money,hc.out_ticket_type,
+			hc.can_refund,hc.ext_seat,hc.user_id as cm_phone,re.refund_status
+			FROM app_orderinfo hc
+			LEFT JOIN app_orderinfo_refundstream re ON re.order_id=hc.order_id
+		 WHERE hc.order_status NOT IN('33','11','88')
+		 	and hc.user_id=#cm_phone:VARCHAR# 
+		 <isNotEmpty prepend=" and " property="order_id">
+		 	hc.order_id=#order_id:VARCHAR#
+		 </isNotEmpty>
+		 <isNotEmpty prepend=" and " property="out_ticket_billno">
+	 		hc.out_ticket_billno=#out_ticket_billno:VARCHAR#
+	     </isNotEmpty>
+		 ORDER BY hc.create_time DESC
+         <!-- LIMIT #everyPagefrom:Integer#, #pageSize:Integer# -->
+	</select>
+	
+	<!-- 查询某个订单里面的乘客姓名信息 -->
+	<select id="queryPassengerList" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT user_name FROM app_orderinfo_cp WHERE order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 查询订单列表条数 -->
+	<select id="queryOrderListCount" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM app_orderinfo hc 
+		WHERE hc.order_status <![CDATA[<>]]> '00'
+			and hc.cm_phone=#cm_phone:VARCHAR# 
+	    <isNotEmpty prepend=" and " property="order_id">
+	 		hc.order_id=#order_id:VARCHAR#
+	    </isNotEmpty>
+	    <isNotEmpty prepend=" and " property="out_ticket_billno">
+	 		hc.out_ticket_billno=#out_ticket_billno:VARCHAR#
+	    </isNotEmpty>
+	</select>
+<!-- 更新预定退款为退款中-->
+	<insert id="insertRefundForRefund" parameterClass="com.l9e.transaction.vo.RefundVo">
+		insert app_orderinfo_refund
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="order_id">
+					order_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_money">
+					refund_create_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_memo">
+					refund_memo
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_money">
+					refund_money
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_purl">
+					refund_purl
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_status">
+					refund_status
+			</isNotEmpty>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="order_id">
+					#order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_money">
+					now()
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_memo">
+					#refund_memo:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_money">
+					#refund_money:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_purl">
+					#refund_purl:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_status">
+					#refund_status:VARCHAR#
+			</isNotEmpty>
+			)
+		</dynamic>
+		</insert>
+	
+	<!--  更新预定单为准备退款 -->
+	<update id="updateOrderForRefunding" parameterClass="java.lang.String">
+	
+		UPDATE app_orderinfo set order_status='55' WHERE order_id=#orderid:VARCHAR#
+			
+	</update>
+	
+	<!-- 更新订单状态（支付） -->
+	<update id="updateOrderEopInfo" parameterClass="java.util.HashMap">
+		UPDATE app_orderinfo
+			SET
+			order_status=#order_status:VARCHAR#
+			<isEqual prepend="," compareValue="11" property="order_status">
+				pay_time=NOW()
+			</isEqual>
+			WHERE order_id=#asp_order_id:VARCHAR#
+			<isNotEmpty prepend=" and " property="old_status">
+				order_status=#old_status:VARCHAR#
+			</isNotEmpty>
+	</update>
+	
+	
+	<!-- 查询通知出票系统的订单列表 -->
+	<select id="queryNotifyCpOrderInfo" 
+		resultClass="java.util.HashMap">
+		SELECT hc.order_id, hc.order_name, CONVERT(hc.ticket_pay_money,CHAR) AS ticket_pay_money, CONVERT(hc.bx_pay_money, CHAR) AS bx_pay_money, 
+			hc.from_city, hc.to_city, DATE_FORMAT(hc.from_time,'%Y-%m-%d %H:%i:%s') as from_time,
+			DATE_FORMAT(hc.to_time,'%Y-%m-%d %H:%i:%s') as to_time, DATE_FORMAT(hc.travel_time,'%Y-%m-%d') as travel_time
+			,hc.train_no,CONVERT(hc.seat_type,CHAR) as seat_type,CONVERT(hc.out_ticket_type,CHAR) as out_ticket_type,hc.ext_seat 
+			 FROM app_orderinfo hc
+			WHERE hc.order_status='11'
+			AND hc.order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 查询保险金额 -->
+	<select id="queryBxPayMoneyAtPaySucc" parameterClass="java.lang.String" 
+		resultClass="java.lang.String">
+		SELECT CONVERT(hc.bx_pay_money, CHAR) AS bx_pay_money
+			 FROM app_orderinfo hc
+			WHERE hc.order_status='11'
+			AND hc.order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 通知出票系统的车票信息 -->
+	<select id="queryCpInfoList" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT cp.cp_id,cp.order_id,cp.user_name,CONVERT(cp.ticket_type,CHAR) as ticket_type,
+		CONVERT(cp.ids_type,CHAR) as ids_type,cp.user_ids,CONVERT(cp.seat_type,CHAR) as seat_type,
+		CONVERT(cp.pay_money,CHAR) as pay_money
+			FROM app_orderinfo_cp cp 
+		WHERE cp.order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 更新通知出票系统超时重发 -->
+	<update id="updateOrderTimeOut" parameterClass="java.util.HashMap">
+		UPDATE app_orderinfo hc 
+		SET hc.timeout = #timeout:VARCHAR#
+		WHERE hc.order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 定时查询待发货通知列表 -->
+	<select id="queryTimedSendList" resultClass="java.util.HashMap">
+		SELECT hc.order_id,hc.cm_phone as user_id
+		 FROM app_orderinfo hc 
+		WHERE hc.order_status='11'
+		AND hc.create_time <![CDATA[>]]> DATE_SUB(NOW(),INTERVAL 1 DAY)
+		ORDER BY hc.create_time DESC
+		LIMIT 0, 20
+		
+	</select>
+	
+	<!-- 查询火车票短信通知信息 -->
+	<select id="queryOrderContactInfo" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT hc.from_city,hc.to_city,DATE_FORMAT(hc.from_time,'%m月%d日%H:%i')AS from_time,hc.train_no,
+			ps.link_name,ps.link_phone
+		FROM app_orderinfo hc
+		LEFT JOIN app_orderinfo_ps ps
+		ON hc.order_id=ps.order_id
+		WHERE hc.order_id=#orderId:VARCHAR#
+	</select>
+	
+	<!-- 查询火车票明细短信通知信息 -->
+	<select id="queryCpContactInfo" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT cp.train_box,cp.seat_no,cp.user_name FROM app_orderinfo_cp cp
+		WHERE cp.order_id=#orderId:VARCHAR#
+	</select>
+	
+	<!-- 更新退款表退款状态 -->
+	<update id="updateOrderRefund" parameterClass="java.util.HashMap">
+		UPDATE app_orderinfo_refund
+		SET 
+		refund_status=#refund_status:VARCHAR#
+		<isNotEmpty prepend="," property="eop_refund_time">
+			refund_time=STR_TO_DATE(#eop_refund_time:VARCHAR#,'%Y-%m-%d %H:%i:%s')
+		</isNotEmpty>
+		WHERE order_id=#asp_order_id:VARCHAR#
+		AND refund_status=#old_refund_status:VARCHAR#
+	</update>
+	
+	<!-- 更新保险状态未发送 -->
+	<update id="updateBxStatusNotSend" parameterClass="java.lang.String">
+		UPDATE app_orderinfo_bx b 
+		SET b.bx_status=0
+		WHERE b.order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 查询订单差额数据 -->
+	<select id="queryOrderDiffer" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT CONVERT(ticket_pay_money-buy_money,CHAR) AS refund_money, order_id,
+		CONVERT(IFNULL(refund_total,0),CHAR) AS refund_total FROM app_orderinfo
+		WHERE order_id=#order_id:VARCHAR#
+		AND order_status='44'
+		AND ticket_pay_money-buy_money>0
+	</select>
+	
+	<!-- 添加差额退款数据 -->
+	<insert id="addOrderDiffer" parameterClass="java.util.HashMap">
+		insert into app_orderinfo_differ
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="order_id">
+				order_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="eop_order_id">
+				eop_order_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="eop_refund_seq">
+				eop_refund_seq
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_money">
+				refund_money
+			</isNotEmpty>
+			,create_time
+			<isNotEmpty prepend="," property="differ_status">
+				differ_status
+			</isNotEmpty>
+			,notify_num
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="order_id">
+				#order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="eop_order_id">
+				#eop_order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="eop_refund_seq">
+				#eop_refund_seq:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_money">
+				#refund_money:VARCHAR#
+			</isNotEmpty>
+			,NOW()
+			<isNotEmpty prepend="," property="differ_status">
+				#differ_status:VARCHAR#
+			</isNotEmpty>
+			,0
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 根据asp退款流水号查询差额退款表个数 -->
+	<select id="queryDifferCountBySeq" parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM app_orderinfo_differ d 
+		WHERE d.refund_seq=#refund_seq:VARCHAR#
+	</select>
+	
+	<!-- 查询退款需要上传小票的时间点 列车发车前3小时 -->
+	<select id="queryUploadTipTime" resultClass="java.lang.String"
+		parameterClass="java.lang.String">
+		SELECT DATE_FORMAT(DATE_SUB(h.from_time, INTERVAL 3 HOUR),'%Y-%m-%d %H:%i:%s') as from_time
+		FROM app_orderinfo h WHERE h.order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 查询差价退款信息 -->
+	<select id="queryDifferRefundInfo" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT d.differ_status,CONVERT(d.refund_money,CHAR) AS refund_money FROM app_orderinfo_differ d 
+		WHERE d.order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 删除老的退款信息 -->
+	<delete id="deleteOldRefund" parameterClass="java.lang.String">
+		DELETE FROM app_orderinfo_refund WHERE order_id=#order_id:VARCHAR#
+	</delete>
+	
+	<!-- 查询最近订单列表 -->
+	<select id="queryLastestOrderList" parameterClass="java.util.HashMap"
+		resultClass="com.l9e.transaction.vo.OrderInfo">
+		SELECT hc.order_id, hc.order_status, hc.from_city, hc.to_city,
+			hc.ticket_pay_money, hc.bx_pay_money, hc.ps_pay_money, hc.pay_money,
+			DATE_FORMAT(hc.pay_time,'%Y-%m-%d %H:%i:%s') AS pay_time,
+			DATE_FORMAT(hc.out_ticket_time,'%Y-%m-%d %H:%i:%s') AS out_ticket_time,
+			DATE_FORMAT(hc.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+			CONVERT(hc.out_ticket_type,CHAR) AS out_ticket_type, r.refund_status,
+			NOW()>DATE_ADD(hc.from_time, INTERVAL 12 HOUR) AS is_deadline,
+			IFNULL(hc.refund_deadline_ignore,'0') AS deadline_ignore,
+			DATE_FORMAT(hc.travel_time,'%Y-%m-%d') AS travel_time,hc.train_no
+			FROM app_orderinfo hc
+			LEFT JOIN app_orderinfo_refund r
+			ON hc.order_id=r.order_id
+		 WHERE hc.order_status <![CDATA[<>]]> '00'
+		 	and hc.cm_phone=#cm_phone:VARCHAR# 
+		 ORDER BY hc.create_time DESC
+         LIMIT 0,3
+	</select>
+	
+	<!-- 查询退款总计 -->
+	<select id="queryOrderForRefund" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT CONVERT(IFNULL(h.refund_total,0),CHAR) AS refund_total,e.eop_order_id 
+			FROM app_orderinfo h 
+			LEFT JOIN hc_order_eop e 
+			ON h.order_id=e.order_id
+		WHERE h.order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 更新订单表退款总额 -->
+	<update id="updateOrderRefundTotal" parameterClass="java.util.HashMap">
+		UPDATE app_orderinfo hc
+		SET hc.refund_total=#refund_total:VARCHAR#
+		<isNotEmpty prepend="," property="can_refund">
+			hc.can_refund=#can_refund:VARCHAR#
+		</isNotEmpty>
+		WHERE hc.order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 添加退款流水 -->
+	<insert id="addRefundStream" parameterClass="java.util.HashMap">
+		insert into app_orderinfo_refundstream
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="order_id">
+				order_id
+			</isNotNull>
+			<isNotNull prepend="," property="eop_order_id">
+				eop_order_id
+			</isNotNull>
+			<isNotNull prepend="," property="refund_type">
+				refund_type
+			</isNotNull>
+			<isNotNull prepend="," property="cp_id">
+				cp_id
+			</isNotNull>
+			<isNotNull prepend="," property="refund_seq">
+				refund_seq
+			</isNotNull>
+			<isNotNull prepend="," property="refund_money">
+				refund_money
+			</isNotNull>
+			,create_time
+			<isNotNull prepend="," property="refund_plan_time">
+				refund_plan_time
+			</isNotNull>
+			<isNotNull prepend="," property="refund_purl">
+				refund_purl
+			</isNotNull>
+			<isNotNull prepend="," property="user_remark">
+				user_remark
+			</isNotNull>
+			<isNotNull prepend="," property="refund_status">
+				refund_status
+			</isNotNull>
+			<isNotNull prepend="," property="refund_percent">
+				refund_percent
+			</isNotNull>
+			,notify_num
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="order_id">
+				#order_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="eop_order_id">
+				#eop_order_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="refund_type">
+				#refund_type:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="cp_id">
+				#cp_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="refund_seq">
+				#refund_seq:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="refund_money">
+				#refund_money:DECIMAL#
+			</isNotNull>
+			,NOW()
+			<isNotNull prepend="," property="refund_plan_time">
+				STR_TO_DATE(#refund_plan_time:VARCHAR#,'%Y-%m-%d %H:%i:%s')
+			</isNotNull>
+			<isNotNull prepend="," property="refund_purl">
+				#refund_purl:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="user_remark">
+				#user_remark:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="refund_status">
+				#refund_status:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="refund_percent">
+				#refund_percent:VARCHAR#
+			</isNotNull>
+			,0
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 退款流水中是否包含该车票的退款信息 -->
+	<select id="queryRefundStreamContainCp" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM app_orderinfo_refundstream hc
+		WHERE hc.order_id=#order_id:VARCHAR#
+		AND hc.cp_id=#cp_id:VARCHAR#
+		AND hc.refund_type='1'
+		AND hc.refund_status <![CDATA[<>]]> '55'
+	</select>
+	
+	<!-- 查询退款流水列表 -->
+	<select id="queryRefundStreamList" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT rs.order_id,rs.cp_id,rs.refund_type,rs.refund_status,
+		CONVERT(refund_money, CHAR) as refund_money,rs.our_remark,rs.user_remark,
+		DATE_FORMAT(rs.refund_time,'%Y-%m-%d %H:%i:%s') AS refund_time
+		FROM app_orderinfo_refundstream rs 
+		WHERE rs.order_id=#order_id:VARCHAR#
+		ORDER BY rs.refund_type, rs.create_time DESC
+	</select>
+	
+	<!-- 查询未发生退款的票数 -->
+	<select id="queryRefundLeftCount" parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		SELECT a.num-b.num AS left_count
+		FROM (SELECT COUNT(1) AS num FROM app_orderinfo_cp 
+		WHERE order_id=#order_id:VARCHAR#) AS a,( 
+		SELECT COUNT(1) AS num FROM  app_orderinfo_refundstream
+		WHERE order_id=#order_id:VARCHAR#
+		AND refund_type='1' and refund_status <![CDATA[<>]]> '55') AS b
+	</select> 
+	
+	<!-- 删除老的拒绝退款的退款流水 -->
+	<delete id="deleteRefundStreamOnRefuse" parameterClass="java.util.HashMap">
+		DELETE FROM app_orderinfo_refundstream
+		WHERE order_id=#order_id:VARCHAR#
+		AND cp_id=#cp_id:VARCHAR#
+		AND refund_type='1'
+		AND refund_status='55'
+	</delete>
+	
+	<!-- 定时查询可以发起退款的退款流水 -->
+	<select id="queryTimedRefundStreamList" resultClass="java.util.HashMap">
+		SELECT CONVERT(rs.stream_id,CHAR) AS stream_id,rs.order_id,rs.refund_type,rs.cp_id,rs.refund_seq,
+			CONVERT(rs.refund_money, CHAR) AS refund_money, DATE_FORMAT(wo.pay_time,'%Y%m%d') AS pay_time, convert(wo.pay_money, CHAR) as pay_money 
+			FROM app_orderinfo_refundstream rs join app_orderinfo as wo on wo.order_id=rs.order_id 
+			WHERE (rs.refund_status='11' OR (rs.refund_status='22' AND DATE_ADD(rs.notify_time, INTERVAL 5 MINUTE)<![CDATA[<=]]>NOW()))
+			AND rs.refund_plan_time <![CDATA[<=]]> NOW()
+			AND rs.notify_num <![CDATA[<]]>5
+			ORDER BY rs.create_time DESC
+			LIMIT 0,10
+	</select>
+	
+	<!-- 添加订单操作日志 -->
+	<insert id="addOrderOptLog" parameterClass="java.util.HashMap">
+		INSERT INTO app_orderinfo_history (order_id,order_optlog,create_time,opter)
+		VALUES(#order_id:VARCHAR#,#order_optlog:VARCHAR#,NOW(),#opter:VARCHAR#)
+	</insert>
+	
+	<!-- 更新退款流水请求开始 -->
+	<update id="updateRefundStreamBegin" parameterClass="java.util.HashMap">
+		UPDATE app_orderinfo_refundstream set 
+		notify_time=NOW(),
+		notify_num=notify_num+1,
+		refund_status=#refund_status:VARCHAR#
+		WHERE stream_id=#stream_id:INTEGER#
+		AND order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 更新退款流水状态信息 -->
+	<update id="updateOrderStreamStatus" parameterClass="java.util.HashMap">
+		UPDATE app_orderinfo_refundstream
+		SET 
+		refund_status=#refund_status:VARCHAR#
+		<isNotEmpty prepend="," property="eop_refund_time">
+			refund_time=STR_TO_DATE(#eop_refund_time:VARCHAR#,'%Y-%m-%d %H:%i:%s')
+		</isNotEmpty>
+		<isNotEmpty prepend=", " property="unrefund_reason">
+			unrefund_reason=#unrefund_reason:VARCHAR# 
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="eop_refund_seq">
+			eop_refund_seq=#eop_refund_seq:VARCHAR#
+		</isNotEmpty>
+		WHERE order_id=#order_id:VARCHAR#
+		<isNotEmpty prepend=" and " property="stream_id">
+			stream_id=#stream_id:INTEGER#
+		</isNotEmpty>
+		
+		<isNotEmpty prepend=" and " property="refund_seq">
+			refund_seq=#refund_seq:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="old_refund_status">
+			refund_status=#old_refund_status:VARCHAR#
+		</isNotEmpty>
+	</update>
+	
+	<!-- 查询发车前的特殊时间点-->
+	<select id="querySpecTimeBeforeFrom" resultClass="java.util.HashMap"
+		parameterClass="java.lang.String">
+		SELECT DATE_FORMAT(DATE_SUB(h.from_time, INTERVAL 4 HOUR),'%Y-%m-%d %H:%i:%s') AS from_time_3,
+		DATE_FORMAT(DATE_SUB(h.from_time, INTERVAL 24 HOUR),'%Y-%m-%d %H:%i:%s') AS from_time_24,
+		DATE_FORMAT(DATE_SUB(h.from_time, INTERVAL 48 HOUR),'%Y-%m-%d %H:%i:%s') AS from_time_48
+		FROM app_orderinfo h 
+		WHERE h.order_id=#order_id:VARCHAR#
+	</select>
+	
+	
+	<!-- 添加退款流水 -->
+	<insert id="addRefundStreamForHis" parameterClass="java.util.HashMap">
+		insert into app_orderinfo_refundstream
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="order_id">
+				order_id
+			</isNotNull>
+			<isNotNull prepend="," property="eop_order_id">
+				eop_order_id
+			</isNotNull>
+			<isNotNull prepend="," property="refund_type">
+				refund_type
+			</isNotNull>
+			<isNotNull prepend="," property="cp_id">
+				cp_id
+			</isNotNull>
+			<isNotNull prepend="," property="refund_seq">
+				refund_seq
+			</isNotNull>
+			<isNotNull prepend="," property="eop_refund_seq">
+				eop_refund_seq
+			</isNotNull>
+			<isNotNull prepend="," property="refund_money">
+				refund_money
+			</isNotNull>
+			<isNotNull prepend="," property="create_time">
+				create_time
+			</isNotNull>
+			<isNotNull prepend="," property="refund_time">
+				refund_time
+			</isNotNull>
+			<isNotNull prepend="," property="refund_purl">
+				refund_purl
+			</isNotNull>
+			<isNotNull prepend="," property="our_remark">
+				our_remark
+			</isNotNull>
+			<isNotNull prepend="," property="refund_plan_time">
+				refund_plan_time
+			</isNotNull>
+			<isNotNull prepend="," property="refund_12306_seq">
+				refund_12306_seq
+			</isNotNull>
+			<isNotNull prepend="," property="refund_status">
+				refund_status
+			</isNotNull>
+			<isNotNull prepend="," property="refund_percent">
+				refund_percent
+			</isNotNull>
+			<isNotNull prepend="," property="opt_person">
+				opt_person
+			</isNotNull>
+			,notify_num
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="order_id">
+				#order_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="eop_order_id">
+				#eop_order_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="refund_type">
+				#refund_type:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="cp_id">
+				#cp_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="refund_seq">
+				#refund_seq:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="eop_refund_seq">
+				#eop_refund_seq:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="refund_money">
+				#refund_money:DECIMAL#
+			</isNotNull>
+			<isNotNull prepend="," property="create_time">
+				STR_TO_DATE(#create_time:VARCHAR#,'%Y-%m-%d %H:%i:%s')
+			</isNotNull>
+			<isNotNull prepend="," property="refund_time">
+				STR_TO_DATE(#refund_time:VARCHAR#,'%Y-%m-%d %H:%i:%s')
+			</isNotNull>
+			<isNotNull prepend="," property="refund_purl">
+				#refund_purl:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="our_remark">
+				#our_remark:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="refund_plan_time">
+				STR_TO_DATE(#refund_plan_time:VARCHAR#,'%Y-%m-%d %H:%i:%s')
+			</isNotNull>
+			<isNotNull prepend="," property="refund_12306_seq">
+				#refund_12306_seq:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="refund_status">
+				#refund_status:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="refund_percent">
+				#refund_percent:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="opt_person">
+				#opt_person:VARCHAR#
+			</isNotNull>
+			,0
+			)
+		</dynamic>
+	</insert>
+	
+	<update id="updateOrderCanRefundForHis" parameterClass="java.lang.String">
+		UPDATE app_orderinfo SET can_refund='0' WHERE order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 查询预订订单列表 -->
+	<select id="queryScanedOrderList" resultClass="java.util.HashMap">
+		SELECT hc.order_id, hc.order_name, CONVERT(hc.ticket_pay_money,CHAR) AS ticket_pay_money, CONVERT(hc.bx_pay_money, CHAR) AS bx_pay_money,
+		 hc.from_city, hc.to_city,DATE_FORMAT(hc.from_time,'%Y-%m-%d %H:%i:%s') as from_time,
+			DATE_FORMAT(hc.to_time,'%Y-%m-%d %H:%i:%s') as to_time, DATE_FORMAT(hc.travel_time,'%Y-%m-%d') as travel_time
+			,hc.train_no,CONVERT(hc.seat_type,CHAR) as seat_type,CONVERT(hc.out_ticket_type,CHAR) as out_ticket_type ,hc.ext_seat 
+			 FROM app_orderinfo hc
+			WHERE hc.order_status='11'
+				AND hc.timeout='1'
+				AND hc.create_time <![CDATA[>]]> DATE_SUB(NOW(),INTERVAL 1 DAY)
+        ORDER BY hc.create_time DESC
+        LIMIT 0,5
+	</select>
+	
+	<!-- 修改通知信息 -->
+	<update id="updateScanInfoById" parameterClass="java.util.HashMap">
+		UPDATE app_orderinfo hc 
+		SET hc.timeout = #timeout:VARCHAR#,
+			hc.order_status='22'
+		WHERE hc.order_id=#order_id:VARCHAR#
+			and hc.timeout = '1'
+			and hc.order_status='12'
+	</update>
+	
+	<!-- 添加保险发票 -->
+	<insert id="addOrderInfoBxfp" parameterClass="java.util.HashMap">
+	insert into app_orderinfo_bxfp
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="order_id">
+				order_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fp_receiver">
+				fp_receiver
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fp_phone">
+				fp_phone
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fp_zip_code">
+				fp_zip_code
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fp_address">
+				fp_address
+			</isNotEmpty>
+			,create_time
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="order_id">
+				#order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fp_receiver">
+				#fp_receiver:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fp_phone">
+				#fp_phone:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fp_zip_code">
+				#fp_zip_code:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fp_address">
+				#fp_address:VARCHAR#
+			</isNotEmpty>
+			,NOW()
+			)
+		</dynamic>
+	</insert>
+	
+	<update id="updateOrderPayNo" parameterClass="java.util.HashMap">
+		update app_orderinfo set pay_time=now() 
+			<isNotEmpty prepend="," property="request_id">
+				request_id = #request_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_no">
+				pay_no = #pay_no:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="order_status">
+				order_status = #order_status:VARCHAR#
+			</isNotEmpty>
+			 WHERE order_id = #order_id:VARCHAR#
+	</update>
+</sqlMap>

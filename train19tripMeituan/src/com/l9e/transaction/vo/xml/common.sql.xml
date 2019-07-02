@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="common">
+
+	
+	<!-- 查询获取系统设置属性值 -->
+	<select id="querySysSettingValue" parameterClass="java.util.HashMap"
+		resultClass="java.lang.String">
+		SELECT setting_value FROM mt_system_setting 
+		 WHERE setting_name=#setting_name:VARCHAR#
+		 <isNotEmpty prepend=" and " property="setting_status">
+		 	setting_status=#setting_status:VARCHAR#
+		 </isNotEmpty>
+		 limit 1
+	</select>
+	
+	
+	<!-- 根据key查询系统设置 -->
+	<select id="querySysSettingByKey" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+		SELECT setting_value FROM mt_system_setting 
+		WHERE setting_name=#key:VARCHAR#
+	</select>
+	
+	
+	
+	<!-- 根据属性名查询属性值 -->
+	<select id="queryMeituanSysValueByName" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+		select setting_value from mt_system_setting where setting_name=#setting_name:VARCHAR#
+	</select>
+	
+	<!-- 查询车站 -->
+	<select id="selectStation" parameterClass="Map" resultClass="com.l9e.transaction.vo.Station">
+		SELECT
+			name,
+			starttime startTime,
+			arrtime arriveTime,
+			CASE costtime
+				WHEN '当日' THEN 0
+				WHEN '第2日' THEN 1
+				WHEN '第3日' THEN 2
+				WHEN '第4日' THEN 3
+				WHEN '1' THEN 1
+				ELSE 0
+			END cost
+		FROM
+			t_sinfo
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="AND" property="checi">
+				checi = #checi:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="name">
+				name = #name:VARCHAR#
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY stationno ASC limit 1
+	</select>
+	
+</sqlMap>

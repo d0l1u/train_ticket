@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="refundNotify">
+	<!-- 向通知表添加数据 -->
+	<insert id="insertIntoNotify" parameterClass="java.util.HashMap">
+		insert into app_orderinfo_refundnotify
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="order_id">
+				order_id
+			</isNotNull>
+			<isNotNull prepend="," property="refund_type">
+				refund_type
+			</isNotNull>
+			<isNotNull prepend="," property="refund_money">
+				refund_money
+			</isNotNull>
+			<isNotNull prepend="," property="refund_seq">
+				refund_seq
+			</isNotNull>
+			<isNotNull prepend="," property="notify_status">
+				notify_status
+			</isNotNull>
+			,create_time
+			<isNotNull prepend="," property="notify_time">
+				notify_time
+			</isNotNull>
+			<isNotNull prepend="," property="notify_num">
+				notify_num
+			</isNotNull>
+			<isNotNull prepend="," property="order_money">
+				order_money
+			</isNotNull>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="order_id">
+				#order_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="refund_type">
+				#refund_type:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="refund_money">
+				#refund_money:DECIMAL#
+			</isNotNull>
+			<isNotNull prepend="," property="refund_seq">
+				#refund_seq:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="notify_status">
+				#notify_status:VARCHAR#
+			</isNotNull>
+			,NOW()
+			<isNotNull prepend="," property="notify_time">
+				#notify_time:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="notify_num">
+				#notify_num:INTEGER#
+			</isNotNull>
+			<isNotNull prepend="," property="order_money">
+				#order_money:VARCHAR#
+			</isNotNull>
+			)
+		</dynamic>
+	</insert>
+
+</sqlMap>

@@ -1,0 +1,30 @@
+<html>
+	<head>
+		<title>滚屏按钮</title>
+	</head>
+	<body>
+		<script Language="JavaScript">
+		function scrollit(){
+		        for (I=1; I<=500; I++){     <!--定义变量I表示纵坐标的值-->
+		                parent.scroll(1,I)  <!--调用函数parent.scroll(x,y)来滚动浏览器窗口，I从小变大，所以是向下滚屏-->
+		        }
+		}
+		function scrollit1() {
+		for (I=5000; I>1; I=I-1){          <!--定义变量I表示纵坐标的值-->
+		scroll(1,I)                        <!--调用函数parent.scroll(x,y)来滚动浏览器窗口，I从大变小，所以是向上滚屏-->
+		   }
+		}
+</script>
+
+		<form>
+			<div>
+				<p>
+					<input type="button" value="向下滚屏" onClick="scrollit()">
+				</p>
+			</div>
+		</form>
+		
+		<input type="button" value="向上滚屏" onClick="scrollit1()">
+
+	</body>
+</html>

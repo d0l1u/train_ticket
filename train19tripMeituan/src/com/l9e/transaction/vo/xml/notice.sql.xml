@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="allNotice">
+	<!-- 插入 通知表  -->
+	<insert id="insertNotice"  parameterClass="com.l9e.transaction.vo.DBNoticeVo">
+		insert into mt_allchannel_notify 
+		<dynamic prepend="(">
+			order_id,create_time,
+			<isNotNull prepend="," property="cp_notify_status">
+				cp_notify_status
+			</isNotNull>
+			<isNotNull prepend="," property="book_notify_status">
+				book_notify_status
+			</isNotNull>
+			<isNotNull prepend="," property="out_notify_status">
+				out_notify_status
+			</isNotNull>
+			<isNotNull prepend="," property="book_notify_url">
+				book_notify_url
+			</isNotNull>
+			<isNotNull prepend="," property="out_notify_url">
+				out_notify_url
+			</isNotNull>
+			<isNotNull prepend="," property="channel">
+				channel
+			</isNotNull>
+			<isNotNull prepend="," property="book_notify_finish_time">
+				book_notify_finish_time
+			</isNotNull>
+			)
+		</dynamic>
+		VALUES 
+		<dynamic prepend="(">
+			#order_id:VARCHAR#,
+			NOW(),
+			<isNotNull prepend="," property="cp_notify_status">
+				#cp_notify_status:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="book_notify_status">
+				#book_notify_status:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="out_notify_status">
+				#out_notify_status:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="book_notify_url">
+				#book_notify_url:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="out_notify_url">
+				#out_notify_url:VARCHAR#
+			</isNotNull>
+				<isNotNull prepend="," property="channel">
+				#channel:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="book_notify_finish_time">
+				NOW()
+			</isNotNull>
+			)
+		</dynamic>
+	</insert>
+	<!-- 查询通知出票系统发货  通知列表 -->
+	<select id="selectWaitNoticeList" parameterClass="java.util.HashMap" resultClass="com.l9e.transaction.vo.DBNoticeVo">
+		select n.order_id,n.cp_notify_num,n.channel,
+		date_format(n.cp_notify_finish_time,'%Y-%m-%d %T') as cp_notify_finish_time,
+		date_format(n.cp_notify_time,'%Y-%m-%d %T') as cp_notify_time,
+		n.cp_notify_status
+		FROM  mt_allchannel_notify n
+		WHERE (n.cp_notify_status='00' OR (n.cp_notify_status='11' AND 
+		n.cp_notify_time <![CDATA[<=]]> DATE_SUB(NOW(),INTERVAL 1 MINUTE)))
+		AND n.cp_notify_num <![CDATA[<]]> 6 
+		<isNotNull prepend="," property="channel">
+				and n.channel=#channel:VARCHAR#
+		</isNotNull>
+		and n.cp_notify_status!='22'
+		ORDER BY n.create_time DESC
+		LIMIT 0,20
+	</select>
+	
+	
+	<select id="selectWaitNoticeListsx" parameterClass="java.util.HashMap" resultClass="com.l9e.transaction.vo.DBNoticeVo">
+		select n.order_id,n.cp_notify_num,n.channel,
+		date_format(n.cp_notify_finish_time,'%Y-%m-%d %T') as cp_notify_finish_time,
+		date_format(n.cp_notify_time,'%Y-%m-%d %T') as cp_notify_time,
+		n.cp_notify_status
+		FROM  mt_allchannel_notify n
+		WHERE (n.cp_notify_status='00' OR (n.cp_notify_status='11' AND 
+		n.cp_notify_time <![CDATA[<=]]> DATE_SUB(NOW(),INTERVAL 1 MINUTE)))
+		AND n.cp_notify_num <![CDATA[<]]> 6 
+		<isNotNull prepend="," property="channel">
+				and n.channel=#channel:VARCHAR#
+		</isNotNull>
+		and n.cp_notify_status!='22'
+		ORDER BY n.create_time
+		LIMIT 0,20
+	</select>
+	
+	
+	<!-- 预订结果通知 -->
+	<select id="selectBookResultList" parameterClass="java.util.HashMap" resultClass="com.l9e.transaction.vo.DBNoticeVo">
+		select n.order_id,n.book_notify_num,n.book_notify_url,n.channel,
+		date_format(n.book_notify_time,'%Y-%m-%d %T') as book_notify_time,
+		date_format(n.book_notify_finish_time,'%Y-%m-%d %T') as book_notify_finish_time,
+		n.book_notify_status  
+		 FROM  mt_allchannel_notify n
+		WHERE (n.book_notify_status='00' OR (n.book_notify_status='11' AND 
+		n.book_notify_time <![CDATA[<=]]> DATE_SUB(NOW(),INTERVAL 1 MINUTE)))
+		AND n.book_notify_num <![CDATA[<]]> 6 
+		<isNotNull prepend="and" property="channel">
+			n.channel=#channel:VARCHAR#
+		</isNotNull>
+		 and n.book_notify_status!='22'
+		ORDER BY n.create_time DESC
+		LIMIT 0,20
+	</select>
+	
+	
+	<!-- 出票结果通知 -->
+	<select id="selectOrderResultList" parameterClass="java.util.HashMap" resultClass="com.l9e.transaction.vo.DBNoticeVo">
+		select n.order_id,n.out_notify_num,n.out_notify_url,n.channel,
+		date_format(n.out_notify_time,'%Y-%m-%d %T') as out_notify_time,
+		date_format(n.out_notify_finish_time,'%Y-%m-%d %T') as out_notify_finish_time,
+		n.out_notify_status
+		FROM  mt_allchannel_notify n
+		WHERE (n.out_notify_status='00' OR (n.out_notify_status='11' AND 
+		n.out_notify_time <![CDATA[<=]]> DATE_SUB(NOW(),INTERVAL 1 MINUTE)))
+		AND n.out_notify_num <![CDATA[<]]> 6 
+		<isNotNull prepend=" and " property="channel">
+				 n.channel=#channel:VARCHAR#
+		</isNotNull> 
+		and n.out_notify_status!='22'
+		ORDER BY n.create_time DESC
+		LIMIT 0,20
+	</select>
+	
+	
+	
+	<!-- 更新通知表情况 -->
+	<update id="updateNotice" parameterClass="com.l9e.transaction.vo.DBNoticeVo">
+		update mt_allchannel_notify set 
+		order_id=#order_id:VARCHAR#
+		<isNotEmpty prepend="," property="cp_notify_status">
+				cp_notify_status=#cp_notify_status:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="cp_notify_num">
+				cp_notify_num=#cp_notify_num:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="cp_notify_time">
+				cp_notify_time=NOW()
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="cp_notify_finish_time">
+				cp_notify_finish_time=NOW()
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="out_notify_status">
+				out_notify_status=#out_notify_status:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="out_notify_num">
+				out_notify_num=#out_notify_num:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="out_notify_time">
+				out_notify_time=NOW()
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="out_notify_finish_time">
+				out_notify_finish_time=NOW()
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="book_notify_status">
+				book_notify_status=#book_notify_status:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="book_notify_num">
+				book_notify_num=#book_notify_num:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="book_notify_time">
+				book_notify_time=NOW()
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="book_notify_finish_time">
+				book_notify_finish_time=NOW()
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="book_notify_url">
+				book_notify_url = #book_notify_url#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="out_notify_url">
+				out_notify_url = #out_notify_url#
+		</isNotEmpty>
+			where order_id=#order_id:VARCHAR#
+			<!-- and channel=#channel:VARCHAR# -->
+	</update>
+	<select id="selectBookNoticeStatus"  parameterClass="java.lang.String" resultClass="java.lang.String">
+		select book_notify_status from mt_allchannel_notify where order_id =#order_id:VARCHAR#
+	</select>
+	
+	
+	
+	<update id="updateStartWaitNoticeList" parameterClass="com.l9e.transaction.vo.DBNoticeVo" >
+			update mt_allchannel_notify set 
+			cp_notify_status='11' ,cp_notify_time=now()
+			where order_id=#order_id:VARCHAR# 
+			and cp_notify_status=#cp_notify_status:VARCHAR#
+			<isNotEmpty  property="cp_notify_time">
+				and cp_notify_time=#cp_notify_time:VARCHAR#
+			</isNotEmpty>
+	</update>
+	
+	
+	<update id="updateStartOrderResultNotice" parameterClass="com.l9e.transaction.vo.DBNoticeVo" >
+			update mt_allchannel_notify set 
+			out_notify_status='11' ,out_notify_time=now()
+			where order_id=#order_id:VARCHAR# 
+			and out_notify_status=#out_notify_status:VARCHAR#
+			<isNotEmpty  property="out_notify_time">
+				and out_notify_time=#out_notify_time:VARCHAR#
+			</isNotEmpty>
+	</update>
+	
+	<update id="updateStartBookResultNotice" parameterClass="com.l9e.transaction.vo.DBNoticeVo" >
+			update mt_allchannel_notify set 
+			book_notify_status='11' ,book_notify_time=now()
+			where order_id=#order_id:VARCHAR# 
+			and book_notify_status=#book_notify_status:VARCHAR#
+			<isNotEmpty  property="book_notify_time">
+				and book_notify_time=#book_notify_time:VARCHAR#
+			</isNotEmpty>
+	</update>
+	
+	
+	<select id="queryNoticeInfoById" parameterClass="java.lang.String"  resultClass="com.l9e.transaction.vo.DBNoticeVo" >
+		select order_id,book_notify_status,book_notify_num,book_notify_time,book_notify_url,book_notify_finish_time  from mt_allchannel_notify
+		where order_id=#order_id:VARCHAR#
+	
+	</select>
+	
+	
+</sqlMap>

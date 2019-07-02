@@ -1,0 +1,510 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>掌上19e-火车票</title>
+		<meta name="keyword"
+			content="19e,便民服务,数字便民,移动客户端,手机客户端,话费充值,手机充值,游戏充值,QQ充值,机票预订,水费,电费,煤气费,取暖费,水电煤缴费,有线电视缴费,供暖缴费,彩票,手机号卡,信用卡还款 ,医疗挂号,交通罚款缴纳,实物批发,酒店团购。">
+		<meta name="description"
+			content="提供19e数字便民移动终端下载,随时随地办理便民业务,支持移动客户端话费充值,手机充值,游戏充值,QQ充值,机票预订,水电煤缴费,有线电视缴费,供暖缴费,彩票,手机号卡,信用卡还款 ,医疗挂号,交通罚款缴纳,实物批发,酒店团购。">
+		<link rel="stylesheet" type="text/css" href="../css/base.css">
+		<link rel="shortcut icon" href="../images/favicon.ico"
+			type="image/x-icon" />
+		<script type="text/javascript" src="../js/jquery.js"></script>
+		<style type="text/css">
+.screen {
+	width: 480px;
+	height: 700px;
+	margin: 0 auto;
+}
+
+.order_con {
+	padding: 0 0;
+}
+
+.order_item dd {
+	line-height: 30px;
+	padding: 10px 15px;
+}
+
+.text_item {
+	font-size: 18px;
+	color: #888;
+}
+
+.pass_inp,.pass_sel {
+	width: 240px;
+	height: 35px;
+	margin: 3px 0;
+	display: block;
+	border-radius: 3px;
+	padding-left: 10px;
+}
+
+.pass_sel {
+	width: 130px;
+	height: 35px;
+	padding-left: 10px;
+}
+
+.pass_ziti {
+	width: 200px;
+}
+
+.passenger_del {
+	position: absolute;
+	right: 0;
+	top: 0;
+	height: 40px;
+	width: 30px;
+	background: url(../images/pas_del_bg.gif) no-repeat center center;
+	text-indent: -9999px;
+}
+
+.passenger_delete {
+	position: relative;
+	right: 0;
+	top: 0;
+	height: 40px;
+	width: 40px;
+	background: url(../images/cancel-icon.png) no-repeat center center;
+	text-indent: -9999px;
+}
+
+.passenger_edit {
+	position: relative;
+	right: 0;
+	top: 0;
+	height: 40px;
+	width: 40px;
+	background: url(../images/edit-icon.png) no-repeat center center;
+	text-indent: -9999px;
+}
+
+.passenger_add {
+	position: absolute;
+	right: 20px;
+	top: 0;
+	padding-right: 40px;
+	background: url(../images/add-btn.png) no-repeat right center;
+	color: #0f63b8;
+}
+</style>
+		<script type="text/javascript">
+	var userId = "${agentId}"+"_hcp";
+	var cookieValue = ""; 	//编码后的cookie值
+	var cookieRealValue	= "";	//cookieJson解析后需要使用的数据
+	var memory = window.localStorage || (window.UserDataStorage && UserDataStorage()) || new cookieStorage();
+	var param_product_id = "";	//传递给后台的保险ID值
+	window.onload = function showdiv(divname) {      
+		var passenger_data = JSON.parse(memory.getItem("passenger_data"));
+		alert(passenger_data);
+		var mainobject = '';
+		for(var i = 0;i < passenger_data.length;i++){
+					 	mainobject = mainobject + '<tr class="adult" >'+
+					 		'<td>'+
+					 		'<table style="width:100%;margin:0 0 0 0;padding:0 0 0 0;">'+
+							 	'<tr>'+
+							 		'<td style="line-height:40px;"><input type="hidden" value="index_source"/><input type="checkbox"/></td>'+
+							 		'<td class="text_item">'+
+							 			'姓名：' + passenger_data[i].name+
+							 		'</td>'+
+							 		'<td class="text_item" >';
+							 			if(passenger_data[i].ticketType=='0'){
+							 				mainobject = mainobject + '成人票';
+							 			}
+							 			if(passenger_data[i].ticketType=='1'){
+							 				mainobject = mainobject + '儿童票';
+							 			}
+									mainobject = mainobject + '</td>'+
+							 		'<td align="right"><a href="javascript:void(0);" class="passenger_edit ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>'+
+							 						  '<a href="javascript:void(0);" class="passenger_delete ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></td>'+
+							 	'</tr>'+
+							 	'<tr>'+
+							 		'<td></td>'+
+							 		'<td class="text_item" colspan="2">';
+							 		if(passenger_data[i].idType == '2'){
+							 			mainobject = mainobject + '二代身份证：' + passenger_data[i].id;
+							 		}
+							 		if(passenger_data[i].idType == '3'){
+							 			mainobject = mainobject + '港澳通行证：' + passenger_data[i].id;
+							 		}
+							 		if(passenger_data[i].idType == '4'){
+							 			mainobject = mainobject + '台湾通行证：' + passenger_data[i].id ;
+							 		}
+							 		if(passenger_data[i].idType == '5'){
+							 			mainobject = mainobject + '护照：' + passenger_data[i].id;
+							 		}
+							 		mainobject = mainobject + '</td>'+
+							 		'<td></td>'+
+						 		'</tr>';
+		}
+		alert(mainobject);
+		$("#train_ticket_list").html(mainobject);
+		alert($("#train_ticket_list").val());
+		alert
+             //alert($("#" + divname).css("display")+divname );
+             /*if ($("#" + divname).css("display") == "none") {       //显示div
+                 $("#" + divname).slideDown(500);
+              
+                 SetCookie(divname, true);
+                 
+               //  if (document.cookie != "") alert(getCookie("youhui"));
+             }
+             else if ($("#" + divname).css("display") == "block") {       //隐藏div
+             $("#" + divname).slideUp(500);
+             SetCookie(divname, false);
+             delcookie(divname);
+            // alert(getCookie(divname));
+              }
+            else  {
+                $("#" + divname).slideDown(500);
+                SetCookie(divname, true);
+                alert("执行出错");
+              }*/
+             }
+	//添加通行成人
+	function addPasser(){	
+		var passenger_data = JSON.parse(memory.getItem("passenger_data"));
+		alert(passenger_data)	
+		//var count = $(".adult:visible,.child:visible").length;	
+		var table = document.getElementById("train_ticket_list");        
+		var count = table.rows.length;//行数   
+	
+		//if(count>=5){
+			//dialogAlter("一个订单最多可代购5张票！");
+			//return;
+		//}
+		var replaceStr = "bookDetailInfoList["+count+"]";		
+		var html = $(".adult:visible").html().replace(/index_source/g, count+1);
+		//alert($(".adult:visible").html());
+		
+		html = html.replace(/bookDetailInfoList_source/g, replaceStr);		
+		//alert("html:"+html);
+		$("<tr><td><hr/></td></tr><tr>" + html + "</tr>").css("background-color","")
+			.appendTo("#train_ticket_list").show();
+		if(count==4){
+			$("#add_person").attr("class","unableAdd");
+		}
+	}
+	
+	//删除乘客
+		$(".passenger_delete").live("click", function(){
+			var table = document.getElementById("train_ticket_list");  
+			if(table.rows.length==1){
+				return false;
+			}
+				//alert(table.rows.length); 	
+			var name = "";
+			var card_num = "";	
+			//$(this).parents("tr").css('background-color', 'red');	
+		  $(this).parents("tr").parents("table").parents("tr").find(":text").each(function(){
+				
+				if($(this).attr("id").indexOf("name")>0){
+					name = $("#"+$(this).attr("id")).val();
+				};
+				if($(this).attr("id").indexOf("ids")>0){
+					card_num = $("#"+$(this).attr("id")).val();
+				};
+			});
+			//删除同行乘客的对应选框清空
+			removePaxAttr(name,card_num);
+			$(this).parents("tr").parents("table").parents("tr").prev().remove();
+			$(this).parents("tr").parents("table").parents("tr").remove();
+			
+			$(this).parents("tr").parents("table").parents("tr").find(":text").each(function(){
+				hideErrMsg($(this).attr("id"));
+			});
+			//重新设置index
+			$(".adult:visible,.child:visible").each(function(index){
+				var newIndex = index+1;
+				$(this).html($(this).html().replace(/bookDetailInfoList\[\d+\]/g, "bookDetailInfoList["+index+"]"))
+					.find(".indexTr").html(newIndex);
+				$(this).html($(this).html().replace(/\_\d/g, "_"+newIndex));
+			});	
+			$("#add_person").attr("class","passenger_add");
+			//alert($("#add_person").html());
+			//兼容IE
+			$("#add_person").attr("style","");
+			
+		});
+		
+		//从通行乘客中删除常用乘客的同时清空该常用乘客的选中按钮
+	    function removePaxAttr(name,card_num){
+		    if(cookieRealValue!=null && cookieRealValue!=undefined){
+		    	var size = cookieRealValue.length;
+				for(var i=0; i<size; i++){
+					if(name == cookieRealValue[i].name && card_num == cookieRealValue[i].card_num){
+						$("#cookie_"+i).removeAttr("class");
+						$(".cookie_"+i).removeAttr("checked");
+					}else{
+						continue;
+					}
+				}
+			}
+	    }
+	    function hideErrMsg(id){
+				$("#"+id+"_errMsg").remove();
+			}
+</script>
+	</head>
+
+	<body>
+
+		<div class="screen">
+			<!-- start -->
+			<div class="wrap">
+				<header id="bar">
+				<a href="javascript:window.history.back();" class="m19e_ret"></a>
+				<h1>
+					常用联系人
+				</h1>
+				</header>
+				<section id="order_main">
+
+				<div class="order_con">
+
+					<!-- 乘客信息 -->
+					<dl class="order_item order_infor">
+						<dt>
+							新增乘客信息
+							<a href="javascript:void(0);" onclick="addPasser()"
+								id="add_person" class="passenger_add text_item"></a>
+						</dt>
+						<dd>
+							<div id="orderInfo" style="display: block;">
+								<table style="width: 100%; margin: 0 0 0 0; padding: 0 0 0 0;"
+									id="train_ticket_list">
+
+									<tr class="adult">
+										<td>
+											<table
+												style="width: 100%; margin: 0 0 0 0; padding: 0 0 0 0;">
+												<tr>
+													<td style="line-height: 40px;">
+														<input type="hidden" value="index_source" />
+														<input type="checkbox" />
+													</td>
+													<td class="text_item">
+														姓名：某某
+													</td>
+													<td class="text_item">
+														成人票
+													</td>
+													<td align="right">
+														<a href="javascript:void(0);" class="passenger_edit ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+														<a href="javascript:void(0);" class="passenger_delete ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+													</td>
+												</tr>
+												<tr>
+													<td></td>
+													<td class="text_item" colspan="2">
+														二代身份证：123456789987654321
+													</td>
+													<td></td>
+												</tr>
+
+											</table>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<hr />
+										</td>
+									</tr>
+									<tr class="adult">
+										<td>
+											<table
+												style="width: 100%; margin: 0 0 0 0; padding: 0 0 0 0;">
+												<tr>
+													<td style="line-height: 40px;">
+														<input type="hidden" value="index_source" />
+														<input type="checkbox" />
+													</td>
+													<td class="text_item">
+														姓名：某某
+													</td>
+													<td class="text_item">
+														成人票
+													</td>
+													<td align="right">
+														<a href="javascript:void(0);" class="passenger_edit ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+														<a href="javascript:void(0);" class="passenger_delete">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+													</td>
+												</tr>
+												<tr>
+													<td></td>
+													<td class="text_item" colspan="2">
+														二代身份证：123456789987654321
+													</td>
+													<td></td>
+												</tr>
+
+											</table>
+										</td>
+									</tr>
+
+
+
+								</table>
+							</div>
+
+						</dd>
+					</dl>
+
+
+
+
+				</div>
+				</section>
+			</div>
+			<!-- end -->
+
+
+		</div>
+	</body>
+</html>
+
+<tr class="adult">
+	<td>
+		<table style="width: 100%; margin: 0 0 0 0; padding: 0 0 0 0;">
+			<tr>
+				<td style="line-height: 40px;">
+					<input type="hidden" value="index_source" />
+					<input type="checkbox" />
+				</td>
+				<td class="text_item">
+					姓名：23412341
+				</td>
+				<td class="text_item">
+					成人票
+				</td>
+				<td align="right">
+					<a href="javascript:void(0);" class="passenger_edit ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a><a
+						href="javascript:void(0);" class="passenger_delete ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td class="text_item" colspan="2">
+					二代身份证：141341
+				</td>
+				<td></td>
+			</tr>
+			<tr class="adult">
+				<td>
+					<table style="width: 100%; margin: 0 0 0 0; padding: 0 0 0 0;">
+						<tr>
+							<td style="line-height: 40px;">
+								<input type="hidden" value="index_source" />
+								<input type="checkbox" />
+							</td>
+							<td class="text_item">
+								姓名：213414
+							</td>
+							<td class="text_item">
+								成人票
+							</td>
+							<td align="right">
+								<a href="javascript:void(0);" class="passenger_edit ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a><a
+									href="javascript:void(0);" class="passenger_delete ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td class="text_item" colspan="2">
+								二代身份证：1313413
+							</td>
+							<td></td>
+						</tr>
+						<tr class="adult">
+							<td>
+								<table style="width: 100%; margin: 0 0 0 0; padding: 0 0 0 0;">
+									<tr>
+										<td style="line-height: 40px;">
+											<input type="hidden" value="index_source" />
+											<input type="checkbox" />
+										</td>
+										<td class="text_item">
+											姓名：321341
+										</td>
+										<td class="text_item">
+											成人票
+										</td>
+										<td align="right">
+											<a href="javascript:void(0);" class="passenger_edit ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a><a
+												href="javascript:void(0);" class="passenger_delete ">&nbs...type="hidden"
+												value="index_source"/><input type="checkbox" />
+										</td>
+										<td class="text_item">
+											姓名：245324
+										</td>
+										<td class="text_item">
+											成人票
+										</td>
+										<td align="right">
+											<a href="javascript:void(0);" class="passenger_edit ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a><a
+												href="javascript:void(0);" class="passenger_delete ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+										</td>
+									</tr>
+									<tr>
+										<td></td>
+										<td class="text_item" colspan="2">
+											二代身份证：245245
+										</td>
+										<td></td>
+									</tr>
+									<tr class="adult">
+										<td>
+											<table
+												style="width: 100%; margin: 0 0 0 0; padding: 0 0 0 0;">
+												<tr>
+													<td style="line-height: 40px;">
+														<input type="hidden" value="index_source" />
+														<input type="checkbox" />
+													</td>
+													<td class="text_item">
+														姓名：254235245
+													</td>
+													<td class="text_item">
+														成人票
+													</td>
+													<td align="right">
+														<a href="javascript:void(0);" class="passenger_edit ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a><a
+															href="javascript:void(0);" class="passenger_delete ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+													</td>
+												</tr>
+												<tr>
+													<td></td>
+													<td class="text_item" colspan="2">
+														二代身份证：2452352
+													</td>
+													<td></td>
+												</tr>
+												<tr class="adult">
+													<td>
+														<table
+															style="width: 100%; margin: 0 0 0 0; padding: 0 0 0 0;">
+															<tr>
+																<td style="line-height: 40px;">
+																	<input type="hidden" value="index_source" />
+																	<input type="checkbox" />
+																</td>
+																<td class="text_item">
+																	姓名：2452452
+																</td>
+																<td class="text_item">
+																	成人票
+																</td>
+																<td align="right">
+																	<a href="javascript:void(0);" class="passenger_edit ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a><a
+																		href="javascript:void(0);" class="passenger_delete ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+																</td>
+															</tr>
+															<tr>
+																<td></td>
+																<td class="text_item" colspan="2">
+																	二代身份证：4325425
+																</td>
+																<td></td>
+															</tr>

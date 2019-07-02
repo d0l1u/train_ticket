@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<settings useStatementNamespaces="true" cacheModelsEnabled="true"
+		enhancementEnabled="true" lazyLoadingEnabled="true" />
+ 	
+ 	<sqlMap resource="com/l9e/transaction/vo/xml/common.sql.xml"/>
+  	<sqlMap resource="com/l9e/transaction/vo/xml/elong_notice.sql.xml"/>
+  	<sqlMap resource="com/l9e/transaction/vo/xml/elong_order.sql.xml"/>
+ 	<sqlMap resource="com/l9e/transaction/vo/xml/order.sql.xml"/>
+ 	<sqlMap resource="com/l9e/transaction/vo/xml/notice.sql.xml"/>
+ 	<sqlMap resource="com/l9e/transaction/vo/xml/refund.sql.xml"/>
+  	<sqlMap resource="com/l9e/transaction/vo/xml/change.sql.xml"/>
+  	
+  	<!-- 
+  	<sqlMap resource="com/l9e/transaction/vo/xml/text.sql.xml"/>
+  	<sqlMap resource="com/l9e/transaction/vo/xml/trainBase.sql.xml"/>
+ 	<sqlMap resource="com/l9e/transaction/vo/xml/elong_goback.sql.xml"/>
+ 	<sqlMap resource="com/l9e/transaction/vo/xml/tongCheng_change.sql.xml"/>
+ 	 -->
+ </sqlMapConfig>

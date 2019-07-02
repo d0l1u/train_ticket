@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="userIdsCardInfo">
+	<!-- 根据用户身份证和姓名查询用户身份信息 -->
+	<select id="queryUserIdsCardInfo" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT user_name,ids_card,status,
+		DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+		DATE_FORMAT(update_time,'%Y-%m-%d %H:%i:%s') AS update_time FROM
+		hc_userinfo_check WHERE ids_card=#ids_card:VARCHAR# AND
+		user_name=#user_name:VARCHAR#
+	</select>
+
+	<!-- 插入用户身份证信息表数据 -->
+	<insert id="addUserInfoCheck" parameterClass="java.util.HashMap">
+		INSERT INTO
+		hc_userinfo_check(user_name,ids_card,create_time,update_time,status)
+		VALUES(#user_name:VARCHAR#,#ids_card:VARCHAR#,NOW(),NOW(),#status:VARCHAR#)
+	</insert>
+	<!-- 修改用户身份证信息 -->
+	<update id="updateUserInfoCheck"
+		parameterClass="java.util.HashMap">
+		UPDATE hc_userinfo_check SET status=#status:VARCHAR#,
+		update_time=NOW(),
+		<isNotEmpty prepend="," property="user_name">
+			user_name=#user_name:VARCHAR#
+		</isNotEmpty>
+		WHERE ids_card=#ids_card:VARCHAR#
+	</update>
+
+	<select id="queryWeChartUser" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		select user_id,user_phone, user_name, user_password, openID from
+		app_userinfo where
+		<dynamic prepend="(">
+			<isNotEmpty prepend=" and " property="openID">
+				openID=#openID:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="user_phone">
+				user_phone=#user_phone:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="user_name">
+				user_name=#user_name:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="user_id">
+				user_id=#user_id:VARCHAR#
+			</isNotEmpty>
+			)
+		</dynamic>
+	</select>
+
+	<insert id="saveWeChartUser" parameterClass="java.util.HashMap">
+		insert into app_userinfo(user_id,user_phone,
+		user_name,user_source, weather_able,
+		login_time,login_num,create_time, user_password, openID)
+		values(#user_id#, #user_phone#, #user_phone#,
+		"weixin","1",now(),1,NOW(), #user_password#, #openID#)
+	</insert>
+
+	<update id="updateWeChartUser" parameterClass="java.util.HashMap">
+		update app_userinfo set login_time=now(),
+		last_login_time=login_time
+		<isNotEmpty prepend="," property="openID">
+			openID=#openID:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="user_name">
+			user_name=#user_name:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="user_phone">
+			user_phone=#user_phone:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="user_password">
+			user_password=#user_password:VARCHAR#
+		</isNotEmpty>
+		where 1=1
+		<isNotEmpty prepend="and" property="user_id">
+			user_id=#user_id:VARCHAR#
+		</isNotEmpty>
+
+	</update>
+</sqlMap>

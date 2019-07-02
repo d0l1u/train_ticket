@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>高铁精灵手机客户端下载</title>
+		<meta charset="utf-8">
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0">
+		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+		<meta http-equiv="description" content="this is my page">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+		<!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+		<style type="text/css">
+.header {
+	background: url('/images/back.png') no-repeat center;
+	background-size: cover;
+}
+
+.ios-download {
+	position: absolute;
+	bottom: 100px;
+	width: 219px;
+	height: 60px;
+	background: url(../images/show-sprite.png) no-repeat;
+	width: 219px;
+}
+
+.android-download {
+	position: absolute;
+	bottom: 30px;
+	width: 219px;
+	height: 60px;
+	background: url(../images/show-sprite.png) no-repeat;
+	width: 219px;
+}
+
+.ios-download {
+	left: 50%;
+	margin-left: -110px;
+	background-position: 0 -70px;
+}
+
+.android-download {
+	left: 50%;
+	margin-left: -110px;
+	background-position: 0 0;
+}
+</style>
+		<script type="text/javascript" src="/js/jquery.js"></script>
+		<script type="text/javascript">
+			window.onload=function() {
+				var avHeight = screen.availHeight;
+				var width = screen.availWidth;
+				$(".header").css("width", width);
+				$(".header").css("height", avHeight);
+				var size = width + "px " + avHeight + "px";
+				$(".header").css("background-size", size);
+			};
+		</script>
+	</head>
+
+	<body style="margin: 0;">
+		<div class="header">
+			<p class="ios-download">
+				<a
+					href="https://itunes.apple.com/cn/app/gao-tie-jing-ling/id882395891?mt=8"
+					target="_blank"></a>
+			</p>
+			<p class="android-download">
+				<a href="http://www.19trip.com/download/gaotie-spirit.apk"></a>
+			</p>
+		</div>
+	</body>
+</html>

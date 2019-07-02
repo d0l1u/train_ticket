@@ -1,0 +1,34 @@
+<beans  xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+   	<!-- 配置job -->    
+     <bean id="alipayBalanceJob" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+        <property name="jobClass" value="com.nineteen.job.Alipay_balanceJob"/>
+    </bean>
+    <bean id="alipayAirTravelJob" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+        <property name="jobClass" value="com.nineteen.job.Alipay_airTravelJob"/>
+    </bean>
+       
+    <!-- 配置trigger -->   
+    <bean id="alipayJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="cronExpression" value="${cronExpression.alipayBalanceJob}"/>
+        <property name="jobDetail" ref="alipayBalanceJob"/>
+    </bean>   
+    <bean id="alipayAirJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="cronExpression" value="${cronExpression.alipayAirTravelJob}"/>
+        <property name="jobDetail" ref="alipayAirTravelJob"/>
+    </bean>
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="alipayJobTrigger"/>
+                <ref bean="alipayAirJobTrigger"/>
+            </list>
+        </property>
+        <property name="configLocation" value="classpath:quartz.properties"/>
+        <property name="applicationContextSchedulerContextKey">
+            <value>applicationContext</value>
+        </property>
+    </bean>
+</beans>    

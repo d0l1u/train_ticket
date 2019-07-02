@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sysInfo>
+
+	<!-- 同程参数配置 -->
+	<tc>
+		<tc_out_notify_url>http://tsflightopenapi.17usoft.com/train/services/l9eConfirmIssueTicketNotify
+		</tc_out_notify_url>
+		<tc_book_notify_url>http://tcinnerapi.17usoft.com/traintickets/op/SysPlaceOrderCallback.ashx
+		</tc_book_notify_url>
+		<tc_refund_notify_url>http://tsflightopenapi.17usoft.com/train/services/l9eRefundAsyncNotify
+		</tc_refund_notify_url>
+		<tc_cancel_back_url></tc_cancel_back_url>
+	</tc>
+
+
+	<!-- 美团参数配置 -->
+	<mt>
+		<mt_key>19e</mt_key>
+		<mt_url>http://test.i.meituan.com/uts/train02</mt_url>
+		<mt_resign_ticket_notify_url>http://i.meituan.com/uts/train/106/resignTicketNotify</mt_resign_ticket_notify_url>
+		<mt_cancel_ticket_notify_url>http://i.meituan.com/uts/train/106/cancelResignNotify</mt_cancel_ticket_notify_url>
+		<mt_confirm_ticket_notify_url>http://i.meituan.com/uts/train/106/confirmResignNotify</mt_confirm_ticket_notify_url>
+	</mt>
+
+	
+	<!-- 出票结果反馈接口url -->
+	<notify_cp_back_url>http://192.168.12.56:8080/ticket/orderNotice.jhtml</notify_cp_back_url>
+
+	<!-- 出票结果反馈接口url 整合版 -->
+	<notify_cp_allchannel_back_url>http://192.168.12.56:8080/outTicket/orderNotice.jhtml</notify_cp_allchannel_back_url>
+	
+	<!-- 退票反馈接口url -->
+	<notify_refund_back_url>http://192.168.12.56:8080/outTicket/refundNotify_no.jhtml</notify_refund_back_url>
+	
+	
+	
+	<!-- 通知出票系统出票接口url -->
+	<notify_cp_interface_url>http://192.168.63.245:18899/order</notify_cp_interface_url>
+	
+	<!-- 通知退票系统退票接口url -->
+	<notify_refund_interface_url>http://192.168.63.245:18899/refund</notify_refund_interface_url>
+
+	<!-- 通知出票系统取消车票url -->
+	<notify_cp_cancel_url>http://192.168.63.245:18899/cancle</notify_cp_cancel_url>
+	
+	<!-- 通知出票系统支付车票url -->
+	<notify_cp_pay_url>http://192.168.63.245:18899/pay</notify_cp_pay_url>
+
+
+
+	<!-- 票价查询地址 -->
+	<java_query_price>http://192.168.63.245:43218/tcQueryTicketPrice</java_query_price>
+
+	<!-- 余票数查询地址 -->
+	<java_query_ticket>http://192.168.63.245:43218/tcQueryTicket</java_query_ticket>
+
+	<!-- 车次信息查询地址 -->
+	<java_query_trainInfo>http://192.168.63.245:43218/tcQueryTrainInfo</java_query_trainInfo>
+	
+	<!-- 查询车站时间地址 -->
+	<java_query_trainTime>http://43.241.225.144:8091/RunScript</java_query_trainTime>
+	
+	<!-- 身份信息核验接口url -->
+	<real_name_verify_url>http://192.168.12.203:8080/l9helper/interface.do</real_name_verify_url>
+	<!-- 核验数据统计接口url -->
+	<verify_count_url>http://118.244.193.31:18070/l9helper/interface.do</verify_count_url>
+
+</sysInfo>

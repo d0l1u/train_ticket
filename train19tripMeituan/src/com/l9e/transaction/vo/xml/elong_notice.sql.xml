@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="elongNotice">
+	
+	<!-- 查询 通知出票系统出票的 订单序列 -->
+	<select id="querySysNoticeList" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		select n.order_id,n.cp_notify_num,n.cp_notify_status,n.cp_notify_time from  mt_orderinfo_notify n
+		WHERE (n.cp_notify_status='00' OR (n.cp_notify_status='11' AND 
+		n.cp_notify_time <![CDATA[<=]]> DATE_SUB(NOW(),INTERVAL 1 MINUTE)))
+		AND n.cp_notify_num <![CDATA[<]]> 6
+		ORDER BY n.create_time DESC
+		LIMIT 0,20
+	</select>
+	
+	
+	<!-- 查询返回出票结果 的通知 -->
+	<select id="getOrderNoticesList" resultClass="com.l9e.transaction.vo.ElongOrderNoticeVo">
+		select n.out_notify_num,n.order_id,
+		date_format(n.out_notify_time,'%Y-%m-%d %T') as out_notify_time,
+		date_format(n.out_notify_finish_time,'%Y-%m-%d %T') as out_notify_finish_time,
+		out_notify_status
+		from mt_orderinfo_notify n 
+		where (n.out_notify_status='00' OR 
+		(n.out_notify_status='11' AND n.out_notify_time <![CDATA[<=]]> DATE_SUB(NOW(),INTERVAL 1 MINUTE)))
+		AND n.out_notify_num <![CDATA[<]]> 10
+		ORDER BY n.create_time DESC
+		LIMIT 0,20
+	</select>
+	
+	<update id="updateSysNotice" parameterClass="java.util.Map">
+		update mt_orderinfo_notify set 
+		order_id=#order_id:VARCHAR#
+		<isNotNull prepend="," property="cp_notify_status">
+				cp_notify_status=#cp_notify_status:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="cp_notify_num">
+				cp_notify_num=#cp_notify_num:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="cp_notify_time">
+				cp_notify_time=NOW()
+		</isNotNull>
+		<isNotNull prepend="," property="cp_notify_finish_time">
+				cp_notify_finish_time=NOW()
+		</isNotNull>
+		<isNotNull prepend="," property="out_notify_status">
+				out_notify_status=#out_notify_status:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="out_notify_num">
+				out_notify_num=#out_notify_num:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="out_notify_time">
+				out_notify_time=NOW()
+		</isNotNull>
+		<isNotNull prepend="," property="out_notify_finish_time">
+				out_notify_finish_time=NOW()
+		</isNotNull>
+		where order_id=#order_id:VARCHAR#
+	</update>
+	
+	
+	<select id="getRefundNoticesList" resultClass="java.util.HashMap">
+		select * from 
+		mt_orderinfo_refundstream 
+		where refund_type in ('11','55') and notify_num<![CDATA[<]]>10 and 
+		(notify_status="00" or 
+		(notify_status="11" AND notify_time <![CDATA[<=]]> DATE_SUB(NOW(),INTERVAL 1 MINUTE))
+		) and  (refund_status="11" or refund_status="22")
+	</select>
+
+	<select id="queryNoticeStatusByOrderId" parameterClass="java.lang.String" resultClass="java.lang.String">
+		select out_notify_status from mt_orderinfo_notify where order_id=#order_id:VARCHAR#
+	</select>
+	
+	
+	<select id="getRefundNoticesListById" parameterClass="java.lang.String" resultClass="java.util.HashMap" >
+		select * from mt_orderinfo_refundstream 
+		where refund_type='11' and order_id=#order_id:VARCHAR#
+	</select>
+	
+	
+	<select id="queryCpInfoById"  resultClass="java.util.HashMap" >
+		select * from mt_orderinfo_cp
+			where cp_id=#cp_id:VARCHAR#
+	</select>
+	
+	<select id="queryChangeCpInfoByNewCp"  resultClass="com.l9e.transaction.vo.ChangePassengerInfo" >
+		select * from elong_change_cp
+			where new_cp_id=#cp_id:VARCHAR#
+	</select>
+	
+	<update id="updateNoticeBegin" parameterClass="com.l9e.transaction.vo.ElongOrderNoticeVo">
+		update mt_orderinfo_notify set out_notify_status='11' ,out_notify_time=now()
+			where order_id=#order_id:VARCHAR#
+			and out_notify_status=#out_notify_status:VARCHAR#
+			<isNotEmpty property="out_notify_time">
+			and out_notify_time=#out_notify_time:VARCHAR#
+			</isNotEmpty>
+	</update>
+	
+	<update id="updateNoticeTime" parameterClass="com.l9e.transaction.vo.ElongOrderNoticeVo">
+		update mt_orderinfo_notify set out_notify_time=now()
+		where order_id=#order_id:VARCHAR#
+	</update>
+	
+	<update id="updateStartOfflineRefundNotice" parameterClass="java.util.HashMap">
+		update mt_orderinfo_refundstream set notify_status='11',notify_time=now() where stream_id=#stream_id:VARCHAR#
+		and notify_status=#notify_status:VARCHAR#
+		<isNotEmpty property="notify_time">
+			and notify_time=#notify_time:VARCHAR#
+		</isNotEmpty>
+	</update>
+	
+	
+	<update id="updateBeginRefundNotice" parameterClass="java.util.HashMap">
+		update mt_orderinfo_refundstream set notify_status='11',notify_time=now() where stream_id=#stream_id:VARCHAR#
+		and notify_status=#notify_status:VARCHAR#
+		<isNotEmpty property="notify_time">
+			and notify_time=#notify_time:VARCHAR#
+		</isNotEmpty>
+	</update>
+	
+	
+	
+	<update id="updateStartNoticeOutSys" parameterClass="java.util.HashMap">
+		update mt_orderinfo_notify set cp_notify_status='11',cp_notify_time=now() where order_id=#order_id:VARCHAR# 
+		and cp_notify_status=#cp_notify_status:VARCHAR#
+		<isNotEmpty property="cp_notify_time">
+			and cp_notify_time=#cp_notify_time:VARCHAR#
+		</isNotEmpty>
+	</update>
+	
+</sqlMap>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sysInfo>
+
+	<!-- 美团参数配置 -->
+	<mt>
+		<mt_key>a77f95d2e3aeab2361005164d9170d0f</mt_key>
+		<mt_url>http://i.meituan.com/uts/train</mt_url>
+		<mt_resign_ticket_notify_url>http://i.meituan.com/uts/train/106/resignTicketNotify</mt_resign_ticket_notify_url>
+		<mt_cancel_ticket_notify_url>http://i.meituan.com/uts/train/106/cancelResignNotify</mt_cancel_ticket_notify_url>
+		<mt_confirm_ticket_notify_url>http://i.meituan.com/uts/train/106/confirmResignNotify</mt_confirm_ticket_notify_url>
+	</mt>
+
+	
+	<!-- 出票结果反馈接口url -->
+	<notify_cp_back_url>http://www.19trip.com/train_meituan/ticket/orderNotice.jhtml</notify_cp_back_url>
+
+	<!-- 出票结果反馈接口url 整合版 -->
+	<notify_cp_allchannel_back_url>http://www.19trip.com/train_meituan/outTicket/orderNotice.jhtml</notify_cp_allchannel_back_url>
+	
+	<!-- 退票反馈接口url -->
+	<notify_refund_back_url>http://www.19trip.com/train_meituan/outTicket/refundNotify_no.jhtml</notify_refund_back_url>
+	
+	
+	
+	<!-- 通知出票系统出票接口url -->
+	<notify_cp_interface_url>http://10.3.12.94:18018/order</notify_cp_interface_url>
+	
+	<!-- 通知退票系统退票接口url -->
+	<notify_refund_interface_url>http://10.3.12.94:18018/refund</notify_refund_interface_url>
+
+	<!-- 通知出票系统取消车票url -->
+	<notify_cp_cancel_url>http://10.3.12.94:18018/cancle</notify_cp_cancel_url>
+	
+	<!-- 通知出票系统支付车票url -->
+	<notify_cp_pay_url>http://10.3.12.94:18018/pay</notify_cp_pay_url>
+
+
+
+	<!-- 票价查询地址 -->
+	<java_query_price>http://10.3.12.95:18086/tcQueryTicketPrice</java_query_price>
+
+	<!-- 余票数查询地址 -->
+	<java_query_ticket>http://10.3.12.95:18086/tcQueryTicket</java_query_ticket>
+
+	<!-- 车次信息查询地址 -->
+	<java_query_trainInfo>http://10.3.12.95:18086/tcQueryTrainInfo</java_query_trainInfo>
+	<!-- 查询车站时间地址 -->
+	<java_query_trainTime>http://43.241.224.121:8091/RunScript</java_query_trainTime>
+       
+        <!-- 身份信息核验接口url -->
+
+       <real_name_verify_url>http://10.3.12.95:18070/l9helper/interface.do</real_name_verify_url>
+
+       <!-- 核验数据统计接口url -->
+
+       <verify_count_url>http://10.3.12.95:18070/l9helper/interface.do</verify_count_url>
+
+
+</sysInfo>

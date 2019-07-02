@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/mvc  
+	http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+	<context:component-scan base-package="com.l9e.transaction.job"/>
+
+	<!-- 总管理类,执行调度程序  -->
+	<bean id="startQuertz"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="refundStreamQuartzTime" />
+				<!-- <ref bean="sendQuartzTime" /> -->
+				<!--  <ref bean="notifyCpSysQuartzTime" />-->
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 退款流水 -->
+	<bean id="refundStreamQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="refundStreamTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/45 * * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="refundStreamTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="refundStreamJob" />
+		</property>
+		<property name="targetMethod">
+			<value>refund</value>
+		</property>
+	</bean>
+	
+	<!-- 发货通知 -->
+	<bean id="sendQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="sendTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/30 * * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="sendTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="sendJob" />
+		</property>
+		<property name="targetMethod">
+			<value>send</value>
+		</property>
+	</bean>
+	
+	<!-- 通知发货系统超时重发 -->
+	<bean id="notifyCpSysQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="notifyCpSysTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/45 * * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="notifyCpSysTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="notifyCpSysJob" />
+		</property>
+		<property name="targetMethod">
+			<value>notifyCpSys</value>
+		</property>
+	</bean>
+
+</beans>

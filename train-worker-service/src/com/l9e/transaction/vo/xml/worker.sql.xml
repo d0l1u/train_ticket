@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="worker">
+
+	<!-- 查询lua脚本机器人，按工作时间升序 -->
+	<select id="selectWorker" parameterClass="Map" resultClass="com.l9e.transaction.vo.Worker">
+		SELECT
+			worker_id workerId,
+			worker_name workerName,
+			worker_type workerType,
+			worker_status workerStatus,
+			worker_ext workerExt,
+			work_num workNum,
+			worker_language_type workerLangType,
+			pay_device_type pay_device_type,
+			worker_lock workerLock,
+			worker_mtyun_identify workerMtyunIdentify,
+			worker_mtyun_usenum workerMtyunUsenum 
+		FROM
+			cp_workerinfo
+		WHERE
+		       1=1
+			<isNotEmpty prepend="AND" property="workerId">
+				worker_id = #workerId:INTEGER#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="workerType">
+				worker_type = #workerType:INTEGER#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="workerStatus">
+				worker_status = #workerStatus:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="singleOrder">
+				single_order = #singleOrder:TINYINT#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="workerLock">
+				worker_lock = #workerLock:TINYINT#
+			</isNotEmpty>
+		ORDER BY
+			option_time
+		ASC
+		<dynamic>
+			<isNotEmpty property="limit">
+				LIMIT #limit:INTEGER#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 随机获取一个java脚本的预定机器人 -->
+	<select id="selectOneJavaWorker" resultClass="com.l9e.transaction.vo.Worker">
+		SELECT
+			worker_id workerId,
+			worker_name workerName,
+			worker_type workerType,
+			worker_status workerStatus,
+			worker_ext workerExt,
+			work_num workNum,
+			worker_language_type workerLangType,
+			pay_device_type pay_device_type,
+			worker_lock workerLock,
+			worker_mtyun_identify workerMtyunIdentify,
+			worker_mtyun_usenum workerMtyunUsenum
+		from
+			cp_workerinfo
+		WHERE
+			worker_type = 1
+			AND worker_status = '00'
+			AND worker_language_type = 2
+		ORDER BY 
+			RAND()
+		LIMIT 1
+	</select>
+	
+	<!-- 查询队列预订机器人 -->
+	<select id="selectQueueBookWorker" resultClass="com.l9e.transaction.vo.Worker">
+		SELECT
+			worker_id workerId,
+			worker_name workerName,
+			worker_type workerType,
+			worker_status workerStatus,
+			worker_ext workerExt,
+			work_num workNum,
+			worker_lock workerLock,
+			worker_mtyun_identify workerMtyunIdentify,
+			worker_mtyun_usenum workerMtyunUsenum
+		from
+			cp_workerinfo
+		WHERE
+			worker_type = 1
+			AND worker_status = '00'
+		ORDER BY 
+			option_time ASC
+		LIMIT 1
+	</select>
+	
+<!-- 查询队列支付机器人 -->
+	<select id="selectQueuePayWorker" resultClass="com.l9e.transaction.vo.Worker" parameterClass="java.lang.Integer">
+		SELECT
+		worker_id workerId,
+		worker_name workerName,
+		worker_type workerType,
+		worker_status workerStatus,
+		worker_ext workerExt,
+		work_num workNum,
+		worker_lock workerLock,
+		worker_mtyun_identify workerMtyunIdentify,
+		worker_mtyun_usenum workerMtyunUsenum
+		FROM cp_workerinfo
+		WHERE
+		worker_type = 3
+		AND worker_status = '00'
+		ORDER BY option_time ASC
+		LIMIT 0, #limit:INTEGER#
+	</select>
+	
+	<!-- 查询队列核验机器人 -->
+	<select id="selectQueueVerifyWorker" resultClass="com.l9e.transaction.vo.Worker">
+		SELECT
+			worker_id workerId,
+			worker_name workerName,
+			worker_type workerType,
+			worker_status workerStatus,
+			worker_ext workerExt,
+			work_num workNum,
+			worker_lock workerLock,
+			worker_mtyun_identify workerMtyunIdentify,
+			worker_mtyun_usenum workerMtyunUsenum
+		from
+			cp_workerinfo
+		WHERE
+			worker_type = 15
+			AND worker_status = '00'
+		ORDER BY 
+			worker_id ASC
+	</select>
+	
+	<!-- 查询队列注册机器人 -->
+	<select id="selectQueueRegistWorker" resultClass="com.l9e.transaction.vo.Worker">
+		SELECT
+			worker_id workerId,
+			worker_name workerName,
+			worker_type workerType,
+			worker_status workerStatus,
+			worker_ext workerExt,
+			work_num workNum,
+			worker_lock workerLock,
+			worker_mtyun_identify workerMtyunIdentify,
+			worker_mtyun_usenum workerMtyunUsenum
+		from
+			cp_workerinfo
+		WHERE
+			worker_type = 14
+			AND worker_status = '00'
+		ORDER BY 
+			worker_id ASC
+	</select>
+	
+	<!-- 更新机器人 -->
+	<update id="updateWorker" parameterClass="com.l9e.transaction.vo.Worker">
+		UPDATE
+			cp_workerinfo
+		<dynamic prepend="SET">
+			<isNotEmpty prepend="," property="workTime">
+				work_time = NOW()
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="optionTime">
+				option_time = NOW()
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="workNum">
+				work_num = #workNum:INTEGER#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="workerStatus">
+				worker_status = #workerStatus:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="stopReason">
+				stop_reason = #stopReason:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="singleOrder">
+				single_order = #singleOrder:TINYINT#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="workerLock">
+				worker_lock = #workerLock:TINYINT#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="workerExt">
+				worker_ext = #workerExt:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="workerName">
+				worker_name = #workerName:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="workerMtyunUsenum">
+				worker_mtyun_usenum = #workerMtyunUsenum:INTEGER#
+			</isNotEmpty>
+		</dynamic>
+		WHERE
+			worker_id = #workerId:INTEGER#
+	</update>
+	
+	<!-- 插入cp_ipinfo_log表一条美团云机器操作日志记录 -->
+	<insert id="insertIpInfoLog" parameterClass="Map">
+		insert into cp_ipinfo_log
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="old_ip">
+				old_ip
+			</isNotNull>
+			<isNotNull prepend="," property="new_ip">
+				new_ip
+			</isNotNull>
+			<isNotNull prepend="," property="content">
+				content
+			</isNotNull>
+			<isNotNull prepend="," property="create_time">
+				create_time
+			</isNotNull>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="old_ip">
+				#old_ip:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="new_ip">
+				#new_ip:INTEGER#
+			</isNotNull>
+			<isNotNull prepend="," property="content">
+				#content:VARCHAR#
+			</isNotNull>		
+			<isNotNull prepend="," property="create_time">
+				now()
+			</isNotNull>
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 插入cp_ipinfo_release表一条待释放美团云IP记录 -->
+	<insert id="insertIpInfoRelease" parameterClass="Map">
+		insert into cp_ipinfo_release
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="ip_ext">
+				ip_ext
+			</isNotNull>
+			<isNotNull prepend="," property="release_status">
+				release_status
+			</isNotNull>
+			<isNotNull prepend="," property="create_time">
+				create_time
+			</isNotNull>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="ip_ext">
+				#ip_ext:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="release_status">
+				#release_status:VARCHAR#
+			</isNotNull>		
+			<isNotNull prepend="," property="create_time">
+				now()
+			</isNotNull>
+			)
+		</dynamic>
+	</insert>
+	
+</sqlMap>

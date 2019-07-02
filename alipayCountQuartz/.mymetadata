@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="alipayCountQuartz"
+  id="myeclipse.1457946453059"
+  context-root="/alipayCountQuartz"
+  j2ee-spec="5.0"
+  archive="alipayCountQuartz.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="refund">
+   <select id="queryCanRefundStreamList" resultClass="java.util.HashMap">
+       select order_id,cp_id,refund_seq,CONVERT(refund_money, CHAR) AS refund_money,user_remark,refund_percent,channel,refund_type,refund_status
+       from mt_orderinfo_refundstream 
+       where  (refund_status='00' or refund_status='01')
+       and (refund_type='11' or refund_type='55') 
+       order by create_time limit 0,50
+    </select>
+    
+    
+    <!-- 查询通知退票系统的订单信息 -->
+    <select id="queryRefundCpOrderInfo" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+       SELECT hc.order_id, hc.train_no, hc.from_city, hc.to_city, CONVERT(DATE_FORMAT(hc.from_time,'%Y-%m-%d %H:%i:%s'), CHAR) from_time, 
+       CONVERT(DATE_FORMAT(hc.from_time,'%Y-%m-%d'), CHAR) travel_time, hc.out_ticket_billno, 
+       CONVERT(DATE_FORMAT(hc.out_ticket_time,'%Y-%m-%d %H:%i:%s'), CHAR) out_ticket_time,
+       cp.cp_id, CONVERT(cp.buy_money, CHAR) buy_money, CONVERT(cp.refund_12306_money, CHAR) refund_12306_money, 
+       cp.user_name, CONVERT(cp.ticket_type, CHAR) ticket_type, CONVERT(cp.ids_type, CHAR)ids_type, cp.user_ids, 
+       CONVERT(cp.seat_type, CHAR) seat_type, cp.train_box, cp.seat_no
+       FROM mt_orderinfo hc LEFT JOIN mt_orderinfo_cp cp ON hc.order_id=cp.order_id
+       WHERE hc.order_id=#order_id:VARCHAR# and cp.cp_id=#cp_id:VARCHAR#
+    </select>
+    
+    <!-- 查询该订单的账号信息 -->
+    <select id="queryAccountOrderInfo" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+       SELECT a.acc_username, a.acc_password ,a.acc_id
+       FROM cp_accountinfo a LEFT JOIN cp_orderinfo cp ON a.acc_id=cp.account_id 
+       WHERE cp.order_id=#order_id:VARCHAR#
+    </select>
+    
+    <!-- 更新hc_orderinfo_refundstream表的退款状态 -->
+    <update id="updateOrderRefundStatus" parameterClass="java.util.HashMap">
+       UPDATE mt_orderinfo_refundstream
+       SET refund_status=#order_status:VARCHAR#
+       WHERE order_id=#order_id:VARCHAR# and cp_id=#cp_id:VARCHAR#
+       and refund_type=#refund_type#
+        <isNotEmpty  property="old_refund_status">
+          and refund_status=#old_refund_status#
+       </isNotEmpty>
+    </update>
+    
+    <!-- 更新cp表为改签成功 -->
+    <update id="updateCPAlterInfo" parameterClass="java.util.HashMap">
+       UPDATE mt_orderinfo_cp 
+       SET alter_money=#alter_tickets_money#
+       WHERE order_id=#order_id:VARCHAR#  and cp_id=#cp_id:VARCHAR#
+    </update>
+    
+    <!-- 更新hc_orderinfo_refundstream表的退款信息 -->
+    <update id="updateRefundInfo" parameterClass="java.util.HashMap">
+       UPDATE mt_orderinfo_refundstream
+       SET refund_status=#refund_status:VARCHAR#,
+       verify_time=NOW() 
+       <isNotEmpty prepend="," property="actual_refund_money">
+           detail_refund=#actual_refund_money#
+       </isNotEmpty>
+       <isNotEmpty prepend="," property="alter_tickets_money">
+           detail_alter_tickets=#alter_tickets_money#
+       </isNotEmpty>
+       <isNotEmpty prepend="," property="refund_12306_seq">
+           refund_12306_seq=#refund_12306_seq#
+       </isNotEmpty>
+       <isNotEmpty prepend="," property="our_remark">
+           our_remark=#our_remark#
+       </isNotEmpty>
+       <isNotEmpty prepend="," property="refuse_reason">
+           refuse_reason=#refuse_reason#
+       </isNotEmpty>
+        <isNotEmpty prepend="," property="refund_money">
+           refund_money=#refund_money#
+       </isNotEmpty>
+       WHERE order_id=#order_id:VARCHAR#  and cp_id=#cp_id:VARCHAR# AND refund_type in ('11','55')
+    </update>
+    
+    <select id="queryChangeRefundCpOrderInfo" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		select changeInfo.order_id,changeInfo.change_train_no train_no,changeInfo.from_city,
+		changeInfo.to_city,CONVERT(changeInfo.change_from_time, CHAR) from_time,
+		CONVERT(changeInfo.change_travel_time, CHAR) travel_time,changeInfo.out_ticket_billno,
+		CONVERT(changeInfo.option_time, CHAR) out_ticket_time,
+		cp.new_cp_id cp_id,CONVERT(cp.change_buy_money, CHAR) buy_money,
+		cp.user_name,cp.ticket_type,cp.ids_type,cp.user_ids,cp.change_seat_type seat_type,cp.change_train_box train_box,
+		cp.change_seat_no seat_no 
+		from elong_orderinfo_change changeInfo,elong_change_cp cp,mt_orderinfo hc
+		where changeInfo.change_id=cp.change_id and hc.order_id=changeInfo.order_id and
+		changeInfo.order_id=#order_id# and cp.new_cp_id=#cp_id#
+    </select>
+    
+</sqlMap>
