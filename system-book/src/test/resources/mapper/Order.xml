@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.train.system.booking.dao.OrderMapper">
+    <!--可以重用的SQL块，也可以被其他语句引用-->
+    <!--
+    <sql id="columns">
+      id,name
+    </sql>
+    -->
+    
+    <select id="queryWaitBookingOrder" parameterType="java.lang.Integer" resultType="com.train.system.booking.entity.Order">
+        SELECT
+            co.order_id         AS orderId,
+            co.order_status     AS orderStatus,
+            co.pay_money        AS payMoney,
+            co.account_id       AS accountId,
+            co.channel          AS channel,
+            co.is_pay           AS isPay,
+            co.account_from_way AS accountFromWay,
+            co.train_no         AS trainCode,
+            co.from_city        AS fromStationName,
+            co.to_city          AS toStationName,
+            co.from_3c          AS fromStationCode,
+            co.to_3c            AS toStationCode,
+            co.travel_time      AS departureDate,
+            co.ext_seattype     AS extraSeatType,
+            co.seat_detail_type AS chooseBed,
+            co.choose_seats     AS chooseSeat
+        FROM
+            cp_orderinfo co
+        WHERE
+            order_id = '20150619236454251'
+            and
+            MOD (TIME_TO_SEC(co.create_time), 5) = #{idPassMathResult}
+            AND (
+                (
+                    co.order_status = '00' -- 开始占位，初始状态
+                    OR co.order_status = '01' -- 重新占位
+                )
+                OR
+                (
+                    (
+                        co.order_status = '02'  -- 队列中
+                        AND DATE_ADD(co.option_time, INTERVAL 10 MINUTE) <![CDATA[<]]> NOW()
+                    )
+                   OR
+                   (
+                        co.order_status = '11' -- 占位中
+                        AND DATE_ADD(co.option_time, INTERVAL 5 MINUTE) <![CDATA[<]]> NOW()
+                   )
+                )
+           )
+        ORDER BY co.create_time ASC
+        LIMIT 1;
+    </select>
+
+    <update id="updateOrderStatus">
+        UPDATE cp_orderinfo SET order_status = #{newStatus}, option_time = NOW()
+        WHERE order_id = #{orderId}
+        AND order_status = #{oldStatus}
+        AND (
+            order_status = '00'
+            OR order_status = '01'
+            OR order_status = '11'
+            OR order_status = '15'
+            OR order_status = '22'
+            OR order_status = '44'
+        )
+    </update>
+
+    <update id="updateFail">
+        UPDATE cp_orderinfo SET order_status = #{newStatus}, option_time = NOW(), error_info = #{failReason}
+        WHERE order_id = #{orderId}
+        AND order_status = #{oldStatus}
+        AND (
+            order_status = '00'
+            OR order_status = '01'
+            OR order_status = '11'
+            OR order_status = '15'
+            OR order_status = '22'
+            OR order_status = '44'
+        )
+    </update>
+
+    <select id="selectById" resultType="com.train.system.booking.entity.Order">
+        SELECT
+            co.order_id         AS orderId,
+            co.order_status     AS orderStatus,
+            co.pay_money        AS payMoney,
+            co.account_id       AS accountId,
+            co.channel          AS channel,
+            co.is_pay           AS isPay,
+            co.account_from_way AS accountFromWay,
+            co.train_no         AS trainCode,
+            co.from_city        AS fromStationName,
+            co.to_city          AS toStationName,
+            co.from_3c          AS fromStationCode,
+            co.to_3c            AS toStationCode,
+            co.travel_time      AS departureDate,
+            co.ext_seattype     AS extraSeatType,
+            co.seat_detail_type AS chooseBed,
+            co.choose_seats     AS chooseSeat,
+            co.jdbook_resendnum AS resendNum
+        FROM
+            cp_orderinfo co
+        WHERE
+            co.order_id = #{orderId}
+    </select>
+
+    <update id="updateOrder" parameterType="com.train.system.booking.entity.Order">
+        UPDATE
+            cp_orderinfo
+
+        <trim prefix="set" suffixOverrides=",">
+            <if test="order.orderStatus != '' and order.orderStatus != null" >
+                order_status = #{order.orderStatus},
+            </if>
+            <if test=" order.totalPrice != null" >
+                buy_money = #{order.totalPrice},
+            </if>
+            <if test=" order.accountId != null" >
+                account_id = #{order.accountId},
+            </if>
+            <if test=" order.departureTime != null" >
+                from_time = #{order.departureTime},
+            </if>
+            <if test=" order.arrivalTime != null" >
+                to_time = #{order.arrivalTime},
+            </if>
+            <if test=" order.arrivalTime != null" >
+                to_time = #{order.arrivalTime},
+            </if>
+            <if test=" order.payLimitTime != null" >
+                pay_limit_time = #{order.payLimitTime},
+            </if>
+            <if test="order.sequence != '' and order.sequence != null" >
+                out_ticket_billno = #{order.sequence},
+            </if>
+            <if test="order.finishTime != null" >
+                out_ticket_time = #{order.finishTime},
+            </if>
+            <if test="order.errorCode != '' and order.errorCode != null" >
+                error_info = #{order.errorCode},
+            </if>
+            <if test="order.resendNum != null" >
+                jdbook_resendnum = #{order.resendNum},
+            </if>
+        </trim>
+        WHERE
+            order_id = #{order.orderId}
+    </update>
+
+
+</mapper>

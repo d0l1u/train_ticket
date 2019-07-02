@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:task="http://www.springframework.org/schema/task" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+	http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-4.0.xsd ">
+
+	<!-- 生产者 -->
+	<bean id="bookingRequestProducer" class="com.train.system.booking.mq.producer.BookingRequestProducer" init-method="start" scope="singleton">
+		<property name="producerGroup" value="TRAIN_BOOKING_REQUEST" />
+		<property name="namesrvAddr" value="${mq.namesrvAddr}" />
+		<property name="retryTimesWhenSendFailed" value="${mq.retryTimes}" />
+		<property name="sendMsgTimeout" value="${mq.timeout}" />
+	</bean>
+
+	<!-- 占位请求 消费者 -->
+	<bean id="bookingRequestConsumer" class="com.train.system.booking.mq.consumer.BookingCallbackConsumer" init-method="consumer">
+		<property name="defaultMQPushConsumer">
+			<bean class="org.apache.rocketmq.client.consumer.DefaultMQPushConsumer">
+				<property name="consumerGroup" value="TRAIN_BOOKING_CALLBACK" />
+				<property name="namesrvAddr" value="${mq.namesrvAddr}" />
+			</bean>
+		</property>
+	</bean>
+
+
+</beans>
