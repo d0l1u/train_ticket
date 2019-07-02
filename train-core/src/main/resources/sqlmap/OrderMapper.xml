@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kuyou.train.dao.OrderMapper">
+
+    <resultMap id="RT_MAP" type="com.kuyou.train.entity.po.OrderPo">
+        <id column="order_id" property="orderId" jdbcType="VARCHAR" />
+        <result column="my_order_id" property="myOrderId" jdbcType="VARCHAR" />
+        <result column="supplier_order_id" property="supplierOrderId" jdbcType="VARCHAR" />
+        <result column="order_name" property="orderName" jdbcType="VARCHAR" />
+        <result column="pay_money" property="payMoney" jdbcType="DECIMAL" />
+        <result column="buy_money" property="buyMoney" jdbcType="DECIMAL" />
+        <result column="order_status" property="orderStatus" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="pay_time" property="payTime" jdbcType="TIMESTAMP" />
+        <result column="out_ticket_time" property="outTicketTime" jdbcType="TIMESTAMP" />
+        <result column="out_ticket_type" property="outTicketType" jdbcType="INTEGER" />
+        <result column="opt_ren" property="optRen" jdbcType="VARCHAR" />
+        <result column="out_ticket_billno" property="outTicketBillno" jdbcType="VARCHAR" />
+        <result column="train_no" property="trainNo" jdbcType="VARCHAR" />
+        <result column="from_city" property="fromCity" jdbcType="VARCHAR" />
+        <result column="to_city" property="toCity" jdbcType="VARCHAR" />
+        <result column="from_time" property="fromTime" jdbcType="TIMESTAMP" />
+        <result column="to_time" property="toTime" jdbcType="TIMESTAMP" />
+        <result column="travel_time" property="travelTime" jdbcType="TIMESTAMP" />
+        <result column="seat_type" property="seatType" jdbcType="INTEGER" />
+        <result column="account_id" property="accountId" jdbcType="INTEGER" />
+        <result column="worker_id" property="workerId" jdbcType="INTEGER" />
+        <result column="out_ticket_account" property="outTicketAccount" jdbcType="VARCHAR" />
+        <result column="bank_pay_seq" property="bankPaySeq" jdbcType="VARCHAR" />
+        <result column="error_info" property="errorInfo" jdbcType="VARCHAR" />
+        <result column="option_time" property="optionTime" jdbcType="TIMESTAMP" />
+        <result column="channel" property="channel" jdbcType="VARCHAR" />
+        <result column="ext_seattype" property="extSeattype" jdbcType="VARCHAR" />
+        <result column="level" property="level" jdbcType="VARCHAR" />
+        <result column="pay_type" property="payType" jdbcType="VARCHAR" />
+        <result column="is_pay" property="isPay" jdbcType="VARCHAR" />
+        <result column="return_optlog" property="returnOptlog" jdbcType="VARCHAR" />
+        <result column="pro_bak2" property="proBak2" jdbcType="VARCHAR" />
+        <result column="pay_limit_time" property="payLimitTime" jdbcType="TIMESTAMP" />
+        <result column="manual_order" property="manualOrder" jdbcType="VARCHAR" />
+        <result column="wait_for_order" property="waitForOrder" jdbcType="VARCHAR" />
+        <result column="device_type" property="deviceType" jdbcType="TINYINT" />
+        <result column="from_3c" property="from3c" jdbcType="VARCHAR" />
+        <result column="account_from_way" property="accountFromWay" jdbcType="INTEGER" />
+        <result column="to_3c" property="to3c" jdbcType="VARCHAR" />
+        <result column="ctrip_bx_money" property="ctripBxMoney" jdbcType="DECIMAL" />
+        <result column="is_click_button" property="isClickButton" jdbcType="VARCHAR" />
+        <result column="seat_detail_type" property="seatDetailType" jdbcType="VARCHAR" />
+        <result column="choose_seats" property="chooseSeats" jdbcType="VARCHAR" />
+        <result column="if_12306_cutover" property="if12306Cutover" jdbcType="TINYINT" />
+        <result column="choose_seat_type" property="chooseSeatType" jdbcType="VARCHAR" />
+        <result column="resend_identify" property="resendIdentify" jdbcType="TINYINT" />
+        <result column="jdbook_resendnum" property="resendNum" jdbcType="TINYINT" />
+        <result column="pingan_status" property="pinganStatus" jdbcType="INTEGER" />
+        <result column="supplier_type" property="supplierType" jdbcType="CHAR" />
+        <result column="can_switch_supplier" property="canSwitchSupplier" jdbcType="BIT" />
+        <result column="delay_order" property="delayOrder" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="columns">
+        order_id, my_order_id, supplier_order_id, order_name, pay_money, buy_money, order_status, create_time, pay_time, out_ticket_time, out_ticket_type,
+        opt_ren, out_ticket_billno, train_no, from_city, to_city, from_time, to_time, travel_time, seat_type, account_id, worker_id, out_ticket_account,
+        bank_pay_seq, error_info, option_time, channel, ext_seattype, level, pay_type, is_pay, return_optlog, pro_bak2, pay_limit_time, manual_order,
+        wait_for_order, device_type, from_3c, account_from_way, to_3c, ctrip_bx_money, seat_detail_type, choose_seats,
+        choose_seat_type, resend_identify,  supplier_type, can_switch_supplier, delay_order, jdbook_resendnum
+    </sql>
+
+    <update id="updateByOrderId">
+        UPDATE cp_orderinfo
+        <set>
+            <if test="orderPo.myOrderId != null">my_order_id= #{orderPo.myOrderId,jdbcType=VARCHAR},</if>
+            <if test="orderPo.supplierOrderId != null">supplier_order_id= #{orderPo.supplierOrderId,jdbcType=VARCHAR},</if>
+            <if test="orderPo.payMoney != null">pay_money= #{orderPo.payMoney,jdbcType=DECIMAL},</if>
+            <if test="orderPo.buyMoney != null">buy_money= #{orderPo.buyMoney,jdbcType=DECIMAL},</if>
+            <if test="orderPo.orderStatus != null">order_status= #{orderPo.orderStatus,jdbcType=VARCHAR},</if>
+            <if test="orderPo.payTime != null">pay_time= #{orderPo.payTime,jdbcType=TIMESTAMP},</if>
+            <if test="orderPo.outTicketTime != null">out_ticket_time= #{orderPo.outTicketTime,jdbcType=TIMESTAMP},</if>
+            <if test="orderPo.outTicketBillno != null">out_ticket_billno= #{orderPo.outTicketBillno,jdbcType=VARCHAR},</if>
+            <if test="orderPo.trainNo != null">train_no= #{orderPo.trainNo,jdbcType=VARCHAR},</if>
+            <if test="orderPo.fromCity != null">from_city= #{orderPo.fromCity,jdbcType=VARCHAR},</if>
+            <if test="orderPo.toCity != null">to_city= #{orderPo.toCity,jdbcType=VARCHAR},</if>
+            <if test="orderPo.fromTime != null">from_time= #{orderPo.fromTime,jdbcType=TIMESTAMP},</if>
+            <if test="orderPo.toTime != null">to_time= #{orderPo.toTime,jdbcType=TIMESTAMP},</if>
+            <if test="orderPo.travelTime != null">travel_time= #{orderPo.travelTime,jdbcType=TIMESTAMP},</if>
+            <if test="orderPo.seatType != null">seat_type= #{orderPo.seatType,jdbcType=INTEGER},</if>
+            <if test="orderPo.accountId != null">account_id= #{orderPo.accountId,jdbcType=INTEGER},</if>
+            <if test="orderPo.outTicketAccount != null">out_ticket_account= #{orderPo.outTicketAccount,jdbcType=VARCHAR},</if>
+            <if test="orderPo.bankPaySeq != null">bank_pay_seq= #{orderPo.bankPaySeq,jdbcType=VARCHAR},</if>
+            <if test="orderPo.errorInfo != null">error_info= #{orderPo.errorInfo,jdbcType=VARCHAR},</if>
+            <if test="orderPo.isPay != null">is_pay= #{orderPo.isPay,jdbcType=VARCHAR},</if>
+            <if test="orderPo.returnOptlog != null">return_optlog= #{orderPo.returnOptlog,jdbcType=VARCHAR},</if>
+            <if test="orderPo.payLimitTime != null">pay_limit_time= #{orderPo.payLimitTime,jdbcType=TIMESTAMP},</if>
+            <if test="orderPo.from3c != null">from_3c= #{orderPo.from3c,jdbcType=VARCHAR},</if>
+            <if test="orderPo.accountFromWay != null">account_from_way= #{orderPo.accountFromWay,jdbcType=INTEGER},</if>
+            <if test="orderPo.to3c != null">to_3c= #{orderPo.to3c,jdbcType=VARCHAR},</if>
+            <if test="orderPo.resendIdentify != null">resend_identify= #{orderPo.resendIdentify,jdbcType=TINYINT},</if>
+            <if test="orderPo.supplierType != null">supplier_type= #{orderPo.supplierType,jdbcType=VARCHAR},</if>
+            <if test="orderPo.canSwitchSupplier != null">can_switch_supplier= #{orderPo.canSwitchSupplier,jdbcType=TINYINT},</if>
+            <if test="orderPo.resendNum != null">jdbook_resendnum= #{orderPo.resendNum,jdbcType=TINYINT},</if>
+            option_time = NOW()
+        </set>
+        WHERE order_id = #{orderId} AND order_status = #{preStatus}
+    </update>
+
+    <select id="selectByMyOrderId" resultMap="RT_MAP">
+        SELECT
+        <include refid="columns" />
+        FROM cp_orderinfo
+        WHERE my_order_id = #{myOrderId}
+    </select>
+
+    <select id="selectByOrderId" resultMap="RT_MAP">
+        SELECT
+        <include refid="columns" />
+        FROM cp_orderinfo
+        WHERE order_id = #{orderId}
+    </select>
+
+    <update id="updateStatus">
+        UPDATE  cp_orderinfo
+        SET order_status = #{status}, option_time = NOW()
+        WHERE order_id = #{orderId}
+    </update>
+
+    <select id="selectByStatus" resultMap="RT_MAP">
+        SELECT
+        <include refid="columns" />
+        FROM cp_orderinfo
+        <where>
+            order_status IN
+            <foreach collection="statusList" item="status" open="(" separator="," close=")">
+                #{status}
+            </foreach>
+        </where>
+        LIMIT #{limit}
+    </select>
+
+    <update id="updateStatusPre">
+        UPDATE  cp_orderinfo
+        SET order_status = #{status}, option_time = NOW()
+        WHERE order_id = #{orderId} AND order_status = #{preStatus}
+    </update>
+
+    <sql id="bookSql">
+        order_id            AS orderId,
+        my_order_id         AS myOrderId,
+        0                   AS changeId,
+        TRUE                AS bookFlag,
+        pay_limit_time      AS payLimitTime,
+        create_time         AS createTime,
+        supplier_type       AS supplierType,
+        supplier_order_id   AS supplierOrderId,
+        out_ticket_billno   AS sequence,
+        account_id          AS accountId
+    </sql>
+
+    <sql id="changeSql">
+        order_id            AS orderId,
+        my_order_id         AS myOrderId,
+        change_id           AS changeId,
+        FALSE               AS bookFlag,
+        pay_limit_time      AS payLimitTime,
+        create_time         AS createTime,
+        supplier_type       AS supplierType,
+        supplier_order_id   AS supplierOrderId,
+        out_ticket_billno   AS sequence,
+        account_id          AS accountId
+    </sql>
+
+    <select id="selectWaitService" resultType="com.kuyou.train.entity.po.ServicePo">
+        SELECT
+        <include refid="bookSql" />
+        FROM
+            cp_orderinfo
+        WHERE
+            order_status = #{bookStatus}
+        UNION ALL
+        SELECT
+        <include refid="changeSql" />
+        FROM
+            elong_orderinfo_change
+        WHERE
+            change_status = #{changeStatus}
+        LIMIT #{limit}
+    </select>
+
+    <select id="selectStuckService" resultType="com.kuyou.train.entity.po.ServicePo">
+        SELECT
+        <include refid="bookSql" />
+        FROM
+            cp_orderinfo
+        WHERE
+            order_status = #{bookStatus}
+        AND
+            #{time} > option_time
+        UNION ALL
+        SELECT
+        <include refid="changeSql" />
+        FROM
+            elong_orderinfo_change
+        WHERE
+            change_status = #{changeStatus}
+        AND
+            #{time} > option_time
+    </select>
+
+    <select id="selectAccountId4Jd" resultType="Integer">
+        SELECT
+            account_id
+        FROM
+            cp_orderinfo co
+        WHERE
+            channel = 'tuniu'
+        AND create_time > '2018-06-01 00:00'
+        AND account_id != 0
+        AND account_from_way = '0'
+        GROUP BY
+            account_id
+        HAVING
+            count(account_id) > 1
+    </select>
+
+
+    <select id="selectStuck" resultMap="RT_MAP">
+        SELECT
+        <include refid="columns" />
+        FROM cp_orderinfo
+        <where>
+            order_status IN
+            <foreach collection="orderStatusList" item="orderStatus" open="(" separator="," close=")">
+                #{orderStatus}
+            </foreach>
+            AND
+            #{stuckTime} > option_time
+        </where>
+        LIMIT 5;
+    </select>
+
+</mapper>

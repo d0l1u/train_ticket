@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kuyou.train.dao.SettingMapper">
+    <resultMap id="RT_MAP" type="com.kuyou.train.entity.po.SettingPo">
+        <id column="setting_id" property="id" jdbcType="VARCHAR" />
+        <result column="setting_name" property="name" jdbcType="VARCHAR" />
+        <result column="setting_value" property="value" jdbcType="VARCHAR" />
+        <result column="setting_status" property="status" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="columns">
+        setting_id,
+        setting_name,
+        setting_value,
+        setting_status
+    </sql>
+
+    <select id="selectByName" resultMap="RT_MAP">
+        SELECT
+        <include refid="columns" />
+        FROM train_system_setting
+        WHERE setting_name = #{name}
+        LIMIT 1
+    </select>
+</mapper>

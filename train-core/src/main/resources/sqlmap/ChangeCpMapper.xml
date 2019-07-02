@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kuyou.train.dao.ChangeCpMapper" >
+
+    <resultMap id="RT_MAP" type="com.kuyou.train.entity.po.ChangeCpPo">
+        <id column="cp_id" property="cpId" jdbcType="VARCHAR" />
+        <result column="new_cp_id" property="newCpId" jdbcType="VARCHAR" />
+        <result column="order_id" property="orderId" jdbcType="VARCHAR" />
+        <result column="change_id" property="changeId" jdbcType="INTEGER" />
+        <result column="buy_money" property="buyMoney" jdbcType="DECIMAL" />
+        <result column="fee" property="fee" jdbcType="DECIMAL" />
+        <result column="diffrate" property="diffrate" jdbcType="DECIMAL" />
+        <result column="change_buy_money" property="changeBuyMoney" jdbcType="DECIMAL" />
+        <result column="tc_seat_type" property="tcSeatType" jdbcType="VARCHAR" />
+        <result column="seat_type" property="seatType" jdbcType="VARCHAR" />
+        <result column="change_seat_type" property="changeSeatType" jdbcType="VARCHAR" />
+        <result column="tc_ticket_type" property="tcTicketType" jdbcType="VARCHAR" />
+        <result column="ticket_type" property="ticketType" jdbcType="VARCHAR" />
+        <result column="train_box" property="trainBox" jdbcType="VARCHAR" />
+        <result column="change_train_box" property="changeTrainBox" jdbcType="VARCHAR" />
+        <result column="tc_change_seat_type" property="tcChangeSeatType" jdbcType="VARCHAR" />
+        <result column="seat_no" property="seatNo" jdbcType="VARCHAR" />
+        <result column="change_seat_no" property="changeSeatNo" jdbcType="VARCHAR" />
+        <result column="tc_ids_type" property="tcIdsType" jdbcType="VARCHAR" />
+        <result column="tn_seat_type" property="tnSeatType" jdbcType="VARCHAR" />
+        <result column="tn_ticket_type" property="tnTicketType" jdbcType="VARCHAR" />
+        <result column="tn_change_seat_type" property="tnChangeSeatType" jdbcType="VARCHAR" />
+        <result column="tn_ids_type" property="tnIdsType" jdbcType="VARCHAR" />
+        <result column="ids_type" property="idsType" jdbcType="VARCHAR" />
+        <result column="user_ids" property="userIds" jdbcType="VARCHAR" />
+        <result column="user_name" property="userName" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="is_changed" property="isChanged" jdbcType="VARCHAR" />
+        <result column="mt_change_seat_type" property="mtChangeSeatType" jdbcType="VARCHAR" />
+        <result column="sub_sequence" property="subSequence" jdbcType="VARCHAR" />
+        <result column="old_sub_sequence" property="oldSubSequence" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="columns">
+        cp_id, new_cp_id, order_id, change_id, buy_money, fee,diffrate, change_buy_money,tc_seat_type, seat_type,
+        change_seat_type, tc_ticket_type, ticket_type, train_box, change_train_box, tc_change_seat_type, seat_no,
+        change_seat_no, tc_ids_type, tn_seat_type, tn_ticket_type, tn_change_seat_type, tn_ids_type, ids_type,
+        user_ids, user_name, create_time, is_changed, mt_change_seat_type,sub_sequence,old_sub_sequence
+    </sql>
+
+    <select id="selectByChangeId" resultMap="RT_MAP">
+        SELECT
+        <include refid="columns" />
+        FROM elong_change_cp
+        WHERE change_id = #{changeId}
+    </select>
+
+    <select id="selectSequenceByNewCpId" resultMap="RT_MAP">
+        SELECT
+        <include refid="columns" />
+        FROM elong_change_cp
+        WHERE new_cp_id = #{newCpId} AND sub_sequence IS NOT NULL
+        ORDER BY create_time DESC
+        LIMIT 1
+    </select>
+
+    <select id="selectByNewCpId" resultMap="RT_MAP">
+        SELECT
+        <include refid="columns" />
+        FROM elong_change_cp
+        WHERE new_cp_id = #{newCpId} AND change_id = #{changeId}
+    </select>
+
+    <select id="selectByOrderId" resultMap="RT_MAP">
+        SELECT
+        <include refid="columns" />
+        FROM elong_change_cp
+        WHERE order_id = #{orderId}
+    </select>
+
+    <select id="selectByMyOrderId" resultMap="RT_MAP">
+        SELECT
+        <include refid="columns" />
+        FROM elong_change_cp
+        WHERE my_order_id = #{myOrderId}
+    </select>
+
+    <update id="updateByCpId">
+        UPDATE elong_change_cp
+        <set>
+            <if test="changeCpPo.buyMoney != null">buy_money= #{changeCpPo.buyMoney,jdbcType=DECIMAL},</if>
+            <if test="changeCpPo.fee != null">fee= #{changeCpPo.fee,jdbcType=DECIMAL},</if>
+            <if test="changeCpPo.diffrate != null">diffrate= #{changeCpPo.diffrate,jdbcType=DECIMAL},</if>
+            <if test="changeCpPo.changeBuyMoney != null">change_buy_money= #{changeCpPo.changeBuyMoney,jdbcType=DECIMAL},</if>
+            <if test="changeCpPo.tcSeatType != null">tc_seat_type= #{changeCpPo.tcSeatType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.seatType != null">seat_type= #{changeCpPo.seatType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.changeSeatType != null">change_seat_type= #{changeCpPo.changeSeatType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.tcTicketType != null">tc_ticket_type= #{changeCpPo.tcTicketType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.ticketType != null">ticket_type= #{changeCpPo.ticketType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.trainBox != null">train_box= #{changeCpPo.trainBox,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.changeTrainBox != null">change_train_box= #{changeCpPo.changeTrainBox,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.tcChangeSeatType != null">tc_change_seat_type= #{changeCpPo.tcChangeSeatType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.seatNo != null">seat_no= #{changeCpPo.seatNo,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.changeSeatNo != null">change_seat_no= #{changeCpPo.changeSeatNo,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.tcIdsType != null">tc_ids_type= #{changeCpPo.tcIdsType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.tnSeatType != null">tn_seat_type= #{changeCpPo.tnSeatType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.tnTicketType != null">tn_ticket_type= #{changeCpPo.tnTicketType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.tnChangeSeatType != null">tn_change_seat_type= #{changeCpPo.tnChangeSeatType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.tnIdsType != null">tn_ids_type= #{changeCpPo.tnIdsType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.idsType != null">ids_type= #{changeCpPo.idsType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.userIds != null">user_ids= #{changeCpPo.userIds,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.userName != null">user_name= #{changeCpPo.userName,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.createTime != null">create_time= #{changeCpPo.createTime,jdbcType=TIMESTAMP},</if>
+            <if test="changeCpPo.isChanged != null">is_changed= #{changeCpPo.isChanged,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.subSequence != null">sub_sequence= #{changeCpPo.subSequence,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.oldSubSequence != null">old_sub_sequence= #{changeCpPo.oldSubSequence,jdbcType=VARCHAR},</if>
+            modify_time = NOW()
+        </set>
+        WHERE cp_id = #{cpId}
+    </update>
+
+    <update id="updateByNewCpId">
+        UPDATE elong_change_cp
+        <set>
+            <if test="changeCpPo.buyMoney != null">buy_money= #{changeCpPo.buyMoney,jdbcType=DECIMAL},</if>
+            <if test="changeCpPo.fee != null">fee= #{changeCpPo.fee,jdbcType=DECIMAL},</if>
+            <if test="changeCpPo.diffrate != null">diffrate= #{changeCpPo.diffrate,jdbcType=DECIMAL},</if>
+            <if test="changeCpPo.changeBuyMoney != null">change_buy_money= #{changeCpPo.changeBuyMoney,jdbcType=DECIMAL},</if>
+            <if test="changeCpPo.tcSeatType != null">tc_seat_type= #{changeCpPo.tcSeatType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.seatType != null">seat_type= #{changeCpPo.seatType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.changeSeatType != null">change_seat_type= #{changeCpPo.changeSeatType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.tcTicketType != null">tc_ticket_type= #{changeCpPo.tcTicketType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.ticketType != null">ticket_type= #{changeCpPo.ticketType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.trainBox != null">train_box= #{changeCpPo.trainBox,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.changeTrainBox != null">change_train_box= #{changeCpPo.changeTrainBox,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.tcChangeSeatType != null">tc_change_seat_type= #{changeCpPo.tcChangeSeatType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.seatNo != null">seat_no= #{changeCpPo.seatNo,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.changeSeatNo != null">change_seat_no= #{changeCpPo.changeSeatNo,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.tcIdsType != null">tc_ids_type= #{changeCpPo.tcIdsType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.tnSeatType != null">tn_seat_type= #{changeCpPo.tnSeatType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.tnTicketType != null">tn_ticket_type= #{changeCpPo.tnTicketType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.tnChangeSeatType != null">tn_change_seat_type= #{changeCpPo.tnChangeSeatType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.tnIdsType != null">tn_ids_type= #{changeCpPo.tnIdsType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.idsType != null">ids_type= #{changeCpPo.idsType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.userIds != null">user_ids= #{changeCpPo.userIds,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.userName != null">user_name= #{changeCpPo.userName,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.createTime != null">create_time= #{changeCpPo.createTime,jdbcType=TIMESTAMP},</if>
+            <if test="changeCpPo.isChanged != null">is_changed= #{changeCpPo.isChanged,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.subSequence != null">sub_sequence= #{changeCpPo.subSequence,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.oldSubSequence != null">old_sub_sequence= #{changeCpPo.oldSubSequence,jdbcType=VARCHAR},</if>
+            modify_time = NOW()
+        </set>
+        WHERE new_cp_id = #{newCpId}
+    </update>
+
+    <update id="updateByChangeIdAndSeq">
+        UPDATE elong_change_cp
+        <set>
+            <if test="changeCpPo.buyMoney != null">buy_money= #{changeCpPo.buyMoney,jdbcType=DECIMAL},</if>
+            <if test="changeCpPo.fee != null">fee= #{changeCpPo.fee,jdbcType=DECIMAL},</if>
+            <if test="changeCpPo.diffrate != null">diffrate= #{changeCpPo.diffrate,jdbcType=DECIMAL},</if>
+            <if test="changeCpPo.changeBuyMoney != null">change_buy_money= #{changeCpPo.changeBuyMoney,jdbcType=DECIMAL},</if>
+            <if test="changeCpPo.tcSeatType != null">tc_seat_type= #{changeCpPo.tcSeatType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.seatType != null">seat_type= #{changeCpPo.seatType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.changeSeatType != null">change_seat_type= #{changeCpPo.changeSeatType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.tcTicketType != null">tc_ticket_type= #{changeCpPo.tcTicketType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.ticketType != null">ticket_type= #{changeCpPo.ticketType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.trainBox != null">train_box= #{changeCpPo.trainBox,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.changeTrainBox != null">change_train_box= #{changeCpPo.changeTrainBox,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.tcChangeSeatType != null">tc_change_seat_type= #{changeCpPo.tcChangeSeatType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.seatNo != null">seat_no= #{changeCpPo.seatNo,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.changeSeatNo != null">change_seat_no= #{changeCpPo.changeSeatNo,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.tcIdsType != null">tc_ids_type= #{changeCpPo.tcIdsType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.tnSeatType != null">tn_seat_type= #{changeCpPo.tnSeatType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.tnTicketType != null">tn_ticket_type= #{changeCpPo.tnTicketType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.tnChangeSeatType != null">tn_change_seat_type= #{changeCpPo.tnChangeSeatType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.tnIdsType != null">tn_ids_type= #{changeCpPo.tnIdsType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.idsType != null">ids_type= #{changeCpPo.idsType,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.userIds != null">user_ids= #{changeCpPo.userIds,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.userName != null">user_name= #{changeCpPo.userName,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.createTime != null">create_time= #{changeCpPo.createTime,jdbcType=TIMESTAMP},</if>
+            <if test="changeCpPo.isChanged != null">is_changed= #{changeCpPo.isChanged,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.subSequence != null">sub_sequence= #{changeCpPo.subSequence,jdbcType=VARCHAR},</if>
+            <if test="changeCpPo.oldSubSequence != null">old_sub_sequence= #{changeCpPo.oldSubSequence,jdbcType=VARCHAR},</if>
+            modify_time = NOW()
+        </set>
+        WHERE change_id = #{changeId} AND old_sub_sequence = #{oldTicketNo}
+    </update>
+
+    <select id="selectSeqByChangeId" resultType="java.lang.String">
+        SELECT
+            sub_sequence
+        FROM
+            elong_change_cp
+        WHERE
+            change_id = #{changeId}
+    </select>
+
+</mapper>

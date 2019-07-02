@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.train.system.center.dao.PassengerDao">
+
+    <select id="queryListByOrderId" resultType="com.train.system.center.entity.Passenger">
+        SELECT
+            cc.order_id                           AS orderId,
+            cc.cp_id                              AS passengerNo,
+            cc.user_name                          AS name,
+            cc.ticket_type                        AS ticketType,
+            cc.cert_type                          AS cardType,
+            cc.cert_no                            AS cardNo,
+            cc.seat_type                          AS seatType,
+            cc.sub_outTicket_billno               AS subSequence,
+            cs.province_name                      AS provinceName,
+            cs.province_code                      AS provinceCode,
+            cs.school_name                        AS schoolName,
+            cs.school_code                        AS schoolCode,
+            cs.student_no                         AS studentNo,
+            cs.school_system                      AS system,
+            cs.enter_year                         AS enterYear,
+            cs.preference_from_station_name       AS limitBeginName,
+            cs.preference_from_station_code       AS limitBeginCode,
+            cs.preference_to_station_name         AS limitEndName,
+            cs.preference_to_station_code         AS limitEndCode,
+            cc.valid_date_end         			  AS validDateEnd
+        FROM
+            cp_orderinfo_cp cc
+        LEFT JOIN
+            cp_orderinfo_student cs ON cc.cp_id = cs.cp_id
+        WHERE
+            cc.order_id = #{orderId}
+    </select>
+
+    <update id="updatePassenger" parameterType="com.train.system.center.entity.Passenger">
+        UPDATE
+        cp_orderinfo_cp
+        SET
+            modify_time = NOW()
+            <if test=" passenger.price != null ">
+                ,buy_money = #{passenger.price}
+            </if>
+            <if test=" passenger.boxName != null and passenger.boxName != '' ">
+                ,train_box = #{passenger.boxName}
+            </if>
+            <if test=" passenger.seatName != null and passenger.seatName != '' ">
+                ,seat_no = #{passenger.seatName}
+            </if>
+            <if test=" passenger.subSequence != null and passenger.subSequence != '' ">
+                ,sub_outTicket_billno = #{passenger.subSequence}
+            </if>
+        WHERE
+            cp_id = #{passenger.passengerNo}
+    </update>
+    
+    
+    <select id="queryByCpId" resultType="com.train.system.center.entity.Passenger">
+        SELECT
+            cc.order_id                           AS orderId,
+            cc.cp_id                              AS passengerNo,
+            cc.user_name                          AS name,
+            cc.ticket_type                        AS ticketType,
+            cc.cert_type                          AS cardType,
+            cc.cert_no                            AS cardNo,
+            cc.seat_type                          AS seatType,
+            cc.sub_outTicket_billno               AS subSequence,
+            cs.province_name                      AS provinceName,
+            cs.province_code                      AS provinceCode,
+            cs.school_name                        AS schoolName,
+            cs.school_code                        AS schoolCode,
+            cs.student_no                         AS studentNo,
+            cs.school_system                      AS system,
+            cs.enter_year                         AS enterYear,
+            cs.preference_from_station_name       AS limitBeginName,
+            cs.preference_from_station_code       AS limitBeginCode,
+            cs.preference_to_station_name         AS limitEndName,
+            cs.preference_to_station_code         AS limitEndCode,
+            cc.valid_date_end         			  AS validDateEnd
+        FROM
+            cp_orderinfo_cp cc
+        LEFT JOIN
+            cp_orderinfo_student cs ON cc.cp_id = cs.cp_id
+        WHERE
+            cc.cp_id = #{cpId}
+    </select>
+    
+    
+    
+    <select id="queryChangePassengers" resultType="com.train.system.center.entity.Passenger">
+        SELECT
+            cc.order_id                           AS orderId,
+            cc.change_id                          AS changeId,
+            cc.cp_id                              AS passengerNo,
+            cc.new_cp_id                          AS newPassengerNo,
+            cc.user_name                          AS name,
+            cc.ticket_type                        AS ticketType,
+            cc.ids_type                           AS cardType,
+            cc.user_ids                           AS cardNo,
+            cc.seat_type                          AS seatType,
+            cc.change_seat_type                   AS changeSeatType,
+            cc.sub_sequence               		  AS subSequence,
+            cc.buy_money               		      AS buyMoney,
+            cc.change_buy_money               	  AS changeBuyMoney,
+            cp.sub_outTicket_billno				  AS subSequenceOut
+        FROM
+            elong_change_cp cc
+        LEFT JOIN
+			cp_orderinfo_cp cp ON cc.cp_id = cp.cp_id
+        WHERE
+            cc.change_id = #{changeId}
+    </select>
+    
+    <update id="updateChangePassenger">
+    	UPDATE
+    		elong_change_cp
+    	SET
+    		modify_time = NOW()
+    		<if test=" passenger.price != null ">
+                ,change_buy_money = #{passenger.price}
+            </if>
+    		<if test="passenger.boxName != '' and passenger.boxName != null ">
+                ,change_train_box = #{passenger.boxName}
+            </if>
+    		<if test="passenger.seatName != '' and passenger.seatName != null ">
+                ,change_seat_no = #{passenger.seatName}
+            </if>
+    		<if test="passenger.subSequence != '' and passenger.subSequence != null ">
+                ,sub_sequence = #{passenger.subSequence}
+            </if>
+    	WHERE
+    		cp_id = #{passenger.passengerNo}
+    		
+    </update>
+    
+    
+    <select id="queryByChangeCpId" resultType="com.train.system.center.entity.Passenger">
+        SELECT
+            cc.order_id                           AS orderId,
+            cc.change_id                          AS changeId,
+            cc.cp_id                              AS passengerNo,
+            cc.new_cp_id                          AS newPassengerNo,
+            cc.user_name                          AS name,
+            cc.ticket_type                        AS ticketType,
+            cc.ids_type                           AS cardType,
+            cc.user_ids                           AS cardNo,
+            cc.seat_type                          AS seatType,
+            cc.change_seat_type                   AS changeSeatType,
+            cc.sub_sequence               		  AS subSequence,
+            cc.buy_money               		      AS buyMoney,
+            cc.change_buy_money               	  AS changeBuyMoney,
+            cc.sub_sequence				 		  AS subSequenceOut
+        FROM
+            elong_change_cp cc
+        WHERE
+            cc.new_cp_id = #{cpId}
+    </select>
+    
+</mapper>

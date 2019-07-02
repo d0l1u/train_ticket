@@ -1,0 +1,41 @@
+db.username =esales
+db.password =unlun
+db.url=jdbc:mysql://localhost:3306/esales?useUnicode=true&characterEncoding=utf8&jdbcCompliantTruncation=false
+db.driver =com.mysql.jdbc.Driver
+
+
+db.acquireIncrement = 5
+ 
+db.initialPoolSize = 3
+
+db.maxPoolSize = 10
+
+db.minPoolSize = 2
+
+#db.maxIdleTime = 30
+db.maxIdleTime = 3
+db.minIdleTime = 1
+db.acquireRetryAttempts= 0
+
+DbPoolMaxActive_0=5;
+#db.checkoutTimeout = 500
+
+
+
+#acquireRetryDelay = 1000
+
+#idleConnectionTestPeriod = 60
+#maxStatements = 0
+#maxStatementsPerConnection = 0
+
+#numHelperThreads = 3
+
+#ConnectionPoolJDNI=pool_1
+#PoolSelf=true
+
+consumersize=10
+queuesize=50
+sleepMilliSecondsWhenNolist=10000
+sleepMilliSecondsWhenHaslist=10000
+
+suppliers.path=\app\suppliers\suppliers.xml

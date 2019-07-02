@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.train.system.center.dao.HistoryDao">
+
+    <insert id="insertBookingHistory">
+        <selectKey resultType="java.lang.Long" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO cp_orderinfo_history (order_id, order_optlog, create_time, opter) values(#{orderId}, #{message}, now(), #{operator})
+    </insert>
+    
+    <insert id="insertRefundHistory">
+        <selectKey resultType="java.lang.Long" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO cp_orderinfo_refund_history (order_id,cp_id, order_optlog, create_time, opter) values(#{orderId}, #{cpId},#{message}, now(), #{operator})
+    </insert>
+    
+    
+    <insert id="insertChangeOrderHistory">
+        <selectKey resultType="java.lang.Long" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO elong_change_logs (order_id, change_id, content, opt_person, create_time) values(#{orderId},  #{cpId}, #{message}, #{operator}, now())
+    </insert>
+    
+</mapper>

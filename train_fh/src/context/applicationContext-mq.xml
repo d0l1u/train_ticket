@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+	default-autowire="byName">
+
+       
+    <!-- 属性文件配置 -->
+	<context:property-placeholder location="classpath:mq.properties" ignore-unresolvable="true"  />  
+	
+	<!--创建连接工厂 -->
+	<bean id="activeMQConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL"
+			value="tcp://${mq.broker.host}:${mq.broker.port}?jms.prefetchPolicy.all=${mq.jms.prefetch}" />
+		<!-- <property name="useAsyncSend" value="true"></property> -->
+	</bean>
+	<!-- 设置接收连接池,提高性能 -->
+	<bean id="jmsFactoryPool" class="org.apache.activemq.pool.PooledConnectionFactory">
+		<property name="connectionFactory" ref="activeMQConnectionFactory" />
+		<property name="maxConnections" value="${mq.jms.maxConnections}"></property>
+	</bean>
+	<!--这个是队列目的地 -->
+	
+	<!-- jms 模板 -->
+	<bean id="myJmsTemplate" class="com.l9e.transaction.mq.MyJmsTemplate">
+		<property name="connectionFactory" ref="jmsFactoryPool"></property>
+		<property name="defaultDestination" ref="mqDestination"></property>
+		<property name="receiveTimeout" value="600"></property>
+	</bean>
+	
+	<!-- 声明ActiveMQ消息目标,目标可以是一个队列，也可以是一个主题ActiveMQTopic 主要用于服务端监听的消息队列 -->
+	<bean id="mqDestination" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg index="0" value="${mq.dest.id}"></constructor-arg>
+	</bean>
+
+
+
+</beans>

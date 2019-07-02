@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <!-- 外网，Redis 队列，存订单数据，由ADSL 服务器使用-->
+    <bean id="publicDataJedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxIdle" value="${redis.maxIdle}" />
+        <property name="maxTotal" value="${redis.maxTotal}" />
+        <property name="maxWaitMillis" value="${redis.maxWaitMillis}" />
+        <property name="testOnBorrow" value="${redis.testOnBorrow}" />
+    </bean>
+    <bean id="publicDataJedisClient" class="com.train.system.center.jedis.JedisClient">
+        <property name="jedisPool">
+            <bean class="redis.clients.jedis.JedisPool">
+                <constructor-arg index="0" ref="publicDataJedisPoolConfig" />
+                <constructor-arg index="1" value="${public.host}" />
+                <constructor-arg index="2" value="${public.port}" type="int" />
+                <constructor-arg index="3" value="${public.timeout}" type="int" />
+                <constructor-arg index="4" value="${public.password}" />
+                <constructor-arg index="5" value="8" type="int" />
+            </bean>
+        </property>
+    </bean>
+
+    <!-- 内网，订单锁 -->
+     <bean id="privateLockJedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxIdle" value="${redis.maxIdle}" />
+        <property name="maxTotal" value="${redis.maxTotal}" />
+        <property name="maxWaitMillis" value="${redis.maxWaitMillis}" />
+        <property name="testOnBorrow" value="${redis.testOnBorrow}" />
+    </bean>
+    <bean id="privateLockJedisClient" class="com.train.system.center.jedis.JedisClient">
+        <property name="jedisPool">
+            <bean class="redis.clients.jedis.JedisPool">
+                <constructor-arg index="0" ref="privateLockJedisPoolConfig" />
+                <constructor-arg index="1" value="${private.host}" />
+                <constructor-arg index="2" value="${private.port}" type="int" />
+                <constructor-arg index="3" value="${private.timeout}" type="int" />
+                <constructor-arg index="4" value="${private.password}" />
+                <constructor-arg index="5" value="2" type="int" />
+            </bean>
+        </property>
+    </bean>
+    
+    <!-- 基础数据 -->
+    <bean id="privateDataJedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxIdle" value="${redis.maxIdle}" />
+        <property name="maxTotal" value="${redis.maxTotal}" />
+        <property name="maxWaitMillis" value="${redis.maxWaitMillis}" />
+        <property name="testOnBorrow" value="${redis.testOnBorrow}" />
+    </bean>
+    <bean id="privateDataJedisClient" class="com.train.system.center.jedis.JedisClient">
+        <property name="jedisPool">
+            <bean class="redis.clients.jedis.JedisPool">
+                <constructor-arg index="0" ref="privateDataJedisPoolConfig" />
+                <constructor-arg index="1" value="${private.host}" />
+                <constructor-arg index="2" value="${private.port}" type="int" />
+                <constructor-arg index="3" value="${private.timeout}" type="int" />
+                <constructor-arg index="4" value="${private.password}" />
+                <constructor-arg index="5" value="4" type="int" />
+            </bean>
+        </property>
+    </bean>
+
+</beans>

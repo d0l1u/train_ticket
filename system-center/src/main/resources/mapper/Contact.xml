@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.train.system.center.dao.ContactDao">
+
+    <delete id="deleteByAccountId">
+        DELETE FROM
+        cp_pass_whitelist
+        WHERE
+        acc_id = #{accountId}
+        AND
+        cert_no NOT IN
+        <foreach collection="cardList" item="card" open="(" separator="," close=")">
+            #{card}
+        </foreach>
+    </delete>
+    <delete id="deleteAllByAccountId">
+        DELETE FROM
+        cp_pass_whitelist
+        WHERE
+        acc_id = #{accountId}
+    </delete>
+
+    <insert id="insertOrUpdate" parameterType="com.train.system.center.entity.Contact">
+        INSERT INTO
+        cp_pass_whitelist (
+        contact_name,
+        contact_status,
+        cert_no,
+        cert_type,
+        person_type,
+        acc_username,
+        acc_id,
+        acc_status,
+        create_time,
+        count_num,
+        last_use_time,
+        can_delete_date,
+        user_self
+        )
+        VALUES(
+        #{contact.name},
+        #{contact.status},
+        #{contact.cardNo},
+        #{contact.cardType},
+        #{contact.passengerType},
+        #{contact.username},
+        #{contact.accountId},
+        '2',
+        NOW(),
+        #{contact.contactSize},
+        #{contact.lastUseTime},
+        #{contact.canDeleteDate},
+        #{contact.isUserSelf}
+        ) ON duplicate KEY UPDATE
+        update_time = NOW()
+        <if test="contact.name != null and contact.name != '' ">
+            ,contact_name = #{contact.name}
+        </if>
+        <if test="contact.contactSize != null and contact.contactSize != 0">
+            ,count_num = #{contact.contactSize}
+        </if>
+        <if test="contact.lastUseTime != null">
+            ,last_use_time = #{contact.lastUseTime}
+        </if>
+        <if test="contact.canDeleteDate != null">
+            ,can_delete_date = #{contact.canDeleteDate}
+        </if>
+        <if test="contact.isUserSelf != null and contact.isUserSelf != '' ">
+            ,user_self = #{contact.isUserSelf}
+        </if>
+    </insert>
+
+</mapper>

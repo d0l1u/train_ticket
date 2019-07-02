@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.kuyou.train.dao.HistoryMapper">
+
+    <insert id="insertBookLog">
+        INSERT INTO cp_orderinfo_history (order_id, order_optlog, create_time, order_time, opter)
+        VALUES(#{orderId}, #{log}, NOW(), NOW(), #{opt})
+    </insert>
+
+    <insert id="insertChangeLog">
+        INSERT INTO elong_change_logs(order_id, change_id, content, opt_person, create_time, order_time)
+        VALUES (#{orderId}, #{changeId}, #{log}, 'system', NOW(), NOW())
+    </insert>
+
+    <insert id="insertRefundLog">
+        INSERT INTO cp_orderinfo_refund_history (order_id, cp_id, order_optlog, create_time, order_time, opter )
+        VALUES (#{orderId}, #{cpId}, #{log}, NOW(), NOW(), 'system')
+    </insert>
+</mapper>

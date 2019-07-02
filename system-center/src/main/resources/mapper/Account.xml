@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.train.system.center.dao.AccountDao">
+
+    <update id="updateAccount" parameterType="com.train.system.center.entity.Account">
+        UPDATE
+        cp_accountinfo
+        SET
+        option_time = NOW(),
+        opt_person = 'system-center'
+        <if test="account.status != '' and account.status != null">
+            ,acc_status= #{account.status}
+        </if>
+        <if test="account.stopReason != '' and account.stopReason != null">
+            ,stop_reason = #{account.stopReason}
+        </if>
+        <if test="account.contactSize != null and account.contactSize != 0">
+            ,contact_num = #{account.contactSize}
+            ,real_contact_num = #{account.contactSize}
+        </if>
+        WHERE
+        acc_id= #{account.accountId}
+    </update>
+
+    <select id="selectById" resultType="com.train.system.center.entity.Account">
+        SELECT
+            acc_username    AS username,
+            acc_password    AS password,
+            acc_id          AS accountId,
+            acc_status      AS status,
+            stop_reason     AS stopReason
+        FROM
+            cp_accountinfo
+        WHERE
+            acc_id = #{accountId};
+    </select>
+
+    <insert id="insertFilter" parameterType="com.train.system.center.entity.Account">
+        <selectKey resultType="java.lang.Long" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO
+        cp_pass_acc (
+        acc_id,
+        acc_username,
+        acc_password,
+        worker_ext,
+        create_time
+        )
+        VALUES(
+        #{account.accountId},
+        #{account.username},
+        #{account.password},
+        '43.241.221.83',
+        now()
+        )
+    </insert>
+
+</mapper>

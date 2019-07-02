@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kuyou.train.dao.PassengerMapper">
+
+    <delete id="deleteNotExist">
+        DELETE FROM cp_pass_whitelist
+        WHERE
+        acc_id = #{accountId}
+        AND cert_no NOT IN
+        <foreach collection="cardNoList" open="(" close=")" item="cardNo" separator=",">
+            #{cardNo}
+        </foreach>
+    </delete>
+
+    <insert id="insertOrUpdate">
+        INSERT INTO cp_pass_whitelist
+        (
+        contact_name,
+        cert_no,
+        cert_type,
+        acc_id,
+        acc_username,
+        acc_status,
+        create_time,
+        update_time,
+        count_num,
+        can_delete_date,
+        user_self,
+        last_use_time
+        ) VALUES
+        <foreach collection="passengers" item="passenger" separator=",">
+            (
+            #{passenger.name},
+            #{passenger.cardNo},
+            #{passenger.cardType},
+            #{passenger.accountId},
+            #{passenger.username},
+            2,
+            NOW(),
+            NOW(),
+            #{passenger.contactsNum},
+            #{passenger.deleteTime},
+            #{passenger.isUserSelf},
+            <choose>
+                <when test="passenger.lastUseTime == null ">
+                    NOW()
+                </when>
+                <otherwise>
+                    #{passenger.lastUseTime}
+                </otherwise>
+            </choose>
+            )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        update_time = NOW(),
+        contact_name = VALUES(contact_name),
+        count_num = VALUES(count_num),
+        can_delete_date = (
+            CASE WHEN ISNULL(VALUES(can_delete_date)) THEN
+                can_delete_date
+            ELSE
+                VALUES(can_delete_date)
+            END
+        ),
+        last_use_time = (
+            CASE WHEN ISNULL(last_use_time) THEN
+                CASE WHEN ISNULL(VALUES(last_use_time)) THEN
+                    NOW()
+                ELSE
+                    VALUES(last_use_time)
+                END
+            ELSE
+                CASE WHEN ISNULL(VALUES(last_use_time)) THEN
+                    last_use_time
+                ELSE
+                    VALUES(last_use_time)
+                END
+            END
+        )
+    </insert>
+</mapper>

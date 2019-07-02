@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kuyou.train.dao.WorkerMapper">
+    <resultMap id="RT_MAP" type="com.kuyou.train.entity.po.WorkerPo">
+        <result column="worker_id" property="workerId" jdbcType="INTEGER" />
+        <result column="worker_name" property="workerName" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="option_time" property="optionTime" jdbcType="TIMESTAMP" />
+        <result column="worker_type" property="workerType" jdbcType="INTEGER" />
+        <result column="worker_status" property="workerStatus" jdbcType="VARCHAR" />
+        <result column="public_ip" property="publicIp" jdbcType="VARCHAR" />
+        <result column="private_ip" property="privateIp" jdbcType="VARCHAR" />
+        <result column="stop_reason" property="stopReason" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="columns">
+        worker_id,
+        worker_name,
+        create_time,
+        option_time,
+        worker_type,
+        worker_status,
+        public_ip,
+        private_ip,
+        stop_reason
+    </sql>
+
+    <update id="updateByPrimaryKeySelective">
+        UPDATE cp_workerinfo
+        <set>
+            <if test="workerPo.workerName != null">worker_name= #{workerPo.workerName,jdbcType=VARCHAR},</if>
+            <if test="workerPo.workerType != null">worker_type= #{workerPo.workerType,jdbcType=INTEGER},</if>
+            <if test="workerPo.workerStatus != null">worker_status= #{workerPo.workerStatus,jdbcType=VARCHAR},</if>
+            <if test="workerPo.publicIp != null">public_ip= #{workerPo.publicIp,jdbcType=VARCHAR},</if>
+            <if test="workerPo.privateIp != null">private_ip= #{workerPo.privateIp,jdbcType=VARCHAR},</if>
+            <if test="workerPo.stopReason != null">stop_reason= #{workerPo.stopReason,jdbcType=VARCHAR},</if>
+            option_time = NOW()
+        </set>
+        WHERE worker_id = #{workerPo.workerId}
+    </update>
+
+    <select id="selectAllAvailable" resultMap="RT_MAP">
+        SELECT
+        <include refid="columns" />
+        FROM cp_workerinfo
+        WHERE
+        worker_type = #{type}
+        AND
+        worker_status = #{status}
+    </select>
+
+    <select id="selectStuck" resultMap="RT_MAP">
+        SELECT
+        <include refid="columns" />
+        FROM cp_workerinfo
+        WHERE
+        worker_status = #{status}
+        AND
+        #{time} > option_time
+    </select>
+
+    <update id="updateStatusPre">
+        UPDATE
+        cp_workerinfo
+        SET
+        worker_status = #{status},
+        option_time = NOW()
+        WHERE
+        worker_id = #{workerId}
+        AND
+        worker_status = #{preStatus}
+    </update>
+
+    <update id="updateStatus">
+        UPDATE
+        cp_workerinfo
+        SET
+        worker_status = #{status},
+        option_time = NOW()
+        WHERE
+        worker_id = #{workerId}
+    </update>
+
+</mapper>

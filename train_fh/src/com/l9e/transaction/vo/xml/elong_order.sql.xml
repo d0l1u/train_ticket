@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="elongOrder">
+	<!-- 插如订单信息[] -->
+	<insert id="addOrderInfo" parameterClass="com.l9e.transaction.vo.ElongOrderInfo">
+		insert into elong_orderinfo
+		<dynamic prepend="(">
+			order_id,
+			order_status,
+			create_time,
+			<isNotNull prepend="," property="order_name">
+				order_name
+			</isNotNull>
+			<isNotNull prepend="," property="sumTicketPrice">
+				pay_money
+			</isNotNull>
+			<isNotNull prepend="," property="trainNo">
+				train_no
+			</isNotNull>
+			<isNotNull prepend="," property="dptStation">
+				from_city
+			</isNotNull>
+			<isNotNull prepend="," property="arrStation">
+				to_city
+			</isNotNull>
+			<isNotNull prepend="," property="trainStartTime">
+				from_time
+			</isNotNull>
+			<isNotNull prepend="," property="trainEndTime">
+				to_time
+			</isNotNull>
+			<!--<isNotNull prepend="," property="trainStartTime">
+				travel_date
+			</isNotNull>
+			--><isNotNull prepend="," property="sysSeatType">
+				seat_type
+			</isNotNull>
+			<isNotNull prepend="," property="seatType">
+				elong_seat_type
+			</isNotNull>
+			<isNotNull prepend="," property="orderDate">
+				order_time
+			</isNotNull>
+			<isNotNull prepend="," property="ext_field1">
+				ext_field1
+			</isNotNull>
+			<isNotNull prepend="," property="ext_field2">
+				ext_field2
+			</isNotNull>
+			<isNotNull prepend="," property="ticket_num">
+				ticket_num
+			</isNotNull>
+			<isNotNull prepend="," property="channel">
+				channel
+			</isNotNull>
+			<isNotNull prepend="," property="order_type">
+				order_type
+			</isNotNull>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			#orderId:VARCHAR#,
+			#order_status:VARCHAR#,
+			NOW(),
+			<isNotNull prepend="," property="order_name">
+				#order_name:DECIMAL#
+			</isNotNull>
+			<isNotNull prepend="," property="sumTicketPrice">
+				#sumTicketPrice:DECIMAL#
+			</isNotNull>
+			<isNotNull prepend="," property="trainNo">
+				#trainNo:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="dptStation">
+				#dptStation:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="arrStation">
+				#arrStation:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="trainStartTime">
+				#trainStartTime:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="trainEndTime">
+				#trainEndTime:VARCHAR#
+			</isNotNull>
+			<!--<isNotNull prepend="," property="trainStartTime">
+				STR_TO_DATE(#trainStartTime:VARCHAR#,'%Y-%m-%d')
+			</isNotNull>
+			--><isNotNull prepend="," property="sysSeatType">
+				#sysSeatType:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="seatType">
+				#seatType:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="orderDate">
+				#orderDate:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="ext_field1">
+				#ext_field1:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="ext_field2">
+				#ext_field2:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="ticket_num">
+				#ticket_num:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="channel">
+				#channel:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="order_type">
+				#order_type:VARCHAR#
+			</isNotNull>
+			)
+		</dynamic>
+	</insert>
+	<!-- 插入车票信息[] -->
+	<insert id="addPassengerInfo" parameterClass="com.l9e.transaction.vo.ElongPassengerInfo">
+		insert into elong_orderinfo_cp
+		<dynamic prepend="(">
+			cp_id,
+			<isNotNull prepend="," property="order_id">
+				order_id
+			</isNotNull>
+			<isNotNull prepend="," property="name">
+				user_name
+			</isNotNull>
+			<isNotNull prepend="," property="sysTicketType">
+				ticket_type
+			</isNotNull>
+			<isNotNull prepend="," property="ticketType">
+				elong_ticket_type
+			</isNotNull>
+			<isNotNull prepend="," property="sysCertType">
+				ids_type
+			</isNotNull>
+			<isNotNull prepend="," property="certType">
+				elong_ids_type
+			</isNotNull>
+			<isNotNull prepend="," property="certNo">
+				user_ids
+			</isNotNull>
+			<isNotNull prepend="," property="telephone">
+				telephone
+			</isNotNull>
+				,create_time
+			<isNotNull prepend="," property="pay_money">
+				pay_money
+			</isNotNull>
+			<isNotNull prepend="," property="seat_type">
+				seat_type
+			</isNotNull>
+			<isNotNull prepend="," property="elong_seat_type">
+				elong_seat_type
+			</isNotNull>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			#orderItemId:VARCHAR#,
+			<isNotNull prepend="," property="order_id">
+				#order_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="name">
+				#name:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="sysTicketType">
+				#sysTicketType:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="ticketType">
+				#ticketType:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="sysCertType">
+				#sysCertType:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="certType">
+				#certType:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="certNo">
+				#certNo:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="telephone">
+				#telephone:VARCHAR#
+			</isNotNull>
+				,NOW()
+			<isNotNull prepend="," property="pay_money">
+				#pay_money:DECIMAL#
+			</isNotNull>
+			<isNotNull prepend="," property="seat_type">
+				#seat_type:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="elong_seat_type">
+				#elong_seat_type:VARCHAR#
+			</isNotNull>
+			)
+		</dynamic>
+	</insert>
+	<!-- 依据订单号查询 订单数目 -->
+	<select id="queryOrderCount" parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		SELECT count(1) from elong_orderinfo
+			WHERE order_id=#order_id:VARCHAR#
+	</select>
+	<!-- 插入订单操作日记 -->
+	<insert id="addLogs" parameterClass="com.l9e.transaction.vo.ElongOrderLogsVo">
+		insert into elong_orderinfo_logs
+		<dynamic prepend="(">
+			order_id,create_time,
+			<isNotNull prepend="," property="content">
+				content
+			</isNotNull>
+			<isNotNull prepend="," property="opt_person">
+				opt_person
+			</isNotNull>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			#order_id:VARCHAR#,now(),
+			<isNotNull prepend="," property="content">
+				#content:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="opt_person">
+				#opt_person:VARCHAR#
+			</isNotNull>
+				)
+		</dynamic>
+	</insert>
+	<insert id="insertRefundOrder" parameterClass="java.util.HashMap">
+		insert into elong_orderinfo_refundstream 
+			<dynamic prepend="(">
+			refund_type,order_id,cp_id,refund_seq,create_time,refund_money,channel
+			<isNotNull  property="refund_status">
+				,refund_status
+			</isNotNull>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			'11',#order_id:VARCHAR#,#cp_id:VARCHAR#,#refund_seq:VARCHAR#,now(),#refund_money:VARCHAR#,#channel:VARCHAR#
+				<isNotNull  property="refund_status">
+				,#refund_status:VARCHAR#
+				</isNotNull>
+				)
+		</dynamic>
+	</insert>
+	<update id="updateOrderStatus" parameterClass="java.util.HashMap">
+		update elong_orderinfo set order_status=#order_status:VARCHAR# where order_id=#order_id:VARCHAR#
+	</update>
+	
+	<select id="queryOrderInfo" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		select order_id,order_name,order_level,pay_money,buy_money,order_status,notice_status,
+		DATE_FORMAT(order_time, '%Y-%m-%d %H:%i:%s' ) AS order_time,
+		DATE_FORMAT(create_time, '%Y-%m-%d %H:%i:%s' ) AS create_time,
+		DATE_FORMAT(out_ticket_time, '%Y-%m-%d %H:%i:%s' ) AS out_ticket_time,
+		out_ticket_billno,out_fail_reason,train_no,from_city,to_city,
+		DATE_FORMAT(from_time, '%Y-%m-%d %H:%i:%s' ) AS from_time,
+		DATE_FORMAT(to_time, '%Y-%m-%d %H:%i:%s' ) AS to_time,
+		DATE_FORMAT(pay_limit_time, '%Y-%m-%d %H:%i:%s' ) AS pay_limit_time,
+		travel_date,elong_seat_type,seat_type,opt_ren,
+		opt_time,passenger_reason,ext_field1,ext_field2,ticket_num,channel,order_type
+		 from elong_orderinfo where order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 查询某订单下的关联车票信息 -->
+	<select id="querySendOrderCpsInfo" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		select  * from elong_orderinfo_cp where order_id=#order_id:VARCHAR#
+	</select>
+	<!-- 更新cp 车票信息表 -->
+	<update id="updateCpOrderInfo" parameterClass="java.util.Map">
+		update elong_orderinfo_cp set
+		<isNotEmpty property="buy_money">
+				buy_money=#buy_money:VARCHAR#,
+		</isNotEmpty>
+		<isNotEmpty property="train_box">
+				train_box=#train_box:VARCHAR#,
+		</isNotEmpty>
+		<isNotEmpty property="seat_no">
+				seat_no=#seat_no:VARCHAR#,
+		</isNotEmpty>
+		<isNotEmpty property="seat_type">
+				seat_type=#seat_type:VARCHAR#,
+		</isNotEmpty>
+		<isNotEmpty property="elong_seat_type">
+				elong_seat_type=#elong_seat_type:VARCHAR#,
+		</isNotEmpty>
+		<isNotEmpty property="out_ticket_billno">
+				out_ticket_billno=#out_ticket_billno:VARCHAR#,
+		</isNotEmpty>
+		modify_time=now()
+		where order_id=#order_id:VARCHAR# and cp_id=#cp_id:VARCHAR#
+	</update>
+	
+	<!-- 更新elong订单表订单信息 -->
+	<update id="updateOrderInfo" parameterClass="java.util.Map">
+		update  elong_orderinfo set
+			<dynamic >
+				<isNotEmpty property="buy_money">
+				buy_money=#buy_money:VARCHAR#,
+				</isNotEmpty>
+				<isNotEmpty property="out_ticket_time">
+				out_ticket_time=now(),
+				</isNotEmpty>
+				<isNotEmpty property="out_ticket_billno">
+				out_ticket_billno=#out_ticket_billno:VARCHAR#,
+				</isNotEmpty>
+				<isNotEmpty property="out_fail_reason">
+				out_fail_reason=#out_fail_reason:VARCHAR#,
+				</isNotEmpty>
+				<isNotEmpty property="passenger_reason">
+				passenger_reason=#passenger_reason:VARCHAR#,
+				</isNotEmpty>
+			</dynamic>
+			order_status=#order_status:VARCHAR#
+			where order_id=#order_id:VARCHAR#
+	</update>
+	
+	
+	<!--跟新退款表通知信息-->
+	<update id="updateRefundStream" parameterClass="java.util.Map">
+	update elong_orderinfo_refundstream set order_id=#order_id:VARCHAR#,verify_time=NOW()
+			<isNotNull property="notify_time">
+				,notify_time=now()
+			</isNotNull>
+			<isNotNull property="notify_num">
+				,notify_num=#notify_num:VARCHAR#
+			</isNotNull>
+			<isNotNull property="notify_status">
+				,notify_status=#notify_status:VARCHAR#
+			</isNotNull>
+			<isNotNull property="notify_finish_time">
+				,notify_finish_time=now()
+			</isNotNull>
+			where order_id=#order_id:VARCHAR# AND cp_id=#cp_id:VARCHAR# AND refund_type='11'
+	</update>
+	
+	<select id="queryOrderCpInfo" parameterClass="java.lang.String" resultClass="com.l9e.transaction.vo.ElongOrderInfoCp">
+		select * from elong_orderinfo_cp where order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 查询退款状态 -->
+	<select id="queryRefundStatus" parameterClass="java.util.Map" resultClass="java.lang.String">
+		select refund_status from elong_orderinfo_refundstream where order_id=#order_id:VARCHAR# and cp_id=#cp_id:VARCHAR#
+		and refund_type=#refund_type:VARCHAR#
+		order by create_time desc limit 0,1
+	</select>
+	
+	
+	<select id="queryrefundInfo" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select * from  elong_orderinfo_refundstream where order_id=#order_id:VARCHAR# and cp_id=#cp_id:VARCHAR#
+	</select>
+	
+	<update id="updateRefundStatus" parameterClass="java.util.Map">
+		update elong_orderinfo_refundstream set  refund_status='00' , notify_num=0 , notify_status='00'
+			where order_id=#order_id:VARCHAR# AND cp_id=#cp_id:VARCHAR#
+	</update>
+	
+	<update id="updateOrderNoticeStatus" parameterClass="java.util.Map">
+	update elong_orderinfo set notice_status=#notice_status:VARCHAR#
+			where order_id=#order_id:VARCHAR# AND (notice_status='00' OR notice_status='11' OR notice_status='33')
+	</update>
+	<select id="queryCpPayMoney" parameterClass="java.util.Map" resultClass="java.lang.String">
+	select buy_money from elong_orderinfo_cp where order_id=#order_id:VARCHAR#  and cp_id=#cp_id:VARCHAR#
+	</select>
+	
+	<select id="getOfflineRefundRefundList" resultClass="java.util.HashMap">
+		select * from elong_orderinfo_refundstream e  where e.channel='elong' and ((e.refund_type='22'  and e.refund_status='71') or (e.refund_type='33'  and e.refund_status='81')) and
+		(e.notify_status='00' OR (e.notify_status='11' AND 
+		e.notify_time <![CDATA[<=]]> DATE_SUB(NOW(),INTERVAL 1 MINUTE)))
+		AND e.notify_num <![CDATA[<]]> 10
+		limit 0,10
+	</select>
+	
+	<select id="getTcOfflineRefundRefundList" resultClass="java.util.HashMap">
+		select * from elong_orderinfo_refundstream e where e.channel='tongcheng' and ((e.refund_type='22'  and e.refund_status='71') or (e.refund_type='33'  and e.refund_status='81') or (e.refund_type='44'  and (e.refund_status='71' or e.refund_status='22'))) and
+		(e.notify_status='00' OR (e.notify_status='11' AND 
+		e.notify_time <![CDATA[<=]]> DATE_SUB(NOW(),INTERVAL 1 MINUTE)))
+		AND e.notify_num <![CDATA[<]]> 10
+		limit 0,10
+	</select>
+	
+	<update id="updateOfflineNoticeStatus" parameterClass="java.util.HashMap">
+		update  elong_orderinfo_refundstream set 
+		notify_num=notify_num+1,notify_time=now(),verify_time=now()
+		<isNotNull property="notify_status">
+				,notify_status=#notify_status:VARCHAR# 
+		</isNotNull>
+		<isNotNull property="notify_finish_time">
+				,notify_finish_time=now()
+		</isNotNull>
+		<isNotNull property="refund_status">
+				,refund_status='11'
+		</isNotNull>
+		 where order_id=#order_id:VARCHAR# and cp_id=#cp_id:VARCHAR# and (refund_type='22' or refund_type='33' or refund_type='44')
+		 and stream_id=#stream_id:VARCHAR#
+	</update>
+	
+	
+	<!-- 增加线下退票 -->
+    <insert id="addOfflineRefund" parameterClass="java.util.HashMap" >
+       INSERT INTO elong_orderinfo_refundstream
+       <dynamic prepend="(">
+           <isNotEmpty  property="orderId">
+              order_id,
+           </isNotEmpty>
+           <isNotEmpty  property="refund_type">
+              refund_type,
+           </isNotEmpty>
+           <isNotEmpty property="orderItemId">
+              cp_id,
+           </isNotEmpty>
+           <isNotEmpty  property="refund_seq">
+              refund_seq,
+           </isNotEmpty>
+           <isNotEmpty  property="refund_money">
+              refund_money,
+           </isNotEmpty>
+           <isNotEmpty  property="actual_refund_money">
+              actual_refund_money,
+           </isNotEmpty>
+           <isNotEmpty  property="user_remark">
+              user_remark,
+           </isNotEmpty>
+           <isNotEmpty  property="our_remark">
+              our_remark,
+           </isNotEmpty>
+           <isNotEmpty  property="refund_12306_seq">
+              refund_12306_seq,
+           </isNotEmpty>
+           <isNotEmpty  property="refund_status">
+              refund_status,
+           </isNotEmpty>
+           <isNotEmpty  property="opt_person">
+              opt_person,
+           </isNotEmpty>
+            <isNotEmpty  property="channel">
+              channel,
+           </isNotEmpty>
+           create_time
+           )
+       </dynamic>
+       values
+       <dynamic prepend="(">
+           <isNotEmpty  property="orderId">
+              #orderId#,
+           </isNotEmpty>
+           <isNotEmpty  property="refund_type">
+              #refund_type#,
+           </isNotEmpty>
+           <isNotEmpty  property="orderItemId">
+              #orderItemId#,
+           </isNotEmpty>
+           <isNotEmpty  property="refund_seq">
+              #refund_seq#,
+           </isNotEmpty>
+           <isNotEmpty  property="refund_money">
+              #refund_money#,
+           </isNotEmpty>
+           <isNotEmpty  property="actual_refund_money">
+              #actual_refund_money#,
+           </isNotEmpty>
+            <isNotEmpty  property="user_remark">
+              #user_remark#,
+           </isNotEmpty>
+           <isNotEmpty  property="our_remark">
+              #our_remark#,
+           </isNotEmpty>
+           <isNotEmpty  property="refund_12306_seq">
+              #refund_12306_seq#,
+           </isNotEmpty>
+           <isNotEmpty  property="refund_status">
+              #refund_status#,
+           </isNotEmpty>
+           <isNotEmpty  property="opt_person">
+              #opt_person#,
+           </isNotEmpty>
+             <isNotEmpty  property="channel">
+              #channel#,
+           </isNotEmpty>
+           now()
+           )
+       </dynamic>
+	</insert>
+</sqlMap>

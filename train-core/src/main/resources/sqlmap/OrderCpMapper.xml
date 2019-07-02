@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kuyou.train.dao.OrderCpMapper">
+    <resultMap id="RT_MAP" type="com.kuyou.train.entity.po.OrderCpPo">
+        <id column="cp_id" property="cpId" jdbcType="VARCHAR" />
+        <result column="order_id" property="orderId" jdbcType="VARCHAR" />
+        <result column="user_name" property="userName" jdbcType="VARCHAR" />
+        <result column="ticket_type" property="ticketType" jdbcType="INTEGER" />
+        <result column="cert_type" property="certType" jdbcType="INTEGER" />
+        <result column="cert_no" property="certNo" jdbcType="VARCHAR" />
+        <result column="telephone" property="telephone" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="VARCHAR" />
+        <result column="pay_money" property="payMoney" jdbcType="VARCHAR" />
+        <result column="buy_money" property="buyMoney" jdbcType="VARCHAR" />
+        <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+        <result column="seat_type" property="seatType" jdbcType="INTEGER" />
+        <result column="train_box" property="trainBox" jdbcType="VARCHAR" />
+        <result column="seat_no" property="seatNo" jdbcType="VARCHAR" />
+        <result column="check_status" property="checkStatus" jdbcType="VARCHAR" />
+        <result column="ctrip_bx_price" property="ctripBxPrice" jdbcType="VARCHAR" />
+        <result column="is_white_list" property="isWhiteList" jdbcType="TINYINT" />
+        <result column="sub_outTicket_billno" property="subOutticketBillno" jdbcType="VARCHAR" />
+        <result column="valid_date_end" property="validDateEnd" jdbcType="TIMESTAMP" />
+        <result column="borth_date" property="borthDate" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <resultMap id="STU_MAP" type="com.kuyou.train.entity.po.OrderStudentPo">
+        <id column="cp_id" property="cpId" jdbcType="VARCHAR" />
+        <result column="province_name" property="provinceName" jdbcType="VARCHAR" />
+        <result column="province_code" property="provinceCode" jdbcType="VARCHAR" />
+        <result column="school_code" property="schoolName" jdbcType="VARCHAR" />
+        <result column="school_name" property="schoolCode" jdbcType="VARCHAR" />
+        <result column="student_no" property="studentNo" jdbcType="VARCHAR" />
+        <result column="school_system" property="system" jdbcType="VARCHAR" />
+        <result column="enter_year" property="enterYear" jdbcType="VARCHAR" />
+        <result column="preference_from_station_name" property="stuFromStationName" jdbcType="VARCHAR" />
+        <result column="preference_from_station_code" property="stuFromStationCode" jdbcType="VARCHAR" />
+        <result column="preference_to_station_name" property="stuToStationName" jdbcType="VARCHAR" />
+        <result column="preference_to_station_code" property="stuToStationCode" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="columns">
+        cp_id, order_id, user_name, ticket_type, cert_type, cert_no, telephone, create_time, pay_money, buy_money, modify_time,
+        seat_type, train_box, seat_no, check_status, ctrip_bx_price, is_white_list, sub_outticket_billno, valid_date_end, borth_date
+    </sql>
+
+    <sql id="stu_columns">
+        province_name, province_code, school_code, school_name, student_no, school_system, enter_year, preference_from_station_name,
+        preference_from_station_code, preference_to_station_name, preference_to_station_code
+    </sql>
+
+    <select id="selectByCpId" resultMap="RT_MAP">
+        SELECT
+        <include refid="columns" />
+        FROM cp_orderinfo_cp
+        WHERE cp_id = #{cpId}
+    </select>
+
+    <select id="selectSeqByOrderId" resultType="java.lang.String">
+        SELECT
+            sub_outTicket_billno
+        FROM
+        cp_orderinfo_cp
+        WHERE
+            order_id = #{orderId}
+    </select>
+
+    <select id="selectByOrderId" resultMap="RT_MAP">
+        SELECT
+        <include refid="columns" />
+        FROM cp_orderinfo_cp
+        WHERE order_id = #{orderId}
+    </select>
+
+    <select id="selectStudent" resultMap="STU_MAP">
+        SELECT
+        <include refid="stu_columns" />
+        FROM
+        cp_orderinfo_student
+        WHERE cp_id = #{cpId}
+    </select>
+
+    <update id="updateByCpid">
+        UPDATE cp_orderinfo_cp
+        <set>
+            modify_time = NOW()
+            <if test="cp.buyMoney != null">,buy_money= #{cp.buyMoney,jdbcType=VARCHAR}</if>
+            <if test="cp.trainBox != null">,train_box= #{cp.trainBox,jdbcType=VARCHAR}</if>
+            <if test="cp.seatNo != null">,seat_no= #{cp.seatNo,jdbcType=VARCHAR}</if>
+            <if test="cp.subOutticketBillno != null">,sub_outticket_billno= #{cp.subOutticketBillno,jdbcType=VARCHAR}</if>
+        </set>
+        WHERE cp_id = #{cpId}
+    </update>
+
+</mapper>

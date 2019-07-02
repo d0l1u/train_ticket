@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.train.system.center.dao.ChangeDao">
+
+    <select id="queryWaitChange" resultType="com.train.system.center.entity.Change">
+		SELECT
+			MAX(change_id)			AS changeId,
+			order_id				AS orderId,
+			my_order_id				AS myOrderId,
+			supplier_order_id		AS supplierOrderId,
+			out_ticket_billno		AS sequence,
+			account_id				AS accountId,
+			change_status			AS changeStatus,
+			train_no				AS trainCode,
+			change_train_no			AS newTrainCode,
+			travel_time				AS departureDate,
+			change_travel_time		AS newDepartureDate,
+			from_city				AS newFromStationName,
+			to_city					AS newToStationName,
+			ischangeto				AS isChangeTo,
+			hasSeat					AS hasSeat,
+			alter_pay_type			AS payType,
+			pay_limit_time			AS payLimitTime,
+			chooseSeats				AS chooseSeats,
+			supplier_type			AS supplierType,
+			serialnumber			AS serialnumber
+		FROM
+			elong_orderinfo_change
+		WHERE
+			change_status = '10'
+		AND supplier_type = '01'
+		GROUP BY
+			order_id
+		ORDER BY
+			from_time ASC
+		LIMIT #{limit}
+    </select>
+
+    <select id="queryWaitUpadate" resultType="com.train.system.center.entity.Change">
+		SELECT
+			MAX(change_id)			AS changeId,
+			order_id				AS orderId,
+			my_order_id				AS myOrderId,
+			supplier_order_id		AS supplierOrderId,
+			out_ticket_billno		AS sequence,
+			account_id				AS accountId,
+			change_status			AS changeStatus,
+			train_no				AS trainCode,
+			change_train_no			AS newTrainCode,
+			travel_time				AS departureDate,
+			change_travel_time		AS newDepartureDate,
+			from_city				AS newFromStationName,
+			to_city					AS newToStationName,
+			ischangeto				AS isChangeTo,
+			hasSeat					AS hasSeat,
+			alter_pay_type			AS payType,
+			pay_limit_time			AS payLimitTime,
+			chooseSeats				AS chooseSeats,
+			supplier_type			AS supplierType,
+			serialnumber			AS serialnumber
+		FROM
+			elong_orderinfo_change
+		WHERE
+			change_status = '11'
+		GROUP BY
+			order_id
+		ORDER BY
+			from_time ASC
+		LIMIT #{limit}
+    </select>
+    <select id="queryWaitCancel" resultType="com.train.system.center.entity.Change">
+		SELECT
+			MAX(change_id)			AS changeId,
+			order_id				AS orderId,
+			my_order_id				AS myOrderId,
+			supplier_order_id		AS supplierOrderId,
+			out_ticket_billno		AS sequence,
+			account_id				AS accountId,
+			change_status			AS changeStatus,
+			train_no				AS trainCode,
+			change_train_no			AS newTrainCode,
+			travel_time				AS departureDate,
+			change_travel_time		AS newDepartureDate,
+			from_city				AS newFromStationName,
+			to_city					AS newToStationName,
+			ischangeto				AS isChangeTo,
+			hasSeat					AS hasSeat,
+			alter_pay_type			AS payType,
+			pay_limit_time			AS payLimitTime,
+			chooseSeats				AS chooseSeats,
+			supplier_type			AS supplierType,
+			serialnumber			AS serialnumber
+		FROM
+			elong_orderinfo_change
+		WHERE
+			change_status = '21'
+		AND supplier_type = '01'
+		GROUP BY
+			order_id
+		ORDER BY
+			from_time ASC
+		LIMIT #{limit}
+    </select>
+    
+    
+    <select id="queryWaitPay" resultType="com.train.system.center.entity.Change">
+		SELECT
+			MAX(change_id)			AS changeId,
+			order_id				AS orderId,
+			my_order_id				AS myOrderId,
+			supplier_order_id		AS supplierOrderId,
+			out_ticket_billno		AS sequence,
+			account_id				AS accountId,
+			change_status			AS changeStatus,
+			train_no				AS trainCode,
+			change_train_no			AS newTrainCode,
+			travel_time				AS departureDate,
+			change_travel_time		AS newDepartureDate,
+			from_city				AS newFromStationName,
+			to_city					AS newToStationName,
+			ischangeto				AS isChangeTo,
+			hasSeat					AS hasSeat,
+			alter_pay_type			AS payType,
+			pay_limit_time			AS payLimitTime,
+			chooseSeats				AS chooseSeats,
+			supplier_type			AS supplierType,
+			serialnumber			AS serialnumber
+		FROM
+			elong_orderinfo_change
+		WHERE
+			change_status = '31'
+		AND supplier_type = '01'
+		GROUP BY
+			order_id
+		ORDER BY
+			from_time ASC
+		LIMIT #{limit}
+    </select>
+    
+    <select id="queryByChangeId" resultType="com.train.system.center.entity.Change">
+		SELECT
+			change_id				AS changeId,
+			order_id				AS orderId,
+			my_order_id				AS myOrderId,
+			supplier_order_id		AS supplierOrderId,
+			out_ticket_billno		AS sequence,
+			account_id				AS accountId,
+			change_status			AS changeStatus,
+			train_no				AS trainCode,
+			change_train_no			AS newTrainCode,
+			travel_time				AS departureDate,
+			change_travel_time		AS newDepartureDate,
+			from_city				AS newFromStationName,
+			to_city					AS newToStationName,
+			ischangeto				AS isChangeTo,
+			hasSeat					AS hasSeat,
+			alter_pay_type			AS payType,
+			pay_limit_time			AS payLimitTime,
+			chooseSeats				AS chooseSeats,
+			supplier_type			AS supplierType,
+			serialnumber			AS serialnumber
+		FROM
+			elong_orderinfo_change
+		WHERE
+			change_id = #{changeId}
+    </select>
+    
+    
+    <update id="updateOrder">
+    	UPDATE 
+    		elong_orderinfo_change
+    	SET
+    		option_time = NOW()
+    		<if test="change.myOrderId != '' and change.myOrderId != null">
+	            ,my_order_id = #{change.myOrderId}
+	        </if>
+	        <if test="change.supplierOrderId != '' and change.supplierOrderId != null">
+	            ,supplier_order_id = #{change.supplierOrderId}
+	        </if>
+    		<if test="change.changeStatus != '' and change.changeStatus != null">
+	            ,change_status = #{change.changeStatus}
+	        </if>
+    		<if test="change.newDepartureTime != null">
+	            ,change_from_time = #{change.newDepartureTime}
+	        </if>
+    		<if test="change.bookingTime != null">
+	            ,book_ticket_time = #{change.bookingTime}
+	        </if>
+    		<if test="change.newArrivalTime != null">
+	            ,change_to_time = #{change.newArrivalTime}
+	        </if>
+    		<if test="change.failReason != '' and change.failReason != null">
+	            ,fail_reason = #{change.failReason}
+	        </if>
+    		<if test="change.payType != '' and change.payType != null">
+	            ,fail_reason = #{change.payType}
+	        </if>
+    		<if test="change.payLimitTime != null">
+	            ,pay_limit_time = #{change.payLimitTime}
+	        </if>
+    		<if test="change.supplierType != '' and change.supplierType != null">
+	            ,supplier_type = #{change.supplierType}
+	        </if>
+			<if test="change.serialnumber != '' and change.serialnumber != null">
+				,serialnumber = #{change.serialnumber}
+			</if>
+    	WHERE
+    		change_id = #{change.changeId}
+    		<if test="change.orderId != '' and change.orderId != null">
+	           	AND order_id = #{change.orderId}
+	        </if> 
+	        <if test="status != '' and status != null">
+	           	AND change_status = #{status}
+	        </if>
+    </update>
+    
+
+
+</mapper>

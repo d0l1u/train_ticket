@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.train.system.center.dao.RefundDao">
+
+    <select id="queryListWaitRefund" resultType="com.train.system.center.entity.Refund">
+        SELECT
+            cr.refund_seq				AS refundSeq,
+            cr.order_id					AS orderId,
+            cr.account_name				AS accountUsername,
+            cr.account_pwd				AS accountPassword,
+            cr.cp_id					AS cpId,
+            cr.buy_money				AS ticketType,
+            cr.user_name         		AS name,
+            cr.refund_money				AS refundMoney,
+            cr.refund_12306_money		AS refundKyfwMoney,
+            cr.refund_percent 			AS refundPercent,
+            cr.order_status				AS orderStatus,
+            cr.out_ticket_billno		AS sequence,
+            cr.train_no					AS trainCode,
+            cr.sub_out_ticket_billno	AS subSequence,
+            cr.from_station				AS fromStationName,
+            cr.arrive_station       	AS arriveStationName,
+            cr.from_time       			AS fromTime,
+            cr.supplier_type         	AS supplierType,
+            cr.travel_time         		AS travelTime,
+            cr.refuse_reason         	AS refuseReason,
+            cr.seat_type         		AS seatType,
+            cr.refund_12306_seq         AS refundKyfwSeq,
+            cr.train_box         		AS trainBox,
+            cr.seat_no         			AS seatNo,
+            cr.ids_type         		AS cardType,
+            cr.user_ids         		AS cardNo,
+            cr.error_info         		AS errorInfo,
+            cr.channel         			AS channel,
+            cr.return_optlog         	AS returnLog,
+            cr.old_refund_seq         	AS oldRefundSeq,
+            cr.refund_type         		AS refundType
+        FROM
+            cp_orderinfo_refund cr
+        WHERE
+            cr.order_status = '04'
+        AND 
+        	cr.supplier_type = '01'
+        ORDER BY cr.create_time ASC
+        LIMIT #{limit}
+    </select>
+    
+    <select id="queryByOrderIdAndSequence" resultType="com.train.system.center.entity.Refund">
+        SELECT
+            cr.refund_seq				AS refundSeq,
+            cr.order_id					AS orderId,
+            cr.account_name				AS accountUsername,
+            cr.account_pwd				AS accountPassword,
+            cr.cp_id					AS cpId,
+            cr.buy_money				AS ticketType,
+            cr.user_name         		AS name,
+            cr.refund_money				AS refundMoney,
+            cr.refund_12306_money		AS refundKyfwMoney,
+            cr.refund_percent 			AS refundPercent,
+            cr.order_status				AS orderStatus,
+            cr.out_ticket_billno		AS sequence,
+            cr.train_no					AS trainCode,
+            cr.sub_out_ticket_billno	AS subSequence,
+            cr.from_station				AS fromStationName,
+            cr.arrive_station       	AS arriveStationName,
+            cr.from_time       			AS fromTime,
+            cr.supplier_type         	AS supplierType,
+            cr.travel_time         		AS travelTime,
+            cr.refuse_reason         	AS refuseReason,
+            cr.seat_type         		AS seatType,
+            cr.refund_12306_seq         AS refundKyfwSeq,
+            cr.train_box         		AS trainBox,
+            cr.seat_no         			AS seatNo,
+            cr.ids_type         		AS cardType,
+            cr.user_ids         		AS cardNo,
+            cr.error_info         		AS errorInfo,
+            cr.channel         			AS channel,
+            cr.return_optlog         	AS returnLog,
+            cr.old_refund_seq         	AS oldRefundSeq,
+            cr.refund_type         		AS refundType
+        FROM
+            cp_orderinfo_refund cr
+        WHERE
+            cr.order_id = #{orderId}
+            AND cr.sub_out_ticket_billno = #{subSequence}
+        LIMIT 1
+    </select>
+    
+
+    <update id="updateById" >
+        UPDATE
+        cp_orderinfo_refund
+        SET
+            option_time = NOW(),
+            alter_myself = 0
+            <if test=" refund.refundKyfwMoney != null ">
+                ,refund_12306_money = #{refund.refundKyfwMoney}
+            </if>
+            <if test=" refund.refundKyfwSeq != null and refund.refundKyfwSeq != '' ">
+                ,refund_12306_seq = #{refund.refundKyfwSeq}
+            </if>
+            <if test=" refund.refundKyfwMoney != null ">
+                ,refund_money = #{refund.refundKyfwMoney}
+            </if>
+            <if test=" refund.subSequence != null and refund.subSequence != '' ">
+                ,sub_out_ticket_billno = #{refund.subSequence}
+            </if>
+            <if test=" refund.orderStatus != null and refund.orderStatus != '' ">
+                ,order_status = #{refund.orderStatus }
+            </if>
+        WHERE
+            cp_id = #{refund.cpId}
+           	<if test="whereOrderStatus != null and whereOrderStatus != ''">
+            	AND order_status = #{whereOrderStatus}
+        	</if>
+    </update>
+    
+    <update id="updateBySequence" >
+        UPDATE
+        cp_orderinfo_refund
+        SET
+            option_time = NOW(),
+            alter_myself = 0
+            <if test=" refund.refundKyfwMoney != null ">
+                ,refund_12306_money = #{refund.refundKyfwMoney}
+            </if>
+            <if test=" refund.refundKyfwSeq != null and refund.refundKyfwSeq != '' ">
+                ,refund_12306_seq = #{refund.refundKyfwSeq}
+            </if>
+            <if test=" refund.refundKyfwMoney != null ">
+                ,refund_money = #{refund.refundKyfwMoney}
+            </if>
+            <if test=" refund.subSequence != null and refund.subSequence != '' ">
+                ,sub_out_ticket_billno = #{refund.subSequence}
+            </if>
+            <if test=" refund.orderStatus != null and refund.orderStatus != '' ">
+                ,order_status = #{refund.orderStatus }
+            </if>
+        WHERE
+            sub_out_ticket_billno = #{refund.subSequence}
+           	<if test="whereOrderStatus != null and whereOrderStatus != ''">
+            	AND order_status = #{whereOrderStatus}
+        	</if>
+        	<if test="refund.cpId != null and refund.cpId != ''">
+            	AND cp_id = #{refund.cpId}
+        	</if>
+    </update>
+    
+    
+    <select id="queryByCpId" resultType="com.train.system.center.entity.Passenger">
+        SELECT
+            cc.order_id                           AS orderId,
+            cc.cp_id                              AS passengerNo,
+            cc.user_name                          AS name,
+            cc.ticket_type                        AS ticketType,
+            cc.cert_type                          AS cardType,
+            cc.cert_no                            AS cardNo,
+            cc.seat_type                          AS seatType,
+            cs.province_name                      AS provinceName,
+            cs.province_code                      AS provinceCode,
+            cs.school_name                        AS schoolName,
+            cs.school_code                        AS schoolCode,
+            cs.student_no                         AS studentNo,
+            cs.school_system                      AS system,
+            cs.enter_year                         AS enterYear,
+            cs.preference_from_station_name       AS limitBeginName,
+            cs.preference_from_station_code       AS limitBeginCode,
+            cs.preference_to_station_name         AS limitEndName,
+            cs.preference_to_station_code         AS limitEndCode
+        FROM
+            cp_orderinfo_cp cc
+        LEFT JOIN
+            cp_orderinfo_student cs ON cc.cp_id = cs.cp_id
+        WHERE
+            cc.cp_id = #{cpId}
+    </select>
+    
+    <insert id="insertBatchUnder" >
+		INSERT INTO
+			under_refund
+			(
+				cp_id, 
+				my_order_id, 
+				supplier_order_id, 
+				order_id, 
+				name, 
+				card_no, 
+				card_type, 
+				sub_sequence,
+				create_time, 
+				refund_time,
+				status,
+				refund_money,
+				supplier_type
+			)
+		VALUES
+			<foreach collection="refundList" item="refund" open="(" close=")" separator=",">
+				#{refund.cpId},
+				#{refund.myOrderId},
+				#{refund.supplierOrderId},
+				#{refund.orderId},
+				#{refund.name},
+				#{refund.cardNo},
+				#{refund.cardType},
+				#{refund.subSequence},
+				NOW(),
+				#{refund.verifyTime},
+				#{refund.orderStatus},
+				#{refund.refundKyfwMoney},
+				#{refund.supplierType}
+			</foreach>
+    </insert>
+
+</mapper>

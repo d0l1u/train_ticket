@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.train.system.center.dao.OrderDao">
+    <!--可以重用的SQL块，也可以被其他语句引用-->
+    <select id="queryListWaitBooking" parameterType="java.lang.Integer" resultType="com.train.system.center.entity.Order">
+        SELECT
+            co.my_order_id      AS myOrderId,
+            co.supplier_order_id AS supplierOrderId,
+            co.order_id         AS orderId,
+            co.order_status     AS orderStatus,
+            co.pay_money        AS payMoney,
+            co.account_id       AS accountId,
+            co.channel          AS channel,
+            co.is_pay           AS isPay,
+            co.account_from_way AS accountFromWay,
+            co.train_no         AS trainCode,
+            co.from_city        AS fromStationName,
+            co.to_city          AS toStationName,
+            co.from_3c          AS fromStationCode,
+            co.to_3c            AS toStationCode,
+            co.travel_time      AS departureDate,
+            co.ext_seattype     AS extraSeatType,
+            co.seat_detail_type AS chooseBed,
+            co.choose_seats     AS chooseSeat,
+            co.resend_identify  AS resendType,
+            co.seat_type        AS seatType,
+            co.jdbook_resendnum AS resendNum,
+            co.supplier_type    AS supplierType,
+            co.can_switch_supplier    AS canSwitchSupplier,
+            co.option_time    AS modifyTime
+        FROM
+            cp_orderinfo co
+        WHERE
+             co.order_status = '00'
+             OR co.order_status = '01'
+             OR (
+                 co.order_status = '11'
+                 AND
+                 DATE_SUB(NOW(), INTERVAL 5 MINUTE) > co.option_time
+             )
+        ORDER BY co.create_time ASC
+        LIMIT #{limit}
+    </select>
+
+
+    <select id="queryListWaitCancel" parameterType="java.lang.Integer" resultType="com.train.system.center.entity.Order">
+        SELECT
+            co.my_order_id      AS myOrderId,
+            co.supplier_order_id AS supplierOrderId,
+            co.order_id         AS orderId,
+            co.order_status     AS orderStatus,
+            co.pay_money        AS payMoney,
+            co.account_id       AS accountId,
+            co.channel          AS channel,
+            co.is_pay           AS isPay,
+            co.account_from_way AS accountFromWay,
+            co.train_no         AS trainCode,
+            co.from_city        AS fromStationName,
+            co.to_city          AS toStationName,
+            co.from_3c          AS fromStationCode,
+            co.to_3c            AS toStationCode,
+            co.travel_time      AS departureDate,
+            co.ext_seattype     AS extraSeatType,
+            co.seat_detail_type AS chooseBed,
+            co.choose_seats     AS chooseSeat,
+            co.resend_identify  AS resendType,
+            co.seat_type        AS seatType,
+            co.jdbook_resendnum AS resendNum,
+            co.supplier_type    AS supplierType,
+            co.can_switch_supplier    AS canSwitchSupplier,
+            co.option_time    AS modifyTime
+        FROM
+            cp_orderinfo co
+        WHERE
+            supplier_type = '01'
+            AND (
+                co.order_status = '85'
+                OR (
+                    co.order_status = '83'
+                    AND
+                    DATE_SUB(NOW(), INTERVAL 4 MINUTE) > co.option_time
+                )
+            )
+        ORDER BY co.create_time ASC
+        LIMIT #{limit}
+    </select>
+    
+    
+    
+    <select id="queryListWaitPay" parameterType="java.lang.Integer" resultType="com.train.system.center.entity.Order">
+        SELECT
+            co.my_order_id      AS myOrderId,
+            co.supplier_order_id AS supplierOrderId,
+            co.order_id         AS orderId,
+            co.order_status     AS orderStatus,
+            co.pay_money        AS payMoney,
+            co.account_id       AS accountId,
+            co.channel          AS channel,
+            co.is_pay           AS isPay,
+            co.account_from_way AS accountFromWay,
+            co.train_no         AS trainCode,
+            co.from_city        AS fromStationName,
+            co.to_city          AS toStationName,
+            co.from_3c          AS fromStationCode,
+            co.to_3c            AS toStationCode,
+            co.travel_time      AS departureDate,
+            co.ext_seattype     AS extraSeatType,
+            co.seat_detail_type AS chooseBed,
+            co.choose_seats     AS chooseSeat,
+            co.resend_identify  AS resendType,
+            co.seat_type        AS seatType,
+            co.jdbook_resendnum AS resendNum,
+            co.supplier_type    AS supplierType,
+            co.can_switch_supplier    AS canSwitchSupplier,
+            co.option_time    AS modifyTime
+        FROM
+            cp_orderinfo co
+        WHERE
+            supplier_type = '01'
+            AND co.order_status = '55'
+        ORDER BY co.create_time ASC
+        LIMIT #{limit}
+    </select>
+    
+    
+
+    <select id="selectById" resultType="com.train.system.center.entity.Order">
+        SELECT
+            co.my_order_id      AS myOrderId,
+            co.supplier_order_id AS supplierOrderId,
+            co.order_id         AS orderId,
+            co.order_status     AS orderStatus,
+            co.pay_money        AS payMoney,
+            co.account_id       AS accountId,
+            co.channel          AS channel,
+            co.is_pay           AS isPay,
+            co.account_from_way AS accountFromWay,
+            co.train_no         AS trainCode,
+            co.from_city        AS fromStationName,
+            co.to_city          AS toStationName,
+            co.from_3c          AS fromStationCode,
+            co.to_3c            AS toStationCode,
+            co.travel_time      AS departureDate,
+            co.ext_seattype     AS extraSeatType,
+            co.seat_detail_type AS chooseBed,
+            co.choose_seats     AS chooseSeat,
+            co.jdbook_resendnum AS resendNum,
+            co.out_ticket_billno AS sequence,
+            co.seat_type        AS seatType,
+            co.supplier_type    AS supplierType,
+            co.can_switch_supplier    AS canSwitchSupplier,
+            co.option_time    AS modifyTime,
+            co.delay_order    AS delayOrder
+        FROM
+            cp_orderinfo co
+        WHERE
+            co.order_id = #{orderId}
+    </select>
+
+    <select id="selectByMyId" resultType="com.train.system.center.entity.Order">
+        SELECT
+            co.my_order_id      AS myOrderId,
+            co.supplier_order_id AS supplierOrderId,
+            co.order_id         AS orderId,
+            co.order_status     AS orderStatus,
+            co.pay_money        AS payMoney,
+            co.account_id       AS accountId,
+            co.channel          AS channel,
+            co.is_pay           AS isPay,
+            co.account_from_way AS accountFromWay,
+            co.train_no         AS trainCode,
+            co.from_city        AS fromStationName,
+            co.to_city          AS toStationName,
+            co.from_3c          AS fromStationCode,
+            co.to_3c            AS toStationCode,
+            co.travel_time      AS departureDate,
+            co.ext_seattype     AS extraSeatType,
+            co.seat_detail_type AS chooseBed,
+            co.choose_seats     AS chooseSeat,
+            co.jdbook_resendnum AS resendNum,
+            co.seat_type        AS seatType,
+            co.jdbook_resendnum AS resendNum,
+            co.supplier_type    AS supplierType,
+            co.can_switch_supplier    AS canSwitchSupplier,
+            co.option_time    AS modifyTime
+        FROM
+            cp_orderinfo co
+        WHERE
+            co.my_order_id = #{orderId}
+    </select>
+
+    <update id="updateOrder">
+        UPDATE
+        cp_orderinfo
+        SET
+        option_time = NOW()
+        <if test="order.orderStatus != '' and order.orderStatus != null">
+            ,order_status = #{order.orderStatus}
+        </if>
+        <if test="order.supplierOrderId != null and order.supplierOrderId != '' ">
+            ,supplier_order_id = #{order.supplierOrderId}
+        </if>
+        <if test=" order.totalPrice != null">
+            ,buy_money = #{order.totalPrice}
+        </if>
+
+        <if test=" order.accountId != null">
+            ,account_id = #{order.accountId}
+        </if>
+        <if test=" order.departureTime != null">
+            ,from_time = #{order.departureTime}
+        </if>
+        <if test=" order.arrivalTime != null">
+            ,to_time = #{order.arrivalTime}
+        </if>
+        <if test=" order.arrivalTime != null">
+            ,to_time = #{order.arrivalTime}
+        </if>
+        <if test=" order.payLimitTime != null">
+            ,pay_limit_time = #{order.payLimitTime}
+        </if>
+        <if test="order.sequence != '' and order.sequence != null">
+            ,out_ticket_billno = #{order.sequence}
+        </if>
+        <if test="order.finishTime != null">
+            ,out_ticket_time = now()
+        </if>
+        <if test="order.payTime != null">
+            ,pay_time = now()
+        </if>
+        <if test="order.errorCode != '' and order.errorCode != null">
+            ,error_info = #{order.errorCode}
+        </if>
+        <if test="order.resendNum != null">
+            ,jdbook_resendnum = #{order.resendNum}
+        </if>
+        <if test="order.resendType != null">
+            ,resend_identify = #{order.resendType}
+        </if>
+        <if test="order.returnLog != null">
+            ,return_optlog = #{order.returnLog}
+        </if>
+        <if test="order.supplierType != null">
+            ,supplier_type = #{order.supplierType}
+        </if>
+        <if test="order.canSwitchSupplier != null">
+            ,can_switch_supplier = #{order.canSwitchSupplier}
+        </if>
+        WHERE
+        order_id = #{order.orderId}
+        <if test="whereOrderStatus != null and whereOrderStatus != ''">
+            AND order_status = #{whereOrderStatus}
+        </if>
+    </update>
+    
+    <insert id="insertTicketEntrance">
+     	<selectKey resultType="java.lang.Long" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO cp_orderinfo_ct(order_id, train_num, station_name, entrance) values(#{orderId}, #{trainCode}, #{fromStationName}, #{ticketEntrance})
+    </insert>
+    
+</mapper>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.kuyou.train.dao.TrainOptlogMapper" >
+
+    <resultMap id="RT_MAP" type="com.kuyou.train.entity.po.TrainOptlog">
+        <id column="return_id" property="logId" jdbcType="VARCHAR" />
+        <result column="return_name" property="message" jdbcType="VARCHAR" />
+        <result column="return_value" property="keyword" jdbcType="VARCHAR" />
+        <result column="return_type" property="type" jdbcType="VARCHAR" />
+        <result column="return_fail_reason" property="failCode" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="columns">
+        return_id, return_name, return_value, return_type, return_status, return_ticket, return_fail_reason
+    </sql>
+
+    <select id="select4Book" resultMap="RT_MAP">
+        SELECT
+        <include refid="columns" />
+        FROM train_return_optlog
+        WHERE locate(return_name, #{message}) > 0
+        AND return_ticket = '11'
+        LIMIT 1
+    </select>
+</mapper>

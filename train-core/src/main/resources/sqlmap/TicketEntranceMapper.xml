@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.kuyou.train.dao.TicketEntranceMapper">
+
+    <insert id="insertBook">
+        INSERT INTO cp_orderinfo_ct (order_id,  train_num, station_name, entrance)
+        VALUES (#{orderId}, #{trainNo}, #{fromCity}, #{ticketEntrance})
+    </insert>
+
+    <insert id="insertChange">
+        INSERT INTO cp_orderinfo_ct_change (order_id, change_id, train_num, station_name, entrance)
+        VALUES (#{orderId}, #{changeId}, #{trainNo}, #{fromCity}, #{ticketEntrance})
+    </insert>
+
+</mapper>

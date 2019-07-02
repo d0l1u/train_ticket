@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kuyou.train.dao.JdAccountMapper">
+    <resultMap id="BaseResultMap" type="com.kuyou.train.entity.po.JdAccountPo">
+        <id column="account_id" property="accountId" jdbcType="BIGINT" />
+        <result column="username" property="username" jdbcType="VARCHAR" />
+        <result column="password" property="password" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="TINYINT" />
+        <result column="type" property="type" jdbcType="TINYINT" />
+        <result column="yn" property="yn" jdbcType="TINYINT" />
+        <result column="created" property="created" jdbcType="TIMESTAMP" />
+        <result column="modified" property="modified" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <sql id="columns">
+        account_id,
+        username,
+        password,
+        status,
+        type,
+        yn,
+        created,
+        modified
+    </sql>
+
+    <insert id="insertBatch">
+        INSERT IGNORE INTO train_account_migrate
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="jdAccountPo.username!=null">username,</if>
+            <if test="jdAccountPo.password!=null">password,</if>
+            <if test="jdAccountPo.status!=null">status,</if>
+            <if test="jdAccountPo.type!=null">type,</if>
+            <if test="jdAccountPo.yn!=null">yn,</if>
+            <if test="jdAccountPo.created!=null">created,</if>
+            <if test="jdAccountPo.modified!=null">modified,</if>
+        </trim>
+        VALUES
+        <foreach collection="jdAccountPos" item="jdAccountPo" index="index" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="jdAccountPo.username!=null">#{jdAccountPo.username,jdbcType=VARCHAR},
+                </if>
+                <if test="jdAccountPo.password!=null">#{jdAccountPo.password,jdbcType=VARCHAR},
+                </if>
+                <if test="jdAccountPo.status!=null">#{jdAccountPo.status,jdbcType=INTEGER},
+                </if>
+                <if test="jdAccountPo.type!=null">#{jdAccountPo.type,jdbcType=INTEGER},
+                </if>
+                <if test="jdAccountPo.yn!=null">#{jdAccountPo.yn,jdbcType=TINYINT},
+                </if>
+                <if test="jdAccountPo.created!=null">#{jdAccountPo.created,jdbcType=TIMESTAMP},
+                </if>
+                <if test="jdAccountPo.modified!=null">#{jdAccountPo.modified,jdbcType=TIMESTAMP},
+                </if>
+            </trim>
+        </foreach>
+    </insert>
+
+    <update id="updateById">
+        UPDATE train_account_migrate
+        <set>
+            <if test="jdAccountPo.username != null">username= #{jdAccountPo.username,jdbcType=VARCHAR},</if>
+            <if test="jdAccountPo.password != null">password= #{jdAccountPo.password,jdbcType=VARCHAR},</if>
+            <if test="jdAccountPo.status != null">status= #{jdAccountPo.status,jdbcType=INTEGER},</if>
+            <if test="jdAccountPo.type != null">type= #{jdAccountPo.type,jdbcType=INTEGER},</if>
+            <if test="jdAccountPo.yn != null">yn= #{jdAccountPo.yn,jdbcType=TINYINT},</if>
+            <if test="jdAccountPo.modified != null">modified= #{jdAccountPo.modified,jdbcType=TIMESTAMP}</if>
+        </set>
+        WHERE account_id = #{accountId}
+    </update>
+
+    <select id="selectCountType" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM train_account_migrate WHERE type = #{type} AND yn = 1
+    </select>
+
+</mapper>

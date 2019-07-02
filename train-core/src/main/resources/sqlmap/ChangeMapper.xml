@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.kuyou.train.dao.ChangeMapper" >
+
+    <resultMap id="RT_MAP" type="com.kuyou.train.entity.po.ChangePo">
+        <id column="change_id" property="changeId" jdbcType="INTEGER" />
+        <result column="order_id" property="orderId" jdbcType="VARCHAR" />
+        <result column="my_order_id" property="myOrderId" jdbcType="VARCHAR" />
+        <result column="supplier_order_id" property="supplierOrderId" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="old_ticket_change_serial" property="oldTicketChangeSerial" jdbcType="VARCHAR" />
+        <result column="new_ticket_change_serial" property="newTicketChangeSerial" jdbcType="VARCHAR" />
+        <result column="ticket_price_diff_change_serial" property="ticketPriceDiffChangeSerial" jdbcType="VARCHAR" />
+        <result column="change_diff_money" property="changeDiffMoney" jdbcType="DECIMAL" />
+        <result column="change_refund_money" property="changeRefundMoney" jdbcType="DECIMAL" />
+        <result column="diffrate" property="diffrate" jdbcType="DECIMAL" />
+        <result column="totalpricediff" property="totalpricediff" jdbcType="DECIMAL" />
+        <result column="fee" property="fee" jdbcType="DECIMAL" />
+        <result column="change_receive_money" property="changeReceiveMoney" jdbcType="DECIMAL" />
+        <result column="book_ticket_time" property="bookTicketTime" jdbcType="TIMESTAMP" />
+        <result column="fail_msg" property="failMsg" jdbcType="VARCHAR" />
+        <result column="fail_reason" property="failReason" jdbcType="VARCHAR" />
+        <result column="train_no" property="trainNo" jdbcType="VARCHAR" />
+        <result column="change_train_no" property="changeTrainNo" jdbcType="VARCHAR" />
+        <result column="from_time" property="fromTime" jdbcType="TIMESTAMP" />
+        <result column="change_from_time" property="changeFromTime" jdbcType="TIMESTAMP" />
+        <result column="change_to_time" property="changeToTime" jdbcType="TIMESTAMP" />
+        <result column="travel_time" property="travelTime" jdbcType="TIMESTAMP" />
+        <result column="from_city" property="fromCity" jdbcType="VARCHAR" />
+        <result column="to_city" property="toCity" jdbcType="VARCHAR" />
+        <result column="out_ticket_billno" property="outTicketBillno" jdbcType="VARCHAR" />
+        <result column="bank_pay_seq" property="bankPaySeq" jdbcType="VARCHAR" />
+        <result column="worker_id" property="workerId" jdbcType="INTEGER" />
+        <result column="pay_time" property="payTime" jdbcType="TIMESTAMP" />
+        <result column="account_id" property="accountId" jdbcType="VARCHAR" />
+        <result column="option_time" property="optionTime" jdbcType="TIMESTAMP" />
+        <result column="opt_ren" property="optRen" jdbcType="VARCHAR" />
+        <result column="change_status" property="changeStatus" jdbcType="VARCHAR" />
+        <result column="isasync" property="isasync" jdbcType="VARCHAR" />
+        <result column="callbackurl" property="callbackurl" jdbcType="VARCHAR" />
+        <result column="reqtoken" property="reqtoken" jdbcType="VARCHAR" />
+        <result column="change_travel_time" property="changeTravelTime" jdbcType="TIMESTAMP" />
+        <result column="change_notify_status" property="changeNotifyStatus" jdbcType="VARCHAR" />
+        <result column="change_notify_count" property="changeNotifyCount" jdbcType="INTEGER" />
+        <result column="change_notify_time" property="changeNotifyTime" jdbcType="TIMESTAMP" />
+        <result column="change_notify_finish_time" property="changeNotifyFinishTime" jdbcType="TIMESTAMP" />
+        <result column="from_station_code" property="fromStationCode" jdbcType="VARCHAR" />
+        <result column="to_station_code" property="toStationCode" jdbcType="VARCHAR" />
+        <result column="ischangeto" property="ischangeto" jdbcType="BIT" />
+        <result column="merchant_id" property="merchantId" jdbcType="VARCHAR" />
+        <result column="hasSeat" property="hasseat" jdbcType="BIT" />
+        <result column="alter_pay_type" property="alterPayType" jdbcType="INTEGER" />
+        <result column="mt_change_id" property="mtChangeId" jdbcType="VARCHAR" />
+        <result column="pay_limit_time" property="payLimitTime" jdbcType="TIMESTAMP" />
+        <result column="serialnumber" property="serialnumber" jdbcType="VARCHAR" />
+        <result column="isChooseSeats" property="ischooseseats" jdbcType="BIT" />
+        <result column="chooseSeats" property="chooseseats" jdbcType="VARCHAR" />
+        <result column="supplier_type" property="supplierType" jdbcType="CHAR" />
+    </resultMap>
+
+    <sql id="columns">
+        change_id, order_id,  my_order_id, supplier_order_id, create_time, old_ticket_change_serial, new_ticket_change_serial,
+        ticket_price_diff_change_serial, change_diff_money, change_refund_money, diffrate, totalpricediff, fee, change_receive_money,
+        book_ticket_time, fail_msg, fail_reason, train_no, change_train_no, from_time, change_from_time, change_to_time, travel_time, from_city,
+        to_city, out_ticket_billno, bank_pay_seq, worker_id, pay_time, account_id, option_time, opt_ren, change_status, isasync,
+        callbackurl, reqtoken, change_travel_time, change_notify_status, change_notify_count, change_notify_time, change_notify_finish_time, from_station_code,
+        to_station_code, ischangeto, merchant_id, hasseat, alter_pay_type,  mt_change_id, pay_limit_time, serialnumber, ischooseseats, chooseseats, supplier_type
+    </sql>
+
+    <select id="selectByChangeId" resultMap="RT_MAP">
+        SELECT
+        <include refid="columns" />
+        FROM elong_orderinfo_change
+        WHERE change_id = #{changeId}
+    </select>
+
+    <select id="selectByOrderId" resultMap="RT_MAP">
+        SELECT
+        <include refid="columns" />
+        FROM elong_orderinfo_change
+        WHERE order_id = #{orderId}
+    </select>
+
+    <select id="selectByMyOrderId" resultMap="RT_MAP">
+        SELECT
+        <include refid="columns" />
+        FROM elong_orderinfo_change
+        WHERE my_order_id = #{myOrderId}
+    </select>
+
+    <select id="selectByStatus" resultMap="RT_MAP">
+        SELECT
+        <include refid="columns" />
+        FROM elong_orderinfo_change
+        <where>
+            change_status IN
+            <foreach collection="statusList" item="status" open="(" separator="," close=")">
+                #{status}
+            </foreach>
+        </where>
+        LIMIT #{limit}
+    </select>
+
+    <update id="updateByChangeId">
+        UPDATE elong_orderinfo_change
+        <set>
+            <if test="changePo.orderId != null">order_id= #{changePo.orderId,jdbcType=VARCHAR},</if>
+            <if test="changePo.myOrderId != null">my_order_id= #{changePo.myOrderId,jdbcType=VARCHAR},</if>
+            <if test="changePo.supplierOrderId != null">supplier_order_id= #{changePo.supplierOrderId,jdbcType=VARCHAR},</if>
+            <if test="changePo.createTime != null">create_time= #{changePo.createTime,jdbcType=TIMESTAMP},</if>
+            <if test="changePo.oldTicketChangeSerial != null">old_ticket_change_serial= #{changePo.oldTicketChangeSerial,jdbcType=VARCHAR},</if>
+            <if test="changePo.newTicketChangeSerial != null">new_ticket_change_serial= #{changePo.newTicketChangeSerial,jdbcType=VARCHAR},</if>
+            <if test="changePo.ticketPriceDiffChangeSerial != null">ticket_price_diff_change_serial= #{changePo.ticketPriceDiffChangeSerial,jdbcType=VARCHAR},</if>
+            <if test="changePo.changeDiffMoney != null">change_diff_money= #{changePo.changeDiffMoney,jdbcType=DECIMAL},</if>
+            <if test="changePo.changeRefundMoney != null">change_refund_money= #{changePo.changeRefundMoney,jdbcType=DECIMAL},</if>
+            <if test="changePo.diffrate != null">diffrate= #{changePo.diffrate,jdbcType=DECIMAL},</if>
+            <if test="changePo.totalpricediff != null">totalpricediff= #{changePo.totalpricediff,jdbcType=DECIMAL},</if>
+            <if test="changePo.fee != null">fee= #{changePo.fee,jdbcType=DECIMAL},</if>
+            <if test="changePo.changeReceiveMoney != null">change_receive_money= #{changePo.changeReceiveMoney,jdbcType=DECIMAL},</if>
+            <if test="changePo.bookTicketTime != null">book_ticket_time= #{changePo.bookTicketTime,jdbcType=TIMESTAMP},</if>
+            <if test="changePo.failMsg != null">fail_msg= #{changePo.failMsg,jdbcType=VARCHAR},</if>
+            <if test="changePo.failReason != null">fail_reason= #{changePo.failReason,jdbcType=VARCHAR},</if>
+            <if test="changePo.trainNo != null">train_no= #{changePo.trainNo,jdbcType=VARCHAR},</if>
+            <if test="changePo.changeTrainNo != null">change_train_no= #{changePo.changeTrainNo,jdbcType=VARCHAR},</if>
+            <if test="changePo.fromTime != null">from_time= #{changePo.fromTime,jdbcType=TIMESTAMP},</if>
+            <if test="changePo.changeFromTime != null">change_from_time= #{changePo.changeFromTime,jdbcType=TIMESTAMP},</if>
+            <if test="changePo.changeToTime != null">change_to_time= #{changePo.changeToTime,jdbcType=TIMESTAMP},</if>
+            <if test="changePo.travelTime != null">travel_time= #{changePo.travelTime,jdbcType=TIMESTAMP},</if>
+            <if test="changePo.fromCity != null">from_city= #{changePo.fromCity,jdbcType=VARCHAR},</if>
+            <if test="changePo.toCity != null">to_city= #{changePo.toCity,jdbcType=VARCHAR},</if>
+            <if test="changePo.outTicketBillno != null">out_ticket_billno= #{changePo.outTicketBillno,jdbcType=VARCHAR},</if>
+            <if test="changePo.bankPaySeq != null">bank_pay_seq= #{changePo.bankPaySeq,jdbcType=VARCHAR},</if>
+            <if test="changePo.workerId != null">worker_id= #{changePo.workerId,jdbcType=INTEGER},</if>
+            <if test="changePo.payTime != null">pay_time= #{changePo.payTime,jdbcType=TIMESTAMP},</if>
+            <if test="changePo.accountId != null">account_id= #{changePo.accountId,jdbcType=VARCHAR},</if>
+            <if test="changePo.optRen != null">opt_ren= #{changePo.optRen,jdbcType=VARCHAR},</if>
+            <if test="changePo.changeStatus != null">change_status= #{changePo.changeStatus,jdbcType=VARCHAR},</if>
+            <if test="changePo.isasync != null">isasync= #{changePo.isasync,jdbcType=VARCHAR},</if>
+            <if test="changePo.callbackurl != null">callbackurl= #{changePo.callbackurl,jdbcType=VARCHAR},</if>
+            <if test="changePo.reqtoken != null">reqtoken= #{changePo.reqtoken,jdbcType=VARCHAR},</if>
+            <if test="changePo.changeTravelTime != null">change_travel_time= #{changePo.changeTravelTime,jdbcType=TIMESTAMP},</if>
+            <if test="changePo.changeNotifyStatus != null">change_notify_status= #{changePo.changeNotifyStatus,jdbcType=VARCHAR},</if>
+            <if test="changePo.changeNotifyCount != null">change_notify_count= #{changePo.changeNotifyCount,jdbcType=INTEGER},</if>
+            <if test="changePo.changeNotifyTime != null">change_notify_time= #{changePo.changeNotifyTime,jdbcType=TIMESTAMP},</if>
+            <if test="changePo.changeNotifyFinishTime != null">change_notify_finish_time= #{changePo.changeNotifyFinishTime,jdbcType=TIMESTAMP},</if>
+            <if test="changePo.fromStationCode != null">from_station_code= #{changePo.fromStationCode,jdbcType=VARCHAR},</if>
+            <if test="changePo.toStationCode != null">to_station_code= #{changePo.toStationCode,jdbcType=VARCHAR},</if>
+            <if test="changePo.ischangeto != null">ischangeto= #{changePo.ischangeto,jdbcType=TINYINT},</if>
+            <if test="changePo.merchantId != null">merchant_id= #{changePo.merchantId,jdbcType=VARCHAR},</if>
+            <if test="changePo.hasseat != null">hasseat= #{changePo.hasseat,jdbcType=TINYINT},</if>
+            <if test="changePo.alterPayType != null">alter_pay_type= #{changePo.alterPayType,jdbcType=TINYINT},</if>
+            <if test="changePo.mtChangeId != null">mt_change_id= #{changePo.mtChangeId,jdbcType=VARCHAR},</if>
+            <if test="changePo.payLimitTime != null">pay_limit_time= #{changePo.payLimitTime,jdbcType=TIMESTAMP},</if>
+            <if test="changePo.serialnumber != null">serialnumber= #{changePo.serialnumber,jdbcType=VARCHAR},</if>
+            <if test="changePo.ischooseseats != null">ischooseseats= #{changePo.ischooseseats,jdbcType=TINYINT},</if>
+            <if test="changePo.chooseseats != null">chooseseats= #{changePo.chooseseats,jdbcType=VARCHAR},</if>
+            <if test="changePo.supplierType != null">supplier_type= #{changePo.supplierType,jdbcType=VARCHAR},</if>
+            option_time = NOW()
+        </set>
+        WHERE change_id = #{changeId}
+    </update>
+
+    <update id="updateStatusPre">
+         UPDATE elong_orderinfo_change
+         SET change_status = #{targetStatus}, option_time = NOW()
+         WHERE change_id = #{changeId} AND change_status = #{preStatus}
+    </update>
+
+    <update id="updateStatusById">
+         UPDATE elong_orderinfo_change
+         SET change_status = #{status}, option_time = NOW()
+         WHERE change_id = #{changeId}
+    </update>
+
+    <update id="updateStatus">
+        UPDATE elong_orderinfo_change
+        SET change_status = #{status}, option_time = NOW()
+        <if test="reason != null and reason !='' ">
+            ,fail_reason = #{reason}
+        </if>
+        WHERE change_id = #{changeId}
+    </update>
+
+    <select id="selectStuck" resultMap="RT_MAP">
+        SELECT
+        <include refid="columns" />
+        FROM elong_orderinfo_change
+        <where>
+            change_status = #{status}
+            AND
+            #{stuckMinutes} > option_time
+            AND
+            (supplier_type IN
+            <foreach collection="supplierList" item="supplier" open="(" separator="," close=")">
+                #{supplier}
+            </foreach>
+            OR
+            supplier_type IS NULL
+            )
+        </where>
+    </select>
+
+</mapper>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kuyou.train.dao.AccountMapper">
+    <resultMap id="RT_MAP" type="com.kuyou.train.entity.po.AccountPo">
+        <id column="acc_id" property="accountId" jdbcType="INTEGER" />
+        <result column="acc_username" property="username" jdbcType="VARCHAR" />
+        <result column="acc_password" property="password" jdbcType="VARCHAR" />
+        <result column="channel" property="channel" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <select id="selectByAccountId" resultMap="RT_MAP">
+        SELECT
+            acc_id,
+            acc_username,
+            acc_password,
+            channel
+        FROM
+            cp_accountinfo
+        WHERE
+            acc_id = #{accountId}
+    </select>
+
+    <select id="selectByUsername" resultMap="RT_MAP">
+        SELECT
+            acc_id,
+            acc_username,
+            acc_password,
+            channel
+        FROM
+            cp_accountinfo
+        WHERE
+            acc_username = #{username}
+    </select>
+
+    <select id="selectUpperLimit4Jd_bak" resultMap="RT_MAP">
+        SELECT  acc_id, acc_username, acc_password
+        FROM cp_accountinfo
+        WHERE channel = '19e' AND acc_status != 'jd' AND acc_status = 33
+        ORDER BY option_time ASC
+        LIMIT #{limit}
+    </select>
+
+    <select id="selectUpperLimit4Jd" resultMap="RT_MAP">
+        SELECT  acc_id, acc_username, acc_password
+        FROM cp_accountinfo
+        WHERE channel = '19e' AND acc_status != 'jd' AND stop_reason = 3 AND '2018-05-01' > option_time
+        ORDER BY option_time ASC
+        LIMIT #{limit}
+    </select>
+
+    <select id="selectByAccountIds" resultMap="RT_MAP">
+        SELECT  acc_id, acc_username, acc_password
+        FROM cp_accountinfo
+        WHERE
+        acc_status != 'jd'
+        AND acc_id IN
+        <foreach collection="ids" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </select>
+
+    <update id="updateStatusByIds">
+        UPDATE cp_accountinfo SET acc_status = #{status}
+        WHERE
+        acc_id IN
+        <foreach collection="ids" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </update>
+
+    <update id="update">
+        UPDATE cp_accountinfo SET
+        option_time = NOW(),
+        modify_time = NOW(),
+        contact_num = #{accountPo.contactsNum},
+        real_contact_num = #{accountPo.contactsNum}
+        WHERE acc_id = #{accountId}
+    </update>
+
+    <delete id="deletePassenger">
+        DELETE FROM cp_pass_whitelist WHERE
+        acc_id IN
+        <foreach collection="ids" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="updateWhiteListStatus">
+        UPDATE cp_pass_whitelist
+        SET
+        acc_status = #{status}
+        WHERE acc_id IN
+        <foreach collection="ids" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <update id="stop">
+        UPDATE cp_accountinfo SET acc_status = '22', stop_reason = #{stopCode}
+        WHERE
+        acc_id = #{accountId}
+    </update>
+
+</mapper>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:aop="http://www.springframework.org/schema/aop"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+
+    <!-- ===================== 读取属性文件 ========================= -->
+    <context:property-placeholder location="classpath:config.properties,classpath:jdbc.properties,classpath:redis.properties,classpath:thread.properties" />
+
+    <import resource="classpath:spring-redis.xml" />
+    <import resource="classpath:spring-mybatis.xml" />
+    <!--<import resource="classpath:spring-job.xml" />-->
+    <import resource="classpath:spring-thread.xml" />
+
+
+
+    <!-- 配置自动扫描，创建  @service等起作用 -->
+    <context:component-scan base-package="com.kuyou.train.service" />
+
+
+    <!-- 切面，日志跟踪 -->
+    <aop:aspectj-autoproxy />
+    <bean class="com.kuyou.train.common.log.LogAspect" />
+
+    <!-- Spring 容器工具 -->
+    <bean class="com.kuyou.train.common.util.SpringContextUtil" />
+
+    <bean class="com.kuyou.train.job.K618AccountTransitionJob"></bean>
+
+</beans>

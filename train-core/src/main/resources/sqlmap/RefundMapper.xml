@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kuyou.train.dao.RefundMapper">
+
+    <resultMap id="RT_MAP" type="com.kuyou.train.entity.po.RefundPo">
+        <result column="order_id" property="orderId" jdbcType="VARCHAR" />
+        <result column="cp_id" property="cpId" jdbcType="VARCHAR" />
+        <result column="refund_seq" property="refundSeq" jdbcType="VARCHAR" />
+        <result column="supplier_order_id" property="supplierOrderId" jdbcType="VARCHAR" />
+        <result column="my_order_id" property="myOrderId" jdbcType="VARCHAR" />
+        <result column="robot_id" property="robotId" jdbcType="VARCHAR" />
+        <result column="account_name" property="accountName" jdbcType="VARCHAR" />
+        <result column="account_pwd" property="accountPwd" jdbcType="VARCHAR" />
+        <result column="buy_money" property="buyMoney" jdbcType="DECIMAL" />
+        <result column="alter_diff_money" property="alterDiffMoney" jdbcType="DECIMAL" />
+        <result column="alter_buy_money" property="alterBuyMoney" jdbcType="DECIMAL" />
+        <result column="refund_money" property="refundMoney" jdbcType="DECIMAL" />
+        <result column="refund_12306_money" property="refund12306Money" jdbcType="DECIMAL" />
+        <result column="refund_percent" property="refundPercent" jdbcType="VARCHAR" />
+        <result column="order_status" property="orderStatus" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="option_time" property="optionTime" jdbcType="TIMESTAMP" />
+        <result column="opt_ren" property="optRen" jdbcType="VARCHAR" />
+        <result column="out_ticket_time" property="outTicketTime" jdbcType="TIMESTAMP" />
+        <result column="out_ticket_billno" property="outTicketBillno" jdbcType="VARCHAR" />
+        <result column="train_no" property="trainNo" jdbcType="VARCHAR" />
+        <result column="alter_train_no" property="alterTrainNo" jdbcType="VARCHAR" />
+        <result column="from_station" property="fromStation" jdbcType="VARCHAR" />
+        <result column="arrive_station" property="arriveStation" jdbcType="VARCHAR" />
+        <result column="from_time" property="fromTime" jdbcType="TIMESTAMP" />
+        <result column="alter_from_time" property="alterFromTime" jdbcType="TIMESTAMP" />
+        <result column="travel_time" property="travelTime" jdbcType="TIMESTAMP" />
+        <result column="alter_travel_time" property="alterTravelTime" jdbcType="TIMESTAMP" />
+        <result column="seat_type" property="seatType" jdbcType="INTEGER" />
+        <result column="alter_seat_type" property="alterSeatType" jdbcType="INTEGER" />
+        <result column="ticket_type" property="ticketType" jdbcType="INTEGER" />
+        <result column="train_box" property="trainBox" jdbcType="VARCHAR" />
+        <result column="alter_train_box" property="alterTrainBox" jdbcType="VARCHAR" />
+        <result column="seat_no" property="seatNo" jdbcType="VARCHAR" />
+        <result column="alter_seat_no" property="alterSeatNo" jdbcType="VARCHAR" />
+        <result column="ids_type" property="idsType" jdbcType="INTEGER" />
+        <result column="user_ids" property="userIds" jdbcType="VARCHAR" />
+        <result column="error_info" property="errorInfo" jdbcType="VARCHAR" />
+        <result column="channel" property="channel" jdbcType="VARCHAR" />
+        <result column="return_optlog" property="returnOptlog" jdbcType="VARCHAR" />
+        <result column="user_name" property="userName" jdbcType="VARCHAR" />
+        <result column="refund_12306_seq" property="refund12306Seq" jdbcType="VARCHAR" />
+        <result column="user_remark" property="userRemark" jdbcType="VARCHAR" />
+        <result column="our_remark" property="ourRemark" jdbcType="VARCHAR" />
+        <result column="refuse_reason" property="refuseReason" jdbcType="VARCHAR" />
+        <result column="verify_time" property="verifyTime" jdbcType="TIMESTAMP" />
+        <result column="pro_bak2" property="proBak2" jdbcType="VARCHAR" />
+        <result column="old_refund_seq" property="oldRefundSeq" jdbcType="VARCHAR" />
+        <result column="refund_type" property="refundType" jdbcType="VARCHAR" />
+        <result column="alter_myself" property="alterMyself" jdbcType="TINYINT" />
+        <result column="can_switch_supplier" property="canSwitchSupplier" jdbcType="TINYINT" />
+        <result column="supplier_type" property="supplierType" jdbcType="VARCHAR" />
+        <result column="sub_out_ticket_billno" property="subOutTicketBillno" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="columns">
+        order_id, cp_id, refund_seq, supplier_order_id, my_order_id, robot_id, account_name, account_pwd, buy_money,
+        alter_diff_money, alter_buy_money, refund_money, refund_12306_money, refund_percent, order_status, create_time,
+        option_time, opt_ren, out_ticket_time, out_ticket_billno, train_no, alter_train_no, from_station, arrive_station,
+        from_time, alter_from_time, travel_time, alter_travel_time, seat_type, alter_seat_type, ticket_type, train_box,
+        alter_train_box, seat_no, alter_seat_no, ids_type, user_ids, error_info, channel, return_optlog, user_name, refund_12306_seq,
+        user_remark, our_remark, refuse_reason, verify_time, pro_bak2, old_refund_seq, refund_type, alter_myself, can_switch_supplier,
+        supplier_type, sub_out_ticket_billno
+    </sql>
+
+    <!-- 查询等待退票的订单 -->
+    <select id="selectWaitRefund" resultMap="RT_MAP">
+        SELECT
+        <include refid="columns" />
+        FROM
+        cp_orderinfo_refund
+        WHERE order_status = #{orderStatus}
+        GROUP BY order_id
+        LIMIT #{limit}
+    </select>
+
+    <!-- 查询订单信息 -->
+    <select id="selectRefundByOrderIdAndSeq" resultMap="RT_MAP">
+        SELECT
+        <include refid="columns" />
+        FROM cp_orderinfo_refund
+        WHERE order_id = #{orderId} AND sub_out_ticket_billno = #{subSequence}
+    </select>
+
+    <select id="selectRefundByMyOrderIdAndSeq" resultMap="RT_MAP">
+        SELECT
+        <include refid="columns" />
+        FROM cp_orderinfo_refund
+        WHERE my_order_id = #{orderId} AND sub_out_ticket_billno = #{subSequence}
+    </select>
+
+    <!-- 修改订单状态 -->
+    <update id="updateStatus">
+        UPDATE  cp_orderinfo_refund
+        SET order_status = #{status},
+        option_time = NOW()
+        WHERE order_id = #{orderId} AND cp_id = #{cpId}
+    </update>
+
+    <update id="updateStatusPre">
+        UPDATE  cp_orderinfo_refund
+        SET order_status = #{status},
+        option_time = NOW()
+        WHERE order_id = #{orderId} AND cp_id = #{cpId} AND order_status = #{preStatus}
+    </update>
+
+    <!-- 插入线下退票 -->
+    <insert id="insertUnderRefund">
+        INSERT INTOunder_refund (
+        cp_id,
+        my_order_id,
+        supplier_order_id,
+        order_id,
+        name,
+        card_no,
+        card_type,
+        sub_sequence,
+        create_time,
+        refund_time,
+        status,
+        refund_money,
+        supplier_type
+        )
+        VALUES
+        <foreach collection="refundList" item="refund" open="(" close=")" separator=",">
+            #{refund.cpId},
+            #{refund.myOrderId},
+            #{refund.supplierOrderId},
+            #{refund.orderId},
+            #{refund.name},
+            #{refund.cardNo},
+            #{refund.cardType},
+            #{refund.subSequence},
+            NOW(),
+            #{refund.verifyTime},
+            #{refund.orderStatus},
+            #{refund.refundKyfwMoney},
+            #{refund.supplierType}
+        </foreach>
+    </insert>
+
+    <!-- 修改订单信息 -->
+    <update id="updateRefund">
+        UPDATE cp_orderinfo_refund
+        <set>
+            <if test="refundPo.refundSeq != null">refund_seq= #{refundPo.refundSeq,jdbcType=VARCHAR},</if>
+            <if test="refundPo.buyMoney != null">buy_money= #{refundPo.buyMoney,jdbcType=DECIMAL},</if>
+            <if test="refundPo.alterDiffMoney != null">alter_diff_money= #{refundPo.alterDiffMoney,jdbcType=DECIMAL},</if>
+            <if test="refundPo.alterBuyMoney != null">alter_buy_money= #{refundPo.alterBuyMoney,jdbcType=DECIMAL},</if>
+            <if test="refundPo.refundMoney != null">refund_money= #{refundPo.refundMoney,jdbcType=DECIMAL},</if>
+            <if test="refundPo.refund12306Money != null">refund_12306_money= #{refundPo.refund12306Money,jdbcType=DECIMAL},</if>
+            <if test="refundPo.refundPercent != null">refund_percent= #{refundPo.refundPercent,jdbcType=VARCHAR},</if>
+            <if test="refundPo.orderStatus != null">order_status= #{refundPo.orderStatus,jdbcType=VARCHAR},</if>
+            <if test="refundPo.outTicketBillno != null">out_ticket_billno= #{refundPo.outTicketBillno,jdbcType=VARCHAR},</if>
+            <if test="refundPo.errorInfo != null">error_info= #{refundPo.errorInfo,jdbcType=VARCHAR},</if>
+            <if test="refundPo.returnOptlog != null">return_optlog= #{refundPo.returnOptlog,jdbcType=VARCHAR},</if>
+            <if test="refundPo.userName != null">user_name= #{refundPo.userName,jdbcType=VARCHAR},</if>
+            <if test="refundPo.refund12306Seq != null">refund_12306_seq= #{refundPo.refund12306Seq,jdbcType=VARCHAR},</if>
+            <if test="refundPo.userRemark != null">user_remark= #{refundPo.userRemark,jdbcType=VARCHAR},</if>
+            <if test="refundPo.ourRemark != null">our_remark= #{refundPo.ourRemark,jdbcType=VARCHAR},</if>
+            <if test="refundPo.refuseReason != null">refuse_reason= #{refundPo.refuseReason,jdbcType=VARCHAR},</if>
+            <if test="refundPo.verifyTime != null">verify_time= #{refundPo.verifyTime,jdbcType=TIMESTAMP},</if>
+            <if test="refundPo.oldRefundSeq != null">old_refund_seq= #{refundPo.oldRefundSeq,jdbcType=VARCHAR},</if>
+            <if test="refundPo.refundType != null">refund_type= #{refundPo.refundType,jdbcType=VARCHAR},</if>
+            <if test="refundPo.supplierType != null">supplier_type= #{refundPo.supplierType,jdbcType=VARCHAR},</if>
+            option_time = NOW()
+        </set>
+        WHERE order_id = #{orderId} AND cp_id = #{cpId}
+    </update>
+
+    <select id="selectStuck" resultMap="RT_MAP">
+        SELECT
+        <include refid="columns" />
+        FROM cp_orderinfo_refund
+        <where>
+            order_status = #{status}
+            AND
+            #{time} > option_time
+        </where>
+    </select>
+
+</mapper>

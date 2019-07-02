@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.train.system.center.dao.NotifyDao">
+
+    <update id="updateBeginByOrderId">
+        UPDATE
+            cp_orderinfo_notify
+        SET
+            notify_status = 1,
+            notify_num = 0,
+            notify_next_time = DATE_ADD(now(), INTERVAL 5 SECOND),
+            modify_time = NOW()
+        WHERE
+            order_id = #{orderId}
+    </update>
+    
+    <update id="updateRefund">
+    	UPDATE
+            cp_orderinfo_refund_notify
+        SET
+            notify_status = 1,
+            notify_type = 1,
+            notify_num = 0,
+            modify_time = NOW()
+        WHERE
+            order_id = #{orderId}
+            AND cp_id = #{cpId}
+    </update>
+
+</mapper>

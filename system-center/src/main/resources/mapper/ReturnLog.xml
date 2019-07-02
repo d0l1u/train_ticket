@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.train.system.center.dao.ReturnLogDao">
+
+    <select id="queryList" resultType="com.train.system.center.entity.ReturnLog">
+        SELECT
+            return_id,
+            return_name,
+            return_type,
+            return_fail_reason
+        FROM
+            train_return_optlog
+        WHERE
+            return_status = '1'
+        AND return_ticket = '11'
+        AND return_active = '00'
+    </select>
+
+</mapper>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="refund">
+	<!-- 定时查询可以发起退款的退款流水
+    <select id="queryCanRefundStreamList" resultClass="java.util.HashMap">
+       SELECT CONVERT(rs.stream_id,CHAR) AS stream_id,rs.order_id,rs.cp_id,rs.refund_type,rs.cp_id,rs.refund_seq,
+           e.eop_order_id, e.eop_refund_url, 
+           CONVERT(rs.refund_money, CHAR) AS refund_money
+           FROM hc_orderinfo_refundstream rs
+           LEFT JOIN hc_order_eop e
+           ON rs.order_id=e.order_id
+           WHERE rs.refund_type='1' 
+           AND (rs.refund_status='11' OR (rs.refund_status='22' AND DATE_ADD(rs.notify_time, INTERVAL 5 MINUTE)<![CDATA[<=]]>NOW()))
+           AND rs.refund_plan_time <![CDATA[<=]]> NOW()
+           AND rs.notify_num <![CDATA[<]]>5
+           ORDER BY rs.create_time DESC
+           LIMIT 0,5
+    </select> -->
+   <select id="queryCanRefundStreamList" resultClass="java.util.HashMap">
+       select order_id,cp_id,refund_seq,CONVERT(refund_money, CHAR) AS refund_money,user_remark,refund_percent,channel 
+       from elong_orderinfo_refundstream 
+       where  refund_status='00' 
+       and refund_type='11' 
+       order by create_time limit 0,50
+    </select>
+    
+    
+    <!-- 查询通知退票系统的订单信息 -->
+    <select id="queryRefundCpOrderInfo" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+       SELECT hc.order_id, hc.train_no, hc.from_city, hc.to_city, CONVERT(DATE_FORMAT(hc.from_time,'%Y-%m-%d %H:%i:%s'), CHAR) from_time, 
+       CONVERT(DATE_FORMAT(hc.from_time,'%Y-%m-%d'), CHAR) travel_time, hc.out_ticket_billno, 
+       CONVERT(DATE_FORMAT(hc.out_ticket_time,'%Y-%m-%d %H:%i:%s'), CHAR) out_ticket_time,
+       cp.cp_id, CONVERT(cp.buy_money, CHAR) buy_money, CONVERT(cp.refund_12306_money, CHAR) refund_12306_money, 
+       cp.user_name, CONVERT(cp.ticket_type, CHAR) ticket_type, CONVERT(cp.ids_type, CHAR)ids_type, cp.user_ids, 
+       CONVERT(cp.seat_type, CHAR) seat_type, cp.train_box, cp.seat_no
+       FROM elong_orderinfo hc LEFT JOIN elong_orderinfo_cp cp ON hc.order_id=cp.order_id
+       WHERE hc.order_id=#order_id:VARCHAR# and cp.cp_id=#cp_id:VARCHAR#
+    </select>
+    
+    <!-- 查询该订单的账号信息 -->
+    <select id="queryAccountOrderInfo" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+       SELECT a.acc_username, a.acc_password 
+       FROM cp_accountinfo a LEFT JOIN cp_orderinfo cp ON a.acc_id=cp.account_id 
+       WHERE cp.order_id=#order_id:VARCHAR#
+    </select>
+    
+    <!-- 更新hc_orderinfo_refundstream表的退款状态 -->
+    <update id="updateOrderRefundStatus" parameterClass="java.util.HashMap">
+       UPDATE elong_orderinfo_refundstream
+       SET refund_status=#order_status:VARCHAR#
+       WHERE order_id=#order_id:VARCHAR# and cp_id=#cp_id:VARCHAR#
+       and refund_type = '11'
+    </update>
+    
+    <!-- 更新cp表为改签成功 -->
+    <update id="updateCPAlterInfo" parameterClass="java.util.HashMap">
+       UPDATE elong_orderinfo_cp 
+       SET alter_money=#alter_tickets_money#
+       WHERE order_id=#order_id:VARCHAR#  and cp_id=#cp_id:VARCHAR#
+    </update>
+    <!-- 更新cp表为退款成功
+    <update id="updateCPRefundInfo" parameterClass="java.util.HashMap">
+       UPDATE hc_orderinfo
+           SET
+           order_status=#order_status:VARCHAR#
+           <isEqual prepend="," compareValue="11" property="order_status">
+              pay_time=NOW()
+           </isEqual>
+           WHERE order_id=#asp_order_id:VARCHAR#
+           <isNotEmpty prepend=" and " property="old_status">
+              order_status=#old_status:VARCHAR#
+           </isNotEmpty>
+    </update> -->
+    <!-- 更新hc_orderinfo_refundstream表的退款信息 -->
+    <update id="updateRefundInfo" parameterClass="java.util.HashMap">
+       UPDATE elong_orderinfo_refundstream
+       SET refund_status=#refund_status:VARCHAR#,
+       verify_time=NOW() 
+       <isNotEmpty prepend="," property="actual_refund_money">
+           detail_refund=#actual_refund_money#
+       </isNotEmpty>
+       <isNotEmpty prepend="," property="alter_tickets_money">
+           detail_alter_tickets=#alter_tickets_money#
+       </isNotEmpty>
+       <isNotEmpty prepend="," property="refund_12306_seq">
+           refund_12306_seq=#refund_12306_seq#
+       </isNotEmpty>
+       <isNotEmpty prepend="," property="our_remark">
+           our_remark=#our_remark#
+       </isNotEmpty>
+       <isNotEmpty prepend="," property="refuse_reason">
+           refuse_reason=#refuse_reason#
+       </isNotEmpty>
+        <isNotEmpty prepend="," property="refund_money">
+           refund_money=#refund_money#
+       </isNotEmpty>
+       WHERE order_id=#order_id:VARCHAR#  and cp_id=#cp_id:VARCHAR# AND refund_type = '11'
+    </update>
+    
+</sqlMap>
