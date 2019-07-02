@@ -7,63 +7,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f18f829f-3f9d-4d8f-acea-2d64eb9eb002" name="Default" comment="SPR-20180312">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/kotlinc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flt_web/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flt_web/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flt_web/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flt_web/file/login" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train19eManage/train19eManage.eml" beforeDir="false" afterPath="$PROJECT_DIR$/train19eManage/train19eManage.eml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/train19etripTuniu/train19etripTuniu.eml" beforeDir="false" afterPath="$PROJECT_DIR$/train19etripTuniu/train19etripTuniu.eml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/train19tripExternal/.project" beforeDir="false" afterPath="$PROJECT_DIR$/train19tripExternal/.project" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/train19tripExternal/trainl9tripExternal.eml" beforeDir="false" afterPath="$PROJECT_DIR$/train19tripExternal/train19tripExternal.eml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/.idea/train_app_146.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/.svn/entries" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/.svn/format" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/.svn/pristine/0d/0dbef910c5a1f7e3d120b6f95f3d94213d1ad524.svn-base" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/.svn/pristine/24/24cd51c5c99729367b4983b7b61e8625d3c62f96.svn-base" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/.svn/pristine/2d/2ddd4351301e1981c5aeb1e7a49e0267b8d05f78.svn-base" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/.svn/pristine/77/7714641012f84d69ee158c37423a40a6d985b356.svn-base" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/.svn/pristine/84/8465d83d4fabd4ca90c5c023c8e1fc8b190cd518.svn-base" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/.svn/pristine/ba/ba50b28e403b00b4a327bdacfd6d4743cd1fb448.svn-base" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/.svn/pristine/ba/baf5707c89d46ab6b9154f2fa11313a4c15bc645.svn-base" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/.svn/pristine/c1/c139446181724eda01451547214f5b789e7efa75.svn-base" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/.svn/pristine/df/df79f57c17320e3035066d73fc64e0619e00e022.svn-base" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/.svn/pristine/fc/fc2525f82e750bfbb994976a9c0ec7567f17e066.svn-base" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/.svn/wc.db" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/.svn/wc.db-journal" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/cnpc.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/cnpc_0123.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/cnpc_asyn.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/dama.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/dll.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/ini/logging.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/ini/systemcfg.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/logger.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/paraCryptexit.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/python-cnpc-version.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/python-cnpc.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/python-order-restart.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/response.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/systemcfg.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/test_test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/ticketExit.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/ticketExit_0125.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/ticketExit_01252054.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/ticketExit_asyn.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/unit.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_app_146/update-python-cnpc.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_gt/train_gt.eml" beforeDir="false" afterPath="$PROJECT_DIR$/train_gt/train_gt.eml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_station/train_station.eml" beforeDir="false" afterPath="$PROJECT_DIR$/train_station/train_station.eml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -85,7 +30,7 @@
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Git file" value="3" />
+          <entry key="Git file" value="4" />
           <entry key="IDEA_MODULE" value="2" />
           <entry key="JAVA" value="1" />
           <entry key="PLAIN_TEXT" value="3" />
@@ -93,7 +38,7 @@
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Git file" value="224" />
+          <entry key="Git file" value="230" />
         </counts>
       </usages-collector>
     </session>
@@ -106,8 +51,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="309">
-              <caret line="41" column="25" lean-forward="true" selection-start-line="41" selection-start-column="25" selection-end-line="41" selection-end-column="25" />
+            <state relative-caret-position="630">
+              <caret line="45" column="16" lean-forward="true" selection-start-line="45" selection-start-column="16" selection-end-line="45" selection-end-column="16" />
             </state>
           </provider>
         </entry>
@@ -139,6 +84,7 @@
     </findStrings>
   </component>
   <component name="Git.Settings">
+    <option name="UPDATE_TYPE" value="REBASE" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="IdeDocumentHistory">
@@ -226,6 +172,19 @@
           <expand>
             <path>
               <item name="train_ticket" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="" type="442cc68d:ScopeViewTreeModel$RootNode" />
+            </path>
+            <path>
+              <item name="train_ticket" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="" type="442cc68d:ScopeViewTreeModel$RootNode" />
+              <item name=".idea" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+            </path>
+            <path>
+              <item name="train_ticket" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="flt_web" type="2674bda8:ScopeViewTreeModel$GroupNode" />
+            </path>
+            <path>
+              <item name="train_ticket" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
               <item name="train19etripTuniu" type="2674bda8:ScopeViewTreeModel$GroupNode" />
             </path>
           </expand>
@@ -262,7 +221,7 @@
     <property name="Repository.Attach.Sources" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1562066088517" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1562068409569" />
     <property name="js.buildTools.gulp.gulp_package_dir" value="" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/train19eManage/test" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
@@ -281,6 +240,116 @@
       <recent name="E:\Workspaces\train_20180309\flt_web\sql" />
       <recent name="E:\Workspaces\train_20180309\train19eManage\WebRoot\WEB-INF\lib" />
     </key>
+  </component>
+  <component name="RestoreUpdateTree" date="Moments ago" ActionInfo="_Update">
+    <UpdatedFiles>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Updated from server" />
+        <option name="myStatusName" value="Changed on server" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="CHANGED_ON_SERVER" />
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Updated" />
+          <option name="myStatusName" value="Changed" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="UPDATED" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Created" />
+          <option name="myStatusName" value="Created" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="CREATED" />
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/README.md</PATH>
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Deleted" />
+          <option name="myStatusName" value="Deleted" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="true" />
+          <option name="myId" value="REMOVED_FROM_REPOSITORY" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Restored" />
+          <option name="myStatusName" value="Will be restored" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="RESTORED" />
+        </FILE-GROUP>
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Modified" />
+        <option name="myStatusName" value="Modified" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MODIFIED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Skipped" />
+        <option name="myStatusName" value="Skipped" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="SKIPPED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with conflicts" />
+        <option name="myStatusName" value="Will be merged with conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_CONFLICTS" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with tree conflicts" />
+        <option name="myStatusName" value="Merged with tree conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with property conflicts" />
+        <option name="myStatusName" value="Will be merged with property conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged" />
+        <option name="myStatusName" value="Will be merged" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Not in repository" />
+        <option name="myStatusName" value="Not in repository" />
+        <option name="mySupportsDeletion" value="true" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="UNKNOWN" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Locally added" />
+        <option name="myStatusName" value="Locally added" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="LOCALLY_ADDED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Locally removed" />
+        <option name="myStatusName" value="Locally removed" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="LOCALLY_REMOVED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Switched" />
+        <option name="myStatusName" value="Switched" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="SWITCHED" />
+      </FILE-GROUP>
+    </UpdatedFiles>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -908,7 +977,14 @@
       <option name="project" value="LOCAL" />
       <updated>1562065613481</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="SPR-20180312">
+      <created>1562068161392</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1562068161392</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -944,7 +1020,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="52124000" />
+    <option name="totallyTimeSpent" value="52579000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -966,11 +1042,10 @@
       <window_info id="UI Designer" order="4" />
       <window_info id="Favorites" order="5" sideWeight="0.22666667" side_tool="true" weight="0.15884861" />
       <window_info active="true" content_ui="combo" id="Project" order="6" sideWeight="0.7733333" visible="true" weight="0.14925373" />
-      <window_info anchor="bottom" id="Database Changes" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Event Log" order="0" sideWeight="0.14925373" side_tool="true" visible="true" weight="0.28396437" />
+      <window_info anchor="bottom" id="Event Log" order="0" sideWeight="0.14925373" side_tool="true" weight="0.28396437" />
       <window_info anchor="bottom" id="TODO" order="1" sideWeight="0.5042644" weight="0.32035595" />
       <window_info anchor="bottom" id="Java Enterprise" order="2" show_stripe_button="false" type="WINDOWED" weight="0.32925472" />
-      <window_info anchor="bottom" id="Version Control" order="3" sideWeight="0.26172706" side_tool="true" weight="0.47719687" />
+      <window_info anchor="bottom" id="Version Control" order="3" sideWeight="0.26172706" side_tool="true" weight="0.24303234" />
       <window_info anchor="bottom" id="Spring" order="4" sideWeight="0.4936034" weight="0.3288889" />
       <window_info anchor="bottom" id="Terminal" order="5" sideWeight="0.4978678" weight="0.3288889" />
       <window_info anchor="bottom" id="Message" order="6" />
@@ -981,6 +1056,7 @@
       <window_info anchor="bottom" id="Inspection" order="11" weight="0.4" />
       <window_info anchor="bottom" id="Messages" order="12" weight="0.39333335" />
       <window_info anchor="bottom" x="349" y="456" width="971" height="445" id="Application Servers" order="13" sideWeight="0.6151386" weight="0.3114572" />
+      <window_info anchor="bottom" id="Database Changes" order="14" show_stripe_button="false" />
       <window_info anchor="right" id="Palette" order="0" />
       <window_info anchor="right" id="Palette&#9;" order="1" />
       <window_info anchor="right" id="Capture Analysis" order="2" />
@@ -1353,13 +1429,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/flt_web/file/login">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="128">
-          <caret line="8" column="29" lean-forward="true" selection-start-line="8" selection-start-column="29" selection-end-line="8" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/flt_web/file/login" />
     <entry file="file://$PROJECT_DIR$/train_station/train_station.eml">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -1399,8 +1469,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="309">
-          <caret line="41" column="25" lean-forward="true" selection-start-line="41" selection-start-column="25" selection-end-line="41" selection-end-column="25" />
+        <state relative-caret-position="630">
+          <caret line="45" column="16" lean-forward="true" selection-start-line="45" selection-start-column="16" selection-end-line="45" selection-end-column="16" />
         </state>
       </provider>
     </entry>
@@ -1469,11 +1539,12 @@
       </state>
       <state key="ModuleStructureConfigurable.UI">
         <settings>
-          <last-edited>train_gt</last-edited>
+          <last-edited>flt_web</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
                 <option value="0.30769232" />
+                <option value="0.6" />
               </list>
             </option>
           </splitter-proportions>
