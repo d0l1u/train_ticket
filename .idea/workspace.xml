@@ -7,7 +7,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f18f829f-3f9d-4d8f-acea-2d64eb9eb002" name="Default" comment="SPR-20180312">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -53,8 +52,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="534">
-              <caret line="41" column="20" selection-start-line="41" selection-start-column="20" selection-end-line="41" selection-end-column="20" />
+            <state relative-caret-position="102">
+              <caret line="14" column="17" lean-forward="true" selection-start-line="14" selection-start-column="17" selection-end-line="14" selection-end-column="17" />
             </state>
           </provider>
         </entry>
@@ -187,11 +186,6 @@
               <item name="train_ticket" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
               <item name="train_ticket" type="2674bda8:ScopeViewTreeModel$GroupNode" />
             </path>
-            <path>
-              <item name="train_ticket" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
-              <item name="train_ticket" type="2674bda8:ScopeViewTreeModel$GroupNode" />
-              <item name=".idea" type="9f88c78c:ScopeViewTreeModel$FileNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -215,7 +209,7 @@
     <property name="Repository.Attach.Sources" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1562070494529" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1562070539224" />
     <property name="js.buildTools.gulp.gulp_package_dir" value="" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/train19eManage/test" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
@@ -839,7 +833,7 @@
       <workItem from="1520583895342" duration="10825000" />
       <workItem from="1520820831829" duration="22596000" />
       <workItem from="1562064467949" duration="1616000" />
-      <workItem from="1562068567044" duration="1924000" />
+      <workItem from="1562068567044" duration="1956000" />
     </task>
     <task id="LOCAL-00001" summary="SPR-20180312">
       <created>1520835124487</created>
@@ -911,7 +905,14 @@
       <option name="project" value="LOCAL" />
       <updated>1562070471321</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="SPR-20180312">
+      <created>1562070508476</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1562070508476</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -947,7 +948,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="54587000" />
+    <option name="totallyTimeSpent" value="54619000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1387,8 +1388,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="534">
-          <caret line="41" column="20" selection-start-line="41" selection-start-column="20" selection-end-line="41" selection-end-column="20" />
+        <state relative-caret-position="102">
+          <caret line="14" column="17" lean-forward="true" selection-start-line="14" selection-start-column="17" selection-end-line="14" selection-end-column="17" />
         </state>
       </provider>
     </entry>
