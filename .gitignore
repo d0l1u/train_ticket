@@ -38,12 +38,12 @@ buildNumber.properties
 !/.mvn/wrapper/maven-wrapper.jar
 
 ###########################################################
-/train19eManage/.idea/
-/train19etripTuniu/.idea/
-/train19tripExternal/.idea/
-/train_station/.idea/
-/train_gt/.idea/
-/flt_web/.idea/
+/train19eManage/.idea/*
+/train19etripTuniu/.idea/*
+/train19tripExternal/.idea/*
+/train_station/.idea/*
+/train_gt/.idea/*
+/flt_web/.idea/*
 ##############################################################
 /.idea/
 
