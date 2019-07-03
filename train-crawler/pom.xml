@@ -31,7 +31,7 @@
         <junit.version>4.12</junit.version>
 
         <!-- spring -->
-        <spring.version>4.3.2.RELEASE</spring.version>
+        <spring.version>4.3.16.RELEASE</spring.version>
 
         <!-- lombok -->
         <lombok.version>1.18.0</lombok.version>
