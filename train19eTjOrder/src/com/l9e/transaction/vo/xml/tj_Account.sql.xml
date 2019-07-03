@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="tj_Account">
+
+	<!-- regist_num -->
+	<select id="regist_num" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(*)
+		FROM
+		  hc_orderinfo_regist where 1=1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') 
+				AND create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="regist_status">
+				regist_status =#regist_status#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="fail_reason">
+				fail_reason =#fail_reason#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="is_output">
+				is_output =#is_output#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="account_source">
+				account_source=#account_source# 
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- account_num -->
+	<select id="account_num" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM  cp_accountinfo WHERE 1=1 AND acc_status <![CDATA[<>]]> '99' AND acc_mail LIKE '%@163%' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="active_time">
+   				 active_time > DATE_ADD(NOW(), INTERVAL - 15 MINUTE) 
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="acc_status">
+   				 acc_status =#acc_status#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="channel">
+   				 channel =#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="stop_reason">
+   				 stop_reason =#stop_reason#
+			</isNotEmpty>
+		</dynamic>
+		
+	</select>
+
+	
+	<!-- 查询今天渠道统计的数据的条数 -->
+	<select id="query19eTodayCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM tj_account WHERE create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59')
+	</select>
+	
+	<!-- 更新tj_account表中的今日的数据 -->
+	<update id="updateToTj_Account" parameterClass="java.util.HashMap">
+		update tj_account 
+		<dynamic prepend="set">
+			<isNotEmpty prepend="," property="create_time">
+				 create_time=#create_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="add_regist">
+				 add_regist=#add_regist#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_pass">
+				 regist_pass=#regist_pass#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_wait">
+				 regist_wait=#regist_wait#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_success">
+				 regist_success=#regist_success#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_fail">
+				 regist_fail=#regist_fail#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_other">
+				 regist_other=#regist_other#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_free">
+				 regist_free=#regist_free#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="account">
+				 account=#account#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="account_wait">
+				 account_wait=#account_wait#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="account_stop">
+				 account_stop=#account_stop#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="account_land">
+				 account_land=#account_land#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="account_add">
+				 account_add=#account_add#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_num">
+				 qunar_num=#qunar_num#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_stop">
+				 qunar_stop=#qunar_stop#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_can_use">
+				 qunar_can_use=#qunar_can_use#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_stop_today">
+				 qunar_stop_today=#qunar_stop_today#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_seal">
+				 qunar_seal=#qunar_seal#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_toomuch">
+				 qunar_toomuch=#qunar_toomuch#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_out">
+				 qunar_out=#qunar_out#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_not_real">
+				 qunar_not_real=#qunar_not_real#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_shici">
+				 qunar_shici=#qunar_shici#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_goback">
+				 qunar_goback=#qunar_goback#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_num">
+				 tongcheng_num=#tongcheng_num#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_stop">
+				 tongcheng_stop=#tongcheng_stop#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_can_use">
+				 tongcheng_can_use=#tongcheng_can_use#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_stop_today">
+				 tongcheng_stop_today=#tongcheng_stop_today#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_seal">
+				 tongcheng_seal=#tongcheng_seal#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_toomuch">
+				 tongcheng_toomuch=#tongcheng_toomuch#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_out">
+				 tongcheng_out=#tongcheng_out#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_not_real">
+				 tongcheng_not_real=#tongcheng_not_real#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_shici">
+				 tongcheng_shici=#tongcheng_shici#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_goback">
+				 tongcheng_goback=#tongcheng_goback#
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="," property="elong_num">
+				 elong_num=#elong_num#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="elong_stop">
+				 elong_stop=#elong_stop#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="elong_can_use">
+				 elong_can_use=#elong_can_use#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="elong_stop_today">
+				 elong_stop_today=#elong_stop_today#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="elong_seal">
+				 elong_seal=#elong_seal#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="elong_toomuch">
+				 elong_toomuch=#elong_toomuch#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="elong_out">
+				 elong_out=#elong_out#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="elong_not_real">
+				 elong_not_real=#elong_not_real#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="elong_shici">
+				 elong_shici=#elong_shici#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="elong_goback">
+				 elong_goback=#elong_goback#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_all_wait">
+				 regist_all_wait=#regist_all_wait#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_all_hand">
+				 regist_all_hand=#regist_all_hand#
+			</isNotEmpty>
+		</dynamic>
+		where create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59')
+	</update>
+	
+	<!-- 插入统计完成的信息 -->
+	<insert id="addToTj_Account" parameterClass="java.util.HashMap">
+		INSERT INTO tj_account
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="tj_id">
+				 tj_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				 create_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="add_regist">
+				 add_regist
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_pass">
+				 regist_pass
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_wait">
+				 regist_wait
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_success">
+				 regist_success
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_fail">
+				 regist_fail
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_other">
+				 regist_other
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_free">
+				 regist_free
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="account">
+				 account
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="account_wait">
+				 account_wait
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="account_stop">
+				 account_stop
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="account_land">
+				 account_land
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="account_add">
+				 account_add
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_num">
+				 qunar_num
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_stop">
+				 qunar_stop
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_stop_today">
+				 qunar_stop_today
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_seal">
+				 qunar_seal
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_toomuch">
+				 qunar_toomuch
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_out">
+				 qunar_out
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_not_real">
+				 qunar_not_real
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_shici">
+				 qunar_shici
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_goback">
+				 qunar_goback
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_num">
+				 tongcheng_num
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_stop">
+				 tongcheng_stop
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_stop_today">
+				 tongcheng_stop_today
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_seal">
+				 tongcheng_seal
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_toomuch">
+				 tongcheng_toomuch
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_out">
+				 tongcheng_out
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_not_real">
+				 tongcheng_not_real
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_shici">
+				 tongcheng_shici
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_goback">
+				 tongcheng_goback
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="," property="elong_num">
+				 elong_num
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="elong_stop">
+				 elong_stop
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="elong_stop_today">
+				 elong_stop_today
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="elong_seal">
+				 elong_seal
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="elong_toomuch">
+				 elong_toomuch
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="elong_out">
+				 elong_out
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="elong_not_real">
+				 elong_not_real
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="elong_shici">
+				 elong_shici
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="elong_goback">
+				 elong_goback
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_all_wait">
+				 regist_all_wait
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_all_hand">
+				 regist_all_hand
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="," property="qunar_can_use">
+				 qunar_can_use
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="elong_can_use">
+				 elong_can_use
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_can_use">
+				 tongcheng_can_use
+			</isNotEmpty>
+			)
+		</dynamic>
+		 values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="tj_id">
+				 #tj_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				 #create_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="add_regist">
+				 #add_regist#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_pass">
+				 #regist_pass#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_wait">
+				 #regist_wait#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_success">
+				 #regist_success#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_fail">
+				 #regist_fail#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_other">
+				 #regist_other#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_free">
+				 #regist_free#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="account">
+				 #account#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="account_wait">
+				 #account_wait#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="account_stop">
+				 #account_stop#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="account_land">
+				 #account_land#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="account_add">
+				 #account_add#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_num">
+				 #qunar_num#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_stop">
+				 #qunar_stop#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_stop_today">
+				 #qunar_stop_today#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_seal">
+				 #qunar_seal#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_toomuch">
+				 #qunar_toomuch#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_out">
+				 #qunar_out#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_not_real">
+				 #qunar_not_real#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_shici">
+				 #qunar_shici#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="qunar_goback">
+				 #qunar_goback#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_num">
+				 #tongcheng_num#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_stop">
+				 #tongcheng_stop#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_stop_today">
+				 #tongcheng_stop_today#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_seal">
+				 #tongcheng_seal#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_toomuch">
+				 #tongcheng_toomuch#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_out">
+				 #tongcheng_out#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_not_real">
+				 #tongcheng_not_real#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_shici">
+				 #tongcheng_shici#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_goback">
+				 #tongcheng_goback#
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="," property="elong_num">
+				 #elong_num#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="elong_stop">
+				 #elong_stop#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="elong_stop_today">
+				 #elong_stop_today#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="elong_seal">
+				 #elong_seal#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="elong_toomuch">
+				 #elong_toomuch#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="elong_out">
+				 #elong_out#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="elong_not_real">
+				 #elong_not_real#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="elong_shici">
+				 #elong_shici#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="elong_goback">
+				 #elong_goback#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_all_wait">
+				 #regist_all_wait#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="regist_all_hand">
+				 #regist_all_hand#
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="," property="qunar_can_use">
+				 #qunar_can_use#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="elong_can_use">
+				 #elong_can_use#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tongcheng_can_use">
+				 #tongcheng_can_use#
+			</isNotEmpty>
+			)
+		</dynamic>
+	</insert>
+	
+	
+	<select id="account_can_use" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+	SELECT count(a.acc_id) FROM cp_accountinfo AS a WHERE a.book_num<![CDATA[<=]]>#book_num# AND a.acc_status='33' 
+	 AND is_alive='1' AND channel = #channel:VARCHAR#  AND contact_num <![CDATA[<=]]> #contact_num:INTEGER#
+    </select>
+    
+    <select id="setting_value" parameterClass="java.lang.String" resultClass="java.lang.String">
+	SELECT setting_value FROM train_system_setting WHERE setting_name=#setting_name#  AND setting_status='1' 
+    </select>
+</sqlMap>

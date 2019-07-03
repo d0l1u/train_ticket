@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/mvc  
+	http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+	<context:component-scan base-package="com.l9e.transaction.job"/>
+
+	<!-- 总管理类,执行调度程序  -->
+	<bean id="startQuertz"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<!-- 
+				<ref bean="queryOrderQuartzTime" />
+				<ref bean="queryRefundQuartzTime" />
+				
+				<ref bean="outTicketNotifyQuartzTime" />
+				<ref bean="cpSysNotifyQuartzTime" />
+				<ref bean="refundNotifyQuartzTime" />
+				<ref bean="seatResultQuartzTime" />
+				 -->
+				<ref bean="passengerJobQuartzTime" />
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 获取订单 -->
+	<bean id="queryOrderQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="queryOrderTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0 0/1 * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="queryOrderTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="queryOrderJob" />
+		</property>
+		<property name="targetMethod">
+			<value>queryOrder</value>
+		</property>
+	</bean>
+	
+	<!-- 获取退票订单 -->
+	<bean id="queryRefundQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="queryRefundTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0 0/2 * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="queryRefundTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="queryRefundJob" />
+		</property>
+		<property name="targetMethod">
+			<value>queryRefund</value>
+		</property>
+	</bean>
+	
+	<!-- 出票结果 -->
+	<bean id="outTicketNotifyQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="outTicketNotifyTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/15 * * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="outTicketNotifyTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="outTicketNotifyJob" />
+		</property>
+		<property name="targetMethod">
+			<value>outNotify</value>
+		</property>
+	</bean>
+	
+	<!-- 出票系统 -->
+	<bean id="cpSysNotifyQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="cpSysNotifyTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/15 * * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="cpSysNotifyTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="cpSysNotifyJob" />
+		</property>
+		<property name="targetMethod">
+			<value>cpNotify</value>
+		</property>
+	</bean>
+	
+	<!-- 退票结果 -->
+	<bean id="refundNotifyQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="refundNotifyTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/30 * * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="refundNotifyTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="refundNotifyJob" />
+		</property>
+		<property name="targetMethod">
+			<value>refundNotify</value>
+		</property>
+	</bean>
+
+
+	<!-- 占座结果通知 -->
+	<bean id="seatResultQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="seatResultTask" />
+		</property>
+		<property name="cronExpression">
+			<value>* 0/1 * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="seatResultTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="bookSeatResultJob" />
+		</property>
+		<property name="targetMethod">
+			<value>sendBookRsult</value>
+		</property>
+	</bean>
+	
+	
+	<!-- 去哪儿白名单增加删除接口 -->
+	<bean id="passengerJobQuartzTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="passengerJobTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0/30 * * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="passengerJobTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="passengerJob" />
+		</property>
+		<property name="targetMethod">
+			<value>queryPassengers</value>
+		</property>
+	</bean>
+	
+	
+</beans>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="jfree">
+
+	<!-- 查询某用户15日之日有几天打码 -->
+	<select id="query15dayUserCodeCount" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM tj_rh_picture WHERE opt_time BETWEEN DATE_SUB(CURDATE(), INTERVAL 14 DAY) AND CURDATE() AND opt_ren=#opt_ren#
+	</select>
+	
+	<!-- 查询某用户15日之内打码记录 -->
+	<select id="query15dayUserCode" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT opt_name,opt_time, pic_count,pic_success, pic_fail, pic_unkonwn FROM tj_rh_picture 
+		WHERE opt_time BETWEEN DATE_SUB(CURDATE(), INTERVAL 14 DAY) AND CURDATE() AND opt_ren=#opt_ren# GROUP BY opt_time ORDER BY opt_time
+	</select>
+	
+	<!-- 查询15日以内的打码数据统计 -->
+	<select id="query15dayCodePicture" resultClass="java.util.HashMap">
+		SELECT DISTINCT opt_time,IFNULL(SUM(pic_count),0) AS pic_count,IFNULL(SUM(pic_success),0) AS pic_success,
+		IFNULL(SUM(pic_fail),0) AS pic_fail,IFNULL(SUM(pic_unkonwn),0) AS pic_unkonwn 
+		FROM tj_rh_picture WHERE opt_time BETWEEN DATE_SUB(CURDATE(), INTERVAL 14 DAY) AND CURDATE() GROUP BY opt_time ORDER BY opt_time
+	</select>
+	
+	<!-- 查询昨天和前天打码成功的数据 -->
+	<select id="query3dayCodeSuccess" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT hour_stat,code_success FROM tj_rhpic_hour WHERE day_stat=#day_stat#
+	</select>
+	
+	<!-- 查询今天每个小时的打码成功的数据 -->
+	<select id="queryTodayCodeSuccess" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT DATE_FORMAT(create_time,'%H') AS hour_stat, COUNT(DATE_FORMAT(create_time,'%H')) code_success FROM rh_picture
+		WHERE DATE_FORMAT(create_time,'%Y-%m-%d')=#day_stat# and result_status='1' GROUP BY DATE_FORMAT(create_time,'%H') ORDER BY hour_stat
+	</select>
+	
+	
+	
+	<!-- 查询某用户昨日是否打码 -->
+	<select id="queryUserCodeSuccessCount" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM tj_rh_picture WHERE opt_time=DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND opt_ren=#opt_ren#
+	</select>
+	
+	<!-- 查询某用户昨日每小时的打码记录 -->
+	<select id="queryUserCodeSuccessList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT DATE_FORMAT(create_time,'%H') AS hour_stat,DATE_FORMAT(create_time,'%Y-%m-%d') day_stat,COUNT(DATE_FORMAT(create_time,'%H')) code_count FROM rh_picture  
+		WHERE DATE_FORMAT(create_time,'%Y-%m-%d')=#create_time# AND opt_ren=#opt_ren# AND result_status='1' GROUP BY DATE_FORMAT(create_time,'%H') ORDER BY hour_stat
+	</select>
+	
+	<!-- 查询某部门15日以内的打码数据统计 -->
+	<select id="query15dayDepartCodePicture" resultClass="java.util.HashMap">
+		SELECT DISTINCT opt_time,IFNULL(SUM(pic_count),0) AS pic_count,IFNULL(SUM(pic_success),0) AS pic_success,IFNULL(SUM(pic_fail),0) AS pic_fail,
+		IFNULL(SUM(pic_unkonwn),0) AS pic_unkonwn FROM tj_rh_picture WHERE (opt_time BETWEEN DATE_SUB(CURDATE(), INTERVAL 14 DAY) AND CURDATE())
+		AND opt_ren IN (SELECT username FROM rh_user WHERE department=#department#) GROUP BY opt_time ORDER BY opt_time
+	</select>
+	
+	<!-- 查询某部门昨日每小时的打码记录 -->
+	<select id="queryDepartCodeSuccessPicture" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT DATE_FORMAT(create_time,'%H') AS hour_stat,DATE_FORMAT(create_time,'%Y-%m-%d') day_stat,COUNT(DATE_FORMAT(create_time,'%H')) code_count FROM rh_picture  
+		WHERE DATE_FORMAT(create_time,'%Y-%m-%d')=#create_time# AND opt_ren IN (SELECT username FROM rh_user WHERE department=#department#) 
+		AND result_status='1' GROUP BY DATE_FORMAT(create_time,'%H') ORDER BY hour_stat
+	</select>
+	
+</sqlMap>

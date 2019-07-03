@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="whitePass">
+	<!-- 查询白名单 -->
+	<select id="getWhitePassList" parameterClass="java.util.Map" resultClass="com.l9e.transaction.vo.TuniuWhitePass">
+		select id,contact_name,contact_status,cert_no,cert_type,
+		person_type,acc_username,acc_id,acc_status,create_time 
+		from cp_pass_whitelist
+		where id>#lastId# and acc_status=2 and contact_status=0 order by id asc limit #num# 
+	</select>
+</sqlMap>

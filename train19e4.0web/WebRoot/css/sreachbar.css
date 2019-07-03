@@ -1,0 +1,241 @@
+@charset "utf-8";
+/* CSS Document */
+
+/*from tccdn minify at 2014-10-19 2:54:52,file：/cn/t/com/t.trainindex.0.1.5.css?v=201410151*/
+
+.slide_main_top{
+	height:340px;
+	margin:0 auto;
+	overflow:visible!important;
+	position:relative;
+	width:1200px;
+	z-index:0
+}
+
+.block-content{
+	display:inline;
+	float:left;
+	background-color:#fff;
+	height:285px;
+	margin-left:16px;
+	margin-top:-299px;
+	*margin-right:-4px;
+	_margin-right:0;
+	position:absolute;
+	width:290px;
+	border-radius:3px
+}
+
+.trainIndex_box_shadow{
+	filter:progid:DXImageTransform.Microsoft.Shadow(color='#969696',Direction=135,Strength=2);
+	background-color:#fff;
+	-moz-box-shadow:2px 2px 3px #969696;
+	-webkit-box-shadow:2px 2px 3px #969696;
+	box-shadow:2px 2px3px #969696
+}
+
+.trainIndex_shadow{
+	-moz-box-shadow:0 0 3px #666;
+	box-shadow:0 0 3px #999
+}
+
+
+.search-title{
+	height:47px;
+	line-height:47px;
+	width:290px;
+	color:#fff;
+	background:#32B1F0;
+	position:relative;
+}
+
+.search-title .titimg{
+	background-image:url(../images/strain.jpg); 
+	background-repeat:no-repeat;
+	height:34px;
+	width:38px;
+	display:inline-block;
+	overflow:hidden;
+	
+}
+
+.search-title h1{
+	font-family:微软雅黑;
+	font-size:24px;
+	font-weight:500;
+	margin:8px 0 0 10px
+}
+
+.search-title h1 .sp1{
+	line-height:30px;
+	margin-left:5px
+}
+
+.search-shadow{
+	float:left;
+	background:url(http://img1.40017.cn/cn/t/com/train-bg_v1.png?v=20140318) -72px -347px;
+	display:block;
+	width:10px;
+	height:21px;
+	*margin-left:3px;
+	_margin-left:-1px
+}
+
+.search_info{
+	margin:15px 32px 0 29px;
+	_margin-right:0;
+	position:relative
+}
+
+.search_info ul{
+	display:block;
+	font-size:14px;
+	float:left;
+	width:300px;
+	margin-bottom:10px;
+	font-family:"微软雅黑"
+}
+
+.input04{
+	cursor:pointer;
+	float:left;
+	margin:4px 5px 0 2px
+}
+
+.sp_input04{
+	font-size:14px;
+	padding-left:4px;
+	float:left;
+	margin-left:-3px
+}
+
+.list{
+	height:26px;
+	margin-bottom:14px;
+	width:auto;
+	float:left;
+	width:230px;
+	padding-bottom:7px;
+	font:14px/28px ;
+	font-family:"Microsoft Yahei";
+}
+
+.list01{
+	height:35px;
+	margin-bottom:14px;
+	width:auto;
+	width:232px;
+	font:14px/28px ;
+	font-family:"Microsoft Yahei";
+	
+}
+
+.list01 dd{ 
+	padding-left:15px;
+
+}
+
+.list01 .dtd{
+	float:right;
+	display:inline-block;
+	
+}
+
+.list dd{
+	float:right;
+}
+
+.list dd label{
+	padding-left:20px;
+	font-family:"微软雅黑"
+}
+
+.list .dtd{
+	display:inline-block;
+	padding-right:19px;
+}
+
+.list .list_tit{
+	color:#333;
+	float:left;
+	display:inline-block;
+	line-height:33px;
+	height:33px;
+	font-weight:500;
+	font-size:12px;
+	
+}
+
+.clearfix:after{
+	clear:both;
+	content:".";
+	display:block;
+	height:0;
+	line-height:0;
+	visibility:hidden
+}
+
+.input06{
+	-webkit-box-shadow:1px 2px 1px #eaeaea inset;
+	font-family:"微软雅黑";
+	color:#999;
+	font-size:14px;
+	height:23px;
+	line-height:23px;
+	width:160px;
+	border:1px solid #ccc;
+	padding:4px;
+}
+
+.fsize14{
+	font-size:14px;
+	line-height:19px
+}
+
+.submitSearch{
+	background:url(../images/train-bg_v1.png) -1px  -376px;
+	cursor:pointer;
+	height:34px;
+	width:175px;
+	border:0;
+	font-size:16px;
+	font-size:18px;
+	color:#fff
+}
+
+.submitSearch:hover{
+	background-position:-1px -414px
+}
+
+.changeIcon{
+	background:url(../images/huan.jpg);
+	cursor:pointer;
+	height:50px;
+	left:266px;
+	position:absolute;
+	top:77px;
+	width:17px
+}
+/**
+.changeIcon:hover{
+	background:url(../images/huan02.jpg);
+	cursor:pointer;
+	height:50px;
+	left:266px;
+	position:absolute;
+	top:77px;
+	width:17px
+}*/
+
+.search_info .focus{
+	border:1px solid #76BBFF
+}
+
+.search_info .blur{
+	border:1px solid #CCC
+}
+
+.search_info .error{
+	border:1px solid #f60
+}
+

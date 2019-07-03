@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="tj_OutTicket">
+
+	<!-- 查询收单时长 -->
+	<select id="queryShoudan" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+			IFNULL(ROUND(AVG(TIME_TO_SEC(TIMEDIFF(
+			hc.create_time,o.create_time))),0),0) AS shoudan
+		FROM cp_orderinfo hc 
+		LEFT JOIN elong_orderinfo o ON o.order_id=hc.order_id 
+		where 1=1 and hc.channel = #channel# and hc.order_status='99' and hc.device_type=#device_type#
+		<isNotEmpty prepend=" and " property="hour">
+			hc.create_time <![CDATA[>=]]> CONCAT(#create_time#,  #hour#':00:00') 
+			AND hc.create_time <![CDATA[<=]]> CONCAT(#create_time#, #hour#':59:59') 
+		</isNotEmpty>
+		<isEmpty prepend=" and " property="hour">
+			hc.create_time <![CDATA[>=]]> CONCAT(#create_time#,  ' 00:00:00') 
+			AND hc.create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59') 
+		</isEmpty>
+		
+	</select>
+	
+	<!-- 查询分发时长 -->
+	<select id="queryFenfa" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+			IFNULL(ROUND(AVG(TIME_TO_SEC(TIMEDIFF(
+			(SELECT create_time FROM cp_orderinfo_history WHERE 
+			order_id=hc.order_id AND 
+			order_optlog like '%正在预定，选择预定方式'
+			LIMIT 0,1
+			) 
+			,hc.create_time			
+				))),0),0) AS fenfa
+			FROM cp_orderinfo hc 
+		WHERE 1=1 and hc.channel = #channel# and hc.order_status='99' and hc.device_type=#device_type#
+		<isNotEmpty prepend=" and " property="hour">
+			hc.create_time <![CDATA[>=]]> CONCAT(#create_time#,  #hour#':00:00') 
+			AND hc.create_time <![CDATA[<=]]> CONCAT(#create_time#, #hour#':59:59') 
+		</isNotEmpty>
+		<isEmpty prepend=" and " property="hour">
+			hc.create_time <![CDATA[>=]]> CONCAT(#create_time#,  ' 00:00:00') 
+			AND hc.create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59') 
+		</isEmpty>
+		
+	</select>
+
+	<!-- 查询预订时长 -->
+	<select id="queryBook" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+			IFNULL(ROUND(AVG(TIME_TO_SEC(TIMEDIFF(
+			(SELECT create_time FROM cp_orderinfo_history WHERE 
+			order_id=hc.order_id AND 
+			order_optlog like '%预定成功，进入支付过程%'
+			LIMIT 0,1
+			),
+			(SELECT create_time FROM cp_orderinfo_history WHERE 
+			order_id=hc.order_id AND 
+			order_optlog like '%正在预定，选择预定方式%'
+			LIMIT 0,1
+			) 
+			))),0),0) AS book
+			FROM cp_orderinfo hc 
+		WHERE 1=1 and hc.channel = #channel# and hc.order_status='99' and hc.device_type=#device_type#
+		<isNotEmpty prepend=" and " property="hour">
+			hc.create_time <![CDATA[>=]]> CONCAT(#create_time#,  #hour#':00:00') 
+			AND hc.create_time <![CDATA[<=]]> CONCAT(#create_time#, #hour#':59:59') 
+		</isNotEmpty>
+		<isEmpty prepend=" and " property="hour">
+			hc.create_time <![CDATA[>=]]> CONCAT(#create_time#,  ' 00:00:00') 
+			AND hc.create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59') 
+		</isEmpty>
+		
+	</select>
+	
+	<!-- 查询通知时长 （预订）-->
+	<select id="queryNotify" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+			IFNULL(ROUND(AVG(TIME_TO_SEC(TIMEDIFF(
+			 
+			 	(SELECT create_time FROM elong_orderinfo_logs WHERE 
+				order_id=hc.order_id AND 
+				content LIKE '%出票系统返回结果_预订成功'
+				LIMIT 0,1
+				),
+				(SELECT create_time FROM cp_orderinfo_history WHERE 
+				order_id=hc.order_id AND 
+				order_optlog like '%预定成功，进入支付过程%'
+				LIMIT 0,1
+				)
+			
+			))),0),0) AS notify
+			FROM cp_orderinfo hc 
+		WHERE 1=1 and hc.channel = #channel# and hc.order_status='99' and hc.device_type=#device_type#
+		<isNotEmpty prepend=" and " property="hour">
+			hc.create_time <![CDATA[>=]]> CONCAT(#create_time#,  #hour#':00:00') 
+			AND hc.create_time <![CDATA[<=]]> CONCAT(#create_time#, #hour#':59:59') 
+		</isNotEmpty>
+		<isEmpty prepend=" and " property="hour">
+			hc.create_time <![CDATA[>=]]> CONCAT(#create_time#,  ' 00:00:00') 
+			AND hc.create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59') 
+		</isEmpty>
+		
+	</select>
+	
+	<!-- 查询预订效率 -->
+	<select id="queryBook_xl" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+			IFNULL(ROUND(AVG(TIME_TO_SEC(TIMEDIFF(
+ 			(SELECT create_time FROM cp_orderinfo_history WHERE 
+				order_id=hc.order_id AND 
+				order_optlog like '%通知成功%'
+				LIMIT 0,1
+				)
+			,o.create_time
+			))),0),0) AS book_xl
+			FROM cp_orderinfo hc 
+			LEFT JOIN elong_orderinfo o ON o.order_id=hc.order_id 
+		WHERE 1=1 and hc.channel = #channel# and hc.order_status='99' and hc.device_type=#device_type#
+		<isNotEmpty prepend=" and " property="hour">
+			hc.create_time <![CDATA[>=]]> CONCAT(#create_time#,  #hour#':00:00') 
+			AND hc.create_time <![CDATA[<=]]> CONCAT(#create_time#, #hour#':59:59') 
+		</isNotEmpty>
+		<isEmpty prepend=" and " property="hour">
+			hc.create_time <![CDATA[>=]]> CONCAT(#create_time#,  ' 00:00:00') 
+			AND hc.create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59') 
+		</isEmpty>
+		
+	</select>
+	
+	<!-- 查询支付效率 -->
+	<select id="queryPay_xl" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+			IFNULL(ROUND(AVG(TIME_TO_SEC(TIMEDIFF(
+				(SELECT create_time FROM cp_orderinfo_history WHERE 
+				order_id=hc.order_id AND 
+				order_optlog like '%支付成功%'
+				LIMIT 0,1
+				),
+				(SELECT create_time FROM cp_orderinfo_history WHERE 
+				order_id=hc.order_id AND 
+				order_optlog like '%进入正在支付，选择支付方式'
+				LIMIT 0,1
+				)
+			))),0),0) AS pay_xl
+			FROM cp_orderinfo hc 
+		WHERE 1=1 and hc.channel = #channel# and hc.order_status='99' and hc.device_type=#device_type#
+		<isNotEmpty prepend=" and " property="hour">
+			hc.create_time <![CDATA[>=]]> CONCAT(#create_time#,  #hour#':00:00') 
+			AND hc.create_time <![CDATA[<=]]> CONCAT(#create_time#, #hour#':59:59') 
+		</isNotEmpty>
+		<isEmpty prepend=" and " property="hour">
+			hc.create_time <![CDATA[>=]]> CONCAT(#create_time#,  ' 00:00:00') 
+			AND hc.create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59') 
+		</isEmpty>
+		
+	</select>
+	
+	<!-- 查询通知时长(支付) -->
+	<select id="queryNotifyPay" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+			IFNULL(ROUND(AVG(TIME_TO_SEC(TIMEDIFF(
+			
+				(SELECT create_time FROM elong_orderinfo_logs WHERE 
+				order_id=hc.order_id AND  
+			<!-- 	(content LIKE '%出票结果_成功'
+				or content LIKE '%出票结果/取消结果_成功')   -->
+				content LIKE '%出票系统返回结果_出票成功'
+				LIMIT 0,1
+				),
+				(SELECT create_time FROM cp_orderinfo_history WHERE 
+				order_id=hc.order_id AND 
+				order_optlog like '%支付成功，进入核对流程%'
+				LIMIT 0,1
+				)
+			))),0),0) AS notifypay
+			FROM cp_orderinfo hc 
+		WHERE 1=1 and hc.channel = #channel# and hc.order_status='99' and hc.device_type=#device_type#
+		<isNotEmpty prepend=" and " property="hour">
+			hc.create_time <![CDATA[>=]]> CONCAT(#create_time#,  #hour#':00:00') 
+			AND hc.create_time <![CDATA[<=]]> CONCAT(#create_time#, #hour#':59:59') 
+		</isNotEmpty>
+		<isEmpty prepend=" and " property="hour">
+			hc.create_time <![CDATA[>=]]> CONCAT(#create_time#,  ' 00:00:00') 
+			AND hc.create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59') 
+		</isEmpty>
+	
+	</select>
+	
+	<!-- 查询出票效率 -->
+	<select id="queryOutticket_xl" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+			IFNULL(ROUND(AVG(TIME_TO_SEC(TIMEDIFF(
+ 			<isEqual property="payType" compareValue="11">
+ 			(SELECT create_time FROM elong_orderinfo_logs WHERE 
+				order_id=hc.order_id AND 
+				content = '通知tongcheng出票结果/取消结果_成功'
+				LIMIT 0,1
+				),
+				(SELECT create_time FROM elong_orderinfo_logs WHERE 
+				order_id=hc.order_id AND 
+				content like '同程请求支付订单[成功]%'
+				LIMIT 0,1
+				)
+			</isEqual>
+			 <isEqual property="payType" compareValue="00">
+			 (SELECT create_time FROM elong_orderinfo_logs WHERE 
+				order_id=hc.order_id AND 
+				(content LIKE '通知艺龙出票结果_成功'
+				or content LIKE '%出票结果/取消结果_成功')
+				LIMIT 0,1
+				),hc.create_time
+			 </isEqual>
+			))),0),0) AS outTicket_xl
+			FROM elong_orderinfo hc ,cp_orderinfo cp
+		WHERE 1=1 and hc.channel = #channel#  AND hc.order_status='33' AND hc.notice_status='22' AND hc.order_id = cp.order_id AND cp.device_type=#device_type#
+		<isNotEmpty prepend=" and " property="hour">
+			hc.create_time <![CDATA[>=]]> CONCAT(#create_time#,  #hour#':00:00') 
+			AND hc.create_time <![CDATA[<=]]> CONCAT(#create_time#, #hour#':59:59') 
+		</isNotEmpty>
+		<isEmpty prepend=" and " property="hour">
+			hc.create_time <![CDATA[>=]]> CONCAT(#create_time#,  ' 00:00:00') 
+			AND hc.create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59') 
+		</isEmpty>
+
+	</select>
+	<!-- 查询今天渠道统计的数据的条数 -->
+	<select id="query19eTodayCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM tj_outticket WHERE create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') 
+		AND create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59') 
+		and channel=#channel#
+		and type=#type#
+		and device_type=#device_type#
+		<isNotEmpty prepend=" and " property="hour">
+				 hour=#hour#
+		</isNotEmpty>
+	</select>
+	
+	<!-- 更新tj_outticket表中的今日的数据 -->
+	<update id="updateToTj_OutTicket" parameterClass="java.util.HashMap">
+		update tj_outticket 
+		<dynamic prepend="set">
+			<isNotEmpty prepend=","  property="channel">
+				 channel=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				 create_time=#create_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="hour">
+				 hour=#hour#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="book_xl">
+				 book_xl=#book_xl#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="shoudan">
+				 shoudan=#shoudan#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fenfa">
+				 fenfa=#fenfa#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="book">
+				 book=#book#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="notify">
+				 notify=#notify#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_xl">
+				 pay_xl=#pay_xl#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="notify_pay">
+				 notify_pay=#notify_pay#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="outticket_xl">
+				 outticket_xl=#outticket_xl#
+			</isNotEmpty>
+		</dynamic>
+		where create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') 
+		AND create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59') 
+		and channel = #channel#
+		and type = #type# 
+		and device_type=#device_type#
+		<isNotEmpty prepend=" and " property="hour">
+				 hour=#hour#
+		</isNotEmpty>
+	</update>
+	
+	<!-- 插入统计完成的信息 -->
+	<insert id="addToTj_OutTicket" parameterClass="java.util.HashMap">
+		INSERT INTO tj_outticket
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="tj_id">
+				tj_id
+			</isNotEmpty>
+			<isNotEmpty prepend=","  property="channel">
+				 channel
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				 create_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="hour">
+				 hour
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="book_xl">
+				 book_xl
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="shoudan">
+				 shoudan
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fenfa">
+				 fenfa
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="book">
+				 book
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="notify">
+				 notify
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_xl">
+				 pay_xl
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="notify_pay">
+				 notify_pay
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="outticket_xl">
+				 outticket_xl
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="type">
+				 type
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="device_type">
+				 device_type
+			</isNotEmpty>
+			)
+		</dynamic>
+		 values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="tj_id">
+				#tj_id#
+			</isNotEmpty>
+			<isNotEmpty prepend=","  property="channel">
+				 #channel#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				 #create_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="hour">
+				 #hour#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="book_xl">
+				 #book_xl#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="shoudan">
+				 #shoudan#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fenfa">
+				 #fenfa#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="book">
+				 #book#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="notify">
+				 #notify#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_xl">
+				 #pay_xl#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="notify_pay">
+				 #notify_pay#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="outticket_xl">
+				 #outticket_xl#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="type">
+				 #type#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="device_type">
+				#device_type#
+			</isNotEmpty>
+			
+			)
+		</dynamic>
+	</insert>
+	
+	
+	
+	
+	
+	<!-- 途牛数据 -->
+	<!-- 查询收单时长 -->
+	<select id="queryShoudanTuniu" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+			IFNULL(ROUND(AVG(TIME_TO_SEC(TIMEDIFF(
+			hc.create_time,o.create_time))),0),0) AS shoudan
+		FROM cp_orderinfo hc 
+		LEFT JOIN tuniu_orderinfo o ON o.order_id=hc.order_id 
+		where 1=1 and hc.channel = #channel# and hc.order_status='99' and hc.device_type=#device_type#
+		<isNotEmpty prepend=" and " property="hour">
+			hc.create_time <![CDATA[>=]]> CONCAT(#create_time#,  #hour#':00:00') 
+			AND hc.create_time <![CDATA[<=]]> CONCAT(#create_time#, #hour#':59:59') 
+		</isNotEmpty>
+		<isEmpty prepend=" and " property="hour">
+			hc.create_time <![CDATA[>=]]> CONCAT(#create_time#,  ' 00:00:00') 
+			AND hc.create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59') 
+		</isEmpty>
+	</select>
+	
+	<!-- 查询预订效率 -->
+	<select id="queryBook_xlTuniu" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+			IFNULL(ROUND(AVG(TIME_TO_SEC(TIMEDIFF(
+ 			(SELECT create_time FROM cp_orderinfo_history WHERE 
+				order_id=hc.order_id AND 
+				order_optlog like '%通知成功%'
+				LIMIT 0,1
+				)
+			,o.create_time
+			))),0),0) AS book_xl
+			FROM cp_orderinfo hc 
+			LEFT JOIN tuniu_orderinfo o ON o.order_id=hc.order_id 
+		WHERE 1=1 and hc.channel = #channel# and hc.order_status='99' and hc.device_type=#device_type#
+		<isNotEmpty prepend=" and " property="hour">
+			hc.create_time <![CDATA[>=]]> CONCAT(#create_time#,  #hour#':00:00') 
+			AND hc.create_time <![CDATA[<=]]> CONCAT(#create_time#, #hour#':59:59') 
+		</isNotEmpty>
+		<isEmpty prepend=" and " property="hour">
+			hc.create_time <![CDATA[>=]]> CONCAT(#create_time#,  ' 00:00:00') 
+			AND hc.create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59') 
+		</isEmpty>
+	</select>
+	
+	<!-- 查询通知时长 （预订）-->
+	<select id="queryNotifyTuniu" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+			IFNULL(ROUND(AVG(TIME_TO_SEC(TIMEDIFF(
+			 
+			 	(SELECT create_time FROM tuniu_orderinfo_history WHERE 
+				order_id=hc.order_id AND 
+				order_optlog LIKE '%出票系统返回结果_预订成功'
+				LIMIT 0,1
+				),
+				(SELECT create_time FROM cp_orderinfo_history WHERE 
+				order_id=hc.order_id AND 
+				order_optlog like '%预定成功，进入支付过程%'
+				LIMIT 0,1
+				)
+			
+			))),0),0) AS notify
+			FROM cp_orderinfo hc 
+		WHERE 1=1 and hc.channel = #channel# and hc.order_status='99' and hc.device_type=#device_type#
+		<isNotEmpty prepend=" and " property="hour">
+			hc.create_time <![CDATA[>=]]> CONCAT(#create_time#,  #hour#':00:00') 
+			AND hc.create_time <![CDATA[<=]]> CONCAT(#create_time#, #hour#':59:59') 
+		</isNotEmpty>
+		<isEmpty prepend=" and " property="hour">
+			hc.create_time <![CDATA[>=]]> CONCAT(#create_time#,  ' 00:00:00') 
+			AND hc.create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59') 
+		</isEmpty>
+	</select>
+	
+	<!-- 查询通知时长(支付) -->
+	<select id="queryNotifyPayTuniu" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+			IFNULL(ROUND(AVG(TIME_TO_SEC(TIMEDIFF(
+			
+				(SELECT create_time FROM tuniu_orderinfo_history WHERE 
+				order_id=hc.order_id AND 
+				(order_optlog LIKE '%出票结果_成功'
+				or order_optlog LIKE '%出票结果/取消结果_成功')
+				LIMIT 0,1
+				),
+				(SELECT create_time FROM cp_orderinfo_history WHERE 
+				order_id=hc.order_id AND 
+				order_optlog like '%支付成功，进入核对流程%'
+				LIMIT 0,1
+				)
+			))),0),0) AS notifypay
+			FROM cp_orderinfo hc 
+		WHERE 1=1 and hc.channel = #channel# and hc.order_status='99' and hc.device_type=#device_type#
+		<isNotEmpty prepend=" and " property="hour">
+			hc.create_time <![CDATA[>=]]> CONCAT(#create_time#,  #hour#':00:00') 
+			AND hc.create_time <![CDATA[<=]]> CONCAT(#create_time#, #hour#':59:59') 
+		</isNotEmpty>
+		<isEmpty prepend=" and " property="hour">
+			hc.create_time <![CDATA[>=]]> CONCAT(#create_time#,  ' 00:00:00') 
+			AND hc.create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59') 
+		</isEmpty>
+	</select>
+	
+	<!-- 查询出票效率 -->
+	<select id="queryOutticket_xlTuniu" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+			IFNULL(ROUND(AVG(TIME_TO_SEC(TIMEDIFF(
+ 			<isEqual property="payType" compareValue="11">
+ 			(SELECT create_time FROM tuniu_orderinfo_history WHERE 
+				order_id=hc.order_id AND 
+				order_optlog = '通知tongcheng出票结果/取消结果_成功'
+				LIMIT 0,1
+				),
+				(SELECT create_time FROM tuniu_orderinfo_history WHERE 
+				order_id=hc.order_id AND 
+				order_optlog like '同程请求支付订单[成功]%'
+				LIMIT 0,1
+				)
+			</isEqual>
+			 <isEqual property="payType" compareValue="00">
+			 (SELECT create_time FROM tuniu_orderinfo_history WHERE 
+				order_id=hc.order_id AND 
+				(order_optlog LIKE '通知艺龙出票结果_成功'
+				or order_optlog LIKE '%出票结果/取消结果_成功')
+				LIMIT 0,1
+				),hc.create_time
+			 </isEqual>
+			))),0),0) AS outTicket_xl
+			FROM tuniu_orderinfo hc ,cp_orderinfo cp
+		WHERE 1=1 AND hc.order_status='33' AND hc.notice_status='22' AND hc.order_id = cp.order_id AND cp.device_type=#device_type#
+		<isNotEmpty prepend=" and " property="hour">
+			hc.create_time <![CDATA[>=]]> CONCAT(#create_time#,  #hour#':00:00') 
+			AND hc.create_time <![CDATA[<=]]> CONCAT(#create_time#, #hour#':59:59') 
+		</isNotEmpty>
+		<isEmpty prepend=" and " property="hour">
+			hc.create_time <![CDATA[>=]]> CONCAT(#create_time#,  ' 00:00:00') 
+			AND hc.create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59') 
+		</isEmpty>
+	</select>
+</sqlMap>

@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="userIdsCardInfo">
+	<!-- 根据用户身份证查询用户身份信息 -->
+	<select id="queryUserIdsCardInfo" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT user_name,ids_card,status,
+		DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+		DATE_FORMAT(update_time,'%Y-%m-%d %H:%i:%s') AS update_time
+		FROM hc_userinfo_check
+		WHERE ids_card=#ids_card:VARCHAR# AND user_name=#user_name:VARCHAR#
+	</select>
+	
+	<!-- 插入用户身份证信息表数据 -->
+	<insert id="addUserInfoCheck" parameterClass="java.util.HashMap">
+		INSERT INTO hc_userinfo_check(user_name,ids_card,create_time,update_time,status)
+		VALUES(#user_name:VARCHAR#,#ids_card:VARCHAR#,NOW(),NOW(),#status:VARCHAR#)
+	</insert>
+	<!-- 修改用户身份证信息 -->
+	<update id="updateUserInfoCheck" parameterClass="java.util.HashMap">
+		UPDATE hc_userinfo_check 
+			SET status=#status:VARCHAR#,
+				update_time=NOW()
+			WHERE ids_card=#ids_card:VARCHAR# AND user_name=#user_name:VARCHAR#
+	</update>
+	
+	<!-- 查询待审核并且七天之前的身份证信息 -->
+	<select id="queryUserInfoCheckList" resultClass="java.util.HashMap">
+		SELECT user_name,ids_card,status,
+		DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+		DATE_FORMAT(update_time,'%Y-%m-%d %H:%i:%s') AS update_time
+		FROM hc_userinfo_check
+		WHERE status='1' AND NOW() <![CDATA[>]]> DATE_ADD(update_time, INTERVAL 7 DAY) 
+	</select>
+	
+		<!-- 修改联系人状态-->
+	<update id="updateHcUserRegistStatus" parameterClass="java.util.HashMap">
+		UPDATE hc_orderinfo_regist 
+		SET regist_status=#regist_status:VARCHAR#
+		<isNotEmpty prepend="," property="opt_person">
+			opt_time=NOW(),
+			opt_person=#opt_person:VARCHAR#
+		</isNotEmpty>
+		WHERE ids_card=#ids_card:VARCHAR# AND user_name=#user_name:VARCHAR#
+	</update>
+	
+	<!-- 查询代理商已通过的联系人数量和代理商id -->
+	<select id="queryAgentPassNumAndId" resultClass="java.util.HashMap">
+		SELECT  COUNT(user_id) AS passNum,user_id 
+		FROM hc_orderinfo_regist 
+		WHERE regist_status='22' GROUP BY user_id 
+	</select>
+	
+	<!-- 根据代理商list和订单金额查询订单信息 -->
+	<select id="queryAgentOrderInfo" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT order_id,ticket_pay_money,dealer_id,dealer_name ,train_no,from_city,to_city,seat_type,
+			DATE_FORMAT(out_ticket_time,'%Y-%m-%d %H:%i:%s') AS out_ticket_time
+			FROM hc_orderinfo 
+			WHERE order_status='44' AND out_ticket_time <![CDATA[>]]> DATE_SUB(NOW(),INTERVAL 7 DAY) 
+			AND  (ticket_pay_money BETWEEN #moneyStart# AND #moneyEnd#)
+			<isNotEmpty prepend=" and " property="dealer_id">
+				<iterate  conjunction="or" open="(" close=")"
+					property="dealer_id">
+					dealer_id=#dealer_id[]#  
+				</iterate>
+			</isNotEmpty>	
+	</select>
+	
+	<!-- 插入中奖人信息 -->
+	<insert id="addAgentWinningInfo" parameterClass="java.util.HashMap">
+		INSERT INTO hc_agent_winning(create_time,update_time
+			<isNotEmpty prepend=" ," property="agent_id">
+				agent_id
+			</isNotEmpty>
+			<isNotEmpty prepend=" ," property="dealer_name">
+				dealer_name
+			</isNotEmpty>
+			<isNotEmpty prepend=" ," property="order_id">
+				order_id
+			</isNotEmpty>	
+				<isNotEmpty prepend=" ," property="winning_money">
+				winning_money
+			</isNotEmpty>	
+			<isNotEmpty prepend=" ," property="order_time">
+				order_time
+			</isNotEmpty>	
+			<isNotEmpty prepend=" ," property="opt_person">
+				opt_person
+			</isNotEmpty>
+			<isNotEmpty prepend=" ," property="agent_type">
+				agent_type
+			</isNotEmpty>
+			<isNotEmpty prepend=" ," property="winning_type">
+				winning_type
+			</isNotEmpty>
+			<isNotEmpty prepend=" ," property="extend">
+				extend
+			</isNotEmpty>
+			<isNotEmpty prepend=" ," property="from_city">
+				from_city
+			</isNotEmpty>
+			<isNotEmpty prepend=" ," property="to_city">
+				to_city
+			</isNotEmpty>	
+			<isNotEmpty prepend=" ," property="train_no">
+				train_no
+			</isNotEmpty>
+			<isNotEmpty prepend=" ," property="seat_type">
+				seat_type
+			</isNotEmpty>	
+			)
+			VALUES(NOW(),NOW()
+			<isNotEmpty prepend=" ," property="agent_id">
+				#agent_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" ," property="dealer_name">
+				#dealer_name:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" ," property="order_id">
+				#order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" ," property="winning_money">
+				#winning_money#
+			</isNotEmpty>
+			<isNotEmpty prepend=" ," property="order_time">
+				#order_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" ," property="opt_person">
+				#opt_person:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" ," property="agent_type">
+				#agent_type:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" ," property="winning_type">
+				#winning_type:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" ," property="extend">
+				#extend:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" ," property="from_city">
+				#from_city:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" ," property="to_city">
+				#to_city:VARCAHR#
+			</isNotEmpty>	
+			<isNotEmpty prepend=" ," property="train_no">
+				#train_no:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" ," property="seat_type">
+				#seat_type:VARCHAR#
+			</isNotEmpty>
+			)
+	</insert>
+	
+	<!-- 根据代理商id和中奖代理商类型查询其当天是否已经中奖  -->
+	<select id="queryAgentWinningDay" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT winning_id,agent_id,order_id 
+		FROM hc_agent_winning
+		WHERE DATE_SUB(NOW(),INTERVAL 1 DAY) <![CDATA[<]]> create_time 
+		 AND DATE_ADD(NOW(),INTERVAL 1 DAY) <![CDATA[>]]> create_time 
+		 AND agent_id=#agent_id:VARCHAR# AND agent_type=#agent_type:VARCHAR# 
+	</select>
+	
+	<!-- 查询代理商的中奖信息 -->
+	<select id="queryAgentWinningInfo" resultClass="java.util.HashMap">
+	 	SELECT agent_id, dealer_name,order_id ,winning_money,
+	 	DATE_FORMAT(order_time,'%m-%d ') AS order_time,
+	 	DATE_FORMAT(create_time,'%Y-%m-%d') AS create_time,
+	 	DATE_FORMAT(update_time,'%Y-%m-%d %H:%i:%s') AS update_time,
+	 	opt_person,agent_type,winning_type,extend,from_city,to_city,train_no,seat_type
+		FROM hc_agent_winning 
+		WHERE extend IS NULL ORDER BY create_time DESC
+	</select>
+	
+	<insert id="addAgentLoginInfo" parameterClass="java.util.HashMap">
+		INSERT INTO hc_agent_login(agent_id,is_verify,create_time)
+					VALUES(#agent_id:VARCHAR#,#is_verify:VARCAHR#,NOW())
+	</insert>
+	
+	<select id="queryAgentLogin" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT agent_login_id,agent_id,is_verify,create_time
+		FROM hc_agent_login
+		WHERE agent_id=#agentId:VARCHAR# AND is_verify='0'
+	</select>
+	
+		
+	
+	
+	<!-- 根据身份证号和姓名查询代理商中是否存在该常用乘客 -->
+	<select id="queryPassNumByCard" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT count(1) 
+		FROM inner_userinfo_link 
+		WHERE user_id = #user_id:VARCHAR# AND user_ids = #user_ids:VARCHAR# AND 
+			ids_type = #ids_type:VARCHAR# AND link_name = #link_name:VARCHAR#
+			AND channel='chq'
+	</select>
+	
+	<!-- 根据代理商ID查询乘客数-->
+	<select id="queryAgentPassTotalNum" parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		SELECT count(1) 
+		FROM inner_userinfo_link 
+		WHERE user_id = #user_id:VARCHAR#
+		AND channel='chq'
+	</select>
+	
+	<!-- 删除代理商仅购买过一次票的常用乘客信息 -->
+	<delete id="deleteAgentPass" parameterClass="java.util.HashMap">
+		DELETE FROM inner_userinfo_link 
+		WHERE user_id = #user_id:VARCHAR# AND buy_num = 1 
+		AND channel='chq' LIMIT #num:Integer#
+	</delete>
+	
+	<!-- 添加代理商常用乘客信息 -->
+	<insert id="addAgentPassInfo" parameterClass="java.util.HashMap">
+		INSERT INTO inner_userinfo_link (user_id,link_name,ids_type
+			,user_ids,channel,buy_num,create_time)
+		VALUES (#user_id:VARCHAR#, #link_name:VARCHAR#, 
+			#ids_type:VARCHAR#, #user_ids:VARCHAR#,'chq',1, NOW())
+	</insert>
+	
+	<!-- 删除代理商选定的常用乘客信息 -->
+	<delete id="deleteAgentPassInfo" parameterClass="java.util.HashMap">
+		DELETE FROM inner_userinfo_link 
+		WHERE user_id = #user_id:VARCHAR# AND user_ids = #user_ids:VARCHAR#
+		AND ids_type = #ids_type:VARCHAR# AND link_name = #link_name:VARCHAR#
+		AND channel='chq'
+	</delete>
+	
+	<!-- 查询该代理商常用乘客信息 -->
+	<select id="queryLinkInfoList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT user_id,link_name,ids_type,user_ids 
+		FROM inner_userinfo_link WHERE user_id = #user_id:VARCHAR# AND channel='chq' 
+		ORDER BY buy_num DESC  
+		<isNotEmpty prepend="LIMIT" property="limit">
+			 #limit:Integer#
+		</isNotEmpty>
+	</select>
+	
+	
+	
+</sqlMap>

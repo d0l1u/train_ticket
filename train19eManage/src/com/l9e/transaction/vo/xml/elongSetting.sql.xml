@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="elongSetting">
+
+	<select id="querySetting" resultClass="java.util.HashMap">
+		SELECT setting_id, setting_name, setting_value, setting_status, setting_desc FROM elong_system_setting
+	</select>
+	
+	<update id="updateSetting" parameterClass="java.util.HashMap">
+		update elong_system_setting qss
+		set setting_value=#setting_value#
+		where setting_id=#setting_id#
+	</update>
+	
+	<select id="querySettingById" resultClass="java.util.HashMap" parameterClass="java.lang.String">
+		SELECT setting_id, setting_name, setting_value, setting_status, setting_desc 
+		FROM elong_system_setting
+		WHERE setting_id=#setting_id#
+	</select>
+	
+	<!-- 增加操作日志 -->
+	<insert id="addSystemLog" parameterClass="java.util.HashMap">
+		insert into elong_system_log (
+			content,create_time, opt_person)
+		value(#content#,NOW(),#opt_person#)
+	</insert>
+	
+	<!-- 查询系统设置操作日志明细 -->
+	<select id="querySystemSetList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') create_time,opt_person,content FROM elong_system_log
+		ORDER BY create_time DESC LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select> 
+	
+	<!-- 查询系统设置操作日志条数 -->
+	<select id="querySystemSetListCount" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM elong_system_log ORDER BY create_time DESC
+	</select> 
+</sqlMap>

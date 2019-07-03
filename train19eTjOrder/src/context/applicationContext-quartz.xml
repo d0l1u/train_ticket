@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/mvc  
+	http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+	<context:component-scan base-package="com.l9e.transaction.job"/>
+	
+	<!-- 总管理类,执行调度程序  -->
+	<bean id="startQuertz"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>	
+			<!--	<ref bean="UploadExcel_Time"/> 
+				
+				<ref bean="Tj_Account_Time"/>
+				<ref bean="tj_Hc_OrderInfo_Today_Time"/>
+				<ref bean="Tj_Dealer_Time"/>
+				<ref bean="Tj_OutTicket_Time"/>
+				<ref bean="Tj_hc_halfHour_Time"/>
+				<ref bean="Tj_hc_outTicketSbl_Time" />
+				<ref bean="tjOrderSaleReportJobTime"/>
+				
+				<ref bean="Tj_Channel_Time"/>
+				
+				<ref bean="tj_FailOrder_Time"/>  
+				 
+				
+				<ref bean="UploadCsv_Time"/>
+				<ref bean="uploadFileToLocal_Time"/>
+				<ref bean="tj_Exception_Job_Time"/>
+				-->
+				<ref bean="tj_Match_Job_Time"/>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 每隔十分钟执行更新统计tj_exception表中今天的订单数据 -->
+	<bean id="tj_Exception_Job_Time" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="tj_Exception_Job_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 0/1 * * * ?</value>
+		</property>
+	</bean>
+	<bean id="tj_Exception_Job_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="tj_Exception_Job"/>
+		</property>
+		<property name="targetMethod">
+			<value>queryExceptionJob</value>
+		</property>
+	</bean>
+	
+	
+	<!-- 添加到表tj_match表中 -->
+	<bean id="tj_Match_Job_Time" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="tj_Match_Job_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 17 * * * ?</value>
+		</property>
+	</bean>
+	<bean id="tj_Match_Job_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="tj_Match_Job"/>
+		</property>
+		<property name="targetMethod">
+			<value>queryMatchJob</value>
+		</property>
+	</bean>
+	
+	
+	<!-- 每隔十分钟执行更新统计Tj_Account表中今天的订单数据 -->
+	<bean id="Tj_Account_Time" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="Tj_Account_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0/30 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="Tj_Account_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="tj_Account_Job"/>
+		</property>
+		<property name="targetMethod">
+			<value>queryAccountToInsertUpdateTj</value>
+		</property>
+	</bean>
+	
+	<!-- 每隔十分钟执行更新统计tj_Channel表中今天的订单数据 -->
+	<bean id="Tj_Channel_Time" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="Tj_Channel_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 0/1 * * * ?</value>
+		</property>
+	</bean>
+	<bean id="Tj_Channel_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="tj_Channel_Job"/>
+		</property>
+		<property name="targetMethod">
+			<value>queryHcToInsertUpdateTj</value>
+		</property>
+	</bean>
+	
+	<!-- 每隔十分钟执行更新统计tj_Hc_OrderInfo表中今天的订单数据 -->
+	<bean id="tj_Hc_OrderInfo_Today_Time" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="tj_Hc_OrderInfo_Today_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0/10 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="tj_Hc_OrderInfo_Today_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="hc_orderInfo_Today_Job"/>
+		</property>
+		<property name="targetMethod">
+			<value>queryHcToInsertUpdateTj</value>
+		</property>
+	</bean>
+	
+	<!-- 执行更新统计tj_hc_halfHour，每个十分钟执行更新当天每半个小时的订单数  -->
+	<bean id="Tj_hc_halfHour_Time" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="Tj_hc_halfHour_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 5/10 * * * ?</value>
+		</property>
+	</bean>
+	<bean id="Tj_hc_halfHour_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="Tj_hc_halfHour_job"/>
+		</property>
+		<property name="targetMethod">
+			<value>queryHalfHour</value>
+		</property>
+	</bean>
+	
+	<!-- 执行更新统计tj_hc_outTicketSbl，每隔十分钟执行更新当天每半个小时的订单失败率  -->
+	<bean id="Tj_hc_outTicketSbl_Time" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="Tj_hc_outTicketSbl_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 3/10 * * * ?</value>
+		</property>
+	</bean>
+	<bean id="Tj_hc_outTicketSbl_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="Tj_hc_outTicketSbl_job"/>
+		</property>
+		<property name="targetMethod">
+			<value>queryOutTicketSbl</value>
+		</property>
+	</bean>
+	
+	<!-- 统计代理商的销售报表，每晚0:30执行JOB -->
+	<bean id="tjOrderSaleReportJobTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="tjOrderSaleReportJobTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0 30 0 * * ?</value>
+		</property>
+	</bean>
+	<bean id="tjOrderSaleReportJobTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="tjOrderSaleReportJob" />
+		</property>
+		<property name="targetMethod">
+			<value>tjOrderSaleReport</value>
+		</property>
+	</bean>
+	
+	<!-- 每晚4:00执行更新统计前一天tj_Opter
+	<bean id="tj_Opter_Time" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="tj_Opter_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 25 10 * * ?</value>
+		</property>
+	</bean>
+	<bean id="tj_Opter_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="tj_Opter_Job"/>
+		</property>
+		<property name="targetMethod">
+			<value>tj_OptToTable</value>
+		</property>
+	</bean> -->
+	
+	<!-- 失败订单统计，十分钟-->
+	<bean id="tj_FailOrder_Time" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="tj_FailOrder_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 0/1 * * * ?</value>
+		</property>
+	</bean>
+	<bean id="tj_FailOrder_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="tj_FailOrder_Job"/>
+		</property>
+		<property name="targetMethod">
+			<value>queryHcToInsertUpdateTj</value>
+		</property>
+	</bean>
+	
+	<!-- 每隔十分钟执行更新统计tj_OutTicket表中今天的订单数据 -->
+	<bean id="Tj_OutTicket_Time" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="Tj_OutTicket_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0/10 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="Tj_OutTicket_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="tj_OutTicket_Job"/>
+		</property>
+		<property name="targetMethod">
+			<value>queryXlToInsertUpdateTj</value>
+		</property>
+	</bean>
+	
+	<!-- 统计tj_Dealer每个月1号跑上个月数据 -->
+	<bean id="Tj_Dealer_Time" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="Tj_Dealer_Task"/>
+		</property>
+		<property name="cronExpression">
+		<!-- 	<value>0 0 1 1 * ?</value>-->
+		<value>0/10 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="Tj_Dealer_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="tj_Dealer_Job"/>
+		</property>
+		<property name="targetMethod">
+			<value>queryDealerToInsertTj</value>
+		</property>
+	</bean>
+	
+	<!-- 自动下载对账表格 -->
+	<bean id="UploadExcel_Time"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="uploadExcelTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/30 * * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="uploadExcelTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="UploadExcelJob" />
+		</property>
+		<property name="targetMethod">
+			<value>uploadExcel</value>
+		</property>
+	</bean>
+	
+	<!-- 自动扫描csv文件进行上传 -->
+	<bean id="UploadCsv_Time"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="uploadCsvTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0 42 19 * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="uploadCsvTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="UploadCsvJob" />
+		</property>
+		<property name="targetMethod">
+			<value>uploadCsv</value>
+		</property>
+	</bean>
+	<!-- 获取下载好的支付宝文件-->
+	<bean id="uploadFileToLocal_Time"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="uploadFileToLocalTask" />
+		</property>
+		<property name="cronExpression">
+			<value>* 00 14 * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="uploadFileToLocalTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="UploadCsvJob" />
+		</property>
+		<property name="targetMethod">
+			<value>uploadFileToLocal</value>
+		</property>
+	</bean>
+	
+	
+	
+</beans>

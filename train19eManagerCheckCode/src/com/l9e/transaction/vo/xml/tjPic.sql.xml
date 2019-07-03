@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="tjPic">
+	
+	<!-- 插入统计完成的信息tj_rh_picture -->
+	<insert id="addTjPic" parameterClass="java.util.HashMap">
+		INSERT INTO tj_rh_picture
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="id">
+				id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_ren">
+				opt_ren
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pic_count">
+				pic_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pic_success">
+				pic_success
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pic_fail">
+				pic_fail
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pic_unkonwn">
+				pic_unkonwn
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pic_notOpt">
+				pic_notOpt
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="channel">
+				channel
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_name">
+				opt_name
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_time">
+				opt_time
+			</isNotEmpty>
+			,create_time
+			)
+		</dynamic>
+		 values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="id">
+				 #id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_ren">
+				 #opt_ren#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pic_count">
+				#pic_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pic_success">
+				#pic_success#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pic_fail">
+				#pic_fail#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pic_unkonwn">
+				#pic_unkonwn#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pic_notOpt">
+				#pic_notOpt#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="channel">
+				#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_name">
+				#opt_name#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_time">
+				#opt_time#
+			</isNotEmpty>
+			,now()
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 修改统计完成的信息tj_rh_picture -->
+	<update id="updateTjPic" parameterClass="java.util.HashMap">
+		update tj_rh_picture
+		<dynamic prepend="set">
+			create_time=now() ,
+			<isNotEmpty prepend="," property="pic_count">
+				pic_count=#pic_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pic_success">
+				pic_success=#pic_success#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pic_fail">
+				pic_fail=#pic_fail#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pic_unkonwn">
+				pic_unkonwn=#pic_unkonwn#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pic_notOpt">
+				pic_notOpt=#pic_notOpt#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="channel">
+				channel=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_name">
+				opt_name=#opt_name#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_time">
+				opt_time=#opt_time#
+			</isNotEmpty>
+		</dynamic>
+		where create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59')
+	and opt_ren=#opt_ren# and opt_time=#opt_time#
+	</update>
+	
+	<!-- 查询当天表中数据条数 -->
+	<select id="queryTodayCount" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM tj_rh_picture where create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59')
+	and opt_ren=#opt_ren# and opt_time=#opt_time#
+	</select>
+	
+	<!-- 查询表中数据条数 -->
+	<select id="queryTable_Count" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM tj_rh_picture
+	</select>
+	
+	<!-- 查询时间 -->
+	<select id="queryDate_List" resultClass="java.lang.String">
+		SELECT DISTINCT DATE_FORMAT(create_time, '%Y-%m-%d') AS create_time 
+		FROM rh_picture 
+		WHERE create_time IS NOT NULL 
+		ORDER BY DATE_FORMAT(create_time, '%Y-%m-%d') ASC 
+	</select>
+	
+	<!-- 查询操作人和图片总数-->
+	<select id="queryOptrenAndPiccount" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT 
+		  opt_ren,
+		  COUNT(1) AS pic_count 
+		FROM
+		  rh_picture 
+		WHERE
+		 create_time <![CDATA[>=]]>CONCAT( #create_time#,' 00:00:00' )
+		 AND create_time <![CDATA[<]]> CONCAT(#create_time#,' 23:59:59' )
+		 AND opt_ren IS NOT NULL
+		GROUP BY opt_ren 
+		ORDER BY pic_count DESC 
+	</select>
+	
+	<!-- 查询操作图片成功数-->
+	<select id="queryPicSuccess" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM rh_picture WHERE opt_ren=#opt_ren# and result_status='1' and DATE_FORMAT(create_time,'%Y-%m-%d')=#create_time#
+	</select>
+	
+	<!-- 查询操作图片失败数-->
+	<select id="queryPicFail" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM rh_picture WHERE opt_ren=#opt_ren# and result_status='0' and DATE_FORMAT(create_time,'%Y-%m-%d')=#create_time#
+	</select>
+	
+	<!-- 查询无人操作的数目 -->
+	<select id="queryPicNotOpt" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM rh_picture WHERE opt_ren=#opt_ren# and result_status='3' and DATE_FORMAT(create_time,'%Y-%m-%d')=#create_time#
+	</select>
+	
+	<!-- 查询操作图片未知数，状态为5-->
+	<select id="queryPicUnknown" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM rh_picture WHERE opt_ren=#opt_ren# and result_status='5' and DATE_FORMAT(create_time,'%Y-%m-%d')=#create_time#
+	</select>
+	
+	<!-- 查询操作渠道-->
+	<select id="queryChannel" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT DISTINCT channel FROM rh_picture WHERE opt_ren=#opt_ren# 
+	</select>
+	
+	<!-- 查询操作人真实姓名-->
+	<select id="queryOptname" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT DISTINCT real_name FROM rh_user WHERE username=#opt_ren# 
+	</select>
+	
+	<!-- 查询当操作人IS NULL的数据，并且插入到 tj_rh_picture表中  -->
+	<select id="queryNullCodeCount" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT DISTINCT channel,COUNT(1) AS pic_count FROM rh_picture WHERE opt_ren IS NULL AND DATE_FORMAT(create_time,'%Y-%m-%d')=#create_time#
+	</select>
+	<!-- 查询当操作人IS NULL并且返回值为5的数据，并且插入到 tj_rh_picture表中  -->
+	<select id="queryNullAndUnknownCodeCount" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(1) AS pic_count FROM rh_picture WHERE opt_ren IS NULL AND DATE_FORMAT(create_time,'%Y-%m-%d')=#create_time# AND result_status='5'
+	</select>
+	<!-- 查询当操作人IS NULL并且返回值为3的数据，并且插入到 tj_rh_picture表中  -->
+	<select id="queryNullAndNotoptCodeCount" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(1) AS pic_count FROM rh_picture WHERE opt_ren IS NULL AND DATE_FORMAT(create_time,'%Y-%m-%d')=#create_time# AND result_status='3'
+	</select>
+	
+	<!-- 自动清空三天以前的rh_picture表中的数据-->
+	<delete id="clearRh_picture">
+		DELETE FROM rh_picture 
+	</delete>
+	
+	<!-- 查询tj_rhPic_hour表中的数据条数 -->
+	<select id="queryRhPicHourTable_Count" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM tj_rhpic_hour
+	</select>
+	
+	<!-- 查询每个小时的数据 -->
+	<select id="queryRhPicHour" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT DATE_FORMAT(create_time,'%H') AS hour_stat,DATE_FORMAT(create_time,'%Y-%m-%d') day_stat,COUNT(DATE_FORMAT(create_time,'%H')) code_count 
+		FROM rh_picture WHERE DATE_FORMAT(create_time,'%Y-%m-%d')=#create_time# GROUP BY DATE_FORMAT(create_time,'%H') ORDER BY hour_stat
+	</select>
+
+	<!-- 查询某天某个小时对应的打码成功数 -->
+	<select id="queryRhPicHourCodeSuccess" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT COUNT(DATE_FORMAT(create_time,'%H')) code_success FROM rh_picture WHERE DATE_FORMAT(create_time,'%Y-%m-%d')=#day_stat# AND 
+		DATE_FORMAT(create_time,'%H')=#hour_stat# AND result_status='1'
+	</select>
+
+	<!-- 查询某天某个小时对应的打码失败数 -->
+	<select id="queryRhPicHourCodeFail" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT COUNT(DATE_FORMAT(create_time,'%H')) code_fail FROM rh_picture WHERE DATE_FORMAT(create_time,'%Y-%m-%d')=#day_stat# AND 
+		DATE_FORMAT(create_time,'%H')=#hour_stat# AND result_status='0'
+	</select>
+	
+	<!-- 查询某天某个小时对应的打码超时数 -->
+	<select id="queryRhPicHourCodeUnknown" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT COUNT(DATE_FORMAT(create_time,'%H')) code_unknown FROM rh_picture WHERE DATE_FORMAT(create_time,'%Y-%m-%d')=#day_stat# AND 
+		DATE_FORMAT(create_time,'%H')=#hour_stat# AND result_status='5'
+	</select>
+	
+	<!-- 插入统计完成的信息tj_rhPic_hour表 -->
+	<insert id="addToTj_rhPic_hour" parameterClass="java.util.HashMap">
+		INSERT INTO tj_rhpic_hour
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="id">
+				id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="hour_stat">
+				hour_stat
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="day_stat">
+				day_stat
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_count">
+				code_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_success">
+				code_success
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_fail">
+				code_fail
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_unknown">
+				code_unknown
+			</isNotEmpty>
+			,create_time
+			)
+		</dynamic>
+		 values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="id">
+				#id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="hour_stat">
+				#hour_stat#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="day_stat">
+				#day_stat#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_count">
+				#code_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_success">
+				#code_success#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_fail">
+				#code_fail#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_unknown">
+				#code_unknown#
+			</isNotEmpty>
+			,now()
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 修改统计完成的信息tj_rhPic_hour表 -->
+	<update id="updateToTj_rhPic_hour" parameterClass="java.util.HashMap">
+		update tj_rhpic_hour
+		<dynamic prepend="set">
+			create_time=now() ,
+			<isNotEmpty prepend="," property="hour_stat">
+				hour_stat=#hour_stat#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="day_stat">
+				day_stat=#day_stat#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_count">
+				code_count=#code_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_success">
+				code_success=#code_success#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_fail">
+				code_fail=#code_fail#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_unknown">
+				code_unknown=#code_unknown#
+			</isNotEmpty>
+		</dynamic>
+		where create_time <![CDATA[>=]]> CONCAT(#day_stat#, ' 00:00:00') AND create_time <![CDATA[<=]]> CONCAT(#day_stat#, ' 23:59:59')
+		and day_stat=#day_stat# and hour_stat=#hour_stat#
+	</update>
+	
+	<!--查询当天统计完成的信息tj_rhPic_hour表   -->
+	<select id="queryTodayHourCount" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM tj_rhpic_hour where create_time <![CDATA[>=]]> CONCAT(#day_stat#, ' 00:00:00') AND create_time <![CDATA[<=]]> CONCAT(#day_stat#, ' 23:59:59')
+	and day_stat=#day_stat# and hour_stat=#hour_stat#
+	</select>
+	
+	<!-- 查询当前打码用户的打码信息 -->
+	<select id="queryCodeUserList" parameterClass="java.util.Map" resultClass="com.l9e.transaction.vo.CodeRateVo">
+		SELECT opt_ren AS username, 
+		AVG(TIMESTAMPDIFF(SECOND, create_time, start_time)) code_get_time, 
+		AVG(TIMESTAMPDIFF(SECOND, start_time, finish_time)) code_time 
+		FROM rh_picture 
+		WHERE create_time<![CDATA[>=]]>#begin:VARCHAR# AND create_time<![CDATA[<]]>#end:VARCHAR# 
+		AND start_time IS NOT NULL AND finish_time IS NOT NULL AND opt_ren IS NOT NULL AND result_status='1'
+		GROUP BY opt_ren
+	</select>
+	
+	<!-- 查询某天某个小时某个用户对应的打码总数 -->
+	<select id="queryCodeCount" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT COUNT(DATE_FORMAT(create_time,'%H')) code_success 
+		FROM rh_picture 
+		WHERE create_time<![CDATA[>=]]>#begin:VARCHAR# AND create_time<![CDATA[<]]>#end:VARCHAR# 
+		AND opt_ren=#username:VARCHAR#
+	</select>
+	
+	<!-- 查询某天某个小时某个用户对应的打码成功数 -->
+	<select id="queryCodeSuccess" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT COUNT(DATE_FORMAT(create_time,'%H')) code_success 
+		FROM rh_picture 
+		WHERE create_time<![CDATA[>=]]>#begin:VARCHAR# AND create_time<![CDATA[<]]>#end:VARCHAR# 
+		AND result_status='1' AND opt_ren=#username:VARCHAR#
+	</select>
+
+	<!-- 查询某天某个小时某个用户对应的打码失败数 -->
+	<select id="queryCodeFail" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT COUNT(DATE_FORMAT(create_time,'%H')) code_fail 
+		FROM rh_picture 
+		WHERE create_time<![CDATA[>=]]>#begin:VARCHAR# AND create_time<![CDATA[<]]>#end:VARCHAR# 
+		AND result_status='0' AND opt_ren=#username:VARCHAR#
+	</select>
+	
+	<!-- 查询某天某个小时某个用户对应的打码超时数 -->
+	<select id="queryCodeOver" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT COUNT(DATE_FORMAT(create_time,'%H')) code_unknown 
+		FROM rh_picture 
+		WHERE create_time<![CDATA[>=]]>#begin:VARCHAR# AND create_time<![CDATA[<]]>#end:VARCHAR# 
+		AND result_status='5' AND opt_ren=#username:VARCHAR#
+	</select>
+	
+	<!--查询当天统计完成的信息tj_code_rate表   -->
+	<select id="queryCodeHourCount" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM tj_code_rate 
+		WHERE day_stat=#day_stat# and hour_stat=#hour_stat# and username=#username#
+	</select>
+	
+	
+	<!-- 插入统计完成的信息tj_code_rate表 -->
+	<insert id="addTotj_code_rate" parameterClass="java.util.HashMap">
+		INSERT INTO tj_code_rate
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="username">
+				username
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="hour_stat">
+				hour_stat
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="day_stat">
+				day_stat
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_count">
+				code_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_success">
+				code_success
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_fail">
+				code_fail
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_over">
+				code_over
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_get_time">
+				code_get_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_time">
+				code_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_success_rate">
+				code_success_rate
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="department">
+				department
+			</isNotEmpty>
+			,create_time
+			)
+		</dynamic>
+		 values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="username">
+				#username#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="hour_stat">
+				#hour_stat#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="day_stat">
+				#day_stat#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_count">
+				#code_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_success">
+				#code_success#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_fail">
+				#code_fail#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_over">
+				#code_over#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_get_time">
+				#code_get_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_time">
+				#code_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_success_rate">
+				#code_success_rate#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="department">
+				#department#
+			</isNotEmpty>
+			,now()
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 修改统计完成的信息tj_code_rate表 -->
+	<update id="updateTotj_code_rate" parameterClass="java.util.HashMap">
+		update tj_code_rate
+		<dynamic prepend="set">
+			create_time=now() ,
+			<isNotEmpty prepend="," property="hour_stat">
+				hour_stat=#hour_stat#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="day_stat">
+				day_stat=#day_stat#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_count">
+				code_count=#code_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_success">
+				code_success=#code_success#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_fail">
+				code_fail=#code_fail#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_over">
+				code_over=#code_over#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_get_time">
+				code_get_time=#code_get_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_time">
+				code_time=#code_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="code_success_rate">
+				code_success_rate=#code_success_rate#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="department">
+				department=#department#
+			</isNotEmpty>
+		</dynamic>
+		where username=#username# and day_stat=#day_stat# and hour_stat=#hour_stat#
+	</update>
+	
+</sqlMap>

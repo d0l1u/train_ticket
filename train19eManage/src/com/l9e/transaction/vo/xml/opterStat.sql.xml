@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="opterStat">
+	<!-- 查询条数 -->
+	<select id="queryOpterStatCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1)
+			FROM tj_opter t  LEFT JOIN login_userinfo l ON t.opt_person=l.real_name 
+			WHERE 1=1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_time">
+				 DATE_FORMAT(tj_time,'%Y-%m-%d')<![CDATA[>=]]>
+				#begin_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+				 DATE_FORMAT(tj_time,'%Y-%m-%d')<![CDATA[<]]>DATE_ADD(#end_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="opt_person">
+				opt_person=#opt_person:VARCHAR#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<!-- 查询列表 -->
+	<select id="queryOpterStatList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT t.tj_id,t.create_time,t.tj_time,t.opt_person,t.out_ticket_total,t.refund_total_meituan,
+			t.refund_total,t.refund_total_19e ,t.refund_total_qunar,t.refund_total_ext ,t.refund_total_app,t.refund_total_inner,
+			t.refund_total_elong,t.refund_total_tongcheng ,t.refund_total_differ,t.refund_total_failure ,t.refund_total_verify 
+			 ,t.refund_total_refuse,t.refund_total_holdon
+		FROM tj_opter t  LEFT JOIN login_userinfo l ON t.opt_person=l.real_name 
+		WHERE 1=1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_time">
+				 DATE_FORMAT(tj_time,'%Y-%m-%d')<![CDATA[>=]]>
+				#begin_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+				 DATE_FORMAT(tj_time,'%Y-%m-%d')<![CDATA[<]]>DATE_ADD(#end_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="opt_person">
+					opt_person=#opt_person:VARCHAR#
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY t.tj_time DESC LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select>
+	
+	<!-- 根据id查询 -->
+	<select id="queryOpterInfo" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT t.tj_id,t.create_time,t.tj_time,t.opt_person,t.out_ticket_total,t.refund_total_meituan,
+			t.refund_total,t.refund_total_19e ,t.refund_total_qunar,t.refund_total_ext ,t.refund_total_app,t.refund_total_inner,
+			t.refund_total_elong,t.refund_total_tongcheng ,t.refund_total_gtgj,t.refund_total_tuniu,
+			t.refund_total_ctrip,t.refund_total_differ,t.refund_total_failure ,t.refund_total_verify 
+		FROM tj_opter t 
+		WHERE t.tj_id=#tj_id:VARCHAR#
+	</select>
+</sqlMap>

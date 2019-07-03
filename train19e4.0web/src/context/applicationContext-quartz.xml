@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/mvc  
+	http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+	<context:component-scan base-package="com.l9e.transaction.job"/>
+
+	<!-- 总管理类,执行调度程序  -->
+	<bean id="startQuertz"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="sendQuartzTime" />
+			<!--	<ref bean="notifyCpSysQuartzTime" />
+				
+			<ref bean="vipAgentWinningJobTime"/>  
+		<ref bean="refundStreamQuartzTime" />
+				
+		<ref bean="userInfoCheckJobTime" />
+				<ref bean="goldAgentWinningJobTime"/>
+				<ref bean="silverAgentWinningJobTime"/>
+		<ref bean="sendRefundQuartzTime"/>  -->
+		
+				
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 退款流水 -->
+	<bean id="refundStreamQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="refundStreamTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/60 * * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="refundStreamTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="refundStreamJob" />
+		</property>
+		<property name="targetMethod">
+			<value>refund</value>
+		</property>
+	</bean>
+	
+	<!-- 发货通知 -->
+	<bean id="sendQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="sendTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/60 * * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="sendTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="sendJob" />
+		</property>
+		<property name="targetMethod">
+			<value>send</value>
+		</property>
+	</bean>
+	
+	<!-- 通知发货系统超时重发 -->
+	<bean id="notifyCpSysQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="notifyCpSysTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/60 * * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="notifyCpSysTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="notifyCpSysJob" />
+		</property>
+		<property name="targetMethod">
+			<value>notifyCpSys</value>
+		</property>
+	</bean>
+	
+	<!-- 把七天之前待审核的用户信息变成已通过 -->
+	<bean id="userInfoCheckJobTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="userInfoCheckTask" />
+		</property>
+		
+		<property name="cronExpression">
+			<value>0 32 10 * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="userInfoCheckTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="userInfoCheckJob" />
+		</property>
+		<property name="targetMethod">
+			<value>updateUserInfoStatus</value>
+		</property>
+	</bean>
+	
+	<!-- 金牌代理商抽奖 -->
+	<bean id="goldAgentWinningJobTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="goldAgentWinningTask" />
+		</property>
+		
+		<property name="cronExpression">
+			<value>0 0 2 ? * 3</value>
+		</property>
+	</bean>
+
+	<bean id="goldAgentWinningTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="goldAgentWinningJob" />
+		</property>
+		<property name="targetMethod">
+			<value>getGoldAgentWinningInfo</value>
+		</property>
+	</bean>
+	
+	<!-- 银牌代理商抽奖 -->
+	<bean id="silverAgentWinningJobTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="silverAgentWinningTask" />
+		</property>
+		
+		<property name="cronExpression">
+			<value>0 0 2 ? * 5</value>
+		</property>
+	</bean>
+
+	<bean id="silverAgentWinningTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="silverAgentWinningJob" />
+		</property>
+		<property name="targetMethod">
+			<value>getSilverAgentWinningInfo</value>
+		</property>
+	</bean>
+	
+	<!-- vip和svip代理商抽奖 -->
+	<bean id="vipAgentWinningJobTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="vipAgentWinningTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0 50 1 ? * 3</value>
+		</property>
+	</bean>
+
+	<bean id="vipAgentWinningTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="svipAgentWinningJob" />
+		</property>
+		<property name="targetMethod">
+			<value>getSvipAgentWinningInfo</value>
+		</property>
+	</bean>
+	
+	
+	<!-- 退货通知 -->
+	<bean id="sendRefundQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="sendRefundTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0/60 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="sendRefundTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="sendRefundJob" />
+		</property>
+		<property name="targetMethod">
+			<value>sendRefund</value>
+		</property>
+	</bean>
+</beans>

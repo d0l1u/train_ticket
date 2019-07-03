@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="excel">
+	
+	<!-- 查询列表 -->
+	<select id="getExcelAdminList" parameterClass="java.util.HashMap" resultClass="com.l9e.transaction.vo.ExcelAdminVo">
+		SELECT t.id,DATE_FORMAT(t.create_time,'%Y-%m-%d') create_time,t.opt_time,t.opt_ren,t.opt_name,t.pic_count,t.pic_success,t.pic_fail,t.pic_unkonwn,t.channel,r.department
+		, CONCAT(ROUND((t.pic_success*100/t.pic_count), 2), '%') code_cgl
+		FROM tj_rh_picture t LEFT JOIN rh_user r ON r.username=t.opt_ren WHERE 1=1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_time">
+				t.opt_time<![CDATA[>=]]>
+				#begin_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+				t.opt_time<![CDATA[<]]>DATE_ADD(#end_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="department">
+				department=#department#
+			</isNotEmpty>
+	    </dynamic>
+		ORDER BY t.opt_time desc,t.pic_success desc 
+	</select>
+	
+	<!-- 超级管理员：打码用户，导出excel -->
+	<select id="queryAdminCodeList" parameterClass="java.util.HashMap" resultClass="com.l9e.transaction.vo.ExcelCurrentVo">
+		SELECT  *,SUBDATE(CURDATE(),INTERVAL 1 DAY) TIME FROM 
+		(SELECT j.opt_ren ren,ROUND((IFNULL(SUM(j.pic_success),0) / 100),2) successPreCount FROM tj_rh_picture  j
+		WHERE DATE_FORMAT(j.opt_time,'%Y-%m')=DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 1 MONTH),'%Y-%m') GROUP BY opt_ren ) AS a
+		LEFT JOIN	
+		(SELECT t.opt_ren,t.opt_name,r.department,IFNULL(SUM(t.pic_count),0) pic_count,IFNULL(SUM(t.pic_success),0) pic_success,
+		IFNULL(SUM(t.pic_fail),0) pic_fail,IFNULL(SUM(t.pic_unkonwn),0) pic_unkonwn 
+		FROM tj_rh_picture t LEFT JOIN rh_user r ON t.opt_ren=r.username WHERE 1=1 GROUP BY opt_ren) AS b
+		ON a.ren=b.opt_ren where 1=1 
+		<dynamic prepend="and ">
+			<isNotEmpty prepend=" and " property="opt_ren">
+				b.opt_ren=#opt_ren#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="opt_name">
+				b.opt_name=#opt_name#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="department">
+				b.department=#department#
+			</isNotEmpty>
+	    </dynamic>
+		ORDER BY b.pic_success DESC 	
+	</select>
+	
+</sqlMap>

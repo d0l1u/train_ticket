@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="tj_hc_halfHour">
+	<!-- 查询每天每前半小时订单成功数 -->
+	<select id="queryDayTimeBefore" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT  DATE_FORMAT(create_time,'%Y-%m-%d')AS day_stat ,
+		CONCAT(DATE_FORMAT(create_time, '%H'),':00')AS hour_stat ,
+		COUNT(DATE_FORMAT(create_time,'%H'))AS order_count 
+		FROM hc_orderinfo hc 
+		WHERE order_status='44' AND (DATE_FORMAT(create_time,'%i:%s') BETWEEN DATE_FORMAT('1970-01-01 00:00:00','%i:%s') 
+			AND DATE_FORMAT(DATE_ADD('1970-01-01 00:00:00',INTERVAL 1799 SECOND),'%i:%s')) 
+		AND DATE_FORMAT(create_time,'%Y-%m-%d') = #create_time#
+		GROUP BY DATE_FORMAT(create_time,'%m-%d'), DATE_FORMAT(create_time,'%H')
+	</select>
+	
+	<!-- 查询每天每后半小时订单成功数 -->
+	<select id="queryDayTimeAfter" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT  DATE_FORMAT(create_time,'%Y-%m-%d')AS day_stat ,
+		CONCAT(DATE_FORMAT(create_time, '%H'),':30')AS hour_stat ,
+		COUNT(DATE_FORMAT(create_time,'%H'))AS order_count 
+		FROM hc_orderinfo hc 
+		WHERE order_status='44' AND (DATE_FORMAT(create_time,'%i:%s') BETWEEN DATE_FORMAT('1970-01-01 00:30:00','%i:%s') 
+			AND DATE_FORMAT(DATE_ADD('1970-01-01 00:30:00',INTERVAL 1799 SECOND),'%i:%s')) 
+		AND DATE_FORMAT(create_time,'%Y-%m-%d') = #create_time#
+		GROUP BY DATE_FORMAT(create_time,'%m-%d'), DATE_FORMAT(create_time,'%H')
+	</select>
+	
+	<!-- 插入统计完成的信息 -->
+	<insert id="addToTj_Hc_orderInfo" parameterClass="java.util.HashMap">
+		INSERT INTO tj_hc_halfHour
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="id">
+				id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="hour_stat">
+				hour_stat
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="day_stat">
+				day_stat
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="order_count">
+				order_count
+			</isNotEmpty>
+			,create_time
+			)
+		</dynamic>
+		 values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="id">
+				 #id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="hour_stat">
+				 #hour_stat#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="day_stat">
+				#day_stat#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="order_count">
+				#order_count#
+			</isNotEmpty>
+			,now()
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 查询表中数据条数 -->
+	<select id="queryTable_Count" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM tj_hc_halfHour
+	</select>
+	
+	<!-- 查询时间 -->
+	<select id="queryDate_List" resultClass="java.lang.String">
+		SELECT DISTINCT DATE_FORMAT(hc.create_time,'%Y-%m-%d')AS create_time 
+			FROM hc_orderinfo hc 
+		WHERE hc.create_time IS NOT NULL AND 
+		hc.create_time BETWEEN DATE_SUB(CURDATE(),INTERVAL 3 DAY) AND DATE_SUB(CURDATE(),INTERVAL -1 DAY)
+			ORDER BY DATE_FORMAT(hc.create_time,'%Y-%m-%d') ASC
+	</select>
+	
+	<!-- 查询表中数据条数 -->
+	<select id="queryCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer" >
+		SELECT COUNT(1) FROM tj_hc_halfHour WHERE day_stat=#day_stat# and hour_stat=#hour_stat#
+	</select>
+	
+	<!-- 更新tj_hc_halfHour表中的今日的数据 -->
+	<update id="updateTj_hc_halfHour" parameterClass="java.util.HashMap">
+		update tj_hc_halfHour 
+		<dynamic prepend="set">
+			<isNotEmpty prepend=","  property="order_count">
+				 order_count=#order_count#
+			</isNotEmpty>
+		</dynamic>
+		where day_stat=#day_stat# and hour_stat=#hour_stat#
+	</update>
+	
+</sqlMap>

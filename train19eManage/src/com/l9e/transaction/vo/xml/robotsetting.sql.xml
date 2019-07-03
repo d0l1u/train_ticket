@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="robotsetting">
+	
+	
+	<typeAlias alias="robotSetting" type="com.l9e.transaction.vo.RobotSettingVo"></typeAlias>
+	
+		<!-- 查询机器人控制表设定 -->
+	<select id="queryRobotSystemSetting" resultClass="robotSetting">
+		SELECT 
+		  robot_id,
+		  robot_name,
+		  robot_url,
+		  robot_channel,
+		  robot_desc,
+		  robot_type,
+		  robot_type,
+		  robot_status,
+		  robot_con_timeout,
+		  robot_read_timeout,
+		  robot_register,
+		  robot_book,
+		  robot_pay,
+		  robot_check,
+		  robot_cancel,
+		  robot_endorse,
+		  robot_refund,
+		  robot_query,
+		  spare_thread,
+		  opt_name,
+		  priority,
+		  robot_money,
+		  robot_delete,
+		  robot_enroll,
+		  robot_activate 
+		FROM
+		  robot_system_setting 
+		WHERE 1 = 1 
+		<isNotEmpty prepend=" and " property="robot_name">
+				robot_name like CONCAT('%',#robot_name#,'%')
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="robot_status">
+				robot_status in
+				<iterate open="(" close=")" conjunction=","
+					property="robot_status">
+					#robot_status[]:VARCHAR#
+				</iterate>
+		</isNotEmpty>
+		<isEqual property="robot_setList" compareValue="-1">
+			and (1=2
+			<isNotEmpty prepend=" or " property="robot_money">
+				robot_money is not null
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="robot_register">
+				robot_register is not null
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="robot_book">
+				robot_book is not null
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="robot_pay">
+				robot_pay is not null
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="robot_check">
+				robot_check is not null
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="robot_cancel">
+				robot_cancel is not null
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="robot_endorse">
+				robot_endorse is not null
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="robot_refund">
+				robot_refund is not null
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="robot_query">
+				robot_query is not null
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="robot_delete">
+				robot_delete is not null
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="robot_enroll">
+				robot_enroll is not null
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="robot_activate">
+				robot_activate is not null
+			</isNotEmpty>
+			
+			)
+		</isEqual>
+		 LIMIT #everyPagefrom:Integer#,
+		#pageSize:Integer#
+	</select> 
+	
+	
+	<!-- 查询预订订单条数 -->
+	<select id="queryRobotSystemSettingCount" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM robot_system_setting   WHERE 1	= 1
+		<dynamic prepend="">
+		<isNotEmpty prepend=" and " property="robot_name">
+				robot_name like CONCAT('%',#robot_name#,'%')
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="robot_status">
+				robot_status in
+				<iterate open="(" close=")" conjunction=","
+					property="robot_status">
+					#robot_status[]:VARCHAR#
+				</iterate>
+		</isNotEmpty>
+		<isEqual property="robot_setList" compareValue="-1">
+			and (1=2
+			<isNotEmpty prepend=" or " property="robot_money">
+				robot_money is not null
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="robot_register">
+				robot_register is not null
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="robot_book">
+				robot_book is not null
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="robot_pay">
+				robot_pay is not null
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="robot_check">
+				robot_check is not null
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="robot_cancel">
+				robot_cancel is not null
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="robot_endorse">
+				robot_endorse is not null
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="robot_refund">
+				robot_refund is not null
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="robot_query">
+				robot_query is not null
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="robot_delete">
+				robot_delete is not null
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="robot_enroll">
+				robot_enroll is not null
+			</isNotEmpty>
+			<isNotEmpty prepend=" or " property="robot_activate">
+				robot_activate is not null
+			</isNotEmpty>
+			)
+		</isEqual>
+		</dynamic>
+	</select>
+	
+	
+	<select id="getRobotSystemSettingById" resultClass="robotSetting" parameterClass="java.lang.String">
+				SELECT 
+				  robot_id,
+				  robot_name,
+				  robot_url,
+				  robot_channel,
+				  robot_desc,
+				  robot_type,
+				  robot_type,
+				  robot_status,
+				  robot_con_timeout,
+				  robot_read_timeout,
+				  robot_register,
+				  robot_book,
+				  robot_pay,
+				  robot_check,
+				  robot_cancel,
+				  robot_endorse,
+				  robot_refund,
+				  robot_query,
+				  spare_thread,
+				  opt_name,
+				  priority,
+				  robot_money,
+				  robot_delete,
+				  robot_enroll,
+				  robot_activate 
+				FROM
+				  robot_system_setting  rc 
+		where rc.robot_id=#robot_id#
+	</select>
+
+		<!--修改机器人功能地址 -->
+	<update id="updateRobotURL" parameterClass="robotSetting">
+		update cp_workerinfo hc
+		set
+		<isNotEmpty prepend=" " property="worker_ext">
+			hc.worker_ext=#worker_ext#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="robot_con_timeout">
+			hc.robot_con_timeout=#robot_con_timeout#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="robot_read_timeout">
+			hc.robot_read_timeout=#robot_read_timeout#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="worker_priority">
+			hc.worker_priority=#worker_priority#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="spare_thread">
+			hc.spare_thread=#spare_thread#
+		</isNotEmpty>
+		
+			where hc.robot_id=#robot_id#
+	</update>
+		
+		<!--更改机器人运行状态 -->
+		<update id="changeRobotStatus" parameterClass="robotSetting">
+		update robot_system_setting hc 
+		set hc.robot_channel=#robot_channel#, 
+		<isNotEmpty prepend=" " property="robot_status">
+			hc.robot_status=#robot_status#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="robot_money">
+			hc.robot_money=#robot_money#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="robot_register">
+			hc.robot_register=#robot_register#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="robot_book">
+			hc.robot_book=#robot_book#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="robot_pay">
+			hc.robot_pay=#robot_pay#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="robot_check">
+			hc.robot_check=#robot_check#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="robot_cancel">
+			hc.robot_cancel=#robot_cancel#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="robot_endorse">
+			hc.robot_endorse=#robot_endorse#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="robot_refund">
+			hc.robot_refund=#robot_refund#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="robot_query">
+			hc.robot_query=#robot_query#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="robot_delete">
+			hc.robot_delete=#robot_delete#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="robot_enroll">
+			hc.robot_enroll=#robot_enroll#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="robot_activate">
+			hc.robot_activate=#robot_activate#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="opt_name">
+			hc.opt_name=#opt_name#
+		</isNotEmpty>
+		where hc.robot_id=#robot_id# 
+		</update>
+	
+	
+		<!-- 增加操作日志 -->
+	<insert id="addRobotLog" parameterClass="java.util.HashMap">
+		insert into robot_system_log (
+			content,create_time, opt_person,robot_id,robot_name)
+		value(#content#,NOW(),#opt_person#,#robot_id#,#robot_name#)
+	</insert>
+	
+		<!-- 查询操作日志明细 -->
+	<select id="queryRobotSetList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') create_time,opt_person,content ,
+		robot_name
+		FROM robot_system_log 
+		WHERE   
+			robot_id=#robot_id#
+		
+		ORDER BY create_time DESC LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select> 
+	
+	<!-- 查询操作日志条数 -->
+	<select id="queryRobotSetListCount" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM robot_system_log 
+		ORDER BY create_time DESC
+	</select> 
+		<!-- 查询操作日志条数 -->
+	<select id="queryRobotSetListCount2" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM robot_system_log 
+		 WHERE robot_id=#robot_id# 
+		ORDER BY create_time DESC
+	</select> 
+	<!-- 查询当前机器人个数 -->
+	<select id="queryRobotListCount" resultClass="java.lang.Integer">
+		 SELECT 
+		       COUNT(rs.robot_id)
+		  FROM
+		    robot_system_setting rs 
+		  WHERE 1 = 1 
+		  <dynamic prepend="">
+	          <isNotEmpty prepend=" and " property="robot_name">
+	              rs.robot_name=#robot_name:VARCHAR#
+	          </isNotEmpty>
+	   		 <isNotEmpty prepend=" and " property="robot_status">
+	              rs.robot_status=#robot_status:VARCHAR#
+	          </isNotEmpty>
+	            </dynamic>
+	        ORDER BY rs.robot_id DESC
+	</select> 
+	
+	
+	<!-- 查询当前绑定账号个数 -->
+	<select id="queryZhifubaoCount" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM cp_cardinfo WHERE card_no like CONCAT(#zhifubaoNew#, '%') AND worker_id='1000'
+	</select> 
+	
+	<!-- 查看机器人是否存在 -->
+	<select id="queryRobot_name" parameterClass="java.lang.String" 
+	resultClass="java.lang.String">
+	SELECT rs.robot_name FROM robot_system_setting rs 
+	WHERE rs.robot_name = #robot_name#
+	</select>
+	<!-- 查看机器人是否存在 -->
+	<select id="queryRobot_id" parameterClass="java.lang.String" 
+	resultClass="java.lang.String">
+	SELECT rs.robot_id FROM robot_system_setting rs 
+	WHERE rs.robot_name = #robot_name#
+	</select>
+	
+	<!-- 增加机器人-->
+	<insert id="addRobot" parameterClass="robotSetting">
+		insert into robot_system_setting 
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="robot_id">
+				 robot_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_name">
+				robot_name
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_url">
+				robot_url
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_desc">
+				robot_desc
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_type">
+				robot_type
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_status">
+				robot_status
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_con_timeout">
+				robot_con_timeout
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_read_timeout">
+				robot_read_timeout
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_money">
+				robot_money
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_register">
+				robot_register
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_book">
+				robot_book
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_pay">
+				robot_pay
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_check">
+				robot_check
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_cancel">
+				robot_cancel
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_endorse">
+				robot_endorse
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_refund">
+				robot_refund
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_query">
+				robot_query
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_delete">
+				robot_delete
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_enroll">
+				robot_enroll
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_activate">
+				robot_activate
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="spare_thread">
+				spare_thread
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="priority">
+				priority
+			</isNotEmpty>
+			)
+		</dynamic>
+		 values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="robot_id">
+				 #robot_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_name">
+				 #robot_name:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_url">
+				#robot_url:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_desc">
+				#robot_desc:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_type">
+				#robot_type:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_status">
+				#robot_status:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_con_timeout">
+				#robot_con_timeout:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_read_timeout">
+				#robot_read_timeout:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_money">
+				#robot_money:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_register">
+				#robot_register:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_book">
+				#robot_book:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_pay">
+				#robot_pay:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_check">
+				#robot_check:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_cancel">
+				#robot_cancel:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_endorse">
+				#robot_endorse:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_refund">
+				#robot_refund:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_query">
+				#robot_query:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_delete">
+				#robot_delete:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_enroll">
+				#robot_enroll:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="robot_activate">
+				#robot_activate:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="spare_thread">
+				#spare_thread:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="priority">
+				#priority:VARCHAR#
+			</isNotEmpty>
+			
+			)
+		</dynamic>
+	</insert>
+	
+	<!--增加机器人新功能 -->
+	<update id="updateRobot" parameterClass="robotSetting">
+		update robot_system_setting hc  
+			set  hc.robot_desc=#robot_desc#,
+			<isNotEmpty prepend="  " property="robot_money">
+				hc.robot_money=#robot_money#
+			</isNotEmpty>
+			<isNotEmpty prepend="  " property="robot_register">
+				hc.robot_register=#robot_register#
+			</isNotEmpty>
+			<isNotEmpty prepend="  " property="robot_book">
+				hc.robot_book=#robot_book#
+			</isNotEmpty>
+			<isNotEmpty prepend="  " property="robot_pay">
+				hc.robot_pay=#robot_pay#
+			</isNotEmpty>
+			<isNotEmpty prepend="  " property="robot_check">
+				hc.robot_check=#robot_check#
+			</isNotEmpty>
+			<isNotEmpty prepend="  " property="robot_cancel">
+				hc.robot_cancel=#robot_cancel#
+			</isNotEmpty>
+			<isNotEmpty prepend="  " property="robot_endorse">
+				hc.robot_endorse=#robot_endorse#
+			</isNotEmpty>
+			<isNotEmpty prepend="  " property="robot_refund">
+				hc.robot_refund=#robot_refund#
+			</isNotEmpty>
+			<isNotEmpty prepend="  " property="robot_query">
+				hc.robot_query=#robot_query#
+			</isNotEmpty>
+			<isNotEmpty prepend="  " property="robot_delete">
+				hc.robot_delete=#robot_delete#
+			</isNotEmpty>
+			<isNotEmpty prepend="  " property="robot_enroll">
+				hc.robot_enroll=#robot_enroll#
+			</isNotEmpty>
+			<isNotEmpty prepend="  " property="robot_activate">
+				hc.robot_activate=#robot_activate#
+			</isNotEmpty>
+			<isNotEmpty prepend=" , " property="opt_name">
+				hc.opt_name=#opt_name#
+			</isNotEmpty>
+			 where hc.robot_id=#robot_id# 
+	</update>
+	
+	<!-- 查看支付宝名字 -->
+	<select id="queryZhifubaoByWorkerId" parameterClass="java.lang.String" 
+	resultClass="java.lang.String">
+	SELECT rs.card_no FROM cp_cardinfo rs 
+	WHERE rs.worker_id=#worker_id#
+	</select>
+	
+	<!-- 查看手机号-->
+	<select id="queryphoneList" resultClass="java.lang.String">
+	SELECT setting_value FROM train_system_setting WHERE setting_name ='phone_msg_list'
+	</select>
+	
+	<!-- 查看支付宝账号列表-->
+	<select id="queryZhanghaoList" resultClass="java.lang.String">
+	SELECT setting_value FROM train_system_setting WHERE setting_name ='zhifubao_list'
+	</select>
+	
+</sqlMap>

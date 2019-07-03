@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="extShiji">
+	
+	<!-- 根据订单号查询订单信息 -->
+	<select id="queryOrderInfo" parameterClass="java.lang.String"
+		resultClass="com.l9e.transaction.vo.OrderInfo">
+		SELECT hc.order_id,hc.order_status,hc.train_no,hc.from_station from_city,hc.arrive_station to_city,hc.from_time,
+			hc.arrive_time AS to_time,DATE_FORMAT(hc.travel_time,'%Y-%m-%d') AS travel_time,hc.out_ticket_billno,
+			DATE_FORMAT(hc.pay_time,'%Y-%m-%d %H:%i:%s') AS pay_time,
+			CONCAT( DATE_FORMAT(hc.travel_time, '%Y-%m-%d '),hc.from_time) > DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i') AS is_repay,
+			DATE_FORMAT(hc.out_ticket_time,'%Y-%m-%d %H:%i:%s') AS out_ticket_time,
+			hc.seat_type,hc.ticket_pay_money,hc.bx_pay_money,hc.pay_money_show user_pay_money,
+			hc.pay_money,hc.buy_money,hc.out_ticket_type,
+			hc.can_refund,hc.ext_seat,hc.dealer_id ,cp.user_name,cp.ticket_type,cp.ids_type,cp.user_ids,cp.telephone,cp.train_box,cp.seat_no
+			FROM ext_orderinfo hc
+			LEFT JOIN ext_orderinfo_cp cp ON cp.order_id=hc.order_id
+		WHERE hc.order_id=#order_id:VARCHAR# LIMIT 0,1
+	</select>
+	
+	<!-- 根据订单号查询配送信息 -->
+	<select id="queryOrderInfoPs" parameterClass="java.lang.String"
+		resultClass="com.l9e.transaction.vo.OrderInfoPs">
+		SELECT hc.order_id, hc.ps_billno, hc.ps_company, hc.pay_money, hc.buy_money, 
+			hc.ps_status, hc.link_name, hc.link_phone, hc.link_address, hc.link_mail 
+			FROM cp_orderinfo_ps hc 
+		WHERE hc.order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 根据订单号查询车票以及保险信息 -->
+	<select id="queryOrderDetailList" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT cp.order_id,cp.cp_id,cp.seat_type,cp.pay_money AS cp_pay_money,CONVERT(cp.buy_money,CHAR) AS cp_buy_money,cp.train_box,cp.seat_no,
+			CONVERT(cp.ticket_type,CHAR) AS ticket_type,cp.user_name,CONVERT(cp.ids_type,CHAR) AS ids_type,cp.user_ids,
+			bx.bx_id,bx.bx_billno,bx.bx_code,bx.pay_money AS bx_pay_money,p.product_id,p.NAME AS bx_name
+			FROM ext_orderinfo_cp cp
+			LEFT JOIN cp_orderinfo_bx bx
+			ON cp.order_id=bx.order_id
+			AND cp.cp_id=bx.cp_id
+			LEFT JOIN hc_productinfo p
+			ON bx.product_id=p.product_id
+		WHERE cp.order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 查询订单列表 -->
+	<select id="queryOrderList" parameterClass="java.util.HashMap"
+		resultClass="com.l9e.transaction.vo.OrderInfo">
+		SELECT hc.order_id, hc.order_status, hc.from_station from_city, hc.arrive_station to_city,
+			hc.ticket_pay_money, hc.bx_pay_money,  hc.pay_money, hc.out_ticket_billno,
+			DATE_FORMAT(hc.pay_time,'%Y-%m-%d %H:%i:%s') AS pay_time,
+			DATE_FORMAT(hc.pay_time,'%Y-%m-%d') AS pay_time_start,
+			DATE_FORMAT(hc.pay_time,'%H:%i') AS pay_time_end,
+			DATE_FORMAT(hc.out_ticket_time,'%Y-%m-%d %H:%i:%s') AS out_ticket_time,
+			DATE_FORMAT(hc.out_ticket_time,'%Y-%m-%d') AS out_ticket_time_start,
+			DATE_FORMAT(hc.out_ticket_time,'%H:%i') AS out_ticket_time_end,
+			DATE_FORMAT(hc.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+			CONVERT(hc.out_ticket_type,CHAR) AS out_ticket_type, 
+			CONCAT( DATE_FORMAT(hc.travel_time, '%Y-%m-%d '),hc.from_time) > DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i') AS is_repay,
+			IFNULL(hc.refund_deadline_ignore,'0') AS deadline_ignore,hc.can_refund
+			FROM ext_orderinfo hc
+		 WHERE hc.dealer_id=#agent_id:VARCHAR# 
+		 <isNotEmpty prepend=" and " property="order_id">
+		 	hc.order_id=#order_id:VARCHAR#
+		 </isNotEmpty>
+		 <isNotEmpty prepend=" and " property="out_ticket_billno">
+	 		hc.out_ticket_billno=#out_ticket_billno:VARCHAR#
+	     </isNotEmpty>
+	     <isNotEmpty prepend=" and " property="create_time">
+	 		DATE_FORMAT(hc.create_time,'%Y-%m-%d')=#create_time:VARCHAR#
+	     </isNotEmpty>
+	     <isNotEmpty prepend=" and " property="oneMonthOrder">
+	 		DATE_ADD(hc.create_time,INTERVAL 1 MONTH) <![CDATA[>]]> NOW()
+	     </isNotEmpty>
+	      <isNotEmpty prepend=" and " property="monthOrder">
+	 		DATE_ADD(hc.create_time,INTERVAL 1 MONTH) <![CDATA[<]]> NOW()
+	     </isNotEmpty>
+	     <isNotEmpty prepend=" and " property="no_pay">
+	     	 CONCAT( DATE_FORMAT(hc.travel_time, '%Y-%m-%d '),hc.from_time) > DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i')
+	     </isNotEmpty>
+	     <isNotEmpty prepend=" and " property="order_status">
+	    	<iterate conjunction="or" open="(" close=")" property="order_status">
+	    		hc.order_status=#order_status[]#
+	   		</iterate>
+	     </isNotEmpty>
+	     GROUP BY hc.order_id
+		 ORDER BY hc.create_time DESC
+         LIMIT #everyPagefrom:Integer#, #pageSize:Integer#
+	</select>
+	
+	<!-- 查询订单列表条数 -->
+	<select id="queryOrderListCount" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(DISTINCT hc.order_id) 
+			FROM ext_orderinfo hc
+			LEFT JOIN ext_orderinfo_refundstream v
+			ON hc.order_id=v.order_id
+			AND (v.refund_type = 1 OR v.refund_type = 2 OR v.refund_type = 4 OR v.refund_type = 5) 
+		WHERE hc.dealer_id=#agent_id:VARCHAR# 
+	    <isNotEmpty prepend=" and " property="order_id">
+	 		hc.order_id=#order_id:VARCHAR#
+	    </isNotEmpty>
+	    <isNotEmpty prepend=" and " property="out_ticket_billno">
+	 		hc.out_ticket_billno=#out_ticket_billno:VARCHAR#
+	    </isNotEmpty>
+	      <isNotEmpty prepend=" and " property="create_time">
+	 		DATE_FORMAT(hc.create_time,'%Y-%m-%d')=#create_time:VARCHAR#
+	     </isNotEmpty>
+	         <isNotEmpty prepend=" and " property="oneMonthOrder">
+	 		DATE_ADD(hc.create_time,INTERVAL 1 MONTH) <![CDATA[>]]> NOW()
+	     </isNotEmpty>
+	      <isNotEmpty prepend=" and " property="monthOrder">
+	 		DATE_ADD(hc.create_time,INTERVAL 1 MONTH) <![CDATA[<]]> NOW()
+	     </isNotEmpty>
+	    <isNotEmpty prepend=" and " property="order_status">
+	    	<iterate conjunction="or" open="(" close=")" property="order_status">
+	    		hc.order_status=#order_status[]#
+	   		</iterate>
+	     </isNotEmpty>
+	     <isNotEmpty prepend=" and " property="refund_status">
+	    	<iterate conjunction="or" open="(" close=")" property="refund_status">
+	    		v.refund_status=#refund_status[]#
+	   		</iterate>
+	     </isNotEmpty>
+	</select>
+	
+	<!-- 查询退款流水列表 -->
+	<select id="queryRefundStreamList" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT rs.order_id,rs.cp_id,rs.refund_type,rs.refund_status,
+		CONVERT(refund_money, CHAR) AS refund_money,rs.our_remark,rs.user_remark,
+		DATE_FORMAT(rs.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+		DATE_FORMAT(rs.refund_time,'%Y-%m-%d %H:%i:%s') AS refund_time,
+		DATE_FORMAT(rs.refund_time,'%Y-%m-%d') AS refund_time_start,
+		DATE_FORMAT(rs.refund_time,'%H:%i') AS refund_time_end
+		FROM ext_orderinfo_refundstream rs 
+		WHERE rs.order_id=#order_id:VARCHAR#
+		ORDER BY rs.create_time DESC, rs.refund_type
+	</select>
+	
+	<!-- 查询发车前的特殊时间点-->
+	<select id="querySpecTimeBeforeFrom" resultClass="java.util.HashMap"
+		parameterClass="java.lang.String">
+		SELECT DATE_FORMAT(DATE_SUB(h.from_time, INTERVAL 4 HOUR),'%Y-%m-%d %H:%i:%s') AS from_time_3,
+		DATE_FORMAT(DATE_SUB(h.from_time, INTERVAL 15 DAY),'%Y-%m-%d') AS from_time_15d,
+		DATE_FORMAT(DATE_SUB(h.from_time, INTERVAL 24 HOUR),'%Y-%m-%d %H:%i:%s') AS from_time_24,
+		DATE_FORMAT(DATE_SUB(h.from_time, INTERVAL 48 HOUR),'%Y-%m-%d %H:%i:%s') AS from_time_48
+		FROM hc_orderinfo h 
+		WHERE h.order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 查询代理商出票成功、出票失败、出票中 -->
+	<select id="queryAgentOrderNum" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT 
+		SUM(CASE WHEN (hc.order_status = '00' OR hc.order_status = '99') THEN 1 ELSE 0 END) AS noPayNum,
+		SUM(CASE WHEN (hc.order_status = '11' OR hc.order_status = '12' 
+			OR hc.order_status = '22' OR hc.order_status = '33') THEN 1 ELSE 0 END) AS waitingNum,
+		SUM(CASE WHEN hc.order_status = '44'  THEN 1 ELSE 0 END) AS successNum,
+		SUM(CASE WHEN hc.order_status = '45' THEN 1 ELSE 0 END) AS failNum
+		FROM ext_orderinfo hc
+		WHERE hc.dealer_id=#agent_id:VARCHAR# 
+		AND ((hc.order_status <![CDATA[<>]]> '00' AND  hc.order_status <![CDATA[<>]]> '99') 
+			OR ((hc.order_status = '00' OR hc.order_status = '99') 
+				AND CONCAT( DATE_FORMAT(travel_time, '%Y-%m-%d '),from_time) > DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i')))
+	    <isNotEmpty prepend=" and " property="order_id">
+	 		hc.order_id=#order_id:VARCHAR#
+	    </isNotEmpty>
+	    <isNotEmpty prepend=" and " property="out_ticket_billno">
+	 		hc.out_ticket_billno=#out_ticket_billno:VARCHAR#
+	    </isNotEmpty>
+	      <isNotEmpty prepend=" and " property="create_time">
+	 		DATE_FORMAT(hc.create_time,'%Y-%m-%d')=#create_time:VARCHAR#
+	     </isNotEmpty>
+	         <isNotEmpty prepend=" and " property="oneMonthOrder">
+	 		DATE_ADD(hc.create_time,INTERVAL 1 MONTH) <![CDATA[>]]> NOW()
+	     </isNotEmpty>
+	      <isNotEmpty prepend=" and " property="monthOrder">
+	 		DATE_ADD(hc.create_time,INTERVAL 1 MONTH) <![CDATA[<]]> NOW()
+	     </isNotEmpty>
+	</select>
+	
+	<!-- 查询代理商退款的订单数据 -->
+	<select id="queryAgentRefundNum" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT COUNT(DISTINCT v.order_id) AS refundNum
+		FROM ext_orderinfo hc
+		LEFT JOIN ext_orderinfo_refundstream v
+			ON hc.order_id=v.order_id
+			AND (v.refund_type = 1 OR v.refund_type = 2 OR v.refund_type = 4 OR v.refund_type = 5) 
+		WHERE hc.order_status <![CDATA[<>]]> '00'
+			and hc.dealer_id=#agent_id:VARCHAR# 
+	    <isNotEmpty prepend=" and " property="order_id">
+	 		hc.order_id=#order_id:VARCHAR#
+	    </isNotEmpty>
+	    <isNotEmpty prepend=" and " property="out_ticket_billno">
+	 		hc.out_ticket_billno=#out_ticket_billno:VARCHAR#
+	    </isNotEmpty>
+	    <isNotEmpty prepend=" and " property="create_time">
+	 		DATE_FORMAT(hc.create_time,'%Y-%m-%d')=#create_time:VARCHAR#
+	    </isNotEmpty>
+	    <isNotEmpty prepend=" and " property="oneMonthOrder">
+	 		DATE_ADD(hc.create_time,INTERVAL 1 MONTH) <![CDATA[>]]> NOW()
+	    </isNotEmpty>
+	    <isNotEmpty prepend=" and " property="monthOrder">
+	 		DATE_ADD(hc.create_time,INTERVAL 1 MONTH) <![CDATA[<]]> NOW()
+	    </isNotEmpty>
+	</select>
+	
+	<select id="selectRefundPassengers" resultClass="java.lang.String" parameterClass="java.lang.String">
+		SELECT user_name FROM ext_orderinfo_cp 
+		WHERE cp_id = #cp_id:VARCHAR#
+	</select>
+	
+	<!-- 查询订单退款结果列表 -->
+	<select id="queryOrderRefundList" parameterClass="java.util.HashMap"
+		resultClass="com.l9e.transaction.vo.OrderInfo">
+		SELECT hc.order_id, hc.order_status, hc.from_station from_city, hc.arrive_station to_city,
+			hc.ticket_pay_money, hc.bx_pay_money, hc.pay_money,hc.out_ticket_billno,
+			DATE_FORMAT(hc.pay_time,'%Y-%m-%d %H:%i:%s') AS pay_time,
+			DATE_FORMAT(hc.pay_time,'%Y-%m-%d') AS pay_time_start,
+			DATE_FORMAT(hc.pay_time,'%H:%i') AS pay_time_end,
+			DATE_FORMAT(hc.out_ticket_time,'%Y-%m-%d %H:%i:%s') AS out_ticket_time,
+			DATE_FORMAT(hc.out_ticket_time,'%Y-%m-%d') AS out_ticket_time_start,
+			DATE_FORMAT(hc.out_ticket_time,'%H:%i') AS out_ticket_time_end,
+			DATE_FORMAT(hc.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+			CONVERT(hc.out_ticket_type,CHAR) AS out_ticket_type, 
+			CONCAT( DATE_FORMAT(hc.travel_time, '%Y-%m-%d '),hc.from_time) > DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i') AS is_repay,
+			IFNULL(hc.refund_deadline_ignore,'0') AS deadline_ignore,hc.can_refund
+			FROM ext_orderinfo hc
+			LEFT JOIN ext_orderinfo_refundstream v
+			ON hc.order_id=v.order_id AND (v.refund_type = 1 OR v.refund_type = 2 OR v.refund_type = 4 OR v.refund_type = 5) 
+		 WHERE hc.dealer_id=#agent_id:VARCHAR# 
+		 <isNotEmpty prepend=" and " property="order_id">
+		 	hc.order_id=#order_id:VARCHAR#
+		 </isNotEmpty>
+		 <isNotEmpty prepend=" and " property="out_ticket_billno">
+	 		hc.out_ticket_billno=#out_ticket_billno:VARCHAR#
+	     </isNotEmpty>
+	     <isNotEmpty prepend=" and " property="create_time">
+	 		DATE_FORMAT(hc.create_time,'%Y-%m-%d')=#create_time:VARCHAR#
+	     </isNotEmpty>
+	     <isNotEmpty prepend=" and " property="oneMonthOrder">
+	 		DATE_ADD(hc.create_time,INTERVAL 1 MONTH) <![CDATA[>]]> NOW()
+	     </isNotEmpty>
+	      <isNotEmpty prepend=" and " property="monthOrder">
+	 		DATE_ADD(hc.create_time,INTERVAL 1 MONTH) <![CDATA[<]]> NOW()
+	     </isNotEmpty>
+	     <isNotEmpty prepend=" and " property="no_pay">
+	     	 CONCAT( DATE_FORMAT(hc.travel_time, '%Y-%m-%d '),hc.from_time) > DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i')
+	     </isNotEmpty>
+	     <isNotEmpty prepend=" and " property="order_status">
+	    	<iterate conjunction="or" open="(" close=")" property="order_status">
+	    		hc.order_status=#order_status[]#
+	   		</iterate>
+	     </isNotEmpty>
+         <isNotEmpty prepend=" and " property="refund_status">
+	    	<iterate conjunction="or" open="(" close=")" property="refund_status">
+	    		v.refund_status=#refund_status[]#
+	   		</iterate>
+	     </isNotEmpty>
+	     GROUP BY hc.order_id
+		 ORDER BY hc.create_time DESC
+         LIMIT #everyPagefrom:Integer#, #pageSize:Integer#
+	</select>
+	
+	
+	<!-- 查询对账管理订单列表条数 -->
+	<select id="queryExtAccountOrderListCount" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(DISTINCT hc.order_id) 
+			FROM ext_orderinfo hc
+			LEFT JOIN ext_orderinfo_refundstream v
+			ON hc.order_id=v.order_id
+			AND v.refund_status='33'
+		WHERE hc.dealer_id=#agent_id:VARCHAR# 
+		<dynamic prepend="">
+	    <isNotEmpty prepend=" and " property="order_id">
+	 		hc.order_id=#order_id:VARCHAR#
+	    </isNotEmpty>
+	    <isNotEmpty prepend=" and " property="eop_order_id">
+	 		hc.eop_order_id=#eop_order_id:VARCHAR#
+	    </isNotEmpty>
+	    <isNotEmpty prepend=" and " property="pay_type">
+	 		hc.pay_type=#pay_type:VARCHAR#
+	    </isNotEmpty>
+	    <isNotEmpty prepend=" and " property="order_status">
+	    	<iterate conjunction="or" open="(" close=")" property="order_status">
+	    		hc.order_status=#order_status[]#
+	   		</iterate>
+	    </isNotEmpty>
+	    <isNotEmpty prepend=" and " property="refund_type">
+	    	<iterate conjunction="or" open="(" close=")" property="refund_type">
+	    		v.refund_type=#refund_type[]#
+	   		</iterate>
+	    </isNotEmpty>
+	    <isNotEmpty prepend=" and " property="begin_time">
+			hc.create_time <![CDATA[>=]]> #begin_time:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			hc.create_time <![CDATA[<]]> DATE_ADD(#end_time:VARCHAR#,INTERVAL 1 DAY)
+		</isNotEmpty>
+		</dynamic>
+	</select>
+	<!-- 查询对账管理订单退款结果列表 -->
+	<select id="queryExtAccountOrderList" parameterClass="java.util.HashMap"
+		resultClass="com.l9e.transaction.vo.OrderInfo">
+		SELECT hc.order_id, hc.order_status, hc.from_station from_city, hc.arrive_station to_city,
+			hc.ticket_pay_money, hc.bx_pay_money, hc.pay_money,hc.out_ticket_billno,
+			DATE_FORMAT(hc.pay_time,'%Y-%m-%d %H:%i:%s') AS pay_time,
+			DATE_FORMAT(hc.pay_time,'%Y-%m-%d') AS pay_time_start,
+			DATE_FORMAT(hc.pay_time,'%H:%i') AS pay_time_end,
+			DATE_FORMAT(hc.out_ticket_time,'%Y-%m-%d %H:%i:%s') AS out_ticket_time,
+			DATE_FORMAT(hc.out_ticket_time,'%Y-%m-%d') AS out_ticket_time_start,
+			DATE_FORMAT(hc.out_ticket_time,'%H:%i') AS out_ticket_time_end,
+			DATE_FORMAT(hc.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+			CONVERT(hc.out_ticket_type,CHAR) AS out_ticket_type, 
+			CONCAT( DATE_FORMAT(hc.travel_time, '%Y-%m-%d '),hc.from_time) > DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i') AS is_repay,
+			IFNULL(hc.refund_deadline_ignore,'0') AS deadline_ignore,hc.can_refund, hc.eop_order_id, hc.pay_type
+			FROM ext_orderinfo hc
+			LEFT JOIN ext_orderinfo_refundstream v
+			ON hc.order_id=v.order_id
+			AND v.refund_status='33'
+		WHERE hc.dealer_id=#agent_id:VARCHAR# 
+		<dynamic prepend="">
+	    <isNotEmpty prepend=" and " property="order_id">
+	 		hc.order_id=#order_id:VARCHAR#
+	    </isNotEmpty>
+	    <isNotEmpty prepend=" and " property="eop_order_id">
+	 		hc.eop_order_id=#eop_order_id:VARCHAR#
+	    </isNotEmpty>
+	    <isNotEmpty prepend=" and " property="pay_type">
+	 		hc.pay_type=#pay_type:VARCHAR#
+	    </isNotEmpty>
+	    <isNotEmpty prepend=" and " property="order_status">
+	    	<iterate conjunction="or" open="(" close=")" property="order_status">
+	    		hc.order_status=#order_status[]#
+	   		</iterate>
+	    </isNotEmpty>
+	    <isNotEmpty prepend=" and " property="refund_type">
+	    	<iterate conjunction="or" open="(" close=")" property="refund_type">
+	    		v.refund_type=#refund_type[]#
+	   		</iterate>
+	    </isNotEmpty>
+	    <isNotEmpty prepend=" and " property="begin_time">
+			hc.create_time <![CDATA[>=]]> #begin_time:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			hc.create_time <![CDATA[<]]> DATE_ADD(#end_time:VARCHAR#,INTERVAL 1 DAY)
+		</isNotEmpty>
+		</dynamic>
+	     GROUP BY hc.order_id
+		 ORDER BY hc.create_time DESC
+         LIMIT #everyPagefrom:Integer#, #pageSize:Integer#
+	</select>
+	
+	<!-- 查询退款完成的退款订单列表 -->
+	<select id="queryRefundList" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT rs.order_id,rs.cp_id,rs.refund_type,rs.refund_status,
+		CONVERT(refund_money, CHAR) AS refund_money,rs.our_remark,rs.user_remark,
+		DATE_FORMAT(rs.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+		DATE_FORMAT(rs.refund_time,'%Y-%m-%d %H:%i:%s') AS refund_time,
+		DATE_FORMAT(rs.refund_time,'%Y-%m-%d') AS refund_time_start,
+		DATE_FORMAT(rs.refund_time,'%H:%i') AS refund_time_end
+		FROM ext_orderinfo_refundstream rs 
+		WHERE rs.order_id=#order_id:VARCHAR#
+		AND rs.refund_status='33'
+		ORDER BY rs.create_time DESC, rs.refund_type 
+	</select>
+	
+	<!-- 查询对账管理订单退款结果列表  导出excel报表数据 -->
+	<select id="queryExtAccountOrderExcelList" parameterClass="java.util.HashMap"
+		resultClass="com.l9e.transaction.vo.OrderInfo">
+		SELECT hc.order_id, hc.order_status, hc.from_station from_city, hc.arrive_station to_city,
+			hc.ticket_pay_money, hc.bx_pay_money, hc.pay_money,hc.out_ticket_billno,
+			DATE_FORMAT(hc.pay_time,'%Y-%m-%d %H:%i:%s') AS pay_time,
+			DATE_FORMAT(hc.pay_time,'%Y-%m-%d') AS pay_time_start,
+			DATE_FORMAT(hc.pay_time,'%H:%i') AS pay_time_end,
+			DATE_FORMAT(hc.out_ticket_time,'%Y-%m-%d %H:%i:%s') AS out_ticket_time,
+			DATE_FORMAT(hc.out_ticket_time,'%Y-%m-%d') AS out_ticket_time_start,
+			DATE_FORMAT(hc.out_ticket_time,'%H:%i') AS out_ticket_time_end,
+			DATE_FORMAT(hc.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+			CONVERT(hc.out_ticket_type,CHAR) AS out_ticket_type, 
+			CONCAT( DATE_FORMAT(hc.travel_time, '%Y-%m-%d '),hc.from_time) > DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i') AS is_repay,
+			IFNULL(hc.refund_deadline_ignore,'0') AS deadline_ignore,hc.can_refund, hc.eop_order_id, hc.pay_type
+			FROM ext_orderinfo hc
+			LEFT JOIN ext_orderinfo_refundstream v
+			ON hc.order_id=v.order_id
+			AND v.refund_status='33'
+		WHERE hc.dealer_id=#agent_id:VARCHAR# 
+		<dynamic prepend="">
+	    <isNotEmpty prepend=" and " property="order_id">
+	 		hc.order_id=#order_id:VARCHAR#
+	    </isNotEmpty>
+	    <isNotEmpty prepend=" and " property="eop_order_id">
+	 		hc.eop_order_id=#eop_order_id:VARCHAR#
+	    </isNotEmpty>
+	    <isNotEmpty prepend=" and " property="pay_type">
+	 		hc.pay_type=#pay_type:VARCHAR#
+	    </isNotEmpty>
+	    <isNotEmpty prepend=" and " property="order_status">
+	    	<iterate conjunction="or" open="(" close=")" property="order_status">
+	    		hc.order_status=#order_status[]#
+	   		</iterate>
+	    </isNotEmpty>
+	    <isNotEmpty prepend=" and " property="refund_type">
+	    	<iterate conjunction="or" open="(" close=")" property="refund_type">
+	    		v.refund_type=#refund_type[]#
+	   		</iterate>
+	    </isNotEmpty>
+	    <isNotEmpty prepend=" and " property="begin_time">
+			hc.create_time <![CDATA[>=]]> #begin_time:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			hc.create_time <![CDATA[<]]> DATE_ADD(#end_time:VARCHAR#,INTERVAL 1 DAY)
+		</isNotEmpty>
+		</dynamic>
+	     GROUP BY hc.order_id
+		 ORDER BY hc.create_time DESC
+	</select>
+	
+</sqlMap>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+  <!--<sqlMap>元素用于包括SQL Map映射文件和其他的SQL Map配置文件。-->
+	<settings useStatementNamespaces="true" cacheModelsEnabled="true"
+		enhancementEnabled="true" lazyLoadingEnabled="true" />
+  	<sqlMap resource="com/l9e/transaction/vo/xml/tj_Hc_orderInfo_today.sql.xml"/> 
+  	 
+  	<sqlMap resource="com/l9e/transaction/vo/xml/tj_hc_halfHour.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/tj_hc_outTicketSbl.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/tjOrderSaleRepor.sql.xml"/>	
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/tj_Channel.sql.xml"/>	
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/tj_Account.sql.xml"/>	
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/tj_Opter.sql.xml"/>	
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/tj_FailOrder.sql.xml"/>	
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/tj_OutTicket.sql.xml"/>	
+  
+  	<sqlMap resource="com/l9e/transaction/vo/xml/tj_Dealer.sql.xml"/>	
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/uploadExcel.sql.xml"/>	
+  	
+	<sqlMap resource="com/l9e/transaction/vo/xml/phonecheck.sql.xml"/>	
+
+	<sqlMap resource="com/l9e/transaction/vo/xml/checkprice.sql.xml"/>	
+ </sqlMapConfig>

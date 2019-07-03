@@ -1,0 +1,14 @@
+db.username =hcpiao
+db.password =ojWuQKtmWo
+db.url=jdbc:mysql://10.16.22.35:3306/hcpiao?useUnicode=true&characterEncoding=UTF8
+db.driver =com.mysql.jdbc.Driver
+
+db.acquireIncrement = 5
+db.initialPoolSize = 5
+db.maxPoolSize = 15
+db.minPoolSize = 5
+
+db.maxIdleTime = 3
+db.minIdleTime = 1
+db.acquireRetryAttempts= 0
+DbPoolMaxActive_0=5;

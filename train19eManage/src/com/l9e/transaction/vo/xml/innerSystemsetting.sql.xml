@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="innerSystemsetting">
+	
+	
+	
+	<typeAlias alias="systemSetting" type="com.l9e.transaction.vo.SystemSettingVo"></typeAlias>
+	<!-- 查询系统设定 -->
+	<select id="querySystemSetting" resultClass="systemSetting">
+		select * from inner_system_setting
+	</select> 
+	
+	<select id="getSystemSettingById" resultClass="systemSetting" parameterClass="java.lang.String">
+		select * from inner_system_setting hc 
+		where hc.setting_id=#setting_id#
+	</select>
+	
+	<!-- 修改接口 -->
+	<update id="updateChannel" parameterClass="systemSetting">
+		update inner_system_setting hc 
+		set 
+		<isNotEmpty prepend=" " property="setting_value">
+			hc.setting_value=#setting_value#
+		</isNotEmpty>
+		where hc.setting_name='INTERFACE_CHANNEL'
+	</update>
+	
+	<!-- 修改链接超时时间 -->
+	<update id="updateConTimeout" parameterClass="systemSetting">
+		update inner_system_setting hc
+		set
+		<isNotEmpty prepend=" " property="setting_value">
+			hc.setting_value=#setting_value#
+		</isNotEmpty>
+		where hc.setting_name='INTERFACE_CON_TIMEOUT'
+	</update>
+	
+	<!-- 更改读超时时间 -->
+	<update id="updateReadTimeout" parameterClass="systemSetting">
+		update inner_system_setting hc
+		set
+		<isNotEmpty prepend=" " property="setting_value">
+			hc.setting_value=#setting_value#
+		</isNotEmpty>
+		where hc.setting_name='INTERFACE_READ_TIMEOUT'
+	</update>
+	
+	<!-- 增加一个12306URL -->
+	<insert id="insertURL" parameterClass="systemSetting">
+		insert into inner_system_setting (
+			setting_id,setting_name, setting_value, setting_status, setting_desc)
+		value(#setting_id#,#setting_name#,#setting_value#,#setting_status#,#setting_desc#)
+	</insert>
+	
+	<!-- 删除12306URL -->
+	<delete id="deleteURL" parameterClass="systemSetting">
+		delete from inner_system_setting 
+		where setting_id=#setting_id#
+	</delete>
+	
+	<update id="updateURL" parameterClass="systemSetting">
+		update inner_system_setting hc
+		set
+		<isNotEmpty prepend=" " property="setting_value">
+			hc.setting_value=#setting_value#
+		</isNotEmpty>
+		where hc.setting_id=#setting_id#
+	</update>
+	
+	<update id="changeURLStatus" parameterClass="systemSetting">
+		update inner_system_setting hc 
+		set
+		<isNotEmpty prepend=" " property="setting_status">
+			hc.setting_status=#setting_status#
+		</isNotEmpty>
+		where hc.setting_id=#setting_id# 
+	</update>
+
+	<!-- 修改机器人支付控制 -->
+	<update id="updatePayCtrl" parameterClass="systemSetting">
+		update inner_system_setting hc
+		set hc.setting_value=#setting_value#
+		where hc.setting_name='robot_pay_ctrl'
+		and hc.setting_id=#setting_id#
+	</update>
+	
+	<!-- 增加操作日志 -->
+	<insert id="addSystemLog" parameterClass="java.util.HashMap">
+		insert into inner_system_log (
+			content,create_time, opt_person)
+		value(#content#,NOW(),#opt_person#)
+	</insert>
+	
+	<!-- 切换渠道 -->
+	<update id="updateChannels" parameterClass="systemSetting">
+		update inner_system_setting hc set hc.setting_value=
+		#setting_value# where hc.setting_id=#setting_id#
+	</update>
+	
+	<!-- 查询系统设置操作日志明细 -->
+	<select id="querySystemSetList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') create_time,opt_person,content FROM inner_system_log
+		ORDER BY create_time DESC LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select> 
+	
+	<!-- 查询系统设置操作日志条数 -->
+	<select id="querySystemSetListCount" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM (SELECT create_time,opt_person,content FROM inner_system_log ORDER BY create_time DESC) AS temp
+	</select> 
+	
+	<!-- 根据setting_name得到setting_value -->
+	<select id="querySystemRefundAndAlert" resultClass="java.lang.String" parameterClass="java.lang.String">
+		SELECT setting_value FROM inner_system_setting WHERE setting_name=#setting_name#
+	</select>
+</sqlMap>

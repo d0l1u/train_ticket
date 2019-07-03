@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="complain">
+
+	<!-- 添加代理商信息 -->
+	<insert id="addComplainInfo" parameterClass="java.util.HashMap">
+		insert into cp_complain
+		<dynamic prepend="(">
+			complain_id,channel,
+			<isNotNull prepend="," property="cm_phone">
+				user_phone
+			</isNotNull>
+			<isNotNull prepend="," property="question_type">
+				question_type
+			</isNotNull>
+			<isNotNull prepend="," property="question">
+				question
+			</isNotNull>
+				,create_time
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			#complain_id:VARCHAR#,'cmpay',
+			<isNotNull prepend="," property="cm_phone">
+				#cm_phone:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="question_type">
+				#question_type:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="question">
+				#question:VARCHAR#
+			</isNotNull>
+				,NOW()
+			)
+		</dynamic>
+	</insert>
+	
+	
+	<!-- 查询投诉与建议 -->
+	<select id="queryComplainList" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT hc.question, hc.answer,
+			hc.create_time, hc.reply_time
+		FROM cp_complain hc 
+		WHERE hc.answer IS NOT NULL 
+		AND (hc.permission='0' OR (hc.permission='1' AND user_phone=#cm_phone:VARCHAR#))
+		ORDER BY create_time DESC
+		LIMIT 0, 5
+	</select>
+	
+	<!-- 查询代理商当天发的建议数 -->
+	<select id="queryDailyCount" parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM cp_complain c 
+		WHERE c.user_phone=#cm_phone:VARCHAR#
+		AND DATE_FORMAT(c.create_time,'%Y-%m-%d')= DATE_FORMAT(NOW(),'%Y-%m-%d')
+	</select>
+
+</sqlMap>

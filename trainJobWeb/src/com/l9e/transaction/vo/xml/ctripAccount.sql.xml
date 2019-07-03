@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ctripAccount">
+
+	<!-- 查询携程账号列表 -->
+	<select id="selectCtripAccountList" parameterClass="Map" resultClass="com.l9e.transaction.vo.CtripAcc">
+		SELECT
+			ctrip_id ctripId,
+			ctrip_name ctripName,
+			ctrip_password ctripPassword,
+			cookie cookie,
+			cid cid,
+			auth auth,
+			sauth sauth,
+			balance balance
+		FROM 
+			ctrip_accountinfo
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="AND" property="ctripStatus">
+				ctrip_status = #ctripStatus:VARCHAR#
+			</isNotEmpty>
+		</dynamic>	
+	</select>
+
+	<!-- 更新携程账号信息 -->
+	<update id="updateCtripAccount" parameterClass="Map">
+		UPDATE
+			ctrip_accountinfo
+		SET	 
+		    result_type = #resultType:INTEGER# 
+		    <isNotEmpty prepend=","  property="optStatus"> 
+		    opt_status = #optStatus:INTEGER#
+		    </isNotEmpty>
+		    <isNotEmpty prepend="," property="balance">		   
+			balance = #balance:DOUBLE# 	
+			</isNotEmpty>
+		WHERE
+			ctrip_id = #ctripId:INTEGER#
+	</update>
+</sqlMap>

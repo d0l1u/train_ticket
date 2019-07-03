@@ -1,0 +1,33 @@
+#windows 测试存放目录
+pic.address =E\:/pic
+#图片存放路径
+sys_root=/log/robot_manager
+#从机器人处拉码存放地址
+pic_root=/log/robot_manager
+
+#【停用】qunar打码地址
+#rand_url=http://api.pub.train.qunar.com/captcha/api/captcha.jsp
+#【停用】qunar--am打码地址
+#rand_url_am=http://api.pub.train.qunar.com/captcha/api/captcha3.jsp
+#【停用】qunar查询验证码结果
+#qunarQueryResultUrl=http://api.pub.train.qunar.com/captcha/api/queryResult.jsp
+#【停用】qunar返回验证码结果
+#qunarFeedbackUrl=http://api.pub.train.qunar.com/captcha/api/feedbackResult.jsp
+
+
+#九九商旅编号
+agent_code1=jjslw
+secretKey1=0DCF87C885584AB1A831278AF279CEF6
+#19旅行
+agent_code2=sjysz
+secretKey2=883EA4F84EE74A099B63E96AAE22BEF4
+
+consumersize=20
+queuesize=30
+sleepMilliSecondsWhenNolist=1000
+sleepMilliSecondsWhenHaslist=2000
+
+#【停用】同程打码
+#code_url=http://114.215.193.242:10352/captcha_decode.json
+#report_error_url=http://114.215.193.242:10352/captcha_report_error.json
+

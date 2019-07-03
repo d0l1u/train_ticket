@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="checkprice">
+	
+	<!-- 插入支付宝明细 -->
+	<insert id="addAlipayInfo" parameterClass="java.util.HashMap">
+		INSERT INTO check_price_alipayinfo 
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="bank_pay_seq">
+				 bank_pay_seq
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_time">
+				 pay_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_money">
+				 refund_money
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_money">
+				 pay_money
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alipay_type">
+				 alipay_type
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alipay_id">
+				 alipay_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_person">
+				 opt_person
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="check_seq">
+				 check_seq
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				 create_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="add_status">
+				 add_status
+			</isNotEmpty>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="bank_pay_seq">
+				 #bank_pay_seq#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_time">
+				 #pay_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_money">
+				 #refund_money#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_money">
+				 #pay_money#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alipay_type">
+				 #alipay_type#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alipay_id">
+				 #alipay_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_person">
+				 #opt_person#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="check_seq">
+				 #check_seq#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				 now()
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="add_status">
+				 #add_status#
+			</isNotEmpty>
+			)
+		</dynamic>
+	</insert>
+	
+
+	<!-- 插入支付宝余额 -->
+	<insert id="addAlipayBalance" parameterClass="java.util.HashMap">
+		INSERT INTO alipay_perday_account_balance 
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="pay_time">
+				 pay_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alipay_id">
+				 alipay_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="account_balance">
+				 account_balance
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				 create_time
+			</isNotEmpty>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="pay_time">
+				 #pay_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alipay_id">
+				 #alipay_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="account_balance">
+				 #account_balance#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				 now()
+			</isNotEmpty>
+			)
+		</dynamic>
+	</insert>
+
+</sqlMap>

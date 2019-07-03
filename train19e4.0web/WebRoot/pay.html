@@ -1,0 +1,583 @@
+<HEAD>
+	<TITLE>确认支付页</TITLE>
+	<META content="text/html; charset=utf-8" http-equiv=Content-Type>
+	<LINK rel=stylesheet type=text/css href="/css/style.css">
+	<LINK rel=stylesheet type=text/css href="/css/default.css">
+	<SCRIPT type=text/javascript src="/js/jquery.js"></SCRIPT>
+
+	<SCRIPT type=text/javascript src="/js/artDialog.js"></SCRIPT>
+
+	<SCRIPT type=text/javascript src="/js/city.js"></SCRIPT>
+</HEAD>
+<BODY sizset="5" sizcache05064222519480619="28">
+	<DIV style="POSITION: absolute; DISPLAY: none" @cache1480298089232="2">
+		<DIV class=aui_outer>
+			<TABLE class=aui_border>
+				<TBODY>
+					<TR>
+						<TD class=aui_nw></TD>
+						<TD class=aui_n></TD>
+						<TD class=aui_ne></TD>
+					</TR>
+					<TR>
+						<TD class=aui_w></TD>
+						<TD class=aui_c>
+							<DIV class=aui_inner>
+								<TABLE class=aui_dialog>
+									<TBODY>
+										<TR>
+											<TD class=aui_header colSpan=2>
+												<DIV class=aui_titleBar>
+													<DIV style="DISPLAY: block; CURSOR: move" class=aui_title></DIV>
+													<A style="DISPLAY: block" class=aui_close
+														href="javascript:/*artDialog*/;">×</A>
+												</DIV>
+											</TD>
+										</TR>
+										<TR>
+											<TD style="DISPLAY: none" class=aui_icon>
+												<DIV
+													style="BACKGROUND: none transparent scroll repeat 0% 0%"
+													class=aui_iconBg></DIV>
+											</TD>
+											<TD style="WIDTH: auto; HEIGHT: auto" class=aui_main>
+												<DIV
+													style="PADDING-BOTTOM: 20px; PADDING-LEFT: 25px; PADDING-RIGHT: 25px; PADDING-TOP: 20px"
+													class=aui_content></DIV>
+											</TD>
+										</TR>
+										<TR>
+											<TD class=aui_footer colSpan=2>
+												<DIV style="DISPLAY: none" class=aui_buttons></DIV>
+											</TD>
+										</TR>
+									</TBODY>
+								</TABLE>
+							</DIV>
+						</TD>
+						<TD class=aui_e></TD>
+					</TR>
+					<TR>
+						<TD class=aui_sw></TD>
+						<TD class=aui_s></TD>
+						<TD style="CURSOR: se-resize" class=aui_se></TD>
+					</TR>
+				</TBODY>
+			</TABLE>
+		</DIV>
+	</DIV>
+	<DIV class="content oz" sizset="5" sizcache05064222519480619="28">
+		<DIV class=index_all sizset="5" sizcache05064222519480619="28">
+			<!--左边内容 start-->
+			<SCRIPT language=JavaScript type=text/javascript>	
+	$().ready(function(){
+		var iframeSetHeightPath='http://dl4.19e.cn';
+		var windowHeight = document.body.scrollHeight+100;
+	    var urlRecordHeight=iframeSetHeightPath+"/40/pages/common/setiframeheight.jsp?documentHeight="+windowHeight+"&iframeName=portal30_right";
+	    $("#iframeSetHeight").attr("src",urlRecordHeight);
+	});
+	
+	function changeHeight(len){
+		try{
+	    	var path = $("#iframeSetHeight").attr("src");
+	    	var begin = path.indexOf("documentHeight=") + ("documentHeight=".length);
+	    	var end = path.indexOf("&iframeName=");
+	    	var height = parseInt(path.substring(begin, end)) + len;
+	    	var prePath = path.substring(0, begin);
+	    	var sufPath = path.substring(end);
+	    	$("#iframeSetHeight").attr("src",prePath+height+sufPath);
+    	}catch(e){}
+    }
+</SCRIPT>
+			<IFRAME style="DISPLAY: none" id=iframeSetHeight height=0
+				src="http://dl4.19e.cn/40/pages/common/setiframeheight.jsp?documentHeight=1100&amp;iframeName=portal30_right"
+				width=0 name=iframeSetHeight></IFRAME>
+			<!--左边内容 start-->
+			<DIV id=new_left sizset="5" sizcache05064222519480619="28">
+				<!--侧边栏 start-->
+				<SCRIPT type=text/javascript>
+$().ready(function(e){
+	$(".sidebar_con li").hover(function(){
+			var myindex=$(this).index()+1;
+		
+			$(this).find("div").addClass("current_cat"+myindex);
+			$(this).siblings().each(function(index, element) {
+			   $(this).find("div").removeClass(); 
+			});
+		
+			$(this).find("span").addClass("gcurrent");
+			$(this).siblings().each(function(index, element) {
+				$(this).find("span").removeClass(); 
+        });},function(){
+		
+			var myindex=$(this).index()+1;
+			var mymum=$(this).index()
+			$(this).find("div").removeClass("current_cat"+myindex).addClass("cat"+mymum);
+			$(this).siblings().each(function(index, element) {
+           		$(this).find("div").removeClass(); 
+        });
+				$(this).find("span").removeClass("gcurrent")
+		}
+		);	
+	//以上实现鼠标移上和移出li的样式改变	
+	
+	
+	//以下是鼠标移走之后恢复最初当前页面选项
+		var idx = $(".current_onclick").attr("id").substring(12);
+		//alert(idx);
+		var n = parseInt(idx)-1;
+		$(".sidebar_con").mouseleave(function(){
+		$(".sidebar_con li").eq(n).find("div").addClass("current_cat"+idx);
+		$(".sidebar_con li").eq(n).find("div").addClass("current_onclick");
+		$(".sidebar_con li").eq(n).siblings().removeClass();
+		$(".sidebar_con li").eq(n).find("span").addClass("gcurrent").siblings().removeClass();
+		});	
+	});
+
+//$(".current_cat1").onclick(function(){
+//	alert("aa");
+	//var id = $(".current_choose").attr("id");
+//});	
+function toHref(id, url){
+	var index = id.substring(12);
+	var oldId = $(".current_onclick").attr("id");
+	$("#"+oldId).removeClass("current_onclick");
+	$("#"+id).addClass("current_onclick");
+	//alert(oldId+"   "+id);
+	window.location = url;
+}
+</SCRIPT>
+
+				<H3 style="CURSOR: pointer" class=sidebar_tit
+					onclick="toHref(this.id, '/buyTicket/bookIndex.jhtml');">
+					火车票业务
+				</H3>
+				<!--登录状态 start-->
+				<DIV class="vip-state oz">
+					<A class=box-a href="/joinUs/realNameAuth.jhtml">
+						<DL class=oz>
+							<DT>
+								<DIV class="vip-icon nolevel-icon"></DIV>
+								<P
+									style="TEXT-ALIGN: center; LINE-HEIGHT: 25px; WIDTH: 63px; HEIGHT: 25px"
+									class="operate update">
+									<SPAN>立即认证</SPAN>
+								</P>
+							</DT>
+							<DD>
+								<P class=vip-mes>
+									<LABEL>
+										姓名：
+									</LABEL>
+									<SPAN style="COLOR: #555555">未填写</SPAN>
+								</P>
+								<P class=vip-mes>
+									<LABEL>
+										状态：
+									</LABEL>
+									<SPAN style="COLOR: #555555">已开通</SPAN>
+								</P>
+								<P class=vip-mes>
+									<LABEL>
+										实名：
+									</LABEL>
+									<SPAN class=state>未认证</SPAN>
+								</P>
+								<P class=vip-mes>
+									<LABEL>
+										等级：
+									</LABEL>
+									<SPAN>无</SPAN>
+								</P>
+							</DD>
+						</DL> </A>
+				</DIV>
+				<!--登录状态 end-->
+				<DIV id=sidebar>
+					<UL id=all_menu class=sidebar_con sizset="0"
+						jQuery1720527121299834229="6" sizcache05064222519480619="28">
+						<LI style="BORDER-LEFT: #92d14f 4px solid"
+							jQuery1720527121299834229="1">
+							<DIV id=currentMenu_1 class="current_cat1 current_onclick"
+								onclick="toHref(this.id, '/buyTicket/bookIndex.jhtml');">
+								<A href="#">车票预订</A>
+								<SPAN class=gcurrent></SPAN>
+							</DIV>
+						</LI>
+						<LI style="BORDER-LEFT: #a04ed1 4px solid"
+							jQuery1720527121299834229="2">
+							<DIV id=currentMenu_2
+								onclick="toHref(this.id, '/query/queryOrderList.jhtml');">
+								<A href="#">我的订单</A>
+								<SPAN></SPAN>
+							</DIV>
+						</LI>
+						<LI style="BORDER-LEFT: #fca0ab 4px solid"
+							jQuery1720527121299834229="3">
+							<DIV id=currentMenu_3
+								onclick="toHref(this.id, '/query/querySaleReport.jhtml');">
+								<A href="#">销售报表</A>
+								<SPAN></SPAN>
+							</DIV>
+							<!--	<li  style="border-left: 4px #c3a9aa solid;" >
+			<div id="currentMenu_4"  class="current_cat4 current_onclick" class="cat4" 
+				onclick="toHref(this.id, '/joinUs/agentInfoIndex.jhtml');"  > 
+				<a href="#">个人中心</a> 
+				<span  class="gcurrent" ></span>
+			</div>
+		</li>  -->
+						</LI>
+						<LI style="BORDER-LEFT: #ffc001 4px solid"
+							jQuery1720527121299834229="4">
+							<DIV id=currentMenu_4 class=cat3
+								onclick="toHref(this.id, '/complain/complainIndex.jhtml');">
+								<A href="#">投诉建议</A>
+								<SPAN></SPAN>
+							</DIV>
+						</LI>
+						<LI style="BORDER-LEFT: #f15f62 4px solid"
+							jQuery1720527121299834229="5">
+							<DIV id=currentMenu_5 onclick=toHref(this.id,'/pages/guide/newKaiTong.jsp');;
+>
+								<A href="#">常见问题</A>
+								<SPAN></SPAN>
+							</DIV>
+						</LI>
+					</UL>
+					<!-- 
+			<li style="border-left: 4px #92d14f solid;">
+				<div class="current_cat1"> <a href="/buyTicket/bookIndex.jhtml">车票预订</a> <span class="gcurrent"></span> </div>
+			</li>
+			<li style="border-left: 4px #a04ed1 solid;"> 
+				<div class="cat2"> <a href="/query/queryOrderList.jhtml">我的订单</a> <span></span> </div>
+			</li>
+			<li style="border-left: 4px #fca0ab solid;">
+				<div class="cat3"> <a href="/query/querySaleReport.jhtml">销售报表</a> <span></span> </div>
+			</li>
+			<li style="border-left: 4px #c3a9aa solid;">
+				<div class="cat4"> <a href="/joinUs/agentInfoIndex.jhtml">个人中心</a> <span></span> </div>
+			</li>
+			<li style="border-left: 4px #ffc001 solid;">
+				<div class="cat5"> <a href="/complain/complainIndex.jhtml">投诉建议</a> <span></span> </div>
+			</li>
+			<li style="border-left: 4px solid #f15f62;">
+				<div class="cat6"> <a href="/pages/guide/newKaiTong.jsp">常见问题</a> <span></span> </div>
+			</li>
+		 -->
+				</DIV>
+				<!--侧边栏 end-->
+				<!--公告 start-->
+				<DIV id=new_ggao sizset="5" sizcache05064222519480619="28">
+					<H2>
+						<SPAN>公告</SPAN>
+						<A href="/notice/queryNoticeAllList.jhtml">更多 </A>
+					</H2>
+					<DIV class=nggao_con sizset="5" sizcache05064222519480619="28">
+						<UL style="PADDING-RIGHT: 8px" sizset="5"
+							sizcache05064222519480619="28">
+							<LI>
+								<SPAN
+									style="WIDTH: 145px; TEXT-OVERFLOW: ellipsis; DISPLAY: block; WHITE-SPACE: nowrap; OVERFLOW: hidden"><A
+									title="<b style='color: red'>车次数据全更新</b>"
+										href="/notice/queryNoticeInfo_no.jhtml?noticeId=126"><B
+										style="COLOR: red">车次数据全更新</B> </A> </SPAN><SPAN class=notice_time>2016/11/23
+								</SPAN>
+							</LI>
+							<LI>
+								<SPAN
+									style="WIDTH: 145px; TEXT-OVERFLOW: ellipsis; DISPLAY: block; WHITE-SPACE: nowrap; OVERFLOW: hidden"><A
+									title="<b>预售时间调整公告</b>"
+										href="/notice/queryNoticeInfo_no.jhtml?noticeId=130"><B>预售时间调整公告</B>
+								</A> </SPAN><SPAN class=notice_time>2016/11/02 </SPAN>
+							</LI>
+							<LI>
+								<SPAN
+									style="WIDTH: 145px; TEXT-OVERFLOW: ellipsis; DISPLAY: block; WHITE-SPACE: nowrap; OVERFLOW: hidden"><A
+									title=开车前订票时间更改公告
+									href="/notice/queryNoticeInfo_no.jhtml?noticeId=114">开车前订票时间更改公告
+								</A> </SPAN><SPAN class=notice_time>2015/05/05 </SPAN>
+							</LI>
+						</UL>
+					</DIV>
+				</DIV>
+				<!--公告 end-->
+				<!--联系方式 start-->
+				<DIV id=new_contact>
+					<H3>
+						<SPAN>联系方式</SPAN>
+					</H3>
+					<DIV class=new_contact>
+						<SPAN>客服热线</SPAN>
+						<B>7:00-23:00</B>
+						<A href="#">400-688-2666</A>
+					</DIV>
+				</DIV>
+				<!--联系方式 end-->
+			</DIV>
+			<!--左边内容 end-->
+			<!--右边内容 start-->
+			<DIV class="infoinput-right oz">
+				<DIV style="MARGIN: 0px 0px 10px"
+					class="pub_order_mes ticket_mes oz mb10_all">
+					<DIV class=pub_ord_tit>
+						<H4 class=fl>
+							车次信息
+						</H4>
+						<P class=tit_tip>
+							（数据仅作参考，请以实际出票情况为准）
+						</P>
+					</DIV>
+					<DIV class=new_pub_con>
+						<TABLE class=pub_table>
+							<TBODY>
+								<TR>
+									<TD class=pub_yuliu rowSpan=5>
+										<STRONG>G101</STRONG>
+										<BR>
+										<SPAN class=checi>高铁</SPAN>
+									</TD>
+									<TD class=addr width=500>
+										<STRONG>北京南<SPAN>（06:44）</SPAN> </TRONG>—<STRONG>上海虹桥<SPAN>（12:38）</SPAN>
+										</STRONG> </STRONG>
+									</TD>
+								</TR>
+								<TR>
+									<TD width=234>
+										日 期：
+										<SPAN>2016-11-30</SPAN>
+									</TD>
+								</TR>
+								<TR>
+									<TD width=234>
+										坐 席：
+										<SPAN>一等座</SPAN>
+									</TD>
+								</TR>
+								<TR>
+									<TD>
+										价 格：
+										<SPAN>933.000</SPAN> 元
+									</TD>
+								</TR>
+								<TR>
+									<TD id="bkSelected" width=234>
+										备选坐席：
+										<SPAN>一等座:800.000</SPAN>&nbsp;&nbsp;
+										<SPAN>二等座:800.000</SPAN>&nbsp;&nbsp;
+										<SPAN>卧铺:800.000</SPAN>
+									</TD>
+								</TR>
+
+							</TBODY>
+						</TABLE>
+					</DIV>
+				</DIV>
+				<DIV class="pub_passager_mes oz mb10_all">
+					<DIV class=pub_ord_tit>
+						<H4 class=fl>
+							乘客信息
+						</H4>
+						<P class=tit_tip>
+							（一个订单最多可代购5张票，请务必填写乘车人真实信息）
+						</P>
+					</DIV>
+					<DIV class=new_pub_con>
+						<TABLE class="pub_table add_bg1">
+							<TBODY>
+								<TR>
+									<TD class=pub_yuliu rowSpan=3></TD>
+									<TD width=234>
+										姓 名：
+										<SPAN>杨韦</SPAN>
+									</TD>
+									<TD>
+										类 型：
+										<SPAN>成人票</SPAN>
+									</TD>
+								</TR>
+								<TR>
+									<TD width=234>
+										证件类型：
+										<SPAN>二代身份证</SPAN>
+									</TD>
+									<TD>
+										证件号码：
+										<SPAN>421102199106150815</SPAN>
+									</TD>
+								</TR>
+								<TR>
+									<TD colSpan=2>
+										SVIP服务费：
+										<SPAN class="svip_price"> 赠送保险，5元/单 </SPAN>
+									</TD>
+								</TR>
+							</TBODY>
+						</TABLE>
+						<DIV class="oz pas1">
+							<P class=border_top></P>
+							<TABLE class="pub_table add_bg1">
+								<TBODY>
+									<TR>
+										<TD class=pub_yuliu rowSpan=3></TD>
+										<TD width=234>
+											姓 名：
+											<SPAN>杨韦</SPAN>
+										</TD>
+										<TD>
+											类 型：
+											<SPAN>儿童票</SPAN>
+										</TD>
+									</TR>
+									<TR>
+										<TD width=234>
+											证件类型：
+											<SPAN>二代身份证</SPAN>
+										</TD>
+										<TD>
+											证件号码：
+											<SPAN>421102199106150815</SPAN>
+										</TD>
+									</TR>
+									<TR>
+										<TD colSpan=2>
+											SVIP服务费：
+											<SPAN class="svip_price"> 赠送保险，5元/单 </SPAN>
+										</TD>
+									</TR>
+								</TBODY>
+							</TABLE>
+						</DIV>
+						<DIV class="oz pas1">
+							<P class=border_top></P>
+							<TABLE class="pub_table add_bg1">
+								<TBODY>
+									<TR>
+										<TD class=pub_yuliu rowSpan=3></TD>
+										<TD width=234>
+											姓 名：
+											<SPAN>霍亮红</SPAN>
+										</TD>
+										<TD>
+											类 型：
+											<SPAN>成人票</SPAN>
+										</TD>
+									</TR>
+									<TR>
+										<TD width=234>
+											证件类型：
+											<SPAN>二代身份证</SPAN>
+										</TD>
+										<TD>
+											证件号码：
+											<SPAN>142728197503150027</SPAN>
+										</TD>
+									</TR>
+									<TR>
+										<TD colSpan=2>
+											SVIP服务费：
+											<SPAN class="svip_price"> 赠送保险，5元/单 </SPAN>
+										</TD>
+									</TR>
+								</TBODY>
+							</TABLE>
+						</DIV>
+					</DIV>
+				</DIV>
+				<DIV class="pub_self_take_mes oz mb10_all">
+					<DIV class=pub_ord_tit>
+						<H4 class=fl>
+							车站自提
+						</H4>
+						<P class=tit_tip>
+							（取票规则：开车前可在任何火车站或代售点自由取票，
+							<SPAN onclick=javascript:showQpDesc();>取票说明</SPAN>）
+						</P>
+					</DIV>
+					<DIV class=new_pub_con>
+						<TABLE class=pub_table>
+							<TBODY>
+								<TR>
+									<TD class=pub_yuliu rowSpan=2></TD>
+									<TD width=234>
+										联 系 人：
+										<SPAN>杨韦</SPAN>
+									</TD>
+									<TD>
+										手 机：
+										<SPAN>15321761517</SPAN>
+									</TD>
+								</TR>
+							</TBODY>
+						</TABLE>
+					</DIV>
+				</DIV>
+				<DIV class="pub_self_take_mes oz mb10_all">
+					<DIV class=pub_ord_tit>
+						<H4 class=fl>
+							支付信息
+						</H4>
+						<P class=tit_tip>
+							（火车票票源紧张，支付后不保证100%出票）
+						</P>
+					</DIV>
+					<DIV class=new_pub_con>
+						<TABLE class=pub_table>
+							<TBODY>
+								<TR>
+									<TD style="WIDTH: 70px"></TD>
+									<TD>
+										票 价：
+										<SPAN style="COLOR: red; FONT-WEIGHT: bold">2799.00元</SPAN>
+									</TD>
+									<TD>
+										SVIP服务费：
+										<SPAN style="COLOR: red; FONT-WEIGHT: bold" id="total_svip">5.00元</SPAN>
+									</TD>
+									<TD>
+										总 计：
+										<SPAN style="COLOR: red; FONT-SIZE: 20px; FONT-WEIGHT: bold" id="total_price">2804.00元</SPAN>
+									</TD>
+								</TR>
+							</TBODY>
+						</TABLE>
+						<P style="PADDING-BOTTOM: 20px; PADDING-LEFT: 80px">
+							<IFRAME style="BACKGROUND: #f0f7ff" height=140
+								src="http://dl4.19e.cn/payAsp_commonPayNew.jhtml?batchId=16112809544942031343&amp;theChannelUseIntegral=0&amp;useCouponFlag=1&amp;aspServiceId=1000016&amp;terminalType=web&amp;orderPrice=2802.0&amp;yfprice=0&amp;messageprice=0&amp;otherprice=0&amp;serviceId=95&amp;realorderprice=2804.0"
+								frameBorder=0 width=550 scrolling=no></IFRAME>
+							<BR>
+							<SPAN style="MARGIN-LEFT: 80px">*&nbsp;&nbsp;请确认以上信息，支付后将无法修改</SPAN>
+						</P>
+					</DIV>
+				</DIV>
+				<!-- 禁止收取手续费
+        	<div class="ban4"></div>
+        	 -->
+			</DIV>
+			<!--右边内容 end-->
+		</DIV>
+	</DIV>
+	<SCRIPT type=text/javascript>
+	//显示取票说明
+	function showQpDesc(){
+		//消息框
+		var dialog = art.dialog({
+			lock: true,
+			fixed: true,
+			left: '50%',
+			top: '50%',
+		    title: '取票说明',
+		    okVal: '确认',
+		    content: '<p style="width:250px;height:40px;line-height:20px;">1、凭购票时的有效证件和电子订单号，发车前可在全国任意火车站或代售点取票。</p>'
+		    		+'<p style="width:250px;height:40px;line-height:20px;margin-top:15px;">2、代售点收取代售费5元/张，另外车站售票窗口取异地票，火车站将收取代售费5元/张。</p>',
+		    ok: function(){}
+		});
+	}
+	
+	//<!--
+	try{
+	  document.domain="19e.cn";
+	}catch(e){
+	}
+//-->
+</SCRIPT>
+</BODY>

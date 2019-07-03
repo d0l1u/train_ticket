@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="qunarexcel">
+
+	<!-- 查询普通订单信息 -->
+	<select id="queryQunarBook" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT qunar.order_id,qunar.out_ticket_billno,
+		CONVERT(qunar.pay_money,CHAR) AS pay_money,
+		CONVERT(qunar.buy_money,CHAR) AS buy_money,
+		convert(qunar.pay_money-qunar.buy_money,char) AS differ, 
+		date_format(qunar.order_time,'%Y-%m-%d %H:%i:%s') as order_time, 
+		date_format(qunar.from_time,'%Y-%m-%d %H:%i:%s') as from_time, 
+		date_format(qunar.out_ticket_time, '%Y-%m-%d %H:%i:%s') as out_ticket_time, cp.out_ticket_account,
+		cp.bank_pay_seq , qunar.order_type FROM qunar_orderinfo as qunar
+		left join cp_orderinfo as cp on qunar.order_id=cp.order_id where
+		(qunar.order_type='0' or isnull(qunar.order_type))
+		<isNotEmpty prepend=" and " property="order_id">
+			qunar.order_id=#order_id#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="out_ticket_billno">
+			quanr.out_ticket_billno=#out_ticket_billno#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="begin_info_time">
+			qunar.create_time
+			<![CDATA[>=]]>
+			DATE_FORMAT(#begin_info_time#,'%Y-%m-%d %H:%i:%s')
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_info_time">
+			qunar.create_time
+			<![CDATA[<]]>
+			DATE_ADD(DATE_FORMAT(#end_info_time#,'%Y-%m-%d
+			%H:%i:%s'),INTERVAL 1 DAY)
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="order_status">
+			qunar.order_status in
+			<iterate open="(" close=")" conjunction=","
+				property="order_status">
+				#order_status[]#
+			</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="begin_time">
+			qunar.from_time
+			<![CDATA[>=]]>
+			DATE_FORMAT(#begin_time#,'%Y-%m-%d %H:%i:%s')
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			qunar.from_time
+			<![CDATA[<]]>
+			DATE_ADD(DATE_FORMAT(#end_time#,'%Y-%m-%d %H:%i:%s'),INTERVAL 1 DAY)
+		</isNotEmpty>
+	</select>
+	<!-- 查询联程订单信息 -->
+	<select id="queryLianChengQunarBook"
+		parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT qot.trip_id AS order_id,qot.out_ticket_billno,
+		CONVERT(qot.pay_money,CHAR) AS
+		pay_money,CONVERT(qot.buy_money,CHAR) AS
+		buy_money,CONVERT(qot.pay_money-qot.buy_money,CHAR) AS differ,
+		DATE_FORMAT(qot.create_time,'%Y-%m-%d %H:%i:%s') AS order_time,
+		DATE_FORMAT(qot.from_time,'%Y-%m-%d %H:%i:%s') AS from_time,
+		DATE_FORMAT(qot.out_ticket_time, '%Y-%m-%d %H:%i:%s') AS
+		out_ticket_time , qo.order_type ,cp.out_ticket_account,
+		cp.bank_pay_seq FROM qunar_orderinfo_trip AS qot JOIN
+		qunar_orderinfo AS qo ON qo.order_id=qot.order_id left join
+		cp_orderinfo as cp on qot.trip_id=cp.order_id where
+		qo.order_type='1'
+		<isNotEmpty prepend=" and " property="order_id">
+			qot.order_id like #order_id#
+		</isNotEmpty>
+
+		<isNotEmpty prepend=" and " property="out_ticket_billno">
+			qot.out_ticket_billno=#out_ticket_billno#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="begin_info_time">
+			qot.create_time
+			<![CDATA[>=]]>
+			DATE_FORMAT(#begin_info_time#,'%Y-%m-%d %H:%i:%s')
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_info_time">
+			qot.create_time
+			<![CDATA[<]]>
+			DATE_ADD(DATE_FORMAT(#end_info_time#,'%Y-%m-%d
+			%H:%i:%s'),INTERVAL 1 DAY)
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="order_status">
+			qo.order_status in
+			<iterate open="(" close=")" conjunction=","
+				property="order_status">
+				#order_status[]#
+			</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="begin_time">
+			qot.from_time
+			<![CDATA[>=]]>
+			DATE_FORMAT(#begin_time#,'%Y-%m-%d %H:%i:%s')
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			qot.from_time
+			<![CDATA[<]]>
+			DATE_ADD(DATE_FORMAT(#end_time#,'%Y-%m-%d %H:%i:%s'),INTERVAL 1 DAY)
+		</isNotEmpty>
+	</select>
+
+	<!-- 查询退款订单信息 -->
+	<select id="queryRefundTicket" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT 
+		  qunar.refund_seq,
+		  qunar.order_id,
+		  CONVERT(qunar.refund_money, CHAR) AS refund_money,
+		  DATE_FORMAT(
+		    qunar.create_time,
+		    '%Y-%m-%d %H:%i:%s'
+		  ) AS create_time,
+		  DATE_FORMAT(
+		    qunar.verify_time,
+		    '%Y-%m-%d %H:%i:%s'
+		  ) AS verify_time,
+		  qunar.refund_12306_seq,
+		  CONVERT(qunar.alter_tickets_money, CHAR) AS alter_tickets_money,
+		  CONVERT(qunar.actual_refund_money, CHAR) actual_refund_money,
+		  qunar.detail_refund,
+		  qunar.detail_alter_tickets,
+		  qunar.change_ticket_info,
+		  qunar.order_type 
+		FROM
+		  qunar_orderinfo_refund AS qunar 
+		WHERE 1 = 1 
+		<isNotEmpty prepend=" and " property="order_id">
+			qunar.order_id=#order_id#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="refund_12306_seq">
+			qunar.refund_12306_seq=#refund_12306_seq#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="begin_time">
+			qunar.create_time
+			<![CDATA[>=]]>
+			DATE_FORMAT(#begin_time#,'%Y-%m-%d %H:%i:%s')
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			qunar.create_time
+			<![CDATA[<]]>
+			DATE_ADD(DATE_FORMAT(#end_time#,'%Y-%m-%d
+			%H:%i:%s'),INTERVAL 1 DAY)
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="refund_status">
+			qunar.refund_status in
+			<iterate open="(" close=")" conjunction=","
+				property="refund_status">
+				#refund_status[]#
+			</iterate>
+		</isNotEmpty>
+	</select>
+</sqlMap>

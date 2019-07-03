@@ -1,0 +1,620 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="account">
+
+	<!-- 查询12306账号ID用于加锁 -->
+	<select id="queryAccountIdForVerify" parameterClass="java.util.HashMap"
+		resultClass="java.lang.String">
+		select CONVERT(acc_id,CHAR) AS accId from cp_accountinfo where
+		contact_num + #num:INTEGER#
+		<![CDATA[<]]>
+		100 AND acc_status=#acc_status:VARCHAR# AND is_alive=1 AND
+		active_time
+		<![CDATA[>]]>
+		DATE_SUB(NOW(), INTERVAL 15 MINUTE) ORDER BY rand() limit 5
+	</select>
+
+	<!-- 根据账户名查询账户 -->
+	<select id="queryAccountByName" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		select * from cp_accountinfo where 1=1 AND
+		acc_username=#acc_username:VARCHAR#
+	</select>
+
+	<!-- 查询12306账号用于校验 -->
+	<select id="queryAccountForVerify" parameterClass="java.util.HashMap"
+		resultClass="com.l9e.transaction.vo.Account">
+		select CONVERT(acc_id,CHAR) AS accId, acc_username as
+		accUsername,
+		acc_password as accPassword from cp_accountinfo
+		where contact_num +
+		#num:INTEGER#
+		<![CDATA[<]]>
+		100 AND book_num
+		<![CDATA[<]]>10
+		AND acc_status=#acc_status:VARCHAR# and is_alive=1 AND
+		active_time
+		<![CDATA[>]]>
+		DATE_SUB(NOW(), INTERVAL 15 MINUTE) ORDER BY rand() limit 1
+	</select>
+	<!-- 更新workInfo表处理单子数量 -->
+	<update id="updateWorkerinfoNum">
+		update cp_workerinfo set order_num=0
+	</update>
+	<!-- 更新账号状态 -->
+	<update id="udpateAccountStatusByAccId" parameterClass="java.util.HashMap">
+		UPDATE
+		cp_accountinfo SET acc_status=#acc_status:VARCHAR#,
+		option_time=NOW(),
+		verify_time=NOW(), opt_person='app helper'
+		WHERE
+		acc_id=#acc_id:INTEGER# AND
+		acc_status=#old_status:VARCHAR#
+	</update>
+
+	<!-- 查询在账号过滤表中的个数 -->
+	<select id="queryAccoutFilterCount" parameterClass="java.util.ArrayList"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM cp_accountinfo_filter where 1=1
+		<iterate prepend=" and " open="(" close=")" conjunction=" or ">
+			(
+			ids_card = #userList[].cert_no# )
+		</iterate>
+	</select>
+
+	<!-- 查询账号过滤表是否有记录 -->
+	<select id="queryAccountFilterCountById" parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM cp_accountinfo_filter WHERE
+		ids_card=#ids_card:VARCHAR#
+	</select>
+	<!-- 查询账户信息 -->
+	<select id="queryAccount" parameterClass="java.util.HashMap"
+		resultClass="com.l9e.transaction.vo.Account">
+		select acc_id as accId, acc_username as accUsername,
+		acc_password as
+		accPassword, acc_status as accStatus,
+		CONVERT(create_time, char) as
+		createTime, CONVERT(option_time,
+		char) as optionTime, at_province_id as
+		atProvinceId, at_city_id
+		as atCityId, order_id as orderId, stop_time as
+		stopTime,priority, channel, opt_person as optPerson, acc_mail as
+		accMail, stop_reason as stopReason, real_name as realName,
+		id_card as
+		idCard, contact_num as contactNum, account_source as
+		accountSource,
+		is_alive as isAlive, live_time as liveTime,
+		verify_time as verifyTime,
+		delete_remark as deleteRemark,
+		active_status as activeStatus,
+		active_time as activeTime,
+		delete_status as deleteStatus, book_num as
+		bookNum from
+		cp_accountinfo where 1=1
+		<isNotEmpty prepend=" and " property="acc_id">
+			acc_id=#acc_id:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="acc_username">
+			acc_username=#acc_username:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="acc_password">
+			acc_password=#acc_password:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="acc_status">
+			acc_status=#acc_status:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="stop_reason">
+			stop_reason=#stop_reason:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="modify_status">
+			modify_status=#modify_status:VARCHAR# and (modify_time is
+			null or
+			modify_time
+			<![CDATA[<]]>
+			DATE_SUB(NOW(), INTERVAL 20 MINUTE)) ORDER BY create_time
+			ASC limit 1
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="nochannel">
+			channel<![CDATA[<>]]>#nochannel:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty property="start_account_limit_num">
+			limit
+			#start_account_limit_num:Integer#
+		</isNotEmpty>
+	</select>
+
+	<!-- 修改密码时更新账号状态 -->
+	<update id="updateModifyStatus" parameterClass="com.l9e.transaction.vo.Account">
+		update cp_accountinfo set modify_status=#modifyStatus:VARCHAR#
+		,modify_time = now()
+		<isNotEmpty prepend="," property="oldPass">
+			old_pass=#oldPass:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="accPassword">
+			acc_password=#accPassword:VARCHAR#
+		</isNotEmpty>
+		where acc_id=#accId:VARCHAR#
+	</update>
+
+
+	<!-- 批量添加账号过滤表 -->
+	<insert id="addUserToAccountFilter" parameterClass="com.l9e.transaction.vo.AccountFilter">
+		INSERT INTO
+		cp_accountinfo_filter (ids_card, account_id,
+		create_time, real_name)
+		VALUES
+		(#ids_card:VARCHAR#,#account_id:VARCHAR#,NOW(),#real_name:VARCHAR#)
+	</insert>
+	<!-- 更新账号的信息 -->
+	<update id="updateAccount" parameterClass="com.l9e.transaction.vo.Account">
+		update cp_accountinfo
+		set acc_status=#accStatus:VARCHAR#, book_num=#bookNum:INTEGER#
+		where
+		acc_id=#accId:INTEGER#
+
+	</update>
+
+
+	<!-- 需要需要唤醒的账号群 -->
+	<select id="queryAliveAccouts" resultClass="com.l9e.transaction.vo.Account"
+		parameterClass="java.util.HashMap">
+		SELECT CONVERT(acc_id,CHAR) AS accId, acc_username AS
+		accUsername,
+		acc_password AS accPassword FROM cp_accountinfo
+		WHERE acc_status in
+		('00', '33') AND contact_num
+		<![CDATA[<=]]>
+		95 AND is_alive<![CDATA[=]]>1
+		AND live_time
+		<![CDATA[<]]>
+		DATE_SUB(NOW(), INTERVAL 5 MINUTE)
+		<isNotEmpty prepend=" AND " property="limit_time">
+			active_time
+			<![CDATA[<]]>
+			DATE_SUB(NOW(), INTERVAL 15 MINUTE) AND active_time
+			<![CDATA[>]]>
+			DATE_SUB(NOW(), INTERVAL 20 MINUTE) ORDER BY active_time asc
+		</isNotEmpty>
+		<isEmpty property="limit_time">
+			AND (active_time
+			<![CDATA[<]]>
+			DATE_SUB(NOW(), INTERVAL 20 MINUTE) OR active_time is null)
+			ORDER BY
+			active_time desc
+		</isEmpty>
+		LIMIT 0,#limit_num:INTEGER#
+	</select>
+
+	<!-- 批量更新账号状态为正在唤醒 -->
+	<update id="updateAccoutLivetimeBatch" parameterClass="java.util.ArrayList">
+		UPDATE cp_accountinfo SET live_time = NOW(), active_status='01'
+		WHERE
+		acc_id IN
+		<iterate open="(" close=")" conjunction=" , ">
+			#accounts[].accId:INTEGER#
+		</iterate>
+	</update>
+
+	<!-- 更新唤醒账号状态 -->
+	<update id="updateAccountActive" parameterClass="java.util.HashMap">
+		update cp_accountinfo set active_time=now(),
+		active_status=#status:VARCHAR# where 1=1
+		<isNotEmpty prepend=" and " property="acc_id">
+			acc_id=#acc_id:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="acc_username">
+			acc_username=#acc_username:VARCHAR#
+		</isNotEmpty>
+	</update>
+
+	<!-- 查询目前唤醒账号数 -->
+	<select id="queryAliveAccoutsCount" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM cp_accountinfo WHERE acc_status in
+		('33','00') AND
+		is_alive=1 AND active_time
+		<![CDATA[>]]>
+		DATE_SUB(NOW(), INTERVAL 15 MINUTE) AND active_time
+		<![CDATA[<]]>
+		NOW()
+		<isNotEmpty prepend="and" property="channel">
+			channel=#channel:VARCHAR#
+		</isNotEmpty>
+	</select>
+
+	<!-- 查询目前20分钟内唤醒账号数 -->
+	<select id="queryAccoutsCount" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM cp_accountinfo WHERE acc_status in
+		('33','00') AND
+		is_alive=1 AND active_time
+		<![CDATA[>]]>
+		DATE_SUB(NOW(), INTERVAL 20 MINUTE) AND active_time
+		<![CDATA[<]]>
+		NOW()
+		<isNotEmpty prepend="and" property="channel">
+			channel=#channel:VARCHAR#
+		</isNotEmpty>
+	</select>
+
+	<!-- 查询用于补充的账号群 -->
+	<select id="querySupplyAccouts" parameterClass="java.util.HashMap"
+		resultClass="com.l9e.transaction.vo.Account">
+		SELECT CONVERT(acc_id,CHAR) AS accId, acc_username AS
+		accUsername,
+		acc_password AS accPassword FROM cp_accountinfo
+		WHERE acc_status = '33'
+		AND is_alive IS NULL AND
+		channel=#channel:VARCHAR# AND (contact_num IS
+		NULL OR
+		contact_num
+		<![CDATA[<]]>
+		50) ORDER BY RAND() LIMIT 0, #num:INTEGER#
+	</select>
+
+	<!-- 更新补充账号为可用状态 -->
+	<update id="updateSupplyAccoutsAlive" parameterClass="java.util.ArrayList">
+		UPDATE cp_accountinfo SET is_alive=1,
+		live_time=DATE_SUB(NOW(),INTERVAL 40 MINUTE),
+		verify_time=DATE_SUB(NOW(),INTERVAL 1 HOUR),
+		active_time=DATE_SUB(NOW(),INTERVAL 17 MINUTE) WHERE acc_id IN
+		<iterate open="(" close=")" conjunction=" , ">
+			#accounts[].accId:INTEGER#
+		</iterate>
+		AND acc_status='33' AND is_alive IS NULL
+	</update>
+
+	<!-- 停用账号 原因联系人达上限 -->
+	<update id="updatelimitAccountStop" parameterClass="com.l9e.transaction.vo.Account">
+		UPDATE
+		cp_accountinfo SET acc_status='22', option_time=NOW(),
+		stop_reason='3', opt_person='app helper' WHERE
+		acc_id=#accId:Integer#
+	</update>
+
+	<!-- 将所有账号的book_num设置为0 -->
+	<update id="updateBookNum" parameterClass="java.util.HashMap">
+		update cp_accountinfo set book_num <![CDATA[=]]>
+		0
+	</update>
+	<!-- 查询订单状态 -->
+	<select id="queryOrderStatus" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+		select order_status from cp_orderinfo where
+		order_id=#order_id:VARCHAR#
+	</select>
+
+	<!-- 更新订单开始支付 -->
+	<update id="updateCPOrderStatusAndMoney" parameterClass="java.util.HashMap">
+		update cp_orderinfo set
+		<isNotEmpty property="order_status">
+			order_status=#order_status:DECIMAL#,
+		</isNotEmpty>
+		is_pay = '00', pay_money=#pay_money:DECIMAL# where
+		order_id=#order_id:VARCHAR#
+		<isNotEmpty prepend="AND" property="old_order_status">
+			order_status =
+			#old_order_status:VARCHAR#
+		</isNotEmpty>
+	</update>
+
+	<!-- 查询帐号信息 -->
+	<select id="queryAccoutPriority" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT CONVERT(option_time,CHAR) AS
+		option_time,acc_username,CONVERT(contact_num,CHAR) AS contact_num
+		FROM
+		cp_accountinfo where acc_status <![CDATA[=]]>
+		'33' and contact_num <![CDATA[<=]]>
+		99 LIMIT #before#,#after#
+	</select>
+
+	<!-- 更新帐号未下单天数 -->
+	<update id="updateAccountPriority" parameterClass="java.util.HashMap">
+		update
+		cp_accountinfo set priority = #priority:INTEGER#
+		where acc_username =
+		#acc_username:VARCHAR#
+	</update>
+
+	<!-- 查询待启用帐号信息 -->
+	<select id="queryAccoutWaitList" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT acc_username,CONVERT(contact_num,CHAR) AS contact_num
+		FROM
+		cp_accountinfo where priority <![CDATA[>]]>
+		#priority:INTEGER# AND acc_status <![CDATA[=]]>
+		'22'
+		AND stop_reason <![CDATA[=]]>
+		'5' LIMIT #before#,#after#
+	</select>
+	<!-- 更新帐号状态 -->
+	<update id="updateAccountStatus" parameterClass="java.util.HashMap">
+		UPDATE
+			cp_accountinfo 
+		SET 
+			acc_status = #acc_status# ,
+			option_time=now(),
+			priority=0
+		WHERE 
+			acc_username = #acc_username:VARCHAR#
+	</update>
+
+	<!-- 查询开启账号配置参数 -->
+	<select id="querySettingMap" resultClass="java.util.HashMap">
+		select
+		setting_value,setting_status from train_system_setting where
+		setting_name= 'open_account_set'
+	</select>
+
+	<!-- 查询待开启账号acc_id -->
+	<select id="queryWaitOpenAccountList" parameterClass="java.util.HashMap"
+		resultClass="java.lang.String">
+		SELECT acc_id FROM cp_accountinfo
+		WHERE acc_status =
+		#acc_status:VARCHAR#
+		AND opt_person LIKE CONCAT('%',#opt_person#,'%')
+		AND stop_reason = #stop_reason:VARCHAR#
+		AND option_time <![CDATA[>]]>
+		#option_time:VARCHAR#
+		ORDER BY option_time DESC
+		LIMIT #limit:INTEGER#
+	</select>
+
+	<!-- 开启账号By acc_id -->
+	<update id="openAccountByAccId" parameterClass="java.lang.String">
+		UPDATE
+		cp_accountinfo SET acc_status =
+		'33',option_time=NOW(),opt_person='start_app' WHERE
+		acc_id=#acc_id:VARCHAR# LIMIT 1
+	</update>
+
+
+	<!-- 查询cp_pass_acc表等待核验的账号信息列表 -->
+	<select id="queryAccInfoList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+			cp.id, 
+			cp.acc_id, 
+			cp.acc_username, 
+			cp.acc_password,
+			cp.worker_ext, 
+			cp.use_status, 
+			cp.create_time, 
+			cp.use_time,
+			cp.verify_num
+		FROM 
+			cp_pass_acc cp
+		WHERE 
+			cp.use_status = #use_status:INTEGER#
+			<isNotEmpty prepend=" and " property="begin_time">
+				cp.create_time <![CDATA[>]]>
+				#begin_time#
+			</isNotEmpty>
+		ORDER BY cp.create_time
+		LIMIT 20
+	</select>
+
+	<!-- 更新cp_pass_acc表帐号状态 -->
+	<update id="updateAccInfo" parameterClass="java.util.HashMap">
+		update cp_pass_acc cp set cp.use_status = #use_status:INTEGER#
+		<isNotEmpty prepend="," property="use_time">
+			use_time=now()
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="verify_num">
+			verify_num=#verify_num:INTEGER#
+		</isNotEmpty>
+		where acc_id = #acc_id:INTEGER#
+	</update>
+
+	<!-- 查询cp_pass_whitelist表是否存在该acc_id的信息 -->
+	<select id="queryAccInfoIsExist" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+			* 
+		FROM 
+			cp_pass_whitelist
+		WHERE 
+			acc_id=#acc_id:INTEGER#
+			<isNotEmpty prepend=" and " property="cert_no">
+				cert_no = #cert_no:VARCHAR#
+			</isNotEmpty>
+		LIMIT 1
+	</select>
+
+	<!-- 更新cp_pass_whitelist表帐号信息 -->
+	<update id="updateAccWhiteInfo" parameterClass="java.util.HashMap">
+		UPDATE 
+			cp_pass_whitelist 
+		SET 
+			acc_status = #acc_status:INTEGER#,
+			update_time=now()
+			<isNotEmpty prepend="," property="contact_status">
+				contact_status = #contact_status:INTEGER#
+			</isNotEmpty>
+		WHERE 
+			acc_id = #acc_id:INTEGER#
+			<isNotEmpty prepend=" and " property="cert_no">
+				cert_no = #cert_no:VARCHAR#
+			</isNotEmpty>
+	</update>
+
+	<!-- 插入cp_pass_whitelist表帐号信息 -->
+	<insert id="addAccWhiteInfo" parameterClass="java.util.HashMap">
+		REPLACE INTO
+			cp_pass_whitelist(
+				acc_id, 
+				contact_name, 
+				cert_no, 
+				cert_type,
+				person_type,
+				acc_username, 
+				user_self,
+				acc_status, 
+				update_time,
+				create_time,
+				delete_date
+			)
+		VALUES
+			(
+				#accountId:INTEGER#,
+				#name:VARCHAR#, 
+				#cardNo:VARCHAR#, 
+				#cardType:VARCHAR#,
+				#ticketType:INT#,
+				#username:VARCHAR#, 
+				#userSelf:VARCHAR#, 
+				2,
+				now(),
+				now(),
+				#deleteDate:DATE#
+			)
+	</insert>
+	
+
+	<!-- 查询cp_pass_white_incre表是否存在该acc_id的信息 -->
+	<select id="queryAccIncreInfo" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT 
+			cp.id, 
+			cp.contact_name, 
+			cp.contact_status, 
+			cp.cert_no,
+			cp.cert_type, 
+			cp.acc_username,
+			cp.acc_id, 
+			cp.acc_status,
+			cp.create_time, 
+			cp.update_time
+		FROM 
+			cp_pass_white_incre cp 
+		WHERE
+			acc_id=#acc_id:INTEGER#
+			<isNotEmpty prepend=" and " property="cert_no">
+				cert_no=#cert_no:VARCHAR#
+			</isNotEmpty>
+	</select>
+
+	<!-- 更新cp_pass_white_incre表帐号信息 -->
+	<update id="updateAccIncreInfo" parameterClass="java.util.HashMap">
+		UPDATE 
+			cp_pass_white_incre 
+		SET
+			acc_status = #acc_status:INTEGER#,
+			update_time=now()
+			<isNotEmpty prepend="," property="contact_status">
+				contact_status =
+				#contact_status:INTEGER#
+			</isNotEmpty>
+		WHERE 
+			acc_id=#acc_id:INTEGER#
+			<isNotEmpty prepend=" and " property="cert_no">
+				cert_no=#cert_no:VARCHAR#
+			</isNotEmpty>
+	</update>
+
+	<!-- 插入cp_pass_white_incre表帐号信息 -->
+	<insert id="addAccIncreInfo" parameterClass="java.util.HashMap">
+		INSERT INTO
+			cp_pass_white_incre(
+				contact_name, 
+				contact_status, 
+				cert_no, 
+				cert_type,
+				person_type,
+				acc_username, 
+				acc_id, 
+				acc_status, 
+				create_time,
+				update_time
+			)
+		VALUES(
+			#contact_name:VARCHAR#, 
+			#contact_status:INTEGER#,
+			#cert_no:VARCHAR#, 
+			#cert_type:INTEGER#,
+			#person_type:INTEGER#,
+			#acc_username:VARCHAR#, 
+			#acc_id:INTEGER#, 
+			#acc_status:INTEGER#, 
+			now(),
+			now()
+		)
+	</insert>
+
+	<!-- 更新cp_accountinfo表帐号状态 -->
+	<update id="updateAccountInfo" parameterClass="java.util.HashMap">
+		UPDATE 
+			cp_accountinfo 
+		SET 
+			option_time = now()
+			<isNotEmpty prepend="," property="channel">
+				channel = #channel:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_person">
+				opt_person = #opt_person:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="acc_status">
+				acc_status = #acc_status:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="username">
+				acc_username = #username:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="password">
+				acc_password = #password:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="reason">
+				stop_reason = #reason:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="contactsNumber">
+				contact_num = #contactsNumber:INTEGER#,
+				real_contact_num = #contactsNumber:INTEGER#
+			</isNotEmpty>
+		WHERE 
+			acc_id = #acc_id:INTEGER#
+	</update>
+
+	<!-- 查询京东账号 -->
+	<select id="selectJdAccount" parameterClass="java.lang.String" resultClass="com.l9e.transaction.vo.Account">
+		SELECT
+		ja.jd_id AS accId,
+		ja.account_name AS accUsername,
+		ja.account_pwd AS accPassword
+		FROM
+		jd_account ja
+		WHERE
+		1=1
+		<isNotEmpty prepend="AND">
+			ja.account_status = #status:VARCHAR#
+		</isNotEmpty>
+		LIMIT 0,1;
+	</select>
+
+	<!-- 更新京东账号状态 -->
+	<update id="updateJdAccount" parameterClass="java.util.HashMap">
+		UPDATE
+		jd_account
+		SET account_status = #status:VARCHAR#
+		<isNotEmpty prepend=",">
+			account_remark = #reason:VARCHAR#
+		</isNotEmpty>
+		WHERE jd_id = #accountId:INT#
+	</update>
+	
+	<!-- 根据账号ID删除白名单 -->
+	<delete id="deleteWhiteListByAccount" parameterClass="java.lang.Integer">
+		DELETE FROM cp_pass_whitelist WHERE acc_id = #accountId:INT#
+	</delete>
+	
+	<!-- 删除集合外的白名单 -->
+	<delete id="deleteWhiteList" parameterClass="java.util.HashMap">
+		DELETE FROM 
+			cp_pass_whitelist 
+		WHERE 
+			acc_id = #accountId:INT#
+			and cert_no NOT IN
+			<iterate conjunction="," open="(" close=")" property = "cardNoList">
+				#cardNoList[]#
+			</iterate>
+	</delete>
+
+</sqlMap>

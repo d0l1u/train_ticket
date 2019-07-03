@@ -1,0 +1,704 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="tongCheng">
+	<!-- 改签 -->
+	<!-- 插入改签记录 -->
+	<insert id="insertChangeInfo" parameterClass="com.l9e.transaction.vo.DBChangeInfo">
+		INSERT INTO elong_orderinfo_change
+		<dynamic prepend="(">
+			<isNotEmpty property="order_id">
+				order_id,
+			</isNotEmpty>
+			<isNotEmpty property="isasync">
+				isasync,
+			</isNotEmpty>
+			<isNotEmpty property="callbackurl">
+				callbackurl,
+			</isNotEmpty>
+			<isNotEmpty property="reqtoken">
+				reqtoken,
+			</isNotEmpty>
+			<isNotEmpty property="old_ticket_change_serial">
+				old_ticket_change_serial,
+			</isNotEmpty>
+			<isNotEmpty property="new_ticket_change_serial">
+				new_ticket_change_serial,
+			</isNotEmpty>
+			<isNotEmpty property="ticket_price_diff_change_serial">
+				ticket_price_diff_change_serial,
+			</isNotEmpty>
+			<isNotEmpty property="change_diff_money">
+				change_diff_money,
+			</isNotEmpty>
+			<isNotEmpty property="change_refund_money">
+				change_refund_money,
+			</isNotEmpty>
+			<isNotEmpty property="change_receive_money">
+				change_receive_money,
+			</isNotEmpty>
+			<isNotEmpty property="book_ticket_time">
+				book_ticket_time,
+			</isNotEmpty>
+			<isNotEmpty property="fail_reason">
+				fail_reason,
+			</isNotEmpty>
+			<isNotEmpty property="train_no">
+				train_no,
+			</isNotEmpty>
+			<isNotEmpty property="change_train_no">
+				change_train_no,
+			</isNotEmpty>
+			<isNotEmpty property="from_time">
+				from_time,
+			</isNotEmpty>
+			<isNotEmpty property="change_from_time">
+				change_from_time,
+			</isNotEmpty>
+			<isNotEmpty property="travel_time">
+				travel_time,
+			</isNotEmpty>
+			<isNotEmpty property="change_travel_time">
+				change_travel_time,
+			</isNotEmpty>
+			<isNotEmpty property="from_city">
+				from_city,
+			</isNotEmpty>
+			<isNotEmpty property="to_city">
+				to_city,
+			</isNotEmpty>
+			<isNotEmpty property="out_ticket_billno">
+				out_ticket_billno,
+			</isNotEmpty>
+			<isNotEmpty property="account_id">
+				account_id,
+			</isNotEmpty>
+			<isNotEmpty property="change_status">
+				change_status,
+			</isNotEmpty>
+			<isNotEmpty property="change_notify_status">
+				change_notify_status,
+			</isNotEmpty>
+			<isNotEmpty property="change_notify_time">
+				change_notify_time,
+			</isNotEmpty>
+			<isNotEmpty property="change_notify_finish_time">
+				change_notify_finish_time,
+			</isNotEmpty>
+			<isNotEmpty property="change_notify_count">
+				change_notify_count,
+			</isNotEmpty>
+			<isNotEmpty property="to_station_code">
+				to_station_code,
+			</isNotEmpty>
+			<isNotEmpty property="from_station_code">
+				from_station_code,
+			</isNotEmpty>
+			<isNotEmpty property="ischangeto">
+				ischangeto,
+			</isNotEmpty>
+			<isNotEmpty property="merchant_id">
+				merchant_id,
+			</isNotEmpty>
+			create_time
+			)
+		</dynamic>
+		VALUES
+		<dynamic prepend="(">
+			<isNotEmpty property="order_id">
+				#order_id:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="isasync">
+				#isasync:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="callbackurl">
+				#callbackurl:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="reqtoken">
+				#reqtoken:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="old_ticket_change_serial">
+				#old_ticket_change_serial:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="new_ticket_change_serial">
+				#new_ticket_change_serial:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="ticket_price_diff_change_serial">
+				#ticket_price_diff_change_serial:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="change_diff_money">
+				#change_diff_money:DECIMAL#,
+			</isNotEmpty>
+			<isNotEmpty property="change_refund_money">
+				#change_refund_money:DECIMAL#,
+			</isNotEmpty>
+			<isNotEmpty property="change_receive_money">
+				#change_receive_money:DECIMAL#,
+			</isNotEmpty>
+			<isNotEmpty property="book_ticket_time">
+				#book_ticket_time:DATETIME#,
+			</isNotEmpty>
+			<isNotEmpty property="fail_reason">
+				#fail_reason:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="train_no">
+				#train_no:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="change_train_no">
+				#change_train_no:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="from_time">
+				#from_time:DATETIME#,
+			</isNotEmpty>
+			<isNotEmpty property="change_from_time">
+				#change_from_time:DATETIME#,
+			</isNotEmpty>
+			<isNotEmpty property="travel_time">
+				#travel_time:DATETIME#,
+			</isNotEmpty>
+			<isNotEmpty property="change_travel_time">
+				#change_travel_time:DATETIME#,
+			</isNotEmpty>
+			<isNotEmpty property="from_city">
+				#from_city:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="to_city">
+				#to_city:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="out_ticket_billno">
+				#out_ticket_billno:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="account_id">
+				#account_id:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="change_status">
+				#change_status:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="change_notify_status">
+				#change_notify_status:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="change_notify_time">
+				#change_notify_time:DATETIME#,
+			</isNotEmpty>
+			<isNotEmpty property="change_notify_finish_time">
+				#change_notify_finish_time:DATETIME#,
+			</isNotEmpty>
+			<isNotEmpty property="change_notify_count">
+				#change_notify_count:INTEGER#,
+			</isNotEmpty>
+			<isNotEmpty property="to_station_code">
+				#to_station_code:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="from_station_code">
+				#from_station_code:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="ischangeto">
+				#ischangeto#,
+			</isNotEmpty>
+			<isNotEmpty property="merchant_id">
+				#merchant_id#,
+			</isNotEmpty>
+			NOW()
+			)
+		</dynamic>
+		
+		<selectKey keyProperty="change_id" resultClass="java.lang.Integer" type="post">
+			SELECT LAST_INSERT_ID() AS change_id
+		</selectKey>		
+	</insert>
+	<!-- 插入改签车票信息 -->
+	<insert id="insertChangePassenger" parameterClass="com.l9e.transaction.vo.DBPassengerChangeInfo">
+		INSERT INTO elong_change_cp
+		<dynamic prepend="(">
+			<isNotEmpty property="cp_id">
+				cp_id,
+			</isNotEmpty>
+			<isNotEmpty property="new_cp_id">
+				new_cp_id,
+			</isNotEmpty>
+			<isNotEmpty property="order_id">
+				order_id,
+			</isNotEmpty>
+			<isNotEmpty property="change_id">
+				change_id,
+			</isNotEmpty>
+			<isNotEmpty property="buy_money">
+				buy_money,
+			</isNotEmpty>
+			<isNotEmpty property="seat_type">
+				seat_type,
+			</isNotEmpty>
+			<isNotEmpty property="change_seat_type">
+				change_seat_type,
+			</isNotEmpty>
+			<isNotEmpty property="ticket_type">
+				ticket_type,
+			</isNotEmpty>
+			<isNotEmpty property="train_box">
+				train_box,
+			</isNotEmpty>
+			<isNotEmpty property="seat_no">
+				seat_no,
+			</isNotEmpty>
+			<isNotEmpty property="ids_type">
+				ids_type,
+			</isNotEmpty>
+			<isNotEmpty property="user_ids">
+				user_ids,
+			</isNotEmpty>
+			<isNotEmpty property="user_name">
+				user_name,
+			</isNotEmpty>
+			<isNotEmpty property="is_changed">
+				is_changed,
+			</isNotEmpty>
+			<isNotEmpty property="tc_seat_type">
+				tc_seat_type,
+			</isNotEmpty>
+			<isNotEmpty property="tc_ticket_type">
+				tc_ticket_type,
+			</isNotEmpty>
+			<isNotEmpty property="tc_change_seat_type">
+				tc_change_seat_type,
+			</isNotEmpty>
+			<isNotEmpty property="tc_ids_type">
+				tc_ids_type,
+			</isNotEmpty>
+			create_time
+			)
+		</dynamic>
+		VALUES
+		<dynamic prepend="(">
+			<isNotEmpty property="cp_id">
+				#cp_id:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="new_cp_id">
+				#new_cp_id:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="order_id">
+				#order_id:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="change_id">
+				#change_id:INTEGER#,
+			</isNotEmpty>
+			<isNotEmpty property="buy_money">
+				#buy_money:DECIMAL#,
+			</isNotEmpty>
+			<isNotEmpty property="seat_type">
+				#seat_type:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="change_seat_type">
+				#change_seat_type:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="ticket_type">
+				#ticket_type:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="train_box">
+				#train_box:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="seat_no">
+				#seat_no:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="ids_type">
+				#ids_type:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="user_ids">
+				#user_ids:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="user_name">
+				#user_name:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="is_changed">
+				#is_changed:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="tc_seat_type">
+				#tc_seat_type:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="tc_ticket_type">
+				#tc_ticket_type:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="tc_change_seat_type">
+				#tc_change_seat_type:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="tc_ids_type">
+				#tc_ids_type:VARCHAR#,
+			</isNotEmpty>
+			NOW()
+			)
+		</dynamic>
+		ON DUPLICATE KEY UPDATE
+		create_time = NOW()
+		<dynamic>
+			<isNotEmpty property="change_id">
+				,change_id = #change_id:INTEGER#
+			</isNotEmpty>
+			<isNotEmpty property="change_seat_type">
+				,change_seat_type = #change_seat_type:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty property="tc_change_seat_type">
+				,tc_change_seat_type = #tc_change_seat_type:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty property="is_changed">
+				,is_changed = #is_changed:VARCHAR#
+			</isNotEmpty>
+		</dynamic>
+	</insert>
+	<!-- 查询改签车票信息 -->
+	<select id="selectChangePassenger" resultClass="com.l9e.transaction.vo.DBPassengerChangeInfo" parameterClass="java.util.HashMap" remapResults="true">
+		SELECT
+			cp_id,
+			new_cp_id,
+			order_id,
+			change_id,
+			CONCAT(buy_money, '') buy_money,
+			CONCAT(change_buy_money, '') change_buy_money,
+			seat_type,
+			change_seat_type,
+			ticket_type,
+			train_box,
+			change_train_box,
+			seat_no,
+			change_seat_no,
+			ids_type,
+			user_ids,
+			user_name,
+			DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') create_time,
+			is_changed,
+			tc_seat_type,
+			tc_ticket_type,
+			tc_change_seat_type,
+			tc_ids_type
+		FROM elong_change_cp
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="AND" property="cp_id">
+				cp_id = #cp_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="order_id">
+				order_id = #order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="change_id">
+				change_id = #change_id:INTEGER#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<!-- 查询改签记录 -->
+	<select id="selectChangeInfo" parameterClass="java.util.HashMap" resultClass="com.l9e.transaction.vo.DBChangeInfo">
+		SELECT
+			change_id,
+			order_id,
+			DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') create_time,
+			old_ticket_change_serial,
+			new_ticket_change_serial,
+			ticket_price_diff_change_serial,
+			CONCAT(change_diff_money, '') change_diff_money,
+			CONCAT(change_refund_money, '') change_refund_money,
+			CONCAT(change_receive_money, '') change_receive_money,
+			DATE_FORMAT(book_ticket_time,'%Y-%m-%d %H:%i:%s') book_ticket_time,
+			fail_msg,
+			fail_reason,
+			train_no,
+			change_train_no,
+			DATE_FORMAT(from_time,'%Y-%m-%d %H:%i:%s') from_time,
+			DATE_FORMAT(change_from_time,'%Y-%m-%d %H:%i:%s') change_from_time,
+			DATE_FORMAT(change_to_time,'%Y-%m-%d %H:%i:%s') change_to_time,
+			DATE_FORMAT(travel_time,'%Y-%m-%d %H:%i:%s') travel_time,
+			DATE_FORMAT(change_travel_time,'%Y-%m-%d %H:%i:%s') change_travel_time,
+			from_city,
+			to_city,
+			out_ticket_billno,
+			account_id,
+			change_status,
+			isasync,
+			callbackurl,
+			reqtoken,
+			change_notify_status,
+			change_notify_count,
+			DATE_FORMAT(change_notify_time,'%Y-%m-%d %H:%i:%s') change_notify_time,
+			DATE_FORMAT(change_notify_finish_time,'%Y-%m-%d %H:%i:%s') change_notify_finish_time,
+			from_station_code,to_station_code
+		FROM elong_orderinfo_change
+		WHERE 1=1
+		<dynamic>
+			<isNotEmpty prepend="AND" property="order_id">
+				order_id = #order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="change_id">
+				change_id = #change_id:INTEGER#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="change_status">
+				change_status = #change_status:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="change_status_list">
+				<iterate open="(" close=")" conjunction="or" property="change_status_list">
+					change_status = #change_status_list[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty property="orderCol">
+				order by $orderCol$
+				<isNotEmpty property="sort">
+					$sort$
+				</isNotEmpty>
+			</isNotEmpty>
+			<isNotEmpty property="limit">
+				limit 0,#limit:INTEGER#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<select id="getAccountId" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT
+			account_id
+		FROM cp_orderinfo
+		WHERE order_id = #value:VARCHAR#
+	</select>
+	<!-- 更新改签车票信息 -->
+	<update id="updateChangeCp" parameterClass="com.l9e.transaction.vo.DBPassengerChangeInfo">
+		UPDATE elong_change_cp
+		SET cp_id = #cp_id:VARCHAR#
+		<dynamic>
+			<isNotEmpty prepend="," property="change_id">
+				change_id = #change_id:INTEGER#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="change_seat_type">
+				change_seat_type = #change_seat_type:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="tc_change_seat_type">
+				tc_change_seat_type = #tc_change_seat_type:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="is_changed">
+				is_changed = #is_changed:VARCHAR#
+			</isNotEmpty>
+		</dynamic>
+		WHERE cp_id = #cp_id:VARCHAR#
+	</update>
+	<!-- 更新改签记录 -->
+	<update id="updateChangeInfo" parameterClass="com.l9e.transaction.vo.DBChangeInfo">
+		UPDATE elong_orderinfo_change
+		SET change_id = #change_id:INTEGER#
+		<dynamic>
+			<isNotEmpty prepend="," property="old_ticket_change_serial">
+				old_ticket_change_serial = #old_ticket_change_serial:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="new_ticket_change_serial">
+				new_ticket_change_serial = #new_ticket_change_serial:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ticket_price_diff_change_serial">
+				ticket_price_diff_change_serial = #ticket_price_diff_change_serial:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="change_diff_money">
+				change_diff_money = #change_diff_money:DECIMAL#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="change_refund_money">
+				change_refund_money = #change_refund_money:DECIMAL#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="change_receive_money">
+				change_receive_money = #change_receive_money:DECIMAL#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="change_status">
+				change_status = #change_status:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="isasync">
+				isasync = #isasync:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="callbackurl">
+				callbackurl = #callbackurl:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="reqtoken">
+				reqtoken = #reqtoken:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="change_notify_status">
+				change_notify_status = #change_notify_status:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="change_notify_count">
+				change_notify_count = #change_notify_count:INTEGER#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="change_notify_time">
+				change_notify_time = #change_notify_time:DATETIME#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="change_notify_finish_time">
+				change_notify_finish_time = #change_notify_finish_time:DATETIME#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fee">
+				fee = #fee:DECIMAL#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="totalpricediff">
+				totalpricediff = #totalpricediff:DECIMAL#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="diffrate">
+				diffrate = #diffrate:DECIMAL#
+			</isNotEmpty>
+		</dynamic>
+		WHERE change_id = #change_id:INTEGER#
+	</update>
+	<!-- 改签异步通知 -->
+	<!-- 回调列表 -->
+	<select id="notifyList" resultClass="com.l9e.transaction.vo.DBChangeInfo">
+		SELECT 
+			change_id,
+			order_id,
+			DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') create_time,
+			old_ticket_change_serial,
+			new_ticket_change_serial,
+			ticket_price_diff_change_serial,
+			CONCAT(change_diff_money, '') change_diff_money,
+			CONCAT(change_refund_money, '') change_refund_money,
+			CONCAT(change_receive_money, '') change_receive_money,
+			DATE_FORMAT(book_ticket_time,'%Y-%m-%d %H:%i:%s') book_ticket_time,
+			fail_reason,
+			train_no,
+			change_train_no,
+			DATE_FORMAT(from_time,'%Y-%m-%d %H:%i:%s') from_time,
+			DATE_FORMAT(change_from_time,'%Y-%m-%d %H:%i:%s') change_from_time,
+			DATE_FORMAT(travel_time,'%Y-%m-%d %H:%i:%s') travel_time,
+			DATE_FORMAT(change_travel_time,'%Y-%m-%d %H:%i:%s') change_travel_time,
+			from_city,
+			to_city,
+			out_ticket_billno,
+			account_id,
+			change_status,
+			isasync,
+			callbackurl,
+			reqtoken,
+			change_notify_status,
+			change_notify_count,
+			DATE_FORMAT(change_notify_time,'%Y-%m-%d %H:%i:%s') change_notify_time,
+			DATE_FORMAT(change_notify_finish_time,'%Y-%m-%d %H:%i:%s') change_notify_finish_time
+		FROM elong_orderinfo_change
+		WHERE (change_notify_status = '000' OR (change_notify_status = '111' AND change_notify_time <![CDATA[<=]]> DATE_SUB(NOW(),INTERVAL 1 MINUTE)))
+		AND change_notify_count <![CDATA[<]]> 5
+		AND change_status IN ('14','15','23','24','34','35')
+		AND( merchant_id='tongcheng' or merchant_id is null) 
+		ORDER BY create_time DESC
+		LIMIT 0,15
+		
+	</select>
+	<!-- 回调开始 -->
+	<update id="notifyBegin" parameterClass="com.l9e.transaction.vo.DBChangeInfo">
+		UPDATE elong_orderinfo_change 
+		SET 
+			change_notify_status = '111',
+			change_notify_time = NOW()
+		WHERE 
+			change_id = #change_id:INTEGER#
+	</update>
+	<update id="notifyEnd" parameterClass="com.l9e.transaction.vo.DBChangeInfo">
+		UPDATE elong_orderinfo_change 
+		SET change_id = #change_id:INTEGER#
+		<dynamic>
+			<isNotEmpty property="change_notify_status" prepend=",">
+				change_notify_status = #change_notify_status:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty property="change_notify_count" prepend=",">
+				change_notify_count = #change_notify_count:INTEGER#
+			</isNotEmpty>
+			<isNotEmpty property="change_notify_finish_time" prepend=",">
+				change_notify_finish_time = NOW()
+			</isNotEmpty>
+		</dynamic>
+		WHERE 
+			change_id = #change_id:INTEGER#
+	</update>
+	
+	
+	
+	
+	<!-- 查询改签车票信息 -->
+	<select id="selectChangePassengerByCpId" resultClass="com.l9e.transaction.vo.DBPassengerChangeInfo" parameterClass="java.lang.String" remapResults="true">
+		SELECT
+			cp_id,
+			new_cp_id,
+			order_id,
+			change_id,
+			CONCAT(buy_money, '') buy_money,
+			CONCAT(change_buy_money, '') change_buy_money,
+			seat_type,
+			change_seat_type,
+			ticket_type,
+			train_box,
+			change_train_box,
+			seat_no,
+			change_seat_no,
+			ids_type,
+			user_ids,
+			user_name,
+			DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') create_time,
+			is_changed,
+			tc_seat_type,
+			tc_ticket_type,
+			tc_change_seat_type,
+			tc_ids_type
+		FROM elong_change_cp
+		where new_cp_id=#cp_id:VARCHAR#
+	</select>
+	
+	<!-- 获取特征值 -->
+	<select id="getReqtokens" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT 
+			reqtoken
+		FROM
+			elong_orderinfo_change
+		WHERE 
+			order_id = #orderId:VARCHAR#
+	</select>
+	
+	<insert id="addLog" parameterClass="com.l9e.transaction.vo.TongchengChangeLogVO">
+		INSERT INTO elong_change_logs
+		(
+			order_id
+		<dynamic>
+			<isNotEmpty property="change_id">
+				,change_id
+			</isNotEmpty>
+			<isNotEmpty property="content">
+				,content
+			</isNotEmpty>
+			<isNotEmpty property="opt_person">
+				,opt_person
+			</isNotEmpty>
+		</dynamic>
+		,create_time
+		)
+		VALUES
+		(
+			#order_id:VARCHAR#
+			<dynamic>
+				<isNotEmpty property="change_id">
+				,#change_id:INTEGER#
+			</isNotEmpty>
+			<isNotEmpty property="content">
+				,#content:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty property="opt_person">
+				,#opt_person:VARCHAR#
+			</isNotEmpty>
+			</dynamic>
+			,NOW()
+		)
+	</insert>
+	
+	<!-- 查询占座超时改签 -->
+	<select id="selectTimeoutRequestChange" resultClass="com.l9e.transaction.vo.DBChangeInfo">
+		SELECT
+			change_id,
+			order_id,
+			change_status
+		FROM
+			elong_orderinfo_change
+		WHERE
+			change_status = '12'
+		AND option_time <![CDATA[<]]> DATE_SUB(NOW(),INTERVAL 10 MINUTE)
+	</select>
+	
+	<!-- 查询支付超时改签 -->
+	<select id="selectTimeoutConfirmChange" resultClass="com.l9e.transaction.vo.DBChangeInfo">
+		SELECT
+			change_id,
+			order_id,
+			change_status
+		FROM
+			elong_orderinfo_change
+		WHERE
+			change_status = '32'
+		AND option_time <![CDATA[<]]> DATE_SUB(NOW(),INTERVAL 10 MINUTE)
+	</select>
+</sqlMap>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ctrip">
+
+	<!-- 查询 -->
+	<select id="queryCtripList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT hc.order_id, hc.from_city, hc.to_city,hc.return_optlog,
+			CONVERT(hc.pay_money,CHAR) AS pay_money,ct.go_status,
+				DATE_FORMAT(ct.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+				DATE_FORMAT(hc.pay_time,'%Y-%m-%d %H:%i:%s') AS pay_time,
+				DATE_FORMAT(hc.out_ticket_time,'%Y-%m-%d %H:%i:%s') AS out_ticket_time,
+				hc.out_ticket_type,ct.opt_ren, hc.buy_money,
+				hc.out_ticket_billno, hc.error_info, CONVERT(hc.seat_type,CHAR)AS seat_type,
+				DATE_FORMAT(hc.travel_time,'%Y-%m-%d') AS travel_time,
+				DATE_FORMAT(hc.from_time,'%Y-%m-%d %H:%i:%s') AS from_time,
+				DATE_FORMAT(hc.from_time,'%Y-%m-%d') AS from_date,
+				hc.LEVEL,hc.train_no,ct.ctrip_order_id,ct.ctrip_id,ct.option_time,ct.opt_ren 
+				FROM ctrip_orderinfo ct  LEFT JOIN cp_orderinfo hc ON hc.order_id = ct.order_id 
+			WHERE 1=1 
+		  <dynamic prepend="">
+		   <isNotEmpty prepend=" and " property="order_id">
+		              ct.order_id=#order_id#
+		   </isNotEmpty>
+		   <isNotEmpty prepend=" and " property="ctrip_order_id">
+		              ct.ctrip_order_id=#ctrip_order_id#
+		   </isNotEmpty>
+		    <isNotEmpty prepend=" and " property="begin_info_time">
+		              ct.create_time<![CDATA[>]]>CONCAT(#begin_info_time#,' 00:00:00')
+		   </isNotEmpty>
+		    <isNotEmpty prepend=" and " property="end_info_time">
+		    		  ct.create_time<![CDATA[<]]>CONCAT(#end_info_time#,' 23:59:59')
+		   </isNotEmpty>
+		    <isNotEmpty prepend=" and " property="go_status">
+		         	  ct.go_status in
+			          <iterate open="(" close=")" conjunction="," property="go_status">
+			            	#go_status[]:VARCHAR#
+			      	  </iterate>
+		   </isNotEmpty>
+		  </dynamic>
+		  <isNotEmpty prepend=" " property="create_time_asc">
+             ORDER BY ct.create_time ASC
+         </isNotEmpty> 
+         <isNotEmpty prepend=" " property="create_time_desc">
+             ORDER BY ct.create_time DESC
+         </isNotEmpty>
+         <isNotEmpty prepend=" " property="travel_time_asc">
+             ORDER BY hc.from_time ASC
+         </isNotEmpty> 
+         <isNotEmpty prepend=" " property="travel_time_desc">
+             ORDER BY hc.from_time DESC
+         </isNotEmpty> 
+         <isNotEmpty prepend=" " property="out_ticket_time_asc">
+             ORDER BY hc.out_ticket_time ASC
+         </isNotEmpty> 
+         <isNotEmpty prepend=" " property="out_ticket_time_desc">
+             ORDER BY hc.out_ticket_time DESC
+         </isNotEmpty>  
+		  LIMIT #everyPagefrom:Integer#, #pageSize:Integer#
+	</select>
+
+	<!-- 查询总数-->
+	<select id="queryCtripCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+			 COUNT(1)
+			FROM
+			  ctrip_orderinfo WHERE 1=1 
+		  <dynamic prepend="">
+		   <isNotEmpty prepend=" and " property="order_id">
+		              order_id=#order_id#
+		   </isNotEmpty>
+		    <isNotEmpty prepend=" and " property="ctrip_order_id">
+		              ctrip_order_id=#ctrip_order_id#
+		   </isNotEmpty>
+		    <isNotEmpty prepend=" and " property="begin_info_time">
+		              create_time<![CDATA[>]]>CONCAT(#begin_info_time#,' 00:00:00')
+		   </isNotEmpty>
+		    <isNotEmpty prepend=" and " property="end_info_time">
+		    		  create_time<![CDATA[<]]>CONCAT(#end_info_time#,' 23:59:59')
+		   </isNotEmpty>
+		    <isNotEmpty prepend=" and " property="go_status">
+		         	  go_status in
+			          <iterate open="(" close=")" conjunction="," property="go_status">
+			            	#go_status[]:VARCHAR#
+			      	  </iterate>
+		   </isNotEmpty>
+		  </dynamic>
+	</select>
+
+	<!-- 查询明细-->
+	<select id="queryCtripOrderInfo" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT hc.order_id,hc.train_no,hc.from_city,hc.to_city,
+			CONVERT(hc.pay_money,CHAR) AS pay_money,
+				DATE_FORMAT(ct.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+				DATE_FORMAT(hc.pay_time,'%Y-%m-%d %H:%i:%s') AS pay_time,
+				DATE_FORMAT(hc.out_ticket_time,'%Y-%m-%d %H:%i:%s') AS out_ticket_time,
+				 hc.out_ticket_type,hc.opt_ren, hc.seat_type, DATE_FORMAT(hc.from_time,'%H:%i') AS from_time,
+				 DATE_FORMAT(hc.from_time,'%Y-%m-%d %H:%i') AS from_time_all,
+				 DATE_FORMAT(hc.to_time,'%H:%i') AS to_time,IFNULL(hc.ext_seattype,'')AS ext_seattype,
+				 DATE_FORMAT(hc.travel_time,'%Y-%m-%d') AS travel_time, 
+				 a.acc_id, a.acc_username, a.acc_password,hc.bank_pay_seq,hc.error_info,
+				 hc.out_ticket_account, hc.out_ticket_billno, hc.buy_money, hc.error_info,
+				 ct.ctrip_order_id,ct.ctrip_id,ct.go_status,ct.option_time,ct.opt_ren 
+				FROM ctrip_orderinfo ct 
+				left join cp_accountinfo a on ct.acc_id = a.acc_id 
+				left join cp_orderinfo hc on hc.order_id = ct.order_id 
+		WHERE ct.order_id=#order_id#
+	</select>
+
+	<!-- 查询出票订单-车票 -->
+	<select id="queryCtripOrderInfoCp" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+	SELECT cp.cp_id,cp.order_id,cp.user_name,
+			CONVERT(cp.ticket_type,CHAR)as ticket_type,CONVERT(cp.cert_type,CHAR)as cert_type,
+			cp.cert_no,cp.telephone,
+			cp.create_time,cp.pay_money,
+			cp.buy_money,
+			CONVERT(cp.buy_money, DECIMAL) buyMoney,
+  			CONVERT(cp.pay_money, DECIMAL) payMoney,
+			cp.modify_time,
+			CONVERT(cp.seat_type,CHAR)as seat_type,cp.train_box,cp.seat_no
+		FROM  cp_orderinfo_cp cp LEFT JOIN ctrip_orderinfo co
+		ON cp.order_id=co.order_id
+		WHERE cp.order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 插入操作日志 -->
+	<insert id="insertCtriplogs" parameterClass="java.util.HashMap">
+		insert into cp_orderinfo_history
+		(order_id,order_optlog,create_time,opter) values
+		(#order_id:VARCHAR#,#order_optlog:VARCHAR#,now(),#opter:VARCHAR#)
+	</insert>
+	
+	<!-- 查询出票车票账号信息及携程订单号 -->
+	<select id="queryCtripAccount" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT 
+		  ctrip_order_id,
+		  ctrip_name,
+		  ctrip_password 
+		FROM
+		  ctrip_orderinfo ct 
+		  LEFT JOIN
+		  ctrip_accountinfo ca 
+		  ON ct.ctrip_id = ca.ctrip_id 
+		WHERE ct.order_id = #order_id:VARCHAR# 
+	</select>
+	
+</sqlMap>

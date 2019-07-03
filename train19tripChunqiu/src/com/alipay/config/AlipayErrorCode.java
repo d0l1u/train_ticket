@@ -1,0 +1,372 @@
+package com.alipay.config;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class AlipayErrorCode {
+	public static final String SELLER_NOT_IN_SPECIFIED_SELLERS = "抱歉，该收款账户不是指定的收款账户，请确认参数是否正确或咨询您的客户经理。";
+	public static final String TRADE_SELLER_NOT_MATCH = "该笔交易的卖家已不存在，请联系正确的卖家重新创建交易进行付款。";
+	public static final String TRADE_BUYER_NOT_MATCH = "您本次支付使用的账户与原先的不一致，请使用原来的账户，或重新创建交易付款。";
+	public static final String ILLEGAL_FEE_PARAM = "金额传递错误，请确认参数是否正确或咨询您的客户经理。";
+	public static final String SUBJECT_MUST_NOT_BE_NULL = "商品名不能为空。";
+	public static final String TRADE_PRICE_NOT_MATCH = "该商品的交易单价与原先的不一致，请重新创建交易付款。";
+	public static final String TRADE_QUANTITY_NOT_MATCH = "该商品的购买数量与原先的不一致，请重新创建交易付款。";
+	public static final String TRADE_TOTALFEE_NOT_MATCH = "该商品的交易金额与原先的不一致，请重新创建交易付款。";
+	public static final String TRADE_NOT_ALLOWED_PAY = "您不能进行本次支付，请查看该交易是否已超时或已被关闭等。";
+	public static final String DIRECT_PAY_WITHOUT_CERT_CLOSE = "未开通非证书余额支付，无法完成支付。";
+	public static final String FAIL_CREATE_CASHIER_PAY_ORDER = "系统异常，无法创建本次收银台支付订单，请稍后再试。";
+	public static final String ILLEGAL_EXTRA_COMMON_PARAM = "接口通用回传参数格式不正确，请联系您的商户。";
+	public static final String ILLEGAL_PAYMENT_TYPE = "接口传递的Payment_type参数错误，请联系您的商户。";
+	public static final String NOT_SUPPORT_GATEWAY = "商户网关配置出错，请联系您的商户。";
+	public static final String BUYER_SELLER_EQUAL = "买家和卖家不能是同一个账户。";
+	public static final String SELLER_NOT_EXIST = "卖家账户经验证不存在，请联系您的商户。";
+	public static final String ILLEGAL_ARGUMENT = "商户传递的接口参数错误，请联系您的商户。";
+	public static final String TRADE_NOT_FOUND = "根据交易号无法找到交易。";
+	public static final String TRADE_GOOD_INFO_NOT_FOUND = "根据交易号无法找到交易详情。";
+	public static final String BUYER_EMAIL_ID_MUST_NULL = "该笔交易的买家账户必须为空，请联系您的商户。";
+	public static final String PRODUCT_NOT_ALLOWED = "您未开通此产品，暂时无法使用本服务。";
+	public static final String ROYALTY_RECEIVER_NOT_IN_SPECIFIED_ACCOUNTS = "分润账号不是指定的分润账户，请确保该分润账户已签署分润协议。";
+	public static final String ROYALTY_LENGTH_ERROR = "分润信息过长，不能超过1000个字符，请检查后重新集成。";
+	public static final String DEFAULT_BANK_INVALID = "您传递的默认网银参数不在规定的范围内。";
+	public static final String DIS_NOT_SIGN_PROTOCOL = "您的分销商没有与支付宝签约，请联系您的商户。";
+	public static final String SELF_TIMEOUT_NOT_SUPPORT = "商户没有开通自定义超时权限，请联系您的商户。";
+	public static final String ILLEGAL_OUTTIME_ARGUMENT = "自定义超时时间设置错误，请联系您的商户。";
+	public static final String EBANK_CERDIT_GW_RULE_NOT_OPEN = "信用卡未签约（签约到期）或者接口参数未指定开通信用卡支付。";
+	public static final String DIRECTIONAL_PAY_FORBIDDEN = "付款受限，请确保收款方有权进行收款。";
+	public static final String SELLER_ENABLE_STATUS_FORBID = "卖家状态不正常。";
+	public static final String ROYALTY_SELLER_ENABLE_STATUS_FORBID = "卖家暂时无法进行收款操作，请联系您的商户。";
+	public static final String ROYALTY_SELLER_NOT_CERTIFY = "卖家尚未通过认证，不能进行收款，请联系您的商户。";
+	public static final String ROYALTY_FORAMT_ERROR = "接口传递的分润参数格式错误，请检查后重新集成。";
+	public static final String ROYALTY_TYPE_ERROR = "接口传递的分润类型错误，请检查后重新集成。";
+	public static final String ROYALTY_RECEIVE_EMAIL_NOT_EXIST = "分润账户经验证不存在，请联系您的商户。";
+	public static final String ROYALTY_RECEIVE_EMAIL_NOT_CERTIFY = "分润账户经验证未通过人行验证，请联系您的商户。";
+	public static final String ROYALTY_PAY_EMAIL_NOT_EXIST = "分润付款账户经验证不存在，请联系您的商户。";
+	public static final String TAOBAO_ANTI_PHISHING_CHECK_FAIL = "无法付款! 该笔交易可能存在风险，如果您确定本次交易没有问题，请1个小时后再付款。";
+	public static final String SUBJECT_HAS_FORBIDDENWORD = "无法付款! 请联系商户修改商品名称，再重新购买。";
+	public static final String PAY_CHECK_FAIL = "付款失败! 该笔交易可能存在风险，建议您付款前<a href=\"http://bbs.taobao.com/catalog/thread/154504-5782260.htm\" target=\"_blank\">先查看防骗案例</a>。";
+	public static final String BODY_HAS_FORBIDDENWORD = "无法付款! 请联系商户修改商品描述，再重新购买。";
+	public static final String NEED_CTU_CHECK_PARAMETER_ERROR = "您传递的商户可信任参数权限参数错误。";
+	public static final String NEED_CTU_CHECK_NOT_ALLOWED = "商户没有可信任参数校验的权限。";
+	public static final String BUYER_NOT_EXIST = "买家账户经验证不存在。";
+	public static final String HAS_NO_PRIVILEGE = "你的当前访问记录丢失，请返回商户网站重新发起付款。";
+	public static final String ILLEGAL_SIGN = "签名不正确";
+	public static final String ILLEGAL_DYN_MD5_KEY = "动态密钥信息错误";
+	public static final String ILLEGAL_ENCRYPT = "加密不正确";
+	public static final String ILLEGAL_SERVICE = "参数不正确";
+	public static final String ILLEGAL_PARTNER = "合作伙伴ID不正确";
+	public static final String ILLEGAL_EXTERFACE = "接口配置不正确";
+	public static final String ILLEGAL_PARTNER_EXTERFACE = "合作伙伴接口信息不正确";
+	public static final String ILLEGAL_SECURITY_PROFILE = "未找到匹配的密钥配置";
+	public static final String ILLEGAL_AGENT = "代理ID不正确";
+	public static final String ILLEGAL_SIGN_TYPE = "签名类型不正确";
+	public static final String ILLEGAL_CHARSET = "字符集不合法";
+	public static final String ILLEGAL_CLIENT_IP = "客户端IP地址无权访问服务";
+	public static final String ILLEGAL_DIGEST_TYPE = "摘要类型不正确";
+	public static final String ILLEGAL_DIGEST = "文件摘要不正确";
+	public static final String ILLEGAL_FILE_FORMAT = "文件格式不正确";
+	public static final String ILLEGAL_ENCODING = "不支持该编码类型";
+	public static final String ILLEGAL_REQUEST_REFERER = "防钓鱼检查不支持该请求来源";
+	public static final String ILLEGAL_ANTI_PHISHING_KEY = "防钓鱼检查非法时间戳参数";
+	public static final String ANTI_PHISHING_KEY_TIMEOUT = "防钓鱼检查时间戳超时";
+	public static final String ILLEGAL_EXTER_INVOKE_IP = "防钓鱼检查非法调用IP";
+	public static final String ILLEGAL_NUMBER_FORMAT = "数字格式不合法";
+	public static final String ILLEGAL_INTEGER_FORMAT = "Int类型格式不合法";
+	public static final String ILLEGAL_MONEY_FORMAT = "金额格式不合法";
+	public static final String ILLEGAL_DATA_FORMAT = "日期格式错误";
+	public static final String REGEXP_MATCH_FAIL = "正则表达式匹配失败";
+	public static final String ILLEGAL_LENGTH = "参数值长度不合法";
+	public static final String PARAMTER_IS_NULL = "参数值为空";
+	
+	//系统错误
+	public static final String SYSTEM_ERROR = "支付宝系统错误";
+	public static final String SESSION_TIMEOUT = "session超时";
+	public static final String ILLEGAL_TARGET_SERVICE =	"错误的target_service";
+	
+	//退款错误
+	//public static final String ILLEGAL_SIGN="签名不正确";
+	//public static final String ILLEGAL_DYN_MD5_KEY="动态密钥信息错误";
+	//public static final String ILLEGAL_ENCRYPT="加密不正确";
+	//public static final String ILLEGAL_ARGUMENT="参数不正确";
+	//public static final String ILLEGAL_SERVICE="Service参数不正确";
+	public static final String ILLEGAL_USER="用户ID不正确";
+	//public static final String ILLEGAL_PARTNER="合作伙伴ID不正确";
+	//public static final String ILLEGAL_EXTERFACE="接口配置不正确";
+	//public static final String ILLEGAL_PARTNER_EXTERFACE="合作伙伴接口信息不正确";
+	//public static final String ILLEGAL_SECURITY_PROFILE="未找到匹配的密钥配置";
+	//public static final String ILLEGAL_AGENT="代理ID不正确";
+	//public static final String ILLEGAL_SIGN_TYPE="签名类型不正确";
+	///public static final String ILLEGAL_CHARSET="字符集不合法";
+	//public static final String ILLEGAL_CLIENT_IP="客户端IP地址无权访问服务";
+	//public static final String HAS_NO_PRIVILEGE="无权访问";
+	//public static final String ILLEGAL_DIGEST_TYPE="摘要类型不正确";
+	//public static final String ILLEGAL_DIGEST="文件摘要不正确";
+	//public static final String ILLEGAL_FILE_FORMAT="文件格式不正确";
+	//public static final String ILLEGAL_ENCODING="不支持该编码类型";
+	//public static final String ILLEGAL_REQUEST_REFERER="防钓鱼检查不支持该请求来源";
+	//public static final String ILLEGAL_ANTI_PHISHING_KEY="防钓鱼检查非法时间戳参数";
+	//public static final String ANTI_PHISHING_KEY_TIMEOUT="防钓鱼检查时间戳超时";
+	//public static final String ILLEGAL_EXTER_INVOKE_IP="防钓鱼检查非法调用IP";
+	public static final String BATCH_NUM_EXCEED_LIMIT="总笔数大于1000";
+	public static final String REFUND_DATE_ERROR="错误的退款时间";
+	public static final String BATCH_NUM_ERROR="传入的总笔数格式错误";
+	public static final String DUBL_ROYALTY_IN_DETAIL="同一条明细中存在两条转入转出账户相同的分润信息";
+	public static final String BATCH_NUM_NOT_EQUAL_TOTAL="传入的退款条数不等于数据集解析出的退款条数";
+	public static final String SINGLE_DETAIL_DATA_EXCEED_LIMIT="单笔退款明细超出限制";
+	public static final String DUBL_TRADE_NO_IN_SAME_BATCH="同一批退款中存在两条相同的退款记录";
+	public static final String DUPLICATE_BATCH_NO="重复的批次号";
+	public static final String TRADE_STATUS_ERROR="交易状态不允许退款";
+	public static final String BATCH_NO_FORMAT_ERROR= "批次号格式错误";
+	public static final String PARTNER_NOT_SIGN_PROTOCOL= "平台商未签署协议";
+	public static final String NOT_THIS_PARTNERS_TRADE="退款明细非本合作伙伴的交易";
+	public static final String DETAIL_DATA_FORMAT_ERROR="数据集参数格式错误";
+	public static final String SELLER_NOT_SIGN_PROTOCOL="卖家未签署协议";
+	public static final String INVALID_CHARACTER_SET="字符集无效";
+	public static final String ACCOUNT_NOT_EXISTS="账号不存在";
+	public static final String EMAIL_USERID_NOT_MATCH="Email和用户ID不匹配";
+	public static final String REFUND_ROYALTY_FEE_ERROR="退分润金额不合法";
+	public static final String ROYALTYER_NOT_SIGN_PROTOCOL="分润方未签署三方协议";
+	public static final String RESULT_AMOUNT_NOT_VALID="退收费、退分润或者退款的金额错误";
+	//public static final String REASON_REFUND_ROYALTY_ERROR="退分润错误";
+	public static final String TRADE_NOT_EXISTS="交易不存在";
+	public static final String WHOLE_DETAIL_FORBID_REFUND="整条退款明细都禁止退款";
+	public static final String TRADE_HAS_CLOSED="交易已关闭，不允许退款";
+	public static final String TRADE_HAS_FINISHED="交易已结束，不允许退款";
+	public static final String NO_REFUND_CHARGE_PRIVILEDGE="没有退收费的权限";
+	public static final String RESULT_BATCH_NO_FORMAT_ERROR="批次号格式错误";
+	public static final String BATCH_MEMO_LENGTH_EXCEED_LIMIT="备注长度超过1000字节";
+	public static final String REFUND_CHARGE_FEE_GREATER_THAN_LIMIT="退收费金额超过限制";
+	public static final String REFUND_TRADE_FEE_ERROR="退交易金额不合法";
+	public static final String SELLER_STATUS_NOT_ALLOW="卖家状态不正常";
+	public static final String SINGLE_DETAIL_DATA_ENCODING_NOT_SUPPORT="单条数据集编码集不支持";
+	//public static final String TXN_RESULT_ACCOUNT_STATUS_NOT_VALID="卖家账户被冻结";
+	public static final String TXN_RESULT_ACCOUNT_BALANCE_NOT_ENOUGH="卖家账户余额不足";
+	public static final String CA_USER_NOT_USE_CA="数字证书用户但未使用数字证书登录";
+	public static final String BATCH_REFUND_LOCK_ERROR="同一时间不允许进行多笔并发退款";
+	public static final String REFUND_SUBTRADE_FEE_ERROR="退子交易金额不合法";
+	public static final String NANHANG_REFUND_CHARGE_AMOUNT_ERROR="退票面价金额不合法";
+	public static final String REFUND_AMOUNT_NOT_VALID="退款金额不合法";
+	public static final String TRADE_PRODUCT_TYPE_NOT_ALLOW_REFUND="交易类型不允许退交易";
+	public static final String RESULT_FACE_AMOUNT_NOT_VALID="退款票面价不能大于支付票面价";
+	public static final String REFUND_CHARGE_FEE_ERROR="退收费金额不合法";
+	public static final String REASON_REFUND_CHARGE_ERR="退收费失败";
+	//public static final String RESULT_AMOUNT_NOT_VALID="退收费金额错误";
+	public static final String DUP_ROYALTY_REFUND_ITEM="重复的退分润条目";
+	public static final String RESULT_ACCOUNT_NO_NOT_VALID="账号无效";
+	public static final String REASON_REFUND_ROYALTY_ERROR="退分润失败";
+	public static final String REASON_TRADE_REFUND_FEE_ERR	="退款金额错误";
+	public static final String REASON_HAS_REFUND_FEE_NOT_MATCH="已退款金额错误";
+	public static final String TXN_RESULT_ACCOUNT_STATUS_NOT_VALID="账户状态无效";
+	//public static final String TXN_RESULT_ACCOUNT_BALANCE_NOT_ENOUGH="账户余额不足";
+	public static final String REASON_REFUND_AMOUNT_LESS_THAN_COUPON_FEE="红包无法部分退款";
+	public static final String BATCH_REFUND_STATUS_ERROR="退款记录状态错误";
+	public static final String BATCH_REFUND_DATA_ERROR="批量退款后数据检查错误";
+	public static final String REFUND_TRADE_FAILED="不存在退交易，但是退收费和退分润失败";
+	public static final String REFUND_FAIL="退款失败（该结果码只会出现在做意外数据恢复时，找不到结果码的情况）";
+				
+
+	public static final Map<String, String> DIRECT_PAY_ERROR_CODE_MAP = new HashMap<String, String>();
+	static {
+		DIRECT_PAY_ERROR_CODE_MAP.put("TRADE_SELLER_NOT_MATCH",
+				TRADE_SELLER_NOT_MATCH);
+		DIRECT_PAY_ERROR_CODE_MAP.put("TRADE_BUYER_NOT_MATCH",
+				TRADE_BUYER_NOT_MATCH);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_FEE_PARAM", ILLEGAL_FEE_PARAM);
+		DIRECT_PAY_ERROR_CODE_MAP.put("SUBJECT_MUST_NOT_BE_NULL",
+				SUBJECT_MUST_NOT_BE_NULL);
+		DIRECT_PAY_ERROR_CODE_MAP.put("TRADE_PRICE_NOT_MATCH",
+				TRADE_PRICE_NOT_MATCH);
+		DIRECT_PAY_ERROR_CODE_MAP.put("TRADE_QUANTITY_NOT_MATCH",
+				TRADE_QUANTITY_NOT_MATCH);
+		DIRECT_PAY_ERROR_CODE_MAP.put("TRADE_TOTALFEE_NOT_MATCH",
+				TRADE_TOTALFEE_NOT_MATCH);
+		DIRECT_PAY_ERROR_CODE_MAP.put("TRADE_NOT_ALLOWED_PAY",
+				TRADE_NOT_ALLOWED_PAY);
+		DIRECT_PAY_ERROR_CODE_MAP.put("DIRECT_PAY_WITHOUT_CERT_CLOSE",
+				DIRECT_PAY_WITHOUT_CERT_CLOSE);
+		DIRECT_PAY_ERROR_CODE_MAP.put("FAIL_CREATE_CASHIER_PAY_ORDER",
+				FAIL_CREATE_CASHIER_PAY_ORDER);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_EXTRA_COMMON_PARAM",
+				ILLEGAL_EXTRA_COMMON_PARAM);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_PAYMENT_TYPE",
+				ILLEGAL_PAYMENT_TYPE);
+		DIRECT_PAY_ERROR_CODE_MAP.put("NOT_SUPPORT_GATEWAY",
+				NOT_SUPPORT_GATEWAY);
+		DIRECT_PAY_ERROR_CODE_MAP.put("BUYER_SELLER_EQUAL", BUYER_SELLER_EQUAL);
+		DIRECT_PAY_ERROR_CODE_MAP.put("SELLER_NOT_EXIST", SELLER_NOT_EXIST);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_ARGUMENT", ILLEGAL_ARGUMENT);
+		DIRECT_PAY_ERROR_CODE_MAP.put("TRADE_NOT_FOUND", TRADE_NOT_FOUND);
+		DIRECT_PAY_ERROR_CODE_MAP.put("TRADE_GOOD_INFO_NOT_FOUND",
+				TRADE_GOOD_INFO_NOT_FOUND);
+		DIRECT_PAY_ERROR_CODE_MAP.put("BUYER_EMAIL_ID_MUST_NULL",
+				BUYER_EMAIL_ID_MUST_NULL);
+		DIRECT_PAY_ERROR_CODE_MAP.put("PRODUCT_NOT_ALLOWED",
+				PRODUCT_NOT_ALLOWED);
+		DIRECT_PAY_ERROR_CODE_MAP.put(
+				"ROYALTY_RECEIVER_NOT_IN_SPECIFIED_ACCOUNTS",
+				ROYALTY_RECEIVER_NOT_IN_SPECIFIED_ACCOUNTS);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ROYALTY_LENGTH_ERROR",
+				ROYALTY_LENGTH_ERROR);
+		DIRECT_PAY_ERROR_CODE_MAP.put("DEFAULT_BANK_INVALID",
+				DEFAULT_BANK_INVALID);
+		DIRECT_PAY_ERROR_CODE_MAP.put("DIS_NOT_SIGN_PROTOCOL",
+				DIS_NOT_SIGN_PROTOCOL);
+		DIRECT_PAY_ERROR_CODE_MAP.put("SELF_TIMEOUT_NOT_SUPPORT",
+				SELF_TIMEOUT_NOT_SUPPORT);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_OUTTIME_ARGUMENT",
+				EBANK_CERDIT_GW_RULE_NOT_OPEN);
+		DIRECT_PAY_ERROR_CODE_MAP.put("EBANK_CERDIT_GW_RULE_NOT_OPEN",
+				EBANK_CERDIT_GW_RULE_NOT_OPEN);
+		DIRECT_PAY_ERROR_CODE_MAP.put("DIRECTIONAL_PAY_FORBIDDEN",
+				DIRECTIONAL_PAY_FORBIDDEN);
+		DIRECT_PAY_ERROR_CODE_MAP.put("SELLER_ENABLE_STATUS_FORBID",
+				SELLER_ENABLE_STATUS_FORBID);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ROYALTY_SELLER_ENABLE_STATUS_FORBID",
+				ROYALTY_SELLER_ENABLE_STATUS_FORBID);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ROYALTY_SELLER_NOT_CERTIFY",
+				ROYALTY_SELLER_NOT_CERTIFY);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ROYALTY_FORAMT_ERROR",
+				ROYALTY_FORAMT_ERROR);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ROYALTY_TYPE_ERROR", ROYALTY_TYPE_ERROR);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ROYALTY_RECEIVE_EMAIL_NOT_EXIST",
+				ROYALTY_RECEIVE_EMAIL_NOT_EXIST);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ROYALTY_RECEIVE_EMAIL_NOT_CERTIFY",
+				ROYALTY_RECEIVE_EMAIL_NOT_CERTIFY);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ROYALTY_PAY_EMAIL_NOT_EXIST",
+				ROYALTY_PAY_EMAIL_NOT_EXIST);
+		DIRECT_PAY_ERROR_CODE_MAP.put("TAOBAO_ANTI_PHISHING_CHECK_FAIL",
+				TAOBAO_ANTI_PHISHING_CHECK_FAIL);
+		DIRECT_PAY_ERROR_CODE_MAP.put("SUBJECT_HAS_FORBIDDENWORD",
+				SUBJECT_HAS_FORBIDDENWORD);
+		DIRECT_PAY_ERROR_CODE_MAP.put("PAY_CHECK_FAIL", PAY_CHECK_FAIL);
+		DIRECT_PAY_ERROR_CODE_MAP.put("BODY_HAS_FORBIDDENWORD",
+				BODY_HAS_FORBIDDENWORD);
+		DIRECT_PAY_ERROR_CODE_MAP.put("NEED_CTU_CHECK_PARAMETER_ERROR",
+				NEED_CTU_CHECK_PARAMETER_ERROR);
+		DIRECT_PAY_ERROR_CODE_MAP.put("NEED_CTU_CHECK_NOT_ALLOWED",
+				NEED_CTU_CHECK_NOT_ALLOWED);
+		DIRECT_PAY_ERROR_CODE_MAP.put("BUYER_NOT_EXIST", BUYER_NOT_EXIST);
+		DIRECT_PAY_ERROR_CODE_MAP.put("HAS_NO_PRIVILEGE", HAS_NO_PRIVILEGE);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_SIGN", ILLEGAL_SIGN);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_DYN_MD5_KEY",
+				ILLEGAL_DYN_MD5_KEY);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_ENCRYPT", ILLEGAL_ENCRYPT);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_ARGUMENT", ILLEGAL_ARGUMENT);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_SERVICE", ILLEGAL_SERVICE);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_PARTNER", ILLEGAL_PARTNER);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_EXTERFACE", ILLEGAL_EXTERFACE);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_PARTNER_EXTERFACE",
+				ILLEGAL_PARTNER_EXTERFACE);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_SECURITY_PROFILE",
+				ILLEGAL_SECURITY_PROFILE);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_AGENT", ILLEGAL_AGENT);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_SIGN_TYPE", ILLEGAL_SIGN_TYPE);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_CHARSET", ILLEGAL_CHARSET);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_CLIENT_IP", ILLEGAL_CLIENT_IP);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_DIGEST_TYPE",
+				ILLEGAL_DIGEST_TYPE);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_DIGEST", ILLEGAL_DIGEST);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_FILE_FORMAT",
+				ILLEGAL_FILE_FORMAT);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_ENCODING", ILLEGAL_ENCODING);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_REQUEST_REFERER",
+				ILLEGAL_REQUEST_REFERER);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_ANTI_PHISHING_KEY",
+				ILLEGAL_ANTI_PHISHING_KEY);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ANTI_PHISHING_KEY_TIMEOUT",
+				ANTI_PHISHING_KEY_TIMEOUT);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_EXTER_INVOKE_IP",
+				ILLEGAL_EXTER_INVOKE_IP);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_NUMBER_FORMAT",
+				ILLEGAL_NUMBER_FORMAT);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_INTEGER_FORMAT",
+				ILLEGAL_INTEGER_FORMAT);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_MONEY_FORMAT",
+				ILLEGAL_MONEY_FORMAT);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_DATA_FORMAT",
+				ILLEGAL_DATA_FORMAT);
+		DIRECT_PAY_ERROR_CODE_MAP.put("REGEXP_MATCH_FAIL", REGEXP_MATCH_FAIL);
+		DIRECT_PAY_ERROR_CODE_MAP.put("ILLEGAL_LENGTH", ILLEGAL_LENGTH);
+		DIRECT_PAY_ERROR_CODE_MAP.put("PARAMTER_IS_NULL", PARAMTER_IS_NULL);
+	}
+
+	// 系统错误
+	public static final Map<String, String> SYSTEM_ERROR_CODE_MAP = new HashMap<String, String>();
+	static {
+		SYSTEM_ERROR_CODE_MAP.put("SYSTEM_ERROR", "支付宝系统错误");
+		SYSTEM_ERROR_CODE_MAP.put("SESSION_TIMEOUT", "session超时");
+		SYSTEM_ERROR_CODE_MAP
+				.put("ILLEGAL_TARGET_SERVICE", "错误的target_service");
+		SYSTEM_ERROR_CODE_MAP.put("ILLEGAL_ACCESS_SWITCH_SYSTEM",
+				"partner不允许访问该类型的系统");
+		SYSTEM_ERROR_CODE_MAP.put("ILLEGAL_SWITCH_SYSTEM", "切换系统异常");
+		SYSTEM_ERROR_CODE_MAP.put("EXTERFACE_IS_CLOSED", "接口已关闭");
+	}
+	
+	
+	public static final Map<String, String> REFUND_ERROR_CODE_MAP = new HashMap<String, String>();
+	static{
+		REFUND_ERROR_CODE_MAP.put("ILLEGAL_REQUEST_REFERER",ILLEGAL_REQUEST_REFERER);
+		REFUND_ERROR_CODE_MAP.put("ILLEGAL_ANTI_PHISHING_KEY",ILLEGAL_ANTI_PHISHING_KEY);
+		REFUND_ERROR_CODE_MAP.put("ANTI_PHISHING_KEY_TIMEOUT",ANTI_PHISHING_KEY_TIMEOUT);
+		REFUND_ERROR_CODE_MAP.put("ILLEGAL_EXTER_INVOKE_IP",ILLEGAL_EXTER_INVOKE_IP);
+		REFUND_ERROR_CODE_MAP.put("BATCH_NUM_EXCEED_LIMIT",BATCH_NUM_EXCEED_LIMIT);
+		REFUND_ERROR_CODE_MAP.put("REFUND_DATE_ERROR",REFUND_DATE_ERROR);
+		REFUND_ERROR_CODE_MAP.put("BATCH_NUM_ERROR",BATCH_NUM_ERROR);
+		REFUND_ERROR_CODE_MAP.put("DUBL_ROYALTY_IN_DETAIL",DUBL_ROYALTY_IN_DETAIL);
+		REFUND_ERROR_CODE_MAP.put("BATCH_NUM_NOT_EQUAL_TOTAL",BATCH_NUM_NOT_EQUAL_TOTAL);
+		REFUND_ERROR_CODE_MAP.put("SINGLE_DETAIL_DATA_EXCEED_LIMIT",SINGLE_DETAIL_DATA_EXCEED_LIMIT);
+		REFUND_ERROR_CODE_MAP.put("DUBL_TRADE_NO_IN_SAME_BATCH",DUBL_TRADE_NO_IN_SAME_BATCH);
+		REFUND_ERROR_CODE_MAP.put("DUPLICATE_BATCH_NO",DUPLICATE_BATCH_NO);
+		REFUND_ERROR_CODE_MAP.put("TRADE_STATUS_ERROR",TRADE_STATUS_ERROR);
+		REFUND_ERROR_CODE_MAP.put("BATCH_NO_FORMAT_ERROR",BATCH_NO_FORMAT_ERROR);
+		REFUND_ERROR_CODE_MAP.put("PARTNER_NOT_SIGN_PROTOCOL",PARTNER_NOT_SIGN_PROTOCOL);
+		REFUND_ERROR_CODE_MAP.put("NOT_THIS_PARTNERS_TRADE",NOT_THIS_PARTNERS_TRADE);
+		REFUND_ERROR_CODE_MAP.put("DETAIL_DATA_FORMAT_ERROR",DETAIL_DATA_FORMAT_ERROR);
+		REFUND_ERROR_CODE_MAP.put("SELLER_NOT_SIGN_PROTOCOL",SELLER_NOT_SIGN_PROTOCOL);
+		REFUND_ERROR_CODE_MAP.put("INVALID_CHARACTER_SET",INVALID_CHARACTER_SET);
+		REFUND_ERROR_CODE_MAP.put("ACCOUNT_NOT_EXISTS",ACCOUNT_NOT_EXISTS);
+		REFUND_ERROR_CODE_MAP.put("EMAIL_USERID_NOT_MATCH",EMAIL_USERID_NOT_MATCH);
+		REFUND_ERROR_CODE_MAP.put("REFUND_ROYALTY_FEE_ERROR",REFUND_ROYALTY_FEE_ERROR);
+		REFUND_ERROR_CODE_MAP.put("ROYALTYER_NOT_SIGN_PROTOCOL",ROYALTYER_NOT_SIGN_PROTOCOL);
+		REFUND_ERROR_CODE_MAP.put("RESULT_AMOUNT_NOT_VALID",RESULT_AMOUNT_NOT_VALID);
+		REFUND_ERROR_CODE_MAP.put("REASON_REFUND_ROYALTY_ERROR",REASON_REFUND_ROYALTY_ERROR);
+		REFUND_ERROR_CODE_MAP.put("TRADE_NOT_EXISTS",TRADE_NOT_EXISTS);
+		REFUND_ERROR_CODE_MAP.put("WHOLE_DETAIL_FORBID_REFUND",WHOLE_DETAIL_FORBID_REFUND);
+		REFUND_ERROR_CODE_MAP.put("TRADE_HAS_CLOSED",TRADE_HAS_CLOSED);
+		REFUND_ERROR_CODE_MAP.put("TRADE_HAS_FINISHED",TRADE_HAS_FINISHED);
+		REFUND_ERROR_CODE_MAP.put("NO_REFUND_CHARGE_PRIVILEDGE",NO_REFUND_CHARGE_PRIVILEDGE);
+		REFUND_ERROR_CODE_MAP.put("RESULT_BATCH_NO_FORMAT_ERROR",RESULT_BATCH_NO_FORMAT_ERROR);
+		REFUND_ERROR_CODE_MAP.put("BATCH_MEMO_LENGTH_EXCEED_LIMIT",BATCH_MEMO_LENGTH_EXCEED_LIMIT);
+		REFUND_ERROR_CODE_MAP.put("REFUND_CHARGE_FEE_GREATER_THAN_LIMIT",REFUND_CHARGE_FEE_GREATER_THAN_LIMIT);
+		REFUND_ERROR_CODE_MAP.put("REFUND_TRADE_FEE_ERROR",REFUND_TRADE_FEE_ERROR);
+		REFUND_ERROR_CODE_MAP.put("SELLER_STATUS_NOT_ALLOW",SELLER_STATUS_NOT_ALLOW);
+		REFUND_ERROR_CODE_MAP.put("SINGLE_DETAIL_DATA_ENCODING_NOT_SUPPORT",SINGLE_DETAIL_DATA_ENCODING_NOT_SUPPORT);
+		REFUND_ERROR_CODE_MAP.put("TXN_RESULT_ACCOUNT_STATUS_NOT_VALID",TXN_RESULT_ACCOUNT_STATUS_NOT_VALID);
+		REFUND_ERROR_CODE_MAP.put("TXN_RESULT_ACCOUNT_BALANCE_NOT_ENOUGH",TXN_RESULT_ACCOUNT_BALANCE_NOT_ENOUGH);
+		REFUND_ERROR_CODE_MAP.put("CA_USER_NOT_USE_CA",CA_USER_NOT_USE_CA);
+		REFUND_ERROR_CODE_MAP.put("BATCH_REFUND_LOCK_ERROR",BATCH_REFUND_LOCK_ERROR);
+		REFUND_ERROR_CODE_MAP.put("REFUND_SUBTRADE_FEE_ERROR",REFUND_SUBTRADE_FEE_ERROR);
+		REFUND_ERROR_CODE_MAP.put("NANHANG_REFUND_CHARGE_AMOUNT_ERROR",NANHANG_REFUND_CHARGE_AMOUNT_ERROR);
+		REFUND_ERROR_CODE_MAP.put("REFUND_AMOUNT_NOT_VALID",REFUND_AMOUNT_NOT_VALID);
+		REFUND_ERROR_CODE_MAP.put("TRADE_PRODUCT_TYPE_NOT_ALLOW_REFUND",TRADE_PRODUCT_TYPE_NOT_ALLOW_REFUND);
+		REFUND_ERROR_CODE_MAP.put("RESULT_FACE_AMOUNT_NOT_VALID",RESULT_FACE_AMOUNT_NOT_VALID);
+		REFUND_ERROR_CODE_MAP.put("REFUND_CHARGE_FEE_ERROR",REFUND_CHARGE_FEE_ERROR);
+		REFUND_ERROR_CODE_MAP.put("REASON_REFUND_CHARGE_ERR",REASON_REFUND_CHARGE_ERR);
+		REFUND_ERROR_CODE_MAP.put("DUP_ROYALTY_REFUND_ITEM",DUP_ROYALTY_REFUND_ITEM);
+		REFUND_ERROR_CODE_MAP.put("RESULT_ACCOUNT_NO_NOT_VALID",RESULT_ACCOUNT_NO_NOT_VALID);
+		REFUND_ERROR_CODE_MAP.put("REASON_REFUND_ROYALTY_ERROR",REASON_REFUND_ROYALTY_ERROR);
+		REFUND_ERROR_CODE_MAP.put("REASON_TRADE_REFUND_FEE_ERR",REASON_TRADE_REFUND_FEE_ERR);
+		REFUND_ERROR_CODE_MAP.put("REASON_HAS_REFUND_FEE_NOT_MATCH",REASON_HAS_REFUND_FEE_NOT_MATCH);
+		REFUND_ERROR_CODE_MAP.put("TXN_RESULT_ACCOUNT_STATUS_NOT_VALID",TXN_RESULT_ACCOUNT_STATUS_NOT_VALID);
+		REFUND_ERROR_CODE_MAP.put("TXN_RESULT_ACCOUNT_BALANCE_NOT_ENOUGH",TXN_RESULT_ACCOUNT_BALANCE_NOT_ENOUGH);
+		REFUND_ERROR_CODE_MAP.put("REASON_REFUND_AMOUNT_LESS_THAN_COUPON_FEE",REASON_REFUND_AMOUNT_LESS_THAN_COUPON_FEE);
+		REFUND_ERROR_CODE_MAP.put("BATCH_REFUND_STATUS_ERROR",BATCH_REFUND_STATUS_ERROR);
+		REFUND_ERROR_CODE_MAP.put("BATCH_REFUND_DATA_ERROR",BATCH_REFUND_DATA_ERROR);
+		REFUND_ERROR_CODE_MAP.put("REFUND_TRADE_FAILED",REFUND_TRADE_FAILED);
+		REFUND_ERROR_CODE_MAP.put("REFUND_FAIL",REFUND_FAIL);
+
+	}
+	
+	
+	
+}

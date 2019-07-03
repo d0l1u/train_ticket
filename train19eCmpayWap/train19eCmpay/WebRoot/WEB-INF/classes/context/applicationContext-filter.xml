@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<!-- 需实现javax.servlet.Filter接口  -->
+
+    <bean id="sessionValidFilter" class="com.l9e.common.filter.SessionValidFilter">		
+		<property name="homeList">
+			<list>
+				<value>/login/trainIndex.jhtml</value>
+			</list>
+		</property>
+	</bean>
+</beans>

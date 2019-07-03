@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="robot">
+	<!-- 查询数据库user信息 -->
+	<select id="queryUserInfo" parameterClass="java.lang.String" resultClass="com.l9e.transaction.vo.UserInfo">
+		SELECT username,pwd,last_login_time,login_status,department,get_code_time_limit,user_code_version FROM rh_user  WHERE username = #username:VARCHAR#
+	</select>
+	<!-- 查询打码总数 -->
+	<select id="queryPlayCardTotalNum" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT CONVERT(COUNT(opt_ren),CHAR) AS num  FROM rh_picture 
+		WHERE opt_ren = #username:VARCHAR# AND create_time > #create_time:VARCHAR# 
+		AND verify_code is not null
+ 	</select>
+	<!-- 查询打码正确数 -->
+	<select id="queryPlayCardRightNum" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT CONVERT(COUNT(opt_ren),CHAR) AS num  FROM rh_picture 
+		WHERE opt_ren = #username:VARCHAR# AND result_status <![CDATA[=]]> 1 
+		AND create_time > #create_time:VARCHAR# 
+	</select>
+	<!-- 查询打码错误数 -->
+	<select id="queryPlayCardErrorNum" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT CONVERT(COUNT(opt_ren),CHAR) AS num  FROM rh_picture 
+		WHERE opt_ren = #username:VARCHAR# AND  result_status <![CDATA[=]]> 0 
+		AND create_time > #create_time:VARCHAR# 
+	</select>
+	<!-- 查询打码超时数 -->
+	<select id="queryPlayCardOverNum" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT CONVERT(COUNT(opt_ren),CHAR) AS num  FROM rh_picture 
+		WHERE opt_ren = #username:VARCHAR# AND  result_status <![CDATA[=]]> 5 
+		AND create_time > #create_time:VARCHAR# 
+	</select>
+	
+	<update id="updateUserInfo" parameterClass="java.util.HashMap">
+		UPDATE rh_user SET login_status=#login_status:INTEGER# 
+		<isEqual compareValue="3" property="login_status">
+			,last_login_time=now()  
+		</isEqual>
+		<isNotEmpty property="user_code_version">
+			,user_code_version = #user_code_version:VARCHAR#
+		</isNotEmpty> 
+		WHERE username = #username:VARCHAR#
+	</update>
+	
+	<update id="updateUserInfoLoginTime" parameterClass="java.lang.String">
+		 UPDATE rh_user SET last_login_time=now()  
+		WHERE username = #username:VARCHAR# 
+	</update>
+	<!-- 保存图片信息 -->
+	<insert id="savePicture" parameterClass="com.l9e.transaction.vo.Picture">
+		INSERT INTO rh_picture
+		<dynamic prepend="(">
+			pic_id, pic_filename,create_time, effect_time, status, channel,order_id, department
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			#pic_id:VARCHAR#,#pic_filename:VARCHAR#,NOW(),DATE_ADD(NOW(),INTERVAL #span_time:INTEGER# SECOND),
+			'00',#channel:VARCHAR#,#order_id:VARCHAR#,#department:VARCHAR#
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 获取图片信息 -->
+	<select id="getPicture" resultClass="com.l9e.transaction.vo.Picture" parameterClass="java.lang.String">
+		SELECT pic_id,pic_filename,verify_code,effect_time,finish_time,opt_ren,status,channel, TIMESTAMPDIFF(SECOND, create_time, NOW()) mistiming, verify_code_coord 
+		FROM rh_picture WHERE pic_id = #pic_id:VARCHAR#
+	</select>
+	
+	<!-- 获取图片信息 -->
+	<select id="queryQunarPictureListSuccess" resultClass="com.l9e.transaction.vo.Picture"
+		parameterClass="java.util.HashMap">
+		SELECT pic_id,pic_filename,verify_code,effect_time,finish_time,opt_ren,status,channel 
+		FROM rh_picture order by create_time asc limit #before#,#after#
+	</select>
+	
+	<!-- 获取图片信息 -->
+	<select id="queryPictureId" 
+	 	resultClass="com.l9e.transaction.vo.Picture">
+		SELECT pic_id,pic_filename FROM rh_picture 
+		WHERE effect_time > now() AND user_pic_status <![CDATA[=]]> 0 
+		AND  status <![CDATA[=]]> '00' limit 1
+	</select>
+	
+	<!-- 获取图片信息 -->
+	<select id="queryPictureForUpdate" parameterClass="java.lang.String"
+	 	resultClass="com.l9e.transaction.vo.Picture">
+		SELECT pic_id,pic_filename FROM rh_picture 
+		WHERE pic_id=#pic_id:VARCHAR# AND effect_time > now()  
+		AND  status <![CDATA[=]]> '00'
+	</select>
+	
+	<!-- 获取qunar图片信息 -->
+	<select id="queryQunarPictureList" parameterClass="java.lang.String"
+		resultClass="com.l9e.transaction.vo.Picture">
+		SELECT pic_id,pic_filename,order_id,channel FROM rh_picture 
+		WHERE effect_time > now() AND user_pic_status <![CDATA[=]]> 0 AND channel=#channel:VARCHAR# 
+		AND  status <![CDATA[=]]> '00' ORDER BY create_time asc LIMIT 0,5
+	</select>
+	
+	<update id="updatePictures" parameterClass="com.l9e.transaction.vo.Picture">
+		UPDATE rh_picture SET finish_time = now(),status = '11',
+		opt_ren=#opt_ren:VARCHAR#,verify_code=#verify_code:VARCHAR#,
+		user_pic_status<![CDATA[=]]>0, department=#department:VARCHAR# 
+		WHERE pic_id = #pic_id:VARCHAR# 
+	</update>
+	
+	<update id="updatePicturesMap" parameterClass="java.util.HashMap">
+		UPDATE rh_picture SET
+		<isNotEmpty property="fail_reason">
+			fail_reason = #fail_reason:VARCHAR#, 
+		</isNotEmpty> 
+		<isNotEmpty property="update_status">
+			update_status = #update_status:VARCHAR#, 
+		</isNotEmpty> 
+		<isNotEmpty property="shyzmid">
+			shyzmid = #shyzmid:VARCHAR#, 
+		</isNotEmpty>
+		<isNotEmpty property="start_time">
+			start_time = create_time, 
+		</isNotEmpty>
+		<isNotEmpty property="verify_code_coord">
+			verify_code_coord = #verify_code_coord:VARCHAR#, 
+		</isNotEmpty>
+		finish_time = now(),status = #status:VARCHAR#,
+		opt_ren=#opt_ren:VARCHAR#,verify_code=#verify_code:VARCHAR#,
+		user_pic_status=#user_pic_status:INTEGER# 
+		WHERE pic_id = #pic_id:VARCHAR# 
+	</update>
+	
+	<update id="updatePicturesStatus" parameterClass="java.lang.String">
+		UPDATE rh_picture SET user_pic_status=1,start_time=now() 
+		WHERE pic_id = #pic_id:VARCHAR# AND user_pic_status = 0
+	</update>
+	
+	<select id="findResultStatus" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT result_status FROM rh_picture 
+		WHERE opt_ren=#username:VARCHAR# AND STATUS='11' ORDER BY finish_time DESC LIMIT 0,1 
+	</select>
+	
+	<select id="getOnlineUserNum" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM (SELECT username,real_name FROM rh_user WHERE login_status='1'  
+     	AND DATE_FORMAT(last_login_time,'%Y-%m-%d')=DATE_FORMAT(CURDATE(),'%Y-%m-%d')) AS temp
+	</select>
+	
+	<select id="getOnlinePictureNum" parameterClass="java.util.HashMap" 
+		resultClass="java.lang.Integer">
+		SELECT count(*) FROM rh_picture WHERE finish_time is null AND effect_time > now() 
+		AND user_pic_status<![CDATA[=]]>0 AND channel in('19e'
+		<isNotEqual compareValue="00" property="qunar_channel">
+			,'qunar'
+		</isNotEqual>
+		<isNotEqual compareValue="00" property="tc_channel">
+			,'tongcheng'
+		</isNotEqual>
+		)
+	</select>
+	
+	<select id="findByPicName" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT verify_code,pic_filename FROM rh_picture 
+		WHERE pic_filename=#pic_filename# limit 0,1
+	</select>
+	
+	<select id="selectPartnerById" parameterClass="java.lang.String" resultClass="com.l9e.transaction.vo.Partner">
+		SELECT partner_id,partner_key,partner_status FROM rh_picture 
+		WHERE partner_id=#partner_id:VARCHAR#
+	</select>
+	
+	<update id="updateResultStatusById" parameterClass="java.util.HashMap">
+		UPDATE rh_picture SET result_status=#result_status#  WHERE pic_id = #pic_id:VARCHAR# 
+	</update>
+	
+	<select id="querySysInfo" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT code_channel,upload_num,get_code_num,upload_error_num, 
+		code01_weight, code02_weight, code03_weight, code04_weight FROM rh_system LIMIT 0,1
+	</select>
+	
+	<select id="queryOrderInfoChannel" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT channel from cp_orderinfo where order_id = #order_id:VARCHAR#
+	</select>
+
+	
+	<select id="queryLoginCountById" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(1) from rh_history_login where 
+		login_time<![CDATA[>]]>#begin:VARCHAR# 
+		and login_time<![CDATA[<]]>#end:VARCHAR# 
+			<isNotEmpty property="agent_id">
+		and agent_id=#agent_id:VARCHAR#
+		</isNotEmpty>
+	</select>
+	
+	<insert id="insertToHistoryLogin" parameterClass="java.util.HashMap">
+		insert into rh_history_login 
+		<dynamic prepend="(">
+			agent_id,login_time
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			#agent_id:VARCHAR#,now()
+			)
+		</dynamic>
+	</insert>
+	
+	<insert id="insertNoteLogin" parameterClass="java.util.HashMap">
+		insert into rh_login_notes
+		<dynamic prepend="(">
+		 login_hour, create_time, login_num, login_data
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			#hour_num:VARCHAR#,now(),#login_num:VARCHAR#,now()
+			)
+		</dynamic>
+	</insert>
+	
+	
+	<update id="updateNoteLogin" parameterClass="java.util.HashMap">
+		UPDATE rh_login_notes SET login_num=#login_num:VARCHAR#  
+		WHERE login_data=#login_data:VARCHAR#  and login_hour=#hour_num:VARCHAR#
+	</update>
+	
+	<select id="selectNoteLogin" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(1) from rh_login_notes WHERE login_data=#login_data:VARCHAR#  and login_hour=#hour_num:VARCHAR#
+	</select>
+	
+	
+
+	
+	
+	<select id="querySystemValue" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT setting_value from train_system_setting where setting_name=#key:VARCHAR#
+	</select>
+	
+	<select id="querySystemValueOpen" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT setting_value from train_system_setting where setting_name=#key:VARCHAR# and setting_status='1'
+	</select>
+	
+	<update id="updatePicturesChannel" parameterClass="java.util.HashMap">
+		UPDATE rh_picture SET channel=#new_channel:VARCHAR#  WHERE pic_id = #pic_id:VARCHAR# AND channel=#old_channel:VARCHAR#
+	</update>
+	
+	<select id="queryPictureIdList" parameterClass="java.util.HashMap" 
+		resultClass="java.lang.String">
+		SELECT pic_id FROM rh_picture WHERE verify_code is null AND effect_time > now() 
+		AND user_pic_status<![CDATA[=]]>0 AND channel in('19e'
+		<isNotEqual compareValue="00" property="qunar_channel">
+			,'qunar'
+		</isNotEqual>
+		<isNotEqual compareValue="00" property="tc_channel">
+			,'tongcheng' 
+		</isNotEqual>
+		 ) order by create_time asc limit #limit:INTEGER#
+	</select>
+	
+	<update id="updatePicturesStatusHasReturn" parameterClass="java.lang.String">
+		UPDATE rh_picture SET user_pic_status=1,start_time=now() 
+		WHERE pic_id = #pic_id:VARCHAR# AND user_pic_status = 0
+	</update>
+	
+	<select id="queryChannelPictureIdList" parameterClass="java.util.HashMap" 
+		resultClass="java.lang.String">
+		SELECT pic_id FROM rh_picture WHERE verify_code is null AND effect_time > now() AND user_pic_status<![CDATA[=]]>0 
+			AND channel=#channel:VARCHAR# order by create_time asc limit #limit:INTEGER#
+	</select>
+	
+	<!-- 查询数据库user拉码时间间隔 -->
+	<select id="queryUserCodeTimeLimit" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT get_code_time_limit FROM rh_user  WHERE username = #username:VARCHAR#
+	</select>
+	
+	<!-- 更新验证码的shyzmid等信息 -->
+	<update id="updateUploadStatus" parameterClass="com.l9e.transaction.vo.Picture">
+		UPDATE rh_picture SET opt_ren=#opt_ren:VARCHAR#,update_status=#update_status:VARCHAR#
+		<isNotEmpty property="shyzmid">
+			,shyzmid=#shyzmid:VARCHAR#   
+		</isNotEmpty>
+		<isNotEmpty property="verify_code">
+			,verify_code=#verify_code:VARCHAR#   
+		</isNotEmpty>
+		<isNotEmpty property="verify_code">
+			,status='11'  
+		</isNotEmpty>
+		<isNotEmpty property="verify_code">
+			,finish_time=now()
+		</isNotEmpty>
+		WHERE pic_id = #pic_id:VARCHAR#   
+	</update>
+	
+	<!-- 还原验证码被占用的状态 -->
+	<update id="updateCodeUserPicStatus" parameterClass="com.l9e.transaction.vo.Picture">
+		UPDATE rh_picture SET user_pic_status=#user_pic_status:VARCHAR#,start_time=now() 
+		WHERE pic_id = #pic_id:VARCHAR# and user_pic_status='0'
+	</update>
+	
+	<!-- 查询反馈给去哪打码结果的 -->
+	<select id="queryFeedBackResultList" resultClass="com.l9e.transaction.vo.CodeVo">
+		SELECT pic_id,pic_filename,shyzmid,result_status,order_id FROM rh_picture 
+		WHERE opt_ren=#opt_ren:VARCHAR#  and update_status='11' and result_status<![CDATA[<>]]>'5' and (back_status='00' or back_status='11')
+	</select>
+	
+	<!-- 查询验证码的超时时间 -->
+	<select id="queryVerifiCodeTimeOut" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT setting_value FROM train_system_setting 
+		WHERE setting_name=#setting_name:VARCHAR#  LIMIT 0,1
+	</select>
+	
+</sqlMap>

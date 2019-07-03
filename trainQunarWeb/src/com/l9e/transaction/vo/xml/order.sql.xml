@@ -1,0 +1,993 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="order">
+	
+	<!-- 根据订单号查询订单数 -->
+	<select id="queryOrderCountByNo" parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM qunar_orderinfo WHERE order_id = #order_id:VARCHAR#
+	</select>
+
+	<!-- 根据订单号查询订单车票数 -->
+	<select id="queryOrderCPCountByNo" parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM qunar_orderinfo_cp WHERE order_id = #order_id:VARCHAR#
+	</select>
+	
+	<!-- 订单 -->
+	<insert id="addQunarOrder" parameterClass="com.l9e.transaction.vo.OrderInfo">
+		insert into qunar_orderinfo
+		<dynamic prepend="(">
+			order_id,
+			<isNotNull prepend="," property="order_name">
+				order_name
+			</isNotNull>
+			<isNotNull prepend="," property="pay_money">
+				pay_money
+			</isNotNull>
+			<isNotNull prepend="," property="order_status">
+				order_status
+			</isNotNull>
+			<isNotNull prepend="," property="order_time">
+				order_time
+			</isNotNull>
+				,create_time
+			<isNotNull prepend="," property="out_ticket_type">
+				out_ticket_type
+			</isNotNull>
+			<isNotNull prepend="," property="train_no">
+				train_no
+			</isNotNull>
+			<isNotNull prepend="," property="from_city">
+				from_city
+			</isNotNull>
+			<isNotNull prepend="," property="to_city">
+				to_city
+			</isNotNull>
+			<isNotNull prepend="," property="from_time">
+				from_time
+			</isNotNull>
+			<isNotNull prepend="," property="to_time">
+				to_time
+			</isNotNull>
+			<isNotNull prepend="," property="seat_type">
+				seat_type
+			</isNotNull>
+			<isNotNull prepend="," property="qunar_seat_type">
+				qunar_seat_type
+			</isNotNull>
+			<isNotNull prepend="," property="ext_seat">
+				ext_seat
+			</isNotNull>
+			<isNotNull prepend="," property="qunar_ext_seat">
+				qunar_ext_seat
+			</isNotNull>
+			<isNotNull prepend="," property="channel">
+				channel
+			</isNotNull>
+			<isNotNull prepend="," property="order_source">
+				order_source
+			</isNotNull>
+			<isNotNull prepend="," property="order_type">
+				order_type
+			</isNotNull>
+
+			<isNotNull prepend="," property="is_pay">
+				is_pay
+			</isNotNull>
+			<isNotNull prepend="," property="retUrl">
+				retUrl
+			</isNotNull>
+
+			<isNotNull prepend="," property="ext_field2">
+				ext_field2
+			</isNotNull>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			#order_id:VARCHAR#,
+			<isNotNull prepend="," property="order_name">
+				#order_name:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="pay_money">
+				#pay_money:DECIMAL#
+			</isNotNull>
+			<isNotNull prepend="," property="order_status">
+				#order_status:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="order_time">
+				STR_TO_DATE(#order_time:VARCHAR#,'%Y-%m-%d %H:%i:%s')
+			</isNotNull>
+				,NOW()
+			<isNotNull prepend="," property="out_ticket_type">
+				#out_ticket_type:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="train_no">
+				#train_no:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="from_city">
+				#from_city:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="to_city">
+				#to_city:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="from_time">
+				STR_TO_DATE(#from_time:VARCHAR#,'%Y-%m-%d %H:%i:%s')
+			</isNotNull>
+			<isNotNull prepend="," property="to_time">
+				STR_TO_DATE(#to_time:VARCHAR#,'%Y-%m-%d %H:%i:%s')
+			</isNotNull>
+			<isNotNull prepend="," property="seat_type">
+				#seat_type:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="qunar_seat_type">
+				#qunar_seat_type:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="ext_seat">
+				#ext_seat:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="qunar_ext_seat">
+				#qunar_ext_seat:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="channel">
+				#channel:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="order_source">
+				#order_source:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="order_type">
+				#order_type:VARCHAR#
+			</isNotNull>
+
+			<isNotNull prepend="," property="is_pay">
+				#is_pay:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="retUrl">
+				#retUrl:VARCHAR#
+			</isNotNull>
+
+			<isNotNull prepend="," property="ext_field2">
+				#ext_field2:VARCHAR#
+			</isNotNull>
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 车票 -->
+	<insert id="addQunarOrderCp" parameterClass="com.l9e.transaction.vo.OrderInfoCp">
+		insert into qunar_orderinfo_cp
+		<dynamic prepend="(">
+			cp_id,
+			<isNotNull prepend="," property="order_id">
+				order_id
+			</isNotNull>
+			<isNotNull prepend="," property="user_name">
+				user_name
+			</isNotNull>
+			<isNotNull prepend="," property="ticket_type">
+				ticket_type
+			</isNotNull>
+			<isNotNull prepend="," property="ids_type">
+				ids_type
+			</isNotNull>
+			<isNotNull prepend="," property="qunar_certtype">
+				qunar_certtype
+			</isNotNull>
+			<isNotNull prepend="," property="user_ids">
+				user_ids
+			</isNotNull>
+			,create_time
+			<isNotNull prepend="," property="pay_money">
+				pay_money
+			</isNotNull>
+			<isNotNull prepend="," property="seat_type">
+				seat_type
+			</isNotNull>
+			<isNotNull prepend="," property="qunar_seat_type">
+				qunar_seat_type
+			</isNotNull>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			#cp_id:VARCHAR#,
+			<isNotNull prepend="," property="order_id">
+				#order_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="user_name">
+				#user_name:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="ticket_type">
+				#ticket_type:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="ids_type">
+				#ids_type:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="qunar_certtype">
+				#qunar_certtype:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="user_ids">
+				#user_ids:VARCHAR#
+			</isNotNull>
+			,NOW()
+			<isNotNull prepend="," property="pay_money">
+				#pay_money:DECIMAL#
+			</isNotNull>
+			<isNotNull prepend="," property="seat_type">
+				#seat_type:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="qunar_seat_type">
+				#qunar_seat_type:VARCHAR#
+			</isNotNull>
+			
+			)
+		</dynamic>
+	</insert>
+	
+	
+	<!-- 插入学生票 特殊信息[] -->
+	<insert id="addStudentInfo" parameterClass="com.l9e.transaction.vo.DBStudentInfo">
+		insert into cp_orderinfo_student
+		<dynamic prepend="(">
+			<isNotEmpty  property="province_name">
+				province_name,
+			</isNotEmpty>
+			<isNotEmpty  property="province_code">
+				province_code,
+			</isNotEmpty>
+			<isNotEmpty  property="school_code">
+				school_code,
+			</isNotEmpty>
+			<isNotEmpty  property="school_name">
+				school_name,
+			</isNotEmpty>
+			<isNotEmpty  property="student_no">
+				student_no,
+			</isNotEmpty>
+			<isNotEmpty  property="school_system">
+				school_system,
+			</isNotEmpty>
+			<isNotEmpty  property="enter_year">
+				enter_year,
+			</isNotEmpty>
+			<isNotEmpty  property="preference_from_station_name">
+				preference_from_station_name,
+			</isNotEmpty>
+			<isNotEmpty  property="preference_from_station_code">
+				preference_from_station_code,
+			</isNotEmpty>
+			<isNotEmpty  property="preference_to_station_name">
+				preference_to_station_name,
+			</isNotEmpty>
+			<isNotEmpty  property="preference_to_station_code">
+				preference_to_station_code,
+			</isNotEmpty>
+			<isNotEmpty  property="channel">
+				channel,
+			</isNotEmpty>
+			cp_id,
+			order_id
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotEmpty  property="province_name">
+				#province_name:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty  property="province_code">
+				#province_code:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty  property="school_code">
+				#school_code:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty  property="school_name">
+				#school_name:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty  property="student_no">
+				#student_no:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty  property="school_system">
+				#school_system:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty  property="enter_year">
+				#enter_year:DECIMAL#,
+			</isNotEmpty>
+			<isNotEmpty  property="preference_from_station_name">
+				#preference_from_station_name:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="preference_from_station_code">
+				#preference_from_station_code:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="preference_to_station_name">
+				#preference_to_station_name:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="preference_to_station_code">
+				#preference_to_station_code:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="channel">
+				#channel:VARCHAR#,
+			</isNotEmpty>
+				#cp_id:VARCHAR#,
+				#order_id:VARCHAR#
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 联程订单 -->
+	<insert id="addQunarOrderTrip" parameterClass="com.l9e.transaction.vo.OrderInfoTrip">
+		insert into qunar_orderinfo_trip
+		<dynamic prepend="(">
+			trip_id,
+			<isNotNull prepend="," property="order_id">
+				order_id
+			</isNotNull>
+			<isNotNull prepend="," property="trip_seq">
+				trip_seq
+			</isNotNull>
+			<isNotNull prepend="," property="order_name">
+				order_name
+			</isNotNull>
+			<isNotNull prepend="," property="order_status">
+				order_status
+			</isNotNull>
+			<isNotNull prepend="," property="pay_money">
+				pay_money
+			</isNotNull>
+			<isNotNull prepend="," property="buy_money">
+				buy_money
+			</isNotNull>
+			,create_time
+			<isNotNull prepend="," property="out_ticket_type">
+				out_ticket_type
+			</isNotNull>
+			<isNotNull prepend="," property="train_no">
+				train_no
+			</isNotNull>
+			<isNotNull prepend="," property="from_city">
+				from_city
+			</isNotNull>
+			<isNotNull prepend="," property="to_city">
+				to_city
+			</isNotNull>
+			<isNotNull prepend="," property="from_time">
+				from_time
+			</isNotNull>
+			<isNotNull prepend="," property="to_time">
+				to_time
+			</isNotNull>
+			<isNotNull prepend="," property="seat_type">
+				seat_type
+			</isNotNull>
+			<isNotNull prepend="," property="qunar_seat_type">
+				qunar_seat_type
+			</isNotNull>
+			<isNotNull prepend="," property="ext_seat">
+				ext_seat
+			</isNotNull>
+			<isNotNull prepend="," property="qunar_ext_seat">
+				qunar_ext_seat
+			</isNotNull>
+			<isNotNull prepend="," property="order_source">
+				order_source
+			</isNotNull>
+			<isNotNull prepend="," property="channel">
+				channel
+			</isNotNull>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			#trip_id:VARCHAR#,
+			<isNotNull prepend="," property="order_id">
+				#order_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="trip_seq">
+				#trip_seq:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="order_name">
+				#order_name:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="order_status">
+				#order_status:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="pay_money">
+				#pay_money:DECIMAL#
+			</isNotNull>
+			<isNotNull prepend="," property="buy_money">
+				#buy_money:DECIMAL#
+			</isNotNull>
+			,NOW()
+			<isNotNull prepend="," property="out_ticket_type">
+				#out_ticket_type:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="train_no">
+				#train_no:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="from_city">
+				#from_city:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="to_city">
+				#to_city:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="from_time">
+				STR_TO_DATE(#from_time:VARCHAR#,'%Y-%m-%d %H:%i:%s')
+			</isNotNull>
+			<isNotNull prepend="," property="to_time">
+				STR_TO_DATE(#to_time:VARCHAR#,'%Y-%m-%d %H:%i:%s')
+			</isNotNull>
+			<isNotNull prepend="," property="seat_type">
+				#seat_type:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="qunar_seat_type">
+				#qunar_seat_type:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="ext_seat">
+				#ext_seat:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="qunar_ext_seat">
+				#qunar_ext_seat:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="order_source">
+				#order_source:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="channel">
+				#channel:VARCHAR#
+			</isNotNull>
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 通知表 -->
+	<insert id="addQunarOrderNotify" parameterClass="java.util.HashMap">
+		INSERT INTO qunar_orderinfo_notify 
+		(order_id, order_type, create_time
+			<isNotNull prepend="," property="cp_notify_status">
+				cp_notify_status
+			</isNotNull>
+		) 
+		VALUES 
+		(#order_id:VARCHAR#, #order_type:VARCHAR#, now() 
+			<isNotNull prepend="," property="cp_notify_status">
+				#cp_notify_status:VARCHAR#
+			</isNotNull>
+		)
+	</insert>
+	
+	<!-- 定时扫描待出票通知的订单 -->
+	<select id="queryTimedOutTicketList" resultClass="java.util.HashMap">
+		SELECT order_id,order_type FROM 
+		( SELECT n.order_id, n.order_type,n.create_time 
+		FROM qunar_orderinfo_notify n 
+		WHERE n.out_notify_status='00' AND n.out_notify_num <![CDATA[<]]> 6 
+		UNION ALL 
+		SELECT n.order_id, n.order_type,n.create_time 
+		FROM qunar_orderinfo_notify n 
+		WHERE n.out_notify_status='11' AND n.out_notify_time <![CDATA[<=]]> DATE_SUB(NOW(),INTERVAL 1 MINUTE) 
+		AND n.out_notify_num <![CDATA[<]]> 6 
+		)tmp 
+		ORDER BY create_time DESC LIMIT 0,20
+	</select>
+	
+	<!-- 查询出票结果通知次数 -->
+	<select id="queryOutTicketNotifyCount" parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		SELECT out_notify_num FROM qunar_orderinfo_notify WHERE order_id=#order_id:VARCHAR# AND out_notify_status='11'
+	</select>
+	
+	<!-- 更新订单出票通知失败 -->
+	<update id="updateOrderNotifyFail" parameterClass="java.lang.String">
+		UPDATE qunar_orderinfo SET ext_field1='0' WHERE order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 根据订单号查询车票列表 -->
+	<select id="queryOrderCpList" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT cp.order_id,cp.cp_id,cp.out_ticket_billno,
+		cp.qunar_seat_type,CONVERT(cp.buy_money,CHAR) AS buy_money,
+		CONCAT(cp.train_box,'车',cp.seat_no) AS seat_no,cp.user_name,
+		cp.ticket_type,cp.user_ids,cp.qunar_certtype
+		FROM qunar_orderinfo_cp cp
+		WHERE cp.order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 出票结果通知开始 -->
+	<update id="updateQunarOutNotifyBegin" parameterClass="java.lang.String">
+		UPDATE qunar_orderinfo_notify n
+		SET n.out_notify_status='11',
+		n.out_notify_num=n.out_notify_num+1,
+		n.out_notify_time=NOW()
+		WHERE n.order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 出票结果通知结束 -->
+	<update id="updateQunarOutNotifyEnd" parameterClass="java.lang.String">
+		UPDATE qunar_orderinfo_notify n
+		SET n.out_notify_status='22',
+		n.out_notify_finish_time=NOW()
+		WHERE n.order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 定时扫描待退票结果通知的订单 -->
+	<select id="queryTimedWaitingRefundList" resultClass="java.util.HashMap">
+		SELECT r.refund_seq,r.order_id,CONVERT(r.refund_money,CHAR) AS refund_money,r.refund_status,r.refuse_reason,r.our_remark,order_source,CONVERT(r.notify_num,CHAR) AS notify_num FROM qunar_orderinfo_refund r
+		WHERE r.refund_status IN ('11','22')
+		AND (r.notify_status='00' OR (r.notify_status='11' AND DATE_ADD(r.notify_time, INTERVAL 1 MINUTE) <![CDATA[<=]]> NOW()))
+		AND r.notify_num <![CDATA[<]]> 10
+		ORDER BY r.create_time DESC
+		LIMIT 0,20
+	</select>
+	
+	<!-- 退票结果通知开始 -->
+	<update id="updateQunarRefundNotifyBegin" parameterClass="java.util.HashMap">
+		UPDATE qunar_orderinfo_refund r
+		SET r.notify_status='11',
+		r.notify_num=r.notify_num+1,
+		r.notify_time=NOW()
+		WHERE r.refund_seq=#refund_seq:VARCHAR#
+		AND r.order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 退票结果通知结束 -->
+	<update id="updateQunarRefundNotifyEnd" parameterClass="java.util.HashMap">
+		UPDATE qunar_orderinfo_refund r
+		SET r.notify_status='22',
+		r.notify_finish_time=NOW()
+		WHERE r.order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 根据订单号查询退票订单数 -->
+	<select id="queryRefundCountByNo" parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM qunar_orderinfo_refund WHERE order_id = #order_id:VARCHAR#
+		AND refund_status != '22'
+	</select>
+	
+	<!-- 根据订单号查询退票订单数 -->
+	<select id="queryRefundCountByRefuse" parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM qunar_orderinfo_refund WHERE order_id = #order_id:VARCHAR#
+		AND refund_status = '22'
+	</select>
+	
+	<!-- 保存退票信息 -->
+	<insert id="addQunarRefund" parameterClass="java.util.HashMap">
+		INSERT INTO 
+		qunar_orderinfo_refund 
+		(refund_seq, order_id, create_time, refund_status, order_source, order_type,refund_money) 
+		VALUES (#refund_seq:VARCHAR#, #order_id:VARCHAR#, NOW(), '00', #order_source:VARCHAR#, #order_type:VARCHAR#,#refund_money:DECIMAL#)
+	</insert>
+	
+	<!-- 添加日志信息 -->
+	<insert id="addOrderInfoLog" parameterClass="java.util.HashMap">
+		INSERT INTO qunar_orderinfo_log 
+		(order_id, content, create_time, opt_person)
+		VALUES (#order_id:VARCHAR#, #content:VARCHAR#, NOW(), #opt_person:VARCHAR#)
+	</insert>
+	
+	<!-- 根据订单号查询订单信息 -->
+	<select id="queryOrderInfoById" parameterClass="java.lang.String"
+		resultClass="com.l9e.transaction.vo.OrderInfo">
+		SELECT o.order_id,o.order_name,CONVERT(o.pay_money,CHAR) AS pay_money,
+		o.order_status,o.train_no,o.channel,o.from_city,o.to_city,o.out_ticket_type,
+		DATE_FORMAT(o.from_time,'%Y-%m-%d %H:%i:%s') AS from_time,o.seat_type,
+		DATE_FORMAT(o.from_time,'%Y-%m-%d') AS travel_time,o.ext_seat,o.out_fail_reason,
+		o.order_source,o.order_type,o.passenger_reason,o.retUrl, o.is_pay, o.qunar_seat_type, o.qunar_ext_seat
+		FROM qunar_orderinfo o 
+		WHERE o.order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 根据trip_id查询trip订单信息 -->
+	<select id="queryTripOrderInfoById" parameterClass="java.lang.String"
+		resultClass="com.l9e.transaction.vo.OrderInfoTrip">
+		SELECT o.trip_id,o.order_id,o.order_name,CONVERT(o.pay_money,CHAR) AS pay_money,
+		o.order_status,o.train_no,o.channel,o.from_city,o.to_city,o.out_ticket_type,
+		DATE_FORMAT(o.from_time,'%Y-%m-%d %H:%i:%s') AS from_time,o.seat_type,
+		DATE_FORMAT(o.from_time,'%Y-%m-%d') AS travel_time,o.ext_seat,o.out_fail_reason,o.order_source
+		FROM qunar_orderinfo_trip o 
+		WHERE o.trip_id=#trip_id:VARCHAR#
+	</select>
+	
+	<!-- 定时查询待通知出票系统的订单列表 -->
+	<select id="queryTimedCpSysList" resultClass="java.util.HashMap">
+		SELECT n.order_id, n.order_type FROM qunar_orderinfo_notify n
+		WHERE (n.cp_notify_status='00' OR (n.cp_notify_status='11' AND n.cp_notify_time<![CDATA[<=]]> DATE_SUB(NOW(),INTERVAL 1 MINUTE)))
+		AND n.cp_notify_num <![CDATA[<]]> 10
+		ORDER BY n.create_time DESC
+		LIMIT 0,20
+	</select>
+	
+	<!-- 根据订单号查询车票信息 -->
+	<select id="queryCpInfoList" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT cp.cp_id,cp.order_id,cp.user_name,CONVERT(cp.ticket_type,CHAR) as ticket_type,
+		CONVERT(cp.ids_type,CHAR) as ids_type,cp.user_ids,CONVERT(cp.seat_type,CHAR) as seat_type,
+		CONVERT(cp.pay_money,CHAR) as pay_money,cp.qunar_certtype,cp.ticket_type,cp.qunar_certtype
+			FROM qunar_orderinfo_cp cp 
+		WHERE cp.order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 出票系统通知开始 -->
+	<update id="updateCpSysNotifyBegin" parameterClass="java.lang.String">
+		UPDATE qunar_orderinfo_notify n
+		SET n.cp_notify_status='11',
+		n.cp_notify_num=n.cp_notify_num+1,
+		n.cp_notify_time=NOW()
+		WHERE n.order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 出票系统通知结束 -->
+	<update id="updateCpSysOutNotifyEnd" parameterClass="java.lang.String">
+		UPDATE qunar_orderinfo_notify n
+		SET n.cp_notify_status='22',
+		n.cp_notify_finish_time=NOW()
+		WHERE n.order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 保存出票接口返回信息-订单 -->
+	<update id="updateOrderWithCpNotify" parameterClass="java.util.HashMap">
+		UPDATE qunar_orderinfo hc 
+			SET hc.order_status=#order_status:VARCHAR#
+			<isNotEmpty prepend="," property="buy_money">
+				hc.buy_money=#buy_money:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="out_ticket_billno">
+				hc.out_ticket_billno=#out_ticket_billno:VARCHAR#,
+				hc.out_ticket_time=NOW()
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="out_fail_reason">
+				hc.out_fail_reason=#out_fail_reason:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="passenger_reason">
+				hc.passenger_reason=#passenger_reason:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="is_pay">
+				hc.is_pay=#is_pay:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="from_time">
+				hc.from_time=#from_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="to_time">
+				hc.to_time=#to_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="out_ticket_time">
+				hc.out_ticket_time=#out_ticket_time#
+			</isNotEmpty>
+			WHERE hc.order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 保存出票接口返回信息-车票订单 -->
+	<update id="updateCpOrderWithCpNotify" parameterClass="java.util.HashMap">
+		UPDATE qunar_orderinfo_cp cp 
+		SET cp.buy_money=#buy_money:DECIMAL#,
+			cp.train_box=#train_box:VARCHAR#,
+			cp.seat_no=#seat_no:VARCHAR#,
+			cp.seat_type=#seat_type:VARCHAR#,
+			cp.qunar_seat_type=#qunar_seat_type:VARCHAR#,
+			cp.out_ticket_billno=#out_ticket_billno:VARCHAR#
+		WHERE cp.cp_id=#cp_id:VARCHAR#
+	</update>
+	
+	<!-- 保存出票接口返回信息-trip订单 -->
+	<update id="updateTripOrderWithCpNotify" parameterClass="java.util.HashMap">
+		UPDATE qunar_orderinfo_trip hc 
+			SET hc.order_status=#order_status:VARCHAR#
+			<isNotEmpty prepend="," property="buy_money">
+				hc.buy_money=#buy_money:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="out_ticket_billno">
+				hc.out_ticket_billno=#out_ticket_billno:VARCHAR#,
+				hc.out_ticket_time=NOW()
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="out_fail_reason">
+				hc.out_fail_reason=#out_fail_reason:VARCHAR#
+			</isNotEmpty>
+			WHERE hc.trip_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 更新通知qunar出票结果通知状态为准备通知 -->
+	<update id="updateOutNotifyPrepare" parameterClass="java.lang.String">
+		UPDATE qunar_orderinfo_notify SET out_notify_status='00'
+		WHERE order_id=#order_id:VARCHAR#
+		AND out_notify_status IS NULL
+	</update>
+	
+	<!-- 更新通知qunar出票结果通知状态为准备通知 -->
+	<update id="updateBookNotifyPrepare" parameterClass="java.lang.String">
+		UPDATE qunar_orderinfo_notify SET book_notify_status='00'
+		WHERE order_id=#order_id:VARCHAR#
+		AND book_notify_status IS NULL
+	</update>
+	
+	<!-- 根据key查询系统设置属性 -->
+	<select id="queryQunarSysSetting" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+		SELECT setting_value FROM qunar_system_setting WHERE setting_name=#key:VARCHAR#
+	</select>
+	
+	<!-- 根据订单号查询trip订单信息 -->
+	<select id="queryTripListByOrderId" parameterClass="java.lang.String" 
+		resultClass="java.util.HashMap">
+		SELECT trip_id,order_id,trip_seq,order_status,CONVERT(buy_money,CHAR) AS buy_money 
+		FROM qunar_orderinfo_trip 
+		WHERE order_id=#order_id:VARCHAR#
+	</select>
+
+	<!-- 根据订单号查询12306支付票价 -->
+	<select id="queryPayMoneyByOrderId" parameterClass="java.lang.String" 
+		resultClass="java.util.HashMap">
+		SELECT CONVERT(buy_money,CHAR) AS buy_money ,cp_id 
+		FROM cp_orderinfo_cp  
+		WHERE order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 根据订单号查询 退款状态 -->
+	<select id="queryRefundStatusByNo" parameterClass="java.lang.String" 
+		resultClass="java.util.HashMap">
+		SELECT refund_status,CONVERT(notify_time,CHAR) AS notify_time FROM qunar_orderinfo_refund WHERE order_id = #order_id:VARCHAR#  order by create_time desc limit 0,1
+	</select>
+	
+	<!-- 根据订单号 更新退款状态 -->
+	<update id="updateQunarRefund" parameterClass="java.lang.String">
+		update qunar_orderinfo_refund set refund_status='00' ,notify_num=0,notify_status='00',notify_time = null 
+		where refund_seq in (select t.refund_seq from(select refund_seq from qunar_orderinfo_refund s where s.order_id =#order_id:VARCHAR# order by s.create_time desc limit 0,1)as t)
+	</update>
+	
+	<!-- 根据订单号 更新退款状态 -->
+	<update id="updateQunarRefundStatus" parameterClass="java.lang.String">
+		update qunar_orderinfo_refund set notify_status='33' 
+		where refund_seq in (select t.refund_seq from(select refund_seq from qunar_orderinfo_refund s where s.order_id =#order_id:VARCHAR# order by s.create_time desc limit 0,1)as t)
+	</update>
+	
+	<!-- 每天早上7点，处理卡单的订单 -->
+	<update id="updateQunarCpNotifyStatus">
+		UPDATE qunar_orderinfo_notify SET cp_notify_status='11',cp_notify_time=NOW() WHERE cp_notify_status='00' AND cp_notify_time IS NULL;
+	</update>
+	
+	<!-- 处理改签结果数据 -->
+	<update id="updateCPAlterInfo" parameterClass="java.util.HashMap">
+		UPDATE qunar_orderinfo_cp SET alter_money=#alter_money:DECIMAL#,
+		 refund_12306_money = #refund_12306_money:DECIMAL# 
+		WHERE order_id=#order_id:VARCHAR# AND cp_id=#cp_id:VARCHAR#;
+	</update>
+	
+	<!-- 处理退票结果数据 -->
+	<update id="updateCPRefundInfo" parameterClass="java.util.HashMap">
+		UPDATE qunar_orderinfo_cp SET refund_12306_money=#refund_12306_money:DECIMAL# WHERE order_id=#order_id:VARCHAR# AND cp_id=#cp_id:VARCHAR#;
+	</update>
+	
+	<!-- 处理退票结果数据 -->
+	<update id="updateRefundInfoSingle" parameterClass="java.util.HashMap">
+		UPDATE qunar_orderinfo_refund SET opt_person = 'robot_app' 
+			 ,verify_time = now()
+			 ,refund_12306_seq=#refund_12306_seq:VARCHAR#
+			 ,detail_refund=#refund_12306_money:VARCHAR#
+			 ,detail_alter_tickets=#alter_money:VARCHAR#
+			<isNotEmpty prepend="," property="refund_status">
+				refund_status=#refund_status:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="notify_status">
+				notify_status=#notify_status:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refuse_reason">
+				refuse_reason=#refuse_reason:VARCHAR#
+			</isNotEmpty>
+		WHERE order_id=#order_id:VARCHAR#;
+	</update> 
+	
+	<!-- 处理退票结果数据 -->
+	<update id="updateRefundInfo" parameterClass="java.util.HashMap">
+		UPDATE qunar_orderinfo_refund SET opt_person = 'robot_app' ,refund_12306_seq=#refund_12306_seq:VARCHAR# 
+			<isNotEmpty prepend="," property="refund_status">
+				refund_status=#refund_status:VARCHAR#
+			</isNotEmpty>
+		WHERE order_id=#order_id:VARCHAR#;
+	</update>
+	
+	<!-- 更新单张车票应退票金额 -->
+	<update id="updateQunarCPRefundMoney" parameterClass="java.util.HashMap">
+		UPDATE qunar_orderinfo_cp SET refund_money = #refund_money# 
+		WHERE order_id=#order_id:VARCHAR# AND cp_id=#cp_id:VARCHAR#;
+	</update>
+	
+	<select id="queryCanRefundStreamList" resultClass="java.util.HashMap">
+		SELECT rs.order_id,cp.cp_id,rs.refund_seq,cp.refund_money,rs.user_remark 
+			FROM qunar_orderinfo_refund rs LEFT JOIN qunar_orderinfo_cp cp 
+			ON rs.order_id = cp.order_id 
+			WHERE rs.refund_status='00' 
+			ORDER BY rs.create_time DESC
+			LIMIT 0,50
+	</select>
+	
+	<!-- 查询通知退票系统的订单信息 -->
+	<select id="queryRefundCpOrderInfo" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT hc.order_id, hc.train_no, hc.from_city, hc.to_city, CONVERT(DATE_FORMAT(hc.from_time,'%Y-%m-%d %H:%i:%s'), CHAR) from_time, 
+		CONVERT(DATE_FORMAT(hc.from_time,'%Y-%m-%d'), CHAR) travel_time, hc.out_ticket_billno, 
+		CONVERT(DATE_FORMAT(hc.out_ticket_time,'%Y-%m-%d %H:%i:%s'), CHAR) out_ticket_time,
+		cp.cp_id, CONVERT(cp.buy_money, CHAR) buy_money, CONVERT(cp.refund_money, CHAR) refund_money, 
+		cp.user_name, CONVERT(cp.ticket_type, CHAR) ticket_type, CONVERT(cp.ids_type, CHAR)ids_type, cp.user_ids, 
+		CONVERT(cp.seat_type, CHAR) seat_type, cp.train_box, cp.seat_no
+		FROM qunar_orderinfo hc LEFT JOIN qunar_orderinfo_cp cp ON hc.order_id=cp.order_id
+		WHERE hc.order_id=#order_id:VARCHAR# and cp.cp_id=#cp_id:VARCHAR#
+	</select>
+	
+	<!-- 查询该订单的账号信息 -->
+	<select id="queryAccountOrderInfo" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT a.acc_username, a.acc_password 
+		FROM cp_accountinfo a LEFT JOIN cp_orderinfo cp ON a.acc_id=cp.account_id 
+		WHERE cp.order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 查询该订单的账号信息 -->
+	<select id="queryAccountOrderBackupInfo" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT a.acc_username, a.acc_password 
+		FROM cp_accountinfo a LEFT JOIN cp_orderinfo_backup cp ON a.acc_id=cp.account_id 
+		WHERE cp.order_id=#order_id:VARCHAR#
+	</select>
+	
+	<update id="updateOrderRefundStatus" parameterClass="java.util.HashMap">
+		UPDATE qunar_orderinfo_refund
+		SET refund_status=#order_status:VARCHAR#
+		WHERE order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 根据订单号查询未退款车票数 -->
+	<select id="queryOrderCpNoRefundNum" parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM qunar_orderinfo_cp WHERE order_id = #order_id:VARCHAR# AND
+		refund_12306_money <![CDATA[=]]> 0
+	</select>
+	
+	<select id="queryOrderCpRefundInfoList" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT cp.order_id,cp.cp_id,CONVERT(cp.alter_money, CHAR) alter_money,CONVERT(cp.refund_12306_money, CHAR) refund_12306_money  
+			FROM qunar_orderinfo_cp cp
+			WHERE cp.order_id = #order_id:VARCHAR#
+	</select>
+	
+	<select id="queryBookResultList" resultClass="java.util.HashMap">
+		SELECT q.order_id, q.order_name, q.order_status FROM qunar_orderinfo q 
+		LEFT JOIN qunar_orderinfo_notify n ON q.order_id=n.order_id 
+		WHERE q.order_status IN ('33','45') AND q.is_pay='11' 
+		AND (n.book_notify_status='00' OR (n.book_notify_status='11' AND n.book_notify_time <![CDATA[<=]]> DATE_SUB(NOW(),INTERVAL 1 MINUTE))) 
+		AND n.book_notify_num <![CDATA[<]]> 6
+		ORDER BY q.create_time DESC
+		LIMIT 0,50
+	</select>
+	
+	<!-- 查询占座结果通知次数 -->
+	<select id="queryBookTicketNotifyCount" parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		SELECT book_notify_num FROM qunar_orderinfo_notify WHERE order_id=#order_id:VARCHAR# AND book_notify_status='11'
+	</select>
+	
+	<!-- 占座结果通知开始 -->
+	<update id="updateQunarBookNotifyBegin" parameterClass="java.lang.String">
+		UPDATE qunar_orderinfo_notify n
+		SET n.book_notify_status='11',
+		n.book_notify_num=n.book_notify_num+1,
+		n.book_notify_time=NOW()
+		WHERE n.order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 占座结果通知结束 -->
+	<update id="updateQunarBookNotifyEnd" parameterClass="java.lang.String">
+		UPDATE qunar_orderinfo_notify n
+		SET n.book_notify_status='22',
+		n.book_notify_finish_time=NOW()
+		WHERE n.order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 更新订单占座通知失败 -->
+	<update id="updateOrderBookNotifyFail" parameterClass="java.lang.String">
+		UPDATE qunar_orderinfo SET ext_field2='0' WHERE order_id=#order_id:VARCHAR#
+	</update>
+	
+	
+	
+	<!-- 还原数据 -->
+	<insert id="addOrderInfoByBackup" parameterClass="java.lang.String">
+		INSERT INTO qunar_orderinfo select * from qunar_orderinfo_backup where order_id = #order_id:VARCHAR# 
+	</insert>
+	
+	<!-- 还原数据 -->
+	<insert id="addOrderCpInfoByBackup" parameterClass="java.lang.String">
+		INSERT INTO qunar_orderinfo_cp select * from qunar_orderinfo_cp_backup where order_id = #order_id:VARCHAR# 
+	</insert>
+	
+	
+	
+	<!-- 查询需要向去哪发送代付请求的订单信息list -->
+	<select id="queryWaitPayOrderList" resultClass="java.util.HashMap">
+		SELECT q.order_id, CONVERT(q.pay_money, CHAR) pay_money, q.order_source
+		FROM qunar_orderinfo q
+		WHERE q.order_status='33' AND order_type='0' AND is_pay='22'
+	</select>
+	
+	<!-- 查询账号信息 -->
+	<select id="queryAccountInfo" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT a.acc_id, a.acc_username, a.acc_password FROM cp_accountinfo a, cp_orderinfo o 
+		WHERE a.acc_id=o.account_id AND o.order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 查询代付结果通知次数 -->
+	<select id="queryPayNotifyCount" parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		SELECT pay_notify_num FROM qunar_orderinfo_notify WHERE order_id=#order_id:VARCHAR# AND pay_notify_status='11'
+	</select>
+	
+	<!-- 代付结果通知开始 -->
+	<update id="updateQunarPayNotifyBegin" parameterClass="java.lang.String">
+		UPDATE qunar_orderinfo_notify n
+		SET n.pay_notify_status='11',
+		n.pay_notify_num=n.pay_notify_num+1,
+		n.pay_notify_time=NOW()
+		WHERE n.order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 代付结果通知结束 -->
+	<update id="updateQunarPayNotifyEnd" parameterClass="java.lang.String">
+		UPDATE qunar_orderinfo_notify n
+		SET n.pay_notify_status='22',
+		n.pay_notify_finish_time=NOW()
+		WHERE n.order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 更新订单代付通知失败 -->
+	<update id="updateOrderPayNotifyFail" parameterClass="java.lang.String">
+		UPDATE qunar_orderinfo SET ext_field3='0' WHERE order_id=#order_id:VARCHAR#
+	</update>
+	
+	
+	<!-- 去哪儿白名单增加删除接口,查询所有渠道的出票成功订单信息 -->
+	<select id="queryOrderList"  parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT acc_username, CONVERT(contact_status, CHAR) contact_status
+		FROM cp_pass_white_incre 
+		WHERE 1=1 
+		<isNotEmpty prepend=" and " property="begin_time">
+			update_time<![CDATA[>=]]>#begin_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			update_time<![CDATA[<=]]>#end_time#
+		</isNotEmpty>
+		GROUP BY acc_username, contact_status
+		order by update_time
+		limit #everyPagefrom:INTEGER#, #pageSize:INTEGER#
+	</select>
+	
+	<!-- 去哪儿白名单增加删除接口,查询所有渠道的出票成功乘客信息 -->
+	<select id="queryPassengerList"  parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT contact_name, CONVERT(contact_status, CHAR) contact_status, cert_no, 
+		CONVERT(cert_type, CHAR) cert_type, CONVERT(person_type, CHAR) person_type, acc_username, 
+		CONVERT(acc_id, CHAR) acc_id, CONVERT(acc_status, CHAR) acc_status, create_time, update_time
+		FROM cp_pass_white_incre 
+		WHERE 1=1 
+		<isNotEmpty prepend=" and " property="begin_time">
+			update_time<![CDATA[>=]]>#begin_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			update_time<![CDATA[<=]]>#end_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="acc_username">
+			acc_username<![CDATA[=]]>#acc_username:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="contact_status">
+			contact_status=#contact_status:INTEGER#
+		</isNotEmpty>
+	</select>
+	
+	<!-- 去哪儿白名单增加删除接口,查询所有渠道的出票成功订单信息 -->
+	<select id="queryOrderCount"  parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT count(1)
+		FROM cp_pass_white_incre 
+		WHERE 1=1 
+		<isNotEmpty prepend=" and " property="begin_time">
+			update_time<![CDATA[>=]]>#begin_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			update_time<![CDATA[<=]]>#end_time#
+		</isNotEmpty>
+		GROUP BY acc_username
+	</select>
+	
+</sqlMap>

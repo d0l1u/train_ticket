@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="depart">
+	<!-- 查询本部门当天打码总数信息 -->
+	<select id="queryDepartCodeCountToday" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM rh_picture WHERE DATE_FORMAT(create_time,'%Y-%m-%d')=DATE_FORMAT(NOW(),'%Y-%m-%d') 
+		AND opt_ren IN (SELECT username FROM rh_user WHERE department=#department#) 
+	</select>
+	<!-- 查询本部门当天打码正确1总数信息 -->
+	<select id="queryDepartCodeToday" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM rh_picture WHERE DATE_FORMAT(create_time,'%Y-%m-%d')=DATE_FORMAT(NOW(),'%Y-%m-%d') 
+		AND opt_ren IN (SELECT username FROM rh_user WHERE department=#department#) AND result_status='1'
+	</select>
+	<!-- 查询本部门当天打码失败0总数信息 -->
+	<select id="queryDepartCodeFailToday" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM rh_picture WHERE DATE_FORMAT(create_time,'%Y-%m-%d')=DATE_FORMAT(NOW(),'%Y-%m-%d') 
+		AND opt_ren IN (SELECT username FROM rh_user WHERE department=#department#) AND result_status='0'
+	</select>
+	<!-- 查询本部门当天打码超时5总数信息 -->
+	<select id="queryDepartCodeOvertimeToday" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM rh_picture WHERE DATE_FORMAT(create_time,'%Y-%m-%d')=DATE_FORMAT(NOW(),'%Y-%m-%d') 
+		AND opt_ren IN (SELECT username FROM rh_user WHERE department=#department#) AND result_status='5'
+	</select>
+	
+	<!-- 查询本部门本周打码总数信息,每周一为一周的第一天 -->
+	<select id="queryDepartCodeCountWeek" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT IFNULL(SUM(pic_count),0)pic_count,IFNULL(SUM(pic_success),0)pic_success,IFNULL(SUM(pic_fail),0)pic_fail,IFNULL(SUM(pic_unkonwn),0)pic_unkonwn 
+		FROM tj_rh_picture WHERE YEARWEEK(DATE_FORMAT(opt_time,'%Y-%m-%d'),1) = YEARWEEK(NOW(),1)
+		AND opt_ren IN (SELECT username FROM rh_user WHERE department=#department#) 
+	</select>
+	
+	<!-- 查询本部门本月打码总数信息 -->
+	<select id="queryDepartCodeCountMonth" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT IFNULL(SUM(pic_count),0)pic_count,IFNULL(SUM(pic_success),0)pic_success,IFNULL(SUM(pic_fail),0)pic_fail,IFNULL(SUM(pic_unkonwn),0)pic_unkonwn  
+		FROM tj_rh_picture WHERE DATE_FORMAT(create_time,'%Y-%m')=DATE_FORMAT(NOW(),'%Y-%m')
+		AND opt_ren IN (SELECT username FROM rh_user WHERE department=#department#) 
+	</select>
+	
+	<!-- 查询本部门昨日打码情况 -->
+	<select id="queryDepartCodeCountYesterday" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT IFNULL(SUM(pic_count),0)pic_count,IFNULL(SUM(pic_success),0)pic_success,IFNULL(SUM(pic_fail),0)pic_fail,IFNULL(SUM(pic_unkonwn),0)pic_unkonwn 
+		FROM tj_rh_picture WHERE DATE_FORMAT(opt_time,'%Y-%m-%d') = DATE_SUB(DATE_FORMAT(NOW(),'%Y-%m-%d'),INTERVAL 1 DAY) 
+		AND opt_ren IN (SELECT username FROM rh_user WHERE department=#department#) 
+	</select>
+	
+	<!-- 查询本部门打码总数信息 -->
+	<select id="queryDepartCodeCount" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT IFNULL(SUM(pic_count),0) pic_count, IFNULL(SUM(pic_success),0) pic_success,
+		IFNULL(SUM(pic_fail),0) pic_fail,IFNULL(SUM(pic_unkonwn),0) pic_unkonwn 
+		FROM tj_rh_picture WHERE opt_ren IN (SELECT username FROM rh_user WHERE department=#department#) 
+	</select>
+	
+	<!-- 查询本部门当前有几个人在打码 -->
+	<select id="queryDepartCurrentNameCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM (SELECT username,real_name FROM rh_user WHERE login_status='1' AND DATE_FORMAT(last_login_time,'%Y-%m-%d')=DATE_FORMAT(CURDATE(),'%Y-%m-%d') 
+		<dynamic prepend="and ">
+			<isNotEmpty prepend=" and " property="department">
+				department=#department#
+			</isNotEmpty>
+	    </dynamic>
+		) AS temp
+	</select>
+	
+	<!-- 查询当前在线的用户的打码情况 -->
+	<select id="queryAdminCurrentName" resultClass="java.util.HashMap">
+		SELECT username,real_name FROM rh_user WHERE login_status='1' AND DATE_FORMAT(last_login_time,'%Y-%m-%d')=DATE_FORMAT(CURDATE(),'%Y-%m-%d')
+		and department=#department# order by username LIMIT #everyPagefrom:Integer#,#pageSize:Integer#	
+	</select>
+	<!-- 查询用户当天的打码总数 -->
+	<select id="queryAdminCodeTodayCount" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM rh_picture WHERE DATE_FORMAT(create_time,'%Y-%m-%d')=DATE_FORMAT(NOW(),'%Y-%m-%d') AND opt_ren=#opt_ren#
+	</select>
+	<!-- 查询用户当天的打码失败总数 -->
+	<select id="queryAdminCodeTodayFail" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM rh_picture WHERE DATE_FORMAT(create_time,'%Y-%m-%d')=DATE_FORMAT(NOW(),'%Y-%m-%d') AND opt_ren=#opt_ren# AND result_status='0'
+	</select>
+	<!-- 查询用户当天的打码成功总数 -->
+	<select id="queryAdminCodeTodaySuccess" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM rh_picture WHERE DATE_FORMAT(create_time,'%Y-%m-%d')=DATE_FORMAT(NOW(),'%Y-%m-%d') AND opt_ren=#opt_ren# AND result_status='1'
+	</select>
+	<!-- 查询用户当天的打码超时总数 -->
+	<select id="queryAdminCodeTodayOvertime" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM rh_picture WHERE DATE_FORMAT(create_time,'%Y-%m-%d')=DATE_FORMAT(NOW(),'%Y-%m-%d') AND opt_ren=#opt_ren# AND result_status='5'
+	</select>
+	
+	<!-- 查询条数 -->
+	<select id="queryPictureCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM (SELECT t.id,DATE_FORMAT(t.create_time,'%Y-%m-%d') create_time,t.opt_time,t.opt_ren,t.opt_name,t.pic_count,t.pic_success,t.pic_fail,t.pic_unkonwn,t.channel,r.department
+		FROM tj_rh_picture t LEFT JOIN rh_user r ON r.username=t.opt_ren WHERE 1=1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_time">
+				t.opt_time<![CDATA[>=]]>
+				#begin_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+				t.opt_time<![CDATA[<]]>DATE_ADD(#end_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="department">
+				department=#department#
+			</isNotEmpty>
+		<!-- 	<isNotEmpty prepend=" and " property="channel">
+	         	  channel in
+		          <iterate open="(" close=")" conjunction="," property="channel">
+		            	#channel[]:VARCHAR#
+		      	  </iterate>
+	      	 </isNotEmpty>    -->
+	    </dynamic>
+		)AS temp
+	</select>
+	
+	<!-- 查询列表 -->
+	<select id="queryPictureList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT t.id,DATE_FORMAT(t.create_time,'%Y-%m-%d') create_time,t.opt_time,t.opt_ren,t.opt_name,t.pic_count,t.pic_success,t.pic_fail,t.pic_unkonwn,t.channel,r.department
+		FROM tj_rh_picture t LEFT JOIN rh_user r ON r.username=t.opt_ren WHERE 1=1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_time">
+				t.opt_time<![CDATA[>=]]>
+				#begin_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+				t.opt_time<![CDATA[<]]>DATE_ADD(#end_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="department">
+				department=#department#
+			</isNotEmpty>
+	    </dynamic>
+		ORDER BY t.opt_time desc,t.pic_success desc LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select>
+	
+	<!-- 按天查询数据的条数 -->
+	<select id="queryDayPageCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer" >
+		SELECT COUNT(1) FROM (SELECT DISTINCT opt_time FROM tj_rh_picture 
+		WHERE opt_ren in (SELECT username FROM rh_user WHERE department=#department#) 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_time">
+				opt_time<![CDATA[>=]]>
+				#begin_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+				opt_time<![CDATA[<]]>DATE_ADD(#end_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+	    </dynamic>
+		)AS temp
+	</select>
+	
+	<!-- 查询某天打码总数,打码正确1，错误0，超时5总数信息 -->
+	<select id="queryDayPageList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT opt_time,IFNULL(SUM(pic_count),0) pic_count,IFNULL(SUM(pic_success),0) pic_success,
+		IFNULL(SUM(pic_fail),0) pic_fail,IFNULL(SUM(pic_unkonwn),0) pic_unkonwn FROM tj_rh_picture 
+		where opt_ren in (SELECT username FROM rh_user WHERE department=#department#)
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_time">
+				opt_time<![CDATA[>=]]>
+				#begin_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+				opt_time<![CDATA[<]]>DATE_ADD(#end_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+	    </dynamic>
+		GROUP BY opt_time ORDER BY opt_time DESC LIMIT #everyPagefrom:Integer#,#pageSize:Integer#	
+	</select>
+	
+	<!-- 查询管理员打码总数,打码正确1，错误0，超时5总数信息 -->
+	<select id="queryAdminCodeList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT t.opt_ren,t.opt_name,r.department,IFNULL(SUM(t.pic_count),0) pic_count,
+		IFNULL(SUM(t.pic_success),0) pic_success,IFNULL(SUM(t.pic_fail),0) pic_fail,
+		IFNULL(SUM(t.pic_unkonwn),0) pic_unkonwn 
+		FROM tj_rh_picture t LEFT JOIN rh_user r ON t.opt_ren=r.username where 1=1 
+		<dynamic prepend="and ">
+			<isNotEmpty prepend=" and " property="opt_ren">
+				t.opt_ren=#opt_ren#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="opt_name">
+				t.opt_name=#opt_name#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="department">
+				r.department=#department#
+			</isNotEmpty>
+	    </dynamic>
+		GROUP BY opt_ren ORDER BY pic_success DESC LIMIT #everyPagefrom:Integer#,#pageSize:Integer#	
+	</select>
+	
+	<!-- 按用户查询数据的条数 -->
+	<select id="queryByAdminPageCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer" >
+		SELECT COUNT(1) FROM (SELECT DISTINCT t.opt_ren FROM tj_rh_picture t LEFT JOIN rh_user r ON t.opt_ren=r.username where 1=1 
+			<dynamic prepend="and ">
+				<isNotEmpty prepend=" and " property="opt_ren">
+					t.opt_ren=#opt_ren#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="opt_name">
+					t.opt_name=#opt_name#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="department">
+					r.department=#department#
+				</isNotEmpty>
+		    </dynamic>
+		)AS temp
+	</select>
+	
+	<!-- 添加账号 -->
+	<insert id="addAdmin" parameterClass="java.util.HashMap">
+		insert into rh_user
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="username">
+				 	username
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="pwd">
+					pwd
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="real_name">
+					real_name
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="department">
+					department
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="email">
+					email
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="telephone">
+					telephone
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="user_level">
+					user_level
+				</isNotEmpty>
+			)
+		</dynamic>
+		 values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="username">
+				 	#username:VARCHAR#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="pwd">
+					#pwd:VARCHAR#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="real_name">
+					#real_name:VARCHAR#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="department">
+					#department:VARCHAR#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="email">
+					#email:VARCHAR#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="telephone">
+					#telephone:VARCHAR#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="user_level">
+					#user_level:VARCHAR#
+				</isNotEmpty>
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 部门管理员删除用户的账号信息 -->
+	<delete id="deleteDepartAdmin" parameterClass="java.lang.String">
+		DELETE FROM rh_user WHERE username=#username#
+	</delete>
+	
+	<!-- 查询某个用户是哪个部门的员工 -->
+	<select id="queryDepartment" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT department FROM rh_user WHERE username=#username#
+	</select>
+	
+	<!-- 查询所有的用户信息 -->
+	<select id="queryDepartAdminUserList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT user_id,username,real_name,login_status,last_login_time,department,telephone,email,user_level,get_code_time_limit 
+		FROM rh_user WHERE 1=1 
+		<dynamic prepend="and ">
+			<isNotEmpty prepend=" and " property="username">
+				username=#username#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="real_name">
+				real_name=#real_name#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="department">
+				department=#department#
+			</isNotEmpty>
+	    </dynamic>
+		ORDER BY username LIMIT #everyPagefrom:Integer#,#pageSize:Integer#	
+	</select>
+	
+	<!-- 查询所有用户的数量 -->
+	<select id="queryDepartAdminUserListPageCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(user_id) FROM rh_user WHERE 1=1 
+			<dynamic prepend="and ">
+				<isNotEmpty prepend=" and " property="username">
+					username=#username#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="real_name">
+					real_name=#real_name#
+				</isNotEmpty>
+				<isNotEmpty prepend=" and " property="department">
+					department=#department#
+				</isNotEmpty>
+		    </dynamic>
+	</select>
+	
+	
+	
+</sqlMap>

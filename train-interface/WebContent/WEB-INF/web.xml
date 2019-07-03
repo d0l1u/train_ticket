@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>supplier_interface_dev</display-name>
+  <filter>
+    <filter-name>Set Character Encoding</filter-name>
+    <filter-class>com.l9e.train.util.SetCharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>Set Character Encoding</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <servlet>
+    <servlet-name>InitConfigServlet</servlet-name>
+    <servlet-class>
+			com.l9e.train.servlet.config.InitConfigServlet
+	</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet>
+    <description>
+  	</description>
+    <display-name>order</display-name>
+    <servlet-name>orderServlet</servlet-name>
+    <servlet-class>com.l9e.train.supplier.OrderServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>orderServlet</servlet-name>
+    <url-pattern>/order</url-pattern>
+  </servlet-mapping>
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+  <servlet>
+    <servlet-name>PayServlet</servlet-name>
+    <servlet-class>com.l9e.train.supplier.PayServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PayServlet</servlet-name>
+    <url-pattern>/pay</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>CancleServlet</servlet-name>
+    <servlet-class>com.l9e.train.supplier.CancleServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CancleServlet</servlet-name>
+    <url-pattern>/cancle</url-pattern>
+  </servlet-mapping>
+  
+  <!-- 抢票 servlet -->
+  <servlet>
+    <servlet-name>JlOrderServlet</servlet-name>
+    <servlet-class>com.l9e.train.supplier.JlOrderServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>JlOrderServlet</servlet-name>
+    <url-pattern>/jlOrder</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>AccountServlet</servlet-name>
+    <servlet-class>com.l9e.train.supplier.AccountServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AccountServlet</servlet-name>
+    <url-pattern>/account</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>RefundServlet</servlet-name>
+    <servlet-class>com.l9e.train.supplier.RefundServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>RefundServlet</servlet-name>
+    <url-pattern>/refund</url-pattern>
+  </servlet-mapping>
+
+
+
+	<!-- spring配置 -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	<!-- 加载配置文件 -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+			classpath:context/applicationContext.xml
+		</param-value>
+	</context-param>
+</web-app>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="order">
+
+	<update id="updateOrderStatus" parameterClass="java.util.HashMap">
+		update elong_orderinfo set order_status= #order_status:VARCHAR#
+		where order_id =#order_id:VARCHAR#
+		and order_status in
+		<dynamic prepend="(">
+			<isNotEmpty property="old_order_status1">
+				#old_order_status1:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty property="old_order_status2">
+				,#old_order_status2:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty property="old_order_status3">
+				,#old_order_status3:VARCHAR#
+			</isNotEmpty>
+			)
+		</dynamic>
+	</update>
+</sqlMap>

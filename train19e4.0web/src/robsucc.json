@@ -1,0 +1,120 @@
+{
+    "Authentication": {
+        "MessageIdentity": "CABB893172D5D58185FF849EE8733E2E",
+        "PartnerName": "tieyou",
+        "ServiceName": "web.order.notifyTicket",
+        "TimeStamp": "2016-12-22 16:22:20"
+    },
+    "TrainOrderService": {
+        "OrderInfo": {
+            "ElectronicOrderNumber": "E2216464191",
+            "OrderNumber": "19e201612221644171006",
+            "OrderTotleFee": "12.00",
+            "OrderType": "",
+            "TicketInfo": {
+                "AuditTicketCount": "2",
+                "ChildTicketCount": "2",
+                "OrderAcceptSeat": "硬座,无座",
+                "OrderTicketCheci": "2702",
+                "OrderTicketFromStation": "包头",
+                "OrderTicketPrice": "3.00",
+                "OrderTicketSeat": "硬座",
+                "OrderTicketTime": "13:37:00",
+                "OrderTicketToStation": "包头东",
+                "OrderTicketYMD": "20170119",
+                "Passengers": {
+                    "Passenger": [
+                        {
+                            "IdentityType": "身份证",
+                            "NumberID": "421102199106150815",
+                            "RealName": "杨韦",
+                            "TicketType": "成人票"
+                        },
+                        {
+                            "IdentityType": "身份证",
+                            "NumberID": "421102199106150815",
+                            "RealName": "杨韦",
+                            "TicketType": "儿童票"
+                        },
+                        {
+                            "IdentityType": "身份证",
+                            "NumberID": "412727199410172612",
+                            "RealName": "陶凯",
+                            "TicketType": "成人票"
+                        },
+                        {
+                            "IdentityType": "身份证",
+                            "NumberID": "412727199410172612",
+                            "RealName": "陶凯",
+                            "TicketType": "儿童票"
+                        }
+                    ]
+                },
+                "SeatNumber": "01车厢011号",
+                "railwayTip": "开车前凭电子订单号及购票时所使用的乘车人有效身份证件原件到全国任意火车站或火车票代售点换取纸质车票"
+            },
+            "TicketInfoFinal": {
+                "ChildBillid": "",
+                "ElectronicOrderNumber": "E2216464191",
+                "NoTicketReasons": "",
+                "OrderTicketCheci": "2702",
+                "OrderTicketFromStation": "包头",
+                "OrderTicketPrice": "2.25",
+                "OrderTicketTime": "13:37:00",
+                "OrderTicketToStation": "包头东",
+                "OrderTicketYMD": "20170119",
+                "Result": "2",
+                "SeatNumber": "01车厢011号",
+                "Tickets": {
+                    "Ticket": [
+                        {
+                            "DetailInfos": {
+                                "DetailInfo": [
+                                    {
+                                        "IdentityType": "身份证",
+                                        "NumberID": "421102199106150815",
+                                        "PassengerName": "杨韦",
+                                        "SeatNo": "13车厢118号"
+                                    },
+                                    {
+                                        "IdentityType": "身份证",
+                                        "NumberID": "412727199410172612",
+                                        "PassengerName": "陶凯",
+                                        "SeatNo": "78车厢302号"
+                                    }
+                                ]
+                            },
+                            "OrderTicketPrice": "3.00",
+                            "OrderTicketSeat": "硬座",
+                            "TicketCount": "2",
+                            "TicketType": "成人票"
+                        },
+                        {
+                            "DetailInfos": {
+                                "DetailInfo": [
+                                    {
+                                        "IdentityType": "身份证",
+                                        "NumberID": "421102199106150815",
+                                        "PassengerName": "杨韦",
+                                        "SeatNo": "77车厢301号"
+                                    },
+                                    {
+                                        "IdentityType": "身份证",
+                                        "NumberID": "412727199410172612",
+                                        "PassengerName": "陶凯",
+                                        "SeatNo": "79车厢303号"
+                                    }
+                                ]
+                            },
+                            "OrderTicketPrice": "1.50",
+                            "OrderTicketSeat": "硬座",
+                            "TicketCount": "2",
+                            "TicketType": "儿童票"
+                        }
+                    ]
+                },
+                "railwayTip": ""
+            }
+        }
+    }
+}

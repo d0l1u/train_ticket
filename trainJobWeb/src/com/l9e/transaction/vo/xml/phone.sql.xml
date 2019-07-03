@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="phone">
+	<!-- 获取待发送的短信-->
+	<select id="queryWaitPhoneList" resultClass="com.l9e.transaction.vo.Phone">
+		select phone_id,telephone,phone_name,content,phone_channel,phone_channel_ext 
+		FROM train_phone_plat WHERE (phone_status='00' OR (phone_status='11' and notify_time <![CDATA[<]]> NOW() ) ) 
+		and send_num <![CDATA[<=]]> 3
+	</select>
+	
+	<!-- 获取待发送的短信-->
+	<select id="queryPhoneByPhone" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		select count(1) 
+		FROM train_phone_plat WHERE telephone = #phone:VARCHAR# 
+		AND phone_name = #phone_name:VARCHAR# 
+	</select>
+	
+	<!-- 获取待发送的短信数量-->
+	<select id="queryPhoneNumHour" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		select count(1) 
+		FROM train_phone_plat WHERE telephone = #phone:VARCHAR# 
+		AND phone_name = #phone_name:VARCHAR# 
+ 		and create_time > DATE_SUB(NOW(),INTERVAL 1 HOUR)
+	</select>
+	
+	<!-- 获取待发送的短信数量-->
+	<select id="queryPhoneNumDay" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		select count(1) 
+		FROM train_phone_plat WHERE telephone = #phone:VARCHAR# 
+		AND phone_name = #phone_name:VARCHAR# 
+		and create_time > DATE_SUB(NOW(),INTERVAL 1 DAY)
+	</select>
+	
+	<!-- 更新发送短信次数 -->
+	<update id="updatePhoneNum" parameterClass="java.util.HashMap">
+		update train_phone_plat set send_num=send_num+1 ,phone_status=#phone_status:VARCHAR# 
+		<isNotEmpty property="fail_reason">
+			,fail_reason=#fail_reason:VARCHAR# 
+		</isNotEmpty>
+		where phone_id=#phone_id:INTEGER# AND phone_status=#old_status:VARCHAR#
+	</update>
+	<insert id="addPhone" parameterClass="com.l9e.transaction.vo.Phone">
+		insert into train_phone_plat 	
+		<dynamic prepend="(">
+			telephone,
+			phone_channel,
+			content,
+			phone_status,
+			<isNotNull prepend="," property="phone_name">
+				phone_name
+			</isNotNull>
+			<isNotNull prepend="," property="source_channel">
+				source_channel
+			</isNotNull>
+			<isNotNull prepend="," property="phone_channel_ext">
+				phone_channel_ext
+			</isNotNull>
+			<isNotNull prepend="," property="msg_type">
+				msg_type
+			</isNotNull>
+				,create_time,notify_time
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			#telephone:VARCHAR#,
+			#phone_channel:VARCHAR#,
+			#content:VARCHAR#,
+			'00',
+			<isNotNull prepend="," property="phone_name">
+				#phone_name:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="source_channel">
+				#source_channel:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="phone_channel_ext">
+				#phone_channel_ext:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="msg_type">
+				#msg_type:VARCHAR#
+			</isNotNull>
+				,NOW(),NOW()
+			)
+		</dynamic>
+	</insert>
+</sqlMap>

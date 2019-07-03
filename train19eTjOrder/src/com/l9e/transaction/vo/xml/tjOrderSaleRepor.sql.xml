@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="tjOrderSaleRepor">
+	
+	<!-- 查询统计表tj_hc_ordersale数据的条数 -->
+	<select id="queryTableCount" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM tj_hc_ordersale
+	</select>
+	
+	<!-- 查询订单表hc_orderinfo数据的时间list -->
+	<select id="queryDateList" resultClass="java.lang.String">
+		SELECT DATE_FORMAT(create_time, '%Y-%m-%d') 
+		FROM hc_orderinfo 
+		WHERE create_time<![CDATA[>]]>DATE_FORMAT(DATE_SUB(SYSDATE(),INTERVAL 1 MONTH),'%Y-%m-%d') 
+		GROUP BY create_time
+	</select>
+	
+	<!-- 查询当天出票成功的代理商ID -->
+	<select id="queryDealeiIdList" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT hc.dealer_id 
+		FROM hc_orderinfo hc 
+		WHERE DATE_FORMAT(create_time, '%Y-%m-%d')=#create_time#
+		AND hc.order_status = '44'
+		GROUP BY hc.dealer_id 
+	</select>
+	
+	<!-- 查询代理商当天销售金额 -->
+	<select id="queryThisPaymoney" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT SUM(hc.pay_money) pay_money
+		FROM hc_orderinfo hc 
+		WHERE DATE_FORMAT(create_time, '%Y-%m-%d')=#create_time#
+		AND hc.dealer_id=#dealer_id#
+		AND hc.order_status = '44'
+	</select>
+	
+	<!-- 查询代理商当天退款金额 -->
+	<select id="queryThisRefundmoney" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(hm.refund_money),0) refund_money
+		FROM hc_orderinfo_refundstream hm 
+		LEFT JOIN hc_orderinfo hc ON hc.order_id=hm.order_id
+		WHERE DATE_FORMAT(hm.refund_time, '%Y-%m-%d')=#create_time#
+		AND hc.dealer_id=#dealer_id#
+	</select>
+	
+	<!-- 查看前一天出售保险的总价钱10元的利润：代理商赚2元 -->
+	<select id="queryThisBxcountMoney10" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(SUM(2), 0) 
+		FROM
+		  cp_orderinfo_bx bx
+		LEFT JOIN hc_orderinfo hc ON hc.order_id=bx.order_id
+		WHERE  bx.bx_status IN (2, 5) 
+		  AND bx.order_channel='19e'
+		  AND bx.pay_money=#bxMoney#
+		  AND hc.dealer_id=#dealer_id#
+		  AND DATE_FORMAT(hc.create_time, '%Y-%m-%d')=#create_time#
+	</select>
+	
+	<!-- 查看前一天出售保险的总价钱20元的利润：代理商赚5元 -->
+	<select id="queryThisBxcountMoney20" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(SUM(5), 0) 
+		FROM
+		  cp_orderinfo_bx bx
+		LEFT JOIN hc_orderinfo hc ON hc.order_id=bx.order_id
+		WHERE  bx.bx_status IN (2, 5) 
+		  AND bx.order_channel='19e'
+		  AND bx.pay_money=#bxMoney#
+		  AND hc.dealer_id=#dealer_id#
+		  AND DATE_FORMAT(hc.create_time, '%Y-%m-%d')=#create_time#
+	</select>
+	
+	<!-- 查看本月出售保险的总价钱10元的利润：代理商赚2元 -->
+	<select id="queryMonthBxcountMoney10" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(SUM(2), 0) 
+		FROM
+		  cp_orderinfo_bx bx
+		LEFT JOIN hc_orderinfo hc ON hc.order_id=bx.order_id
+		WHERE  bx.bx_status IN (2, 5) 
+		  AND bx.order_channel='19e'
+		  AND bx.pay_money=#bxMoney#
+		  AND hc.dealer_id=#dealer_id#
+		  AND DATE_FORMAT(hc.create_time, '%Y-%m')=DATE_FORMAT(SYSDATE(),'%Y-%m')
+	</select>
+	
+	<!-- 查看本月出售保险的总价钱20元的利润：代理商赚5元 -->
+	<select id="queryMonthBxcountMoney20" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(SUM(5), 0) 
+		FROM
+		  cp_orderinfo_bx bx
+		LEFT JOIN hc_orderinfo hc ON hc.order_id=bx.order_id
+		WHERE  bx.bx_status IN (2, 5) 
+		  AND bx.order_channel='19e'
+		  AND bx.pay_money=#bxMoney#
+		  AND hc.dealer_id=#dealer_id#
+		  AND DATE_FORMAT(hc.create_time, '%Y-%m')=DATE_FORMAT(SYSDATE(),'%Y-%m')
+	</select>
+	
+	<!-- 查询代理商当天销售订单总数 -->
+	<select id="queryThisOrdercount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(hc.order_id) order_count
+		FROM hc_orderinfo hc 
+		WHERE DATE_FORMAT(create_time, '%Y-%m-%d')=#create_time#
+		AND hc.dealer_id=#dealer_id#
+		AND hc.order_status = '44'
+	</select>
+	
+	<!-- 查询代理商当天销售总票数 -->
+	<select id="queryThisTicketcount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(cp.cp_id) cp_count
+		FROM hc_orderinfo hc 
+		LEFT JOIN hc_orderinfo_cp cp ON cp.order_id=hc.order_id
+		WHERE DATE_FORMAT(hc.create_time, '%Y-%m-%d')=#create_time#
+		AND hc.dealer_id=#dealer_id#
+		AND hc.order_status = '44'
+	</select>
+	
+	<!-- 查询代理商本月销售订单总数 -->
+	<select id="queryMonthOrdercount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(hc.order_id) order_count
+		FROM hc_orderinfo hc 
+		WHERE DATE_FORMAT(hc.create_time, '%Y-%m')=DATE_FORMAT(SYSDATE(),'%Y-%m')
+		AND hc.dealer_id=#dealer_id#
+		AND hc.order_status = '44'
+	</select>
+	
+	<!-- 查询代理商本月销售总票数 -->
+	<select id="queryMonthTicketcount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(cp.cp_id) cp_count
+		FROM hc_orderinfo hc 
+		LEFT JOIN hc_orderinfo_cp cp ON cp.order_id=hc.order_id
+		WHERE DATE_FORMAT(hc.create_time, '%Y-%m')=DATE_FORMAT(SYSDATE(),'%Y-%m')
+		AND hc.dealer_id=#dealer_id#
+		AND hc.order_status = '44'
+	</select>
+	
+	<!-- 添加到表tj_hc_ordersale表中 -->
+	<insert id="addToTjOrderSaleReportJob" parameterClass="java.util.HashMap">
+		INSERT INTO tj_hc_ordersale
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="tj_id">
+				tj_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="dealer_id">
+				dealer_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_money">
+				pay_money
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_money">
+				refund_money
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="bx_money">
+				bx_money
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="order_count">
+				order_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ticket_count">
+				ticket_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="month_order_count">
+				month_order_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="month_ticket_count">
+				month_ticket_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="month_bx_money">
+				month_bx_money
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="order_time">
+				order_time
+			</isNotEmpty>
+				,create_time
+			)
+		</dynamic>
+		 values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="tj_id">
+				 #tj_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="dealer_id">
+				 #dealer_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_money">
+				 #pay_money#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_money">
+				#refund_money#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="bx_money">
+				#bx_money#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="order_count">
+				#order_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ticket_count">
+				#ticket_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="month_order_count">
+				#month_order_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="month_ticket_count">
+				#month_ticket_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="month_bx_money">
+				#month_bx_money#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="order_time">
+				#order_time#
+			</isNotEmpty>
+				,now()
+			)
+		</dynamic>
+	</insert>
+	
+</sqlMap>	

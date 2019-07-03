@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="reserve">
+	<!-- 查询当天可以开始预订的单子 -->
+	<select id="selectReserveMap" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		select order_id,from_time from hc_orderinfo where order_status='77' and from_time<![CDATA[<=]]>#beginTime:VARCHAR#
+	</select>
+	
+	<insert id="insertIntoNotify" parameterClass="java.util.List">
+		insert into hc_orderinfo_reserve_notice (	
+			create_time,
+			order_id,
+			notify_status,
+			from_time
+			) VALUES 
+		<iterate conjunction=",">  
+			(
+			now(),
+			#list[].order_id:VARCHAR#,
+			'00',
+			#list[].from_time:VARCHAR#
+			)
+			</iterate>
+	</insert>
+	
+	<!-- 查询当天可通知的表 -->
+	<select id="selectListFromNotify" resultClass="java.lang.String">
+		select order_id from hc_orderinfo_reserve_notice where notify_status='00' order by from_time limit 0,5
+	</select>
+	
+	<!-- 查询订单信息 -->
+	<select id="queryOrderInfo" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		select * from hc_orderinfo where order_id=#order_id:VARCHAR#
+	</select>
+	
+	
+	<!-- 更新通知状态 -->
+	<update id="updateNotifyStatus" parameterClass="java.lang.String">
+		update hc_orderinfo_reserve_notice  set notify_status='11' where  order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 更新订单状态 为开始预订状态 -->
+	<update id="updateOrderStatusBegin" parameterClass="java.lang.String">
+		update  hc_orderinfo set order_status='11' where order_status='77' and   order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 更新通知表的触发预订时间-->
+	<update id="updateNotifyInfo" parameterClass="java.util.HashMap">
+		update hc_orderinfo_reserve_notice  set  begin_time=#begin_time:VARCHAR# where  order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 查询通知表-->
+	<select id="selectReserveNotifyList"  parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		select * from hc_orderinfo_reserve_notice where  out_ticket_status='00' and #allMinutes:VARCHAR#>=begin_time order by from_time limit 0,5 
+	</select>
+	
+	<!-- 更新预约通知表通知出票与否状态 -->
+	<update id="updateNotifyOutTicketStaus" parameterClass="java.lang.String">
+		update hc_orderinfo_reserve_notice  set out_ticket_status='11' where  order_id=#order_id:VARCHAR#
+	</update>
+	
+</sqlMap>

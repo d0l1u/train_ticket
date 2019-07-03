@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="tj_FailOrder">
+
+	<!-- 查询 -->
+	<select id="queryFailOrderCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM cp_orderinfo WHERE channel=#channel#
+		and create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59')
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and "  property="order_status">
+				 order_status='10'
+			</isNotEmpty>
+			<isNotEmpty prepend=" and "  property="error_info">
+				 error_info=#error_info#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询今天渠道统计的数据的条数 -->
+	<select id="queryTodayCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM tj_failorder WHERE 
+		create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59')
+		 and channel=#channel#
+	</select>
+	
+	<!-- 更新tj_failorder表中的今日的数据 -->
+	<update id="updateToTj_FailOrder" parameterClass="java.util.HashMap">
+		update tj_failorder 
+		<dynamic prepend="set">
+			<isNotEmpty prepend=","  property="channel">
+				 channel=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				 create_time=#create_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="count">
+				 count=#count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="all_order">
+				 all_order=#all_order#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi">
+				 zhanbi=#zhanbi#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="cgl">
+				 cgl=#cgl#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_0">
+				 fail_0=#fail_0#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_1">
+				 fail_1=#fail_1#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_2">
+				 fail_2=#fail_2#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_3">
+				 fail_3=#fail_3#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_4">
+				 fail_4=#fail_4#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_5">
+				 fail_5=#fail_5#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_6">
+				 fail_6=#fail_6#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_7">
+				 fail_7=#fail_7#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_8">
+				 fail_8=#fail_8#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_9">
+				 fail_9=#fail_9#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_11">
+				 fail_11=#fail_11#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_12">
+				 fail_12=#fail_12#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_0">
+				 zhanbi_0=#zhanbi_0#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_1">
+				 zhanbi_1=#zhanbi_1#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_2">
+				 zhanbi_2=#zhanbi_2#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_3">
+				 zhanbi_3=#zhanbi_3#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_4">
+				 zhanbi_4=#zhanbi_4#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_5">
+				 zhanbi_5=#zhanbi_5#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_6">
+				 zhanbi_6=#zhanbi_6#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_7">
+				 zhanbi_7=#zhanbi_7#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_8">
+				 zhanbi_8=#zhanbi_8#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_9">
+				 zhanbi_9=#zhanbi_9#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_11">
+				 zhanbi_11=#zhanbi_11#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_12">
+				 zhanbi_12=#zhanbi_12#
+			</isNotEmpty>
+		</dynamic>
+		where create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59')
+		 and channel=#channel#
+	</update>
+	
+	<!-- 插入统计完成的信息 -->
+	<insert id="addToTj_FailOrder" parameterClass="java.util.HashMap">
+		INSERT INTO tj_failorder
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="tj_id">
+				tj_id
+			</isNotEmpty>
+			<isNotEmpty prepend=","  property="channel">
+				 channel
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				 create_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="count">
+				 count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="all_order">
+				 all_order
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi">
+				 zhanbi
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="cgl">
+				 cgl
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_0">
+				 fail_0
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_1">
+				 fail_1
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_2">
+				 fail_2
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_3">
+				 fail_3
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_4">
+				 fail_4
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_5">
+				 fail_5
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_6">
+				 fail_6
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_7">
+				 fail_7
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_8">
+				 fail_8
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_9">
+				 fail_9
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_11">
+				 fail_11
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_12">
+				 fail_12
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_0">
+				 zhanbi_0
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_1">
+				 zhanbi_1
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_2">
+				 zhanbi_2
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_3">
+				 zhanbi_3
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_4">
+				 zhanbi_4
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_5">
+				 zhanbi_5
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_6">
+				 zhanbi_6
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_7">
+				 zhanbi_7
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_8">
+				 zhanbi_8
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_9">
+				 zhanbi_9
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_11">
+				 zhanbi_11
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_12">
+				 zhanbi_12
+			</isNotEmpty>
+			)
+		</dynamic>
+		 values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="tj_id">
+				#tj_id#
+			</isNotEmpty>
+			<isNotEmpty prepend=","  property="channel">
+				 #channel#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				 #create_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="count">
+				 #count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="all_order">
+				 #all_order#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi">
+				 #zhanbi#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="cgl">
+				 #cgl#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_0">
+				 #fail_0#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_1">
+				 #fail_1#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_2">
+				 #fail_2#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_3">
+				 #fail_3#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_4">
+				 #fail_4#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_5">
+				 #fail_5#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_6">
+				 #fail_6#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_7">
+				 #fail_7#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_8">
+				 #fail_8#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_9">
+				 #fail_9#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_11">
+				 #fail_11#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fail_12">
+				 #fail_12#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_0">
+				 #zhanbi_0#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_1">
+				 #zhanbi_1#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_2">
+				 #zhanbi_2#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_3">
+				 #zhanbi_3#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_4">
+				 #zhanbi_4#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_5">
+				 #zhanbi_5#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_6">
+				 #zhanbi_6#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_7">
+				 #zhanbi_7#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_8">
+				 #zhanbi_8#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_9">
+				 #zhanbi_9#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_11">
+				 #zhanbi_11#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="zhanbi_12">
+				 #zhanbi_12#
+			</isNotEmpty>
+			)
+		</dynamic>
+	</insert>
+	
+	
+</sqlMap>

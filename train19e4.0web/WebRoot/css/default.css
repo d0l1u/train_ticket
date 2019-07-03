@@ -1,0 +1,294 @@
+BODY {
+	_height: 100%; _margin: 0
+}
+.aui_outer {
+	TEXT-ALIGN: left
+}
+TABLE.aui_border {
+	BORDER-RIGHT-WIDTH: 0px; MARGIN: 0px; WIDTH: auto; BORDER-COLLAPSE: collapse; BORDER-TOP-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px
+}
+TABLE.aui_dialog {
+	BORDER-RIGHT-WIDTH: 0px; MARGIN: 0px; WIDTH: auto; BORDER-COLLAPSE: collapse; BORDER-TOP-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px
+}
+.aui_nw {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+.aui_n {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+.aui_ne {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+.aui_w {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+.aui_c {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+.aui_e {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+.aui_sw {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+.aui_s {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+.aui_se {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+.aui_header {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+.aui_tdIcon {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+.aui_main {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+.aui_footer {
+	PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px
+}
+.aui_header {
+	FONT: 12px/1.11 'Microsoft Yahei', Tahoma, Arial, Helvetica, STHeiti; _font-family: Tahoma,Arial,Helvetica,STHeiti; -o-font-family: Tahoma, Arial
+}
+.aui_buttons BUTTON {
+	FONT: 12px/1.11 'Microsoft Yahei', Tahoma, Arial, Helvetica, STHeiti; _font-family: Tahoma,Arial,Helvetica,STHeiti; -o-font-family: Tahoma, Arial
+}
+.aui_title {
+	TEXT-OVERFLOW: ellipsis; OVERFLOW: hidden
+}
+.aui_state_noTitle .aui_title {
+	DISPLAY: none
+}
+.aui_close {
+	POSITION: absolute; OUTLINE-STYLE: none; DISPLAY: block; TEXT-DECORATION: none; _cursor: pointer
+}
+.aui_close:hover {
+	TEXT-DECORATION: none
+}
+.aui_main {
+	MIN-WIDTH: 0px; TEXT-ALIGN: center
+}
+.aui_content {
+	BORDER-BOTTOM: 0px; TEXT-ALIGN: left; BORDER-LEFT: 0px; ZOOM: 1; DISPLAY: inline; BORDER-TOP: 0px; BORDER-RIGHT: 0px
+}
+.aui_state_full.aui_content {
+	PADDING-BOTTOM: 0px !important; MARGIN: 0px; PADDING-LEFT: 0px !important; WIDTH: 100%; PADDING-RIGHT: 0px !important; DISPLAY: block; HEIGHT: 100%; PADDING-TOP: 0px !important
+}
+.aui_loading {
+	TEXT-ALIGN: left; TEXT-INDENT: -999em; WIDTH: 96px; BACKGROUND: url(/images/loading.gif) no-repeat center center; HEIGHT: 32px; OVERFLOW: hidden
+}
+.aui_icon {
+	VERTICAL-ALIGN: middle
+}
+.aui_icon DIV {
+	MARGIN: 10px 0px 10px 10px; WIDTH: 48px; BACKGROUND-REPEAT: no-repeat; BACKGROUND-POSITION: center center; HEIGHT: 48px
+}
+.aui_buttons {
+	TEXT-ALIGN: right; PADDING-BOTTOM: 8px; PADDING-LEFT: 8px; PADDING-RIGHT: 8px; WHITE-SPACE: nowrap; PADDING-TOP: 8px
+}
+.aui_buttons BUTTON {
+	BORDER-BOTTOM: #999 1px solid; TEXT-ALIGN: center; FILTER: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD'); BORDER-LEFT: #999 1px solid; PADDING-BOTTOM: 4px; LINE-HEIGHT: 1; PADDING-LEFT: 10px; WIDTH: auto; PADDING-RIGHT: 10px; DISPLAY: inline-block; FONT-FAMILY: Tahoma, Arial/9 !important; BACKGROUND: #ddd; LETTER-SPACING: 2px; HEIGHT: 2em; COLOR: #333; MARGIN-LEFT: 15px; OVERFLOW: visible; BORDER-TOP: #999 1px solid; CURSOR: pointer; BORDER-RIGHT: #999 1px solid; PADDING-TOP: 4px; border-radius: 5px; text-shadow: 0px 1px 1px rgba(255, 255, 255, 1); box-shadow: 0 1px 0 rgba(255, 255, 255, .7),  0 -1px 0 rgba(0, 0, 0, .09); -moz-transition: -moz-box-shadow linear .2s; -webkit-transition: -webkit-box-shadow linear .2s; transition: box-shadow linear .2s
+}
+.aui_buttons BUTTON:unknown {
+	PADDING-BOTTOM: 0px; BORDER-RIGHT-WIDTH: 0px; MARGIN: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; BORDER-TOP-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; PADDING-TOP: 0px
+}
+.aui_buttons BUTTON:focus {
+	BORDER-BOTTOM-COLOR: #426dc9; BORDER-TOP-COLOR: #426dc9; OUTLINE-STYLE: none; OUTLINE-WIDTH: 0px; BORDER-RIGHT-COLOR: #426dc9; BORDER-LEFT-COLOR: #426dc9; box-shadow: 0 0 8px rgba(66, 109, 201, .9)
+}
+.aui_buttons BUTTON:hover {
+	BORDER-BOTTOM-COLOR: #666; BORDER-TOP-COLOR: #666; COLOR: #000; BORDER-RIGHT-COLOR: #666; BORDER-LEFT-COLOR: #666
+}
+.aui_buttons BUTTON:active {
+	BORDER-BOTTOM-COLOR: #666; FILTER: progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF'); BORDER-TOP-COLOR: #666; BORDER-RIGHT-COLOR: #666; BORDER-LEFT-COLOR: #666; box-shadow: inset 0 1px 5px rgba(66, 109, 201, .9), inset 0 1px 1em rgba(0, 0, 0, .3)
+}
+.aui_buttons BUTTON[disabled] {
+	BORDER-BOTTOM: #999 1px solid; FILTER: alpha(opacity=50); BORDER-LEFT: #999 1px solid; BACKGROUND: #ddd; COLOR: #666; BORDER-TOP: #999 1px solid; CURSOR: default; BORDER-RIGHT: #999 1px solid; opacity: .5; box-shadow: none
+}
+BUTTON.aui_state_highlight {
+	BORDER-BOTTOM: #1c6a9e 1px solid; FILTER: progid:DXImageTransform.Microsoft.gradient(startColorstr='#33bbee', endColorstr='#2288cc'); BORDER-LEFT: #1c6a9e 1px solid; BACKGROUND: #2288cc; COLOR: #fff; BORDER-TOP: #1c6a9e 1px solid; BORDER-RIGHT: #1c6a9e 1px solid; text-shadow: -1px -1px 1px #1c6a9e
+}
+BUTTON.aui_state_highlight:hover {
+	BORDER-BOTTOM-COLOR: #0f3a56; BORDER-TOP-COLOR: #0f3a56; COLOR: #fff; BORDER-RIGHT-COLOR: #0f3a56; BORDER-LEFT-COLOR: #0f3a56
+}
+BUTTON.aui_state_highlight:active {
+	BORDER-BOTTOM-COLOR: #1c6a9e; FILTER: progid:DXImageTransform.Microsoft.gradient(startColorstr='#33bbee', endColorstr='#2288cc'); BORDER-TOP-COLOR: #1c6a9e; BORDER-RIGHT-COLOR: #1c6a9e; BORDER-LEFT-COLOR: #1c6a9e
+}
+.aui_inner {
+	BACKGROUND: #fff
+}
+.aui_outer {
+	BORDER-BOTTOM: #333 1px solid; BORDER-LEFT: #333 1px solid; BORDER-TOP: #333 1px solid; BORDER-RIGHT: #333 1px solid
+}
+.aui_inner {
+	BORDER-BOTTOM: #333 1px solid; BORDER-LEFT: #333 1px solid; BORDER-TOP: #333 1px solid; BORDER-RIGHT: #333 1px solid
+}
+.aui_border {
+	box-shadow: inset 0 0 1px rgba(255, 255, 255, .9)
+}
+.aui_nw {
+	WIDTH: 8px; HEIGHT: 8px
+}
+.aui_ne {
+	WIDTH: 8px; HEIGHT: 8px
+}
+.aui_sw {
+	WIDTH: 8px; HEIGHT: 8px
+}
+.aui_se {
+	WIDTH: 8px; HEIGHT: 8px
+}
+.aui_nw {
+	FILTER: alpha(opacity=40); BACKGROUND: #000
+}
+.aui_n {
+	FILTER: alpha(opacity=40); BACKGROUND: #000
+}
+.aui_ne {
+	FILTER: alpha(opacity=40); BACKGROUND: #000
+}
+.aui_w {
+	FILTER: alpha(opacity=40); BACKGROUND: #000
+}
+.aui_e {
+	FILTER: alpha(opacity=40); BACKGROUND: #000
+}
+.aui_sw {
+	FILTER: alpha(opacity=40); BACKGROUND: #000
+}
+.aui_s {
+	FILTER: alpha(opacity=40); BACKGROUND: #000
+}
+.aui_se {
+	FILTER: alpha(opacity=40); BACKGROUND: #000
+}
+.aui_state_lock .aui_nw {
+	FILTER: alpha(opacity=50); BACKGROUND: #000
+}
+.aui_state_lock .aui_n {
+	FILTER: alpha(opacity=50); BACKGROUND: #000
+}
+.aui_state_lock .aui_ne {
+	FILTER: alpha(opacity=50); BACKGROUND: #000
+}
+.aui_state_lock .aui_w {
+	FILTER: alpha(opacity=50); BACKGROUND: #000
+}
+.aui_state_lock .aui_e {
+	FILTER: alpha(opacity=50); BACKGROUND: #000
+}
+.aui_state_lock .aui_sw {
+	FILTER: alpha(opacity=50); BACKGROUND: #000
+}
+.aui_state_lock .aui_s {
+	FILTER: alpha(opacity=50); BACKGROUND: #000
+}
+.aui_state_lock .aui_se {
+	FILTER: alpha(opacity=50); BACKGROUND: #000
+}
+.aui_state_focus .aui_dialog {
+	box-shadow: 0 0 3px rgba(0, 0, 0, 0.4)
+}
+.aui_state_focus .aui_outer {
+	box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1)
+}
+.aui_state_lock .aui_border {
+	box-shadow: 0 3px 26px rgba(0, 0, 0, .9)
+}
+.aui_state_drag .aui_outer {
+	box-shadow: none
+}
+.aui_outer:active {
+	box-shadow: none
+}
+.aui_titleBar {
+	POSITION: relative; HEIGHT: 100%
+}
+.aui_title {
+	BORDER-BOTTOM: #b6bec5 1px solid; FILTER: progid:DXImageTransform.Microsoft.gradient(startColorstr='#edf5f8', endColorstr='#bdc6cd'); PADDING-BOTTOM: 0px; LINE-HEIGHT: 27px; BACKGROUND-COLOR: #bdc6cd; PADDING-LEFT: 10px; PADDING-RIGHT: 28px; FONT-FAMILY: Tahoma, Arial/9 !important; HEIGHT: 28px; COLOR: #95a7ae; BORDER-TOP: #edf5f8 1px solid; FONT-WEIGHT: bold; PADDING-TOP: 0px; text-shadow: 0 1px 0 rgba(255, 255, 255, .7)
+}
+.aui_state_focus .aui_title {
+	COLOR: #4c5a5f
+}
+.aui_state_drag .aui_title {
+	FILTER: progid:DXImageTransform.Microsoft.gradient(startColorstr='#bdc6cd', endColorstr='#edf5f8'); box-shadow: none
+}
+.aui_state_drag .aui_titleBar {
+	box-shadow: none
+}
+.aui_close {
+	TEXT-ALIGN: center; PADDING-BOTTOM: 0px; LINE-HEIGHT: 21px; PADDING-LEFT: 0px; WIDTH: 21px; PADDING-RIGHT: 0px; FONT-FAMILY: Helvetica, STHeiti; HEIGHT: 21px; COLOR: #68767b; FONT-SIZE: 18px; TOP: 4px; RIGHT: 4px; PADDING-TOP: 0px; _font-family: Tahoma, 'u9ed1u4f53', 'Book Antiqua', Palatino; text-shadow: 0 1px 0 rgba(255, 255, 255, .9)
+}
+.aui_close:hover {
+	BACKGROUND: #c72015; COLOR: #fff
+}
+.aui_close:active {
+	box-shadow: none
+}
+.aui_content {
+	COLOR: #666
+}
+.aui_state_focus .aui_content {
+	COLOR: #000
+}
+.aui_buttons {
+	BACKGROUND-COLOR: #f6f6f6; BORDER-TOP: #dadee5 1px solid
+}
+.aui_state_noTitle .aui_nw {
+	WIDTH: 3px; HEIGHT: 3px
+}
+.aui_state_noTitle .aui_ne {
+	WIDTH: 3px; HEIGHT: 3px
+}
+.aui_state_noTitle .aui_sw {
+	WIDTH: 3px; HEIGHT: 3px
+}
+.aui_state_noTitle .aui_se {
+	WIDTH: 3px; HEIGHT: 3px
+}
+.aui_state_noTitle .aui_inner {
+	BORDER-BOTTOM: #666 1px solid; BORDER-LEFT: #666 1px solid; BACKGROUND: #fff; BORDER-TOP: #666 1px solid; BORDER-RIGHT: #666 1px solid
+}
+.aui_state_noTitle .aui_outer {
+	BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; BORDER-TOP: 0px; BORDER-RIGHT: 0px; box-shadow: none
+}
+.aui_state_noTitle .aui_nw {
+	FILTER: alpha(opacity=5) !important; BACKGROUND: #000
+}
+.aui_state_noTitle .aui_n {
+	FILTER: alpha(opacity=5) !important; BACKGROUND: #000
+}
+.aui_state_noTitle .aui_ne {
+	FILTER: alpha(opacity=5) !important; BACKGROUND: #000
+}
+.aui_state_noTitle .aui_w {
+	FILTER: alpha(opacity=5) !important; BACKGROUND: #000
+}
+.aui_state_noTitle .aui_e {
+	FILTER: alpha(opacity=5) !important; BACKGROUND: #000
+}
+.aui_state_noTitle .aui_sw {
+	FILTER: alpha(opacity=5) !important; BACKGROUND: #000
+}
+.aui_state_noTitle .aui_s {
+	FILTER: alpha(opacity=5) !important; BACKGROUND: #000
+}
+.aui_state_noTitle .aui_se {
+	FILTER: alpha(opacity=5) !important; BACKGROUND: #000
+}
+.aui_state_noTitle .aui_titleBar {
+	BOTTOM: 0px; _bottom: 0; _margin-top: 0
+}
+.aui_state_noTitle .aui_close {
+	TEXT-ALIGN: center; FILTER:  !important; LINE-HEIGHT: 18px; TEXT-INDENT: 0px; WIDTH: 18px; BACKGROUND: none transparent scroll repeat 0% 0%; HEIGHT: 18px; COLOR: #214fa3; FONT-SIZE: 18px; TOP: 0px; RIGHT: 0px; TEXT-DECORATION: none
+}
+.aui_state_noTitle .aui_close:hover {
+	COLOR: #900; TEXT-DECORATION: none
+}
+.aui_state_noTitle .aui_close:active {
+	COLOR: #900; TEXT-DECORATION: none
+}
+.aui_state_noTitle .aui_dialog {
+	box-shadow: none
+}

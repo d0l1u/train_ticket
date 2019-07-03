@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<settings useStatementNamespaces="true" cacheModelsEnabled="true"
+		enhancementEnabled="true" lazyLoadingEnabled="true" />
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/common.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/order.sql.xml"/>	
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/trainBase.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/refund.sql.xml"/>
+  	
+  	<sqlMap resource="com/l9e/transaction/vo/xml/receiveNotify.sql.xml"/>
+  	
+  		
+ </sqlMapConfig>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="qunarsetting">
+	<select id="querySetting" resultClass="java.util.HashMap">
+		select * from qunar_system_setting
+	</select>
+	
+	<update id="updateSetting" parameterClass="java.util.HashMap">
+		update qunar_system_setting qss
+		set setting_value=#setting_value#
+		where setting_id=#setting_id#
+	</update>
+	
+		<!-- 增加操作日志 -->
+	<insert id="addSystemLog" parameterClass="java.util.HashMap">
+		insert into qunar_system_log (
+			content,create_time, opt_person)
+		value(#content#,NOW(),#opt_person#)
+	</insert>
+	
+	<!-- 查询系统设置操作日志明细 -->
+	<select id="querySystemSetList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') create_time,opt_person,content FROM qunar_system_log
+		ORDER BY create_time DESC LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select> 
+	
+	<!-- 查询系统设置操作日志条数 -->
+	<select id="querySystemSetListCount" resultClass="java.lang.Integer">
+		SELECT COUNT(1)  FROM qunar_system_log ORDER BY create_time DESC 
+	</select> 
+</sqlMap>

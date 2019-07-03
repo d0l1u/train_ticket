@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="refund">
+
+    <!-- 退款信息信息入库 -->
+    <insert id="insertRefund" parameterClass="com.l9e.transaction.vo.TuniuRefund">
+        INSERT INTO
+        tuniu_orderinfo_refund
+        (
+        tuniu_refund_id,
+        order_id,
+        cp_id,
+        out_ticket_billno,
+        refund_seq,
+        refund_money,
+        create_time,
+        refund_status,
+        opt_person,
+        refund_type,
+        callbackurl
+        <dynamic>
+            <isNotEmpty prepend="," property="userRemark">
+                user_remark
+            </isNotEmpty>
+            <isNotEmpty prepend="," property="ourRemark">
+                our_remark
+            </isNotEmpty>
+        </dynamic>
+        )
+        VALUES
+        (
+        #tuniuRefundId:VARCHAR#,
+        #orderId:VARCHAR#,
+        #cpId:VARCHAR#,
+        #outTicketBillno:VARCHAR#,
+        #refundSeq:VARCHAR#,
+        #refundMoney:DECIMAL#,
+        NOW(),
+        #refundStatus:VARCHAR#,
+        #optPerson:VARCHAR#,
+        #refundType:VARCHAR#,
+        #callbackUrl:VARCHAR#
+        <dynamic>
+            <isNotEmpty prepend="," property="userRemark">
+                #userRemark:VARCHAR#
+            </isNotEmpty>
+            <isNotEmpty prepend="," property="ourRemark">
+                #ourRemark:VARCHAR#
+            </isNotEmpty>
+        </dynamic>
+        )
+        <selectKey keyProperty="refundId" resultClass="Integer">
+            SELECT LAST_INSERT_ID() AS refundId
+        </selectKey>
+    </insert>
+
+    <!-- 查询退款记录 -->
+    <select id="selectRefund" parameterClass="Map" resultClass="com.l9e.transaction.vo.TuniuRefund">
+        SELECT
+        refund_id refundId,
+        tuniu_refund_id tuniuRefundId,
+        order_id orderId,
+        cp_id cpId,
+        refund_seq refundSeq,
+        out_ticket_billno outTicketBillno,
+        refund_money refundMoney,
+        actual_refund_money actualRefundMoney,
+        user_remark userRemark,
+        our_remark ourRemark,
+        refund_12306_seq refund12306Seq,
+        verify_time verifyTime,
+        fail_reason failReason,
+        refund_status refundStatus,
+        detail_refund detailRefund,
+        detail_alter detailAlter,
+        refund_type refundType,
+        callbackurl callbackUrl,
+        user_time userRefundTime,
+        create_time createTime
+        FROM
+        tuniu_orderinfo_refund
+        <dynamic prepend="WHERE">
+            <isNotEmpty property="orderId" prepend="AND">
+                order_id = #orderId:VARCHAR#
+            </isNotEmpty>
+            <isNotEmpty property="cpId" prepend="AND">
+                cp_id = #cpId:VARCHAR#
+            </isNotEmpty>
+            <isNotEmpty property="refundStatus" prepend="AND">
+                refund_status = #refundStatus:VARCHAR#
+            </isNotEmpty>
+            <isNotEmpty property="refundId" prepend="AND">
+                refund_id = #refundId:INTEGER#
+            </isNotEmpty>
+        </dynamic>
+        limit 1
+    </select>
+
+    <!-- 查询订单关联账号 -->
+    <select id="selectAccount" parameterClass="Map" resultClass="com.l9e.transaction.vo.Account">
+		SELECT
+			cpa.acc_username username,
+			cpa.acc_password password
+		FROM
+			cp_orderinfo cpo JOIN cp_accountinfo cpa
+			ON cpo.account_id = cpa.acc_id
+		WHERE
+			cpo.order_id = #orderId:VARCHAR#
+	</select>
+
+    <!-- 更新退款记录 -->
+    <update id="updateRefund" parameterClass="com.l9e.transaction.vo.TuniuRefund">
+        UPDATE
+        tuniu_orderinfo_refund
+        SET
+        refund_id = #refundId:INTEGER#,
+        option_time = NOW()
+        <dynamic>
+            <isNotEmpty prepend="," property="actualRefundMoney">
+                actual_refund_money = #actualRefundMoney:DECIMAL#
+            </isNotEmpty>
+            <isNotEmpty prepend="," property="refundMoney">
+                refund_money = #refundMoney:DECIMAL#
+            </isNotEmpty>
+            <isNotEmpty prepend="," property="userRemark">
+                user_remark = #userRemark:VARCHAR#
+            </isNotEmpty>
+            <isNotEmpty prepend="," property="ourRemark">
+                our_remark = #ourRemark:VARCHAR#
+            </isNotEmpty>
+            <isNotEmpty prepend="," property="refund12306Seq">
+                refund_12306_seq = #refund12306Seq:VARCHAR#
+            </isNotEmpty>
+            <isNotEmpty prepend="," property="failReason">
+                fail_reason = #failReason:VARCHAR#
+            </isNotEmpty>
+            <isNotEmpty prepend="," property="refundStatus">
+                refund_status = #refundStatus:VARCHAR#
+            </isNotEmpty>
+            <isNotEmpty prepend="," property="detailRefund">
+                detail_refund = #detailRefund:DECIMAL#
+            </isNotEmpty>
+            <isNotEmpty prepend="," property="detailAlter">
+                detail_alter = #detailAlter:DECIMAL#
+            </isNotEmpty>
+            <isNotEmpty prepend="," property="verifyTime">
+                verify_time = NOW()
+            </isNotEmpty>
+            <isNotEmpty prepend="," property="optPerson">
+                opt_person = #optPerson:VARCHAR#
+            </isNotEmpty>
+        </dynamic>
+        WHERE
+        refund_id = #refundId:INTEGER#
+    </update>
+
+    <!-- 删除旧的退款表信息 -->
+    <delete id="deleteRefund" parameterClass="com.l9e.transaction.vo.TuniuRefund">
+		DELETE FROM 
+			tuniu_orderinfo_refund 
+		WHERE 
+			order_id = #orderId:VARCHAR# 
+			AND cp_id = #cpId:VARCHAR# 
+			AND refund_id = #refundId:INTEGER# 
+			LIMIT 1
+	</delete>
+    <!-- 插入催退款信息 -->
+    <insert id="insertUrgeRefund" parameterClass="com.l9e.transaction.vo.TuniuUrgeRefund">
+		INSERT INTO
+			tuniu_urge_refund
+			(
+				order_id,
+				cp_id,
+				out_ticket_billno,
+				urge_status,
+				create_time
+			)
+			VALUES
+			(
+				#order_id#,
+				#cp_id#,
+				#out_ticket_billno#,
+				#urge_status#,
+				NOW()
+			)
+	</insert>
+    <!-- 查询催退款信息 -->
+    <select id="getUrgeRefundInfo" parameterClass="Map" resultClass="com.l9e.transaction.vo.TuniuUrgeRefund">
+        select urge_refund_id,order_id,cp_id,out_ticket_billno,urge_status,remark,fail_reason,refund_money,opt_time from
+        tuniu_urge_refund
+        <dynamic prepend="WHERE">
+            <isNotEmpty prepend="and" property="order_id">
+                order_id = #order_id#
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="cp_id">
+                cp_id = #cp_id#
+            </isNotEmpty>
+        </dynamic>
+        order by create_time desc limit 1
+    </select>
+    <!-- 更新催退款信息 -->
+    <update id="updateUrgeRefundInfo" parameterClass="com.l9e.transaction.vo.TuniuUrgeRefund">
+        update tuniu_urge_refund
+        set opt_person="tuniu",opt_time=NOW()
+        <isNotEmpty prepend="," property="urge_status">
+            urge_status = #urge_status:VARCHAR#
+        </isNotEmpty>
+        <isNotEmpty prepend="," property="remark">
+            remark = #remark:VARCHAR#
+        </isNotEmpty>
+        where urge_refund_id=#urge_refund_id#
+    </update>
+
+    <!-- 查询线下退款通知记录 -->
+    <select id="checkOfflineNotify" parameterClass="Map" resultClass="Integer">
+        select notify.id from tuniu_notify_refund notify ,tuniu_orderinfo_refund o
+        where o.order_id = notify.order_id and o.refund_type in(22,33)
+        <isNotEmpty property="order_id" prepend="AND">
+            notify.order_id = #order_id:VARCHAR#
+        </isNotEmpty>
+        <isNotEmpty property="cp_id" prepend="AND">
+            notify.cp_id = #cp_id:VARCHAR#
+        </isNotEmpty>
+        <isNotEmpty property="notify_status" prepend="AND">
+            notify.notify_status = #notify_status:VARCHAR#
+        </isNotEmpty>
+    </select>
+</sqlMap>

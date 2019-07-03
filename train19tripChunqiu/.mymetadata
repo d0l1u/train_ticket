@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="train19tripChunqiu"
+  id="myeclipse.1413093269101"
+  context-root="/train19tripChunqiu"
+  j2ee-spec="1.4"
+  archive="train19tripChunqiu.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+

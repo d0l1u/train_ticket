@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="worker">
+
+	<update id="updateWorker" parameterClass="java.util.HashMap">
+		update cp_workerinfo set opt_name="app helper"
+		<isNotEmpty prepend=", " property="spare_thread">
+			spare_thread=#spare_thread:INTEGER#
+		</isNotEmpty>
+		<isNotEmpty prepend=", " property="script_version">
+			script_version=#script_version:INTEGER#
+		</isNotEmpty>
+		WHERE 1=1 
+		<isNotEmpty prepend=" and " property="worker_id">
+			worker_id=#worker_id:INTEGER#
+		</isNotEmpty>
+	</update>
+
+
+	<!-- 查询验证码（机器人发请求）-->
+	<select id="queryVerifyCode" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT IFNULL(verification_code, '') verification_code 
+		FROM cp_workercode_info 
+		WHERE card_no=#account:VARCHAR#	
+		ORDER BY code_id DESC LIMIT 1
+	</select>
+	
+	<select id="queryCardInfoVoByComNo" resultClass="com.l9e.transaction.vo.CardInfoVo"  parameterClass="java.lang.String">
+		select card_id,card_no,worker_id from cp_cardinfo where com_no=#comNo:varchar#
+	</select>
+	 
+	<select id="queryCardBank" resultClass="com.l9e.transaction.vo.CardBankVo" parameterClass="java.util.HashMap">
+		select card_id,card_no,worker_id,card_pwd,pay_type,card_phone,card_status,card_remain,bank_type,card_ext,create_time,ids_card,com_no from cp_card_bank where com_no=#comNo:varchar# and bank_type = #bank_type:varchar#
+	</select>
+	
+	<insert id="insertWorkerCodeInfo" parameterClass="java.util.HashMap">
+		insert into cp_workercode_info(worker_id,card_id,card_no,verification_code,create_time) VALUES(#worker_id#,#card_id#,#card_no#,#verification_code#,now())
+	</insert>
+	<!-- 支付宝查询余额验证码 -->
+	<insert id="insertAlipayCodeInfo" parameterClass="java.util.HashMap">
+		insert into cp_alipaycode_info(worker_id,card_id,card_no,verification_code,create_time) VALUES(#worker_id#,#card_id#,#card_no#,#verification_code#,now())
+	</insert>
+</sqlMap>
+	

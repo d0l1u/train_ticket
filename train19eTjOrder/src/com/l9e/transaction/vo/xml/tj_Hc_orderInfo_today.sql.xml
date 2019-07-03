@@ -1,0 +1,3737 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="tj_Hc_orderInfo_today">
+		<!-- 查询前一天总条数 -->
+	<select id="queryPre_day_order_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1)
+		FROM hc_orderinfo
+		WHERE order_status IN ('44','45','00','99')
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="channel" compareValue="mobile">
+				AND order_id like 'SJ%'
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	
+	<!-- 以下 19e -->
+	<!-- 查询前一天的票数 -->
+	<select id="queryPre_ticket_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM hc_orderinfo_cp cp LEFT JOIN hc_orderinfo hc ON cp.order_id=hc.order_id 
+		WHERE 1=1 AND hc.order_status='44'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hc.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') 
+				AND hc.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="channel" compareValue="mobile">
+				AND cp.order_id like 'SJ%'
+			</isEqual>
+		</dynamic> 
+	</select>
+	
+	<!-- 查询前一天订单失败的条数 -->
+	<select id="queryPre_day_out_ticket_defeated" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM hc_orderinfo 
+		WHERE 1=1 AND order_status ='45' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="channel" compareValue="mobile">
+				AND order_id like 'SJ%'
+			</isEqual>
+		</dynamic> 
+	</select>
+	
+	<!-- 查询前一天订单成功的条数 -->
+	<select id="queryPre_day_out_ticket_succeed" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM hc_orderinfo 
+	    WHERE 1=1 AND order_status='44'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="channel" compareValue="mobile">
+				AND order_id like 'SJ%'
+			</isEqual>
+		</dynamic> 
+	</select>
+	
+	<!-- 查询前一天订单成功的总价钱 -->
+	<select id="queryPre_succeed_money" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(buy_money),0) FROM hc_orderinfo 
+		WHERE 1=1 AND order_status='44'
+		and	
+		out_ticket_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') 
+		AND out_ticket_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+		<isEqual property="channel" compareValue="mobile">
+				AND order_id like 'SJ%'
+			</isEqual>
+	</select>
+	
+	<!-- 查询前一天订单失败的总价钱 -->
+	<select id="queryPre_defeated_money" parameterClass="java.util.HashMap"  resultClass="java.lang.Double">
+	SELECT IFNULL(SUM(ticket_pay_money),0) FROM hc_orderinfo 
+	WHERE 1=1 AND order_status ='45' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="channel" compareValue="mobile">
+				AND order_id like 'SJ%'
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 统计预下单的个数 -->
+	<select id="queryPre_preparative_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM hc_orderinfo 
+		WHERE 1=1 AND order_status ='00' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="channel" compareValue="mobile">
+				AND order_id like 'SJ%'
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 查询前一天支付失败的个数 -->
+	<select id="queryPre_pay_defeated" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM hc_orderinfo 
+		WHERE 1=1 AND order_status ='99' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!--19e超10分钟订单--><!-- cp_orderinfo -->
+	<select id="queryPre_over_time" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo 
+		WHERE ABS(TIMESTAMPDIFF(MINUTE, create_time, option_time)) > 10 
+		  AND DATE_FORMAT(create_time, '%H:%i:%s') BETWEEN '07:00:00' AND '22:50:00' 
+		  AND order_status IN ('99', '10') 
+		  AND channel = '19e' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 统计退款完成的个数 -->
+	<select id="queryPre_refund_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM (
+		SELECT order_id FROM hc_orderinfo_refundstream 
+		WHERE 1=1 AND refund_status ='44' AND refund_type <![CDATA[<>]]>2
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="channel" compareValue="mobile">
+				AND order_id like 'SJ%'
+			</isEqual>
+		</dynamic>
+		GROUP BY order_id)AS a
+	</select>
+	
+	<!-- 查看前一天出售的保险总数 -->
+	<select id="queryPre_bx_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo_bx 
+		WHERE 1 = 1 
+		  AND order_channel = '19e'
+		  AND product_id <![CDATA[<>]]> 'BX_0'
+		  AND bx_status IN (2, 5) 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="channel" compareValue="mobile">
+				AND order_id like 'SJ%'
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 查看前一天出售的svip总数 -->
+	<select id="queryPre_svip_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT  COUNT(hc.order_id) svip_num
+		FROM hc_orderinfo hc 
+		WHERE ABS(hc.server_pay_money)='5' AND hc.order_status='44'
+		AND hc.out_ticket_time IS NOT NULL 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				out_ticket_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND out_ticket_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="channel" compareValue="mobile">
+				AND order_id like 'SJ%'
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 查看前一天出售的svip失败数 -->
+	<select id="queryPre_svip_lose" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT  COUNT(hc.order_id) svip_num
+		FROM hc_orderinfo hc 
+		WHERE ABS(hc.server_pay_money)='5' AND hc.order_status='45'
+		AND hc.out_ticket_time IS NOT NULL 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				out_ticket_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND out_ticket_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="channel" compareValue="mobile">
+				AND order_id like 'SJ%'
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	
+	<!-- 查看前一天出售保险的总价钱10元  不要了 -->
+	<select id="queryPre_bx_countMoney10_nouse" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(SUM(pay_money - 2-3), 0) 
+		FROM
+		  cp_orderinfo_bx 
+		WHERE  bx_status IN (2, 5) 
+		  AND order_channel='19e'
+		  AND pay_money=#bxMoney#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查看前一天出售“赠送保险”的总价钱   SVIP服务费5-2   20天之内的 -->
+	<select id="queryPre_bx_countMoney10" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(hc.server_pay_money - 2), 0) 
+		FROM hc_orderinfo hc 
+		WHERE ABS(hc.server_pay_money)='5' AND hc.order_status='44'
+		AND hc.out_ticket_time IS NOT NULL 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				out_ticket_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND out_ticket_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="channel" compareValue="mobile">
+				AND order_id like 'SJ%'
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 查看前一天出售保险的总价钱20元 -->
+	<select id="queryPre_bx_countMoney20" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(SUM(pay_money - 4-5), 0) 
+		FROM
+		  cp_orderinfo_bx 
+		WHERE bx_status IN (2, 5) 
+		  AND order_channel='19e'
+		  AND pay_money=#bxMoney#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="channel" compareValue="mobile">
+				AND order_id like 'SJ%'
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 查询前一天的改签差价金额 -->
+	<select id="queryPre_change_money" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(IFNULL(actual_refund_money,0)+IFNULL(alter_tickets_money,0)-IFNULL(refund_money,0)),0) 
+		FROM hc_orderinfo_refundstream hm WHERE 1=1 AND 
+		refund_type='1' AND refund_status='44'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				verify_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND verify_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询前一天的查询总退款金额 -->
+	<select id="queryPre_refund_money" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(IFNULL(refund_money,0)),0) 
+		FROM hc_orderinfo_refundstream hm WHERE 1=1 AND 
+		hm.refund_type IN ('1','2','3','4','5','6')
+		AND refund_status='44'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="channel" compareValue="mobile">
+				AND order_id like 'SJ%'
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 插入统计完成的信息 -->
+	<insert id="addToTj_Hc_orderInfo" parameterClass="java.util.HashMap">
+		INSERT INTO tj_hc_orderInfo
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="tj_id">
+				tj_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="out_ticket_succeed">
+				out_ticket_succeed
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="out_ticket_defeated">
+				out_ticket_defeated
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="preparative_count">
+				preparative_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_defeated">
+				pay_defeated
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="over_time">
+				over_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_count">
+				refund_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ticket_count">
+				ticket_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="order_count">
+				order_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="succeed_money">
+				succeed_money
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="defeated_money">
+				defeated_money
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="bx_count">
+				bx_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="bx_countMoney">
+				bx_countMoney
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="change_money">
+				change_money
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_money">
+				refund_money
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="succeed_odds">
+				succeed_odds
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="succeed_cgl">
+				succeed_cgl
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="succeed_sbl">
+				succeed_sbl
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="succeed_vip_sbl">
+				succeed_vip_sbl
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="active">
+				active
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="agent_login_num">
+				agent_login_num
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="vip_lose">
+				vip_lose
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="svip_lose">
+				svip_lose
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="out_ticket_XL">
+				out_ticket_XL
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_time">
+				pay_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="order_time">
+				order_time
+			</isNotEmpty>
+				,create_time
+			<isNotEmpty prepend="," property="channel">
+				channel
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="svip_num">
+				svip_num
+			</isNotEmpty>
+			<isNotEmpty prepend=","  property="out_time_order">
+				 out_time_order
+			</isNotEmpty>
+			<isNotEmpty prepend=","  property="cancel_order">
+				 cancel_order
+			</isNotEmpty>
+			<isNotEmpty prepend=","  property="holdseat_cgl">
+				 holdseat_cgl
+			</isNotEmpty>
+			<isNotEmpty prepend=","  property="holdseat_sbl">
+				 holdseat_sbl
+			</isNotEmpty>
+			)
+		</dynamic>
+		 values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="tj_id">
+				 #tj_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="out_ticket_succeed">
+				 #out_ticket_succeed#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="out_ticket_defeated">
+				#out_ticket_defeated#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="preparative_count">
+				#preparative_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_defeated">
+				#pay_defeated#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="over_time">
+				#over_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_count">
+				#refund_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ticket_count">
+				#ticket_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="order_count">
+				#order_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="succeed_money">
+				#succeed_money#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="defeated_money">
+				#defeated_money#
+			</isNotEmpty>
+				<isNotEmpty prepend="," property="bx_count">
+				#bx_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="bx_countMoney">
+				#bx_countMoney#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="change_money">
+				#change_money#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_money">
+				#refund_money#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="succeed_odds">
+				#succeed_odds#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="succeed_cgl">
+				#succeed_cgl#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="succeed_sbl">
+				#succeed_sbl#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="succeed_vip_sbl">
+				#succeed_vip_sbl#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="active">
+				#active#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="agent_login_num">
+				#agent_login_num#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="vip_lose">
+				#vip_lose#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="svip_lose">
+				#svip_lose#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="out_ticket_XL">
+				#out_ticket_XL#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_time">
+				#pay_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="order_time">
+				#order_time#
+			</isNotEmpty>
+				,now()
+			<isNotEmpty prepend="," property="channel">
+				#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="svip_num">
+				#svip_num#
+			</isNotEmpty>
+			<isNotEmpty prepend=","  property="out_time_order">
+				#out_time_order#
+			</isNotEmpty>
+			<isNotEmpty prepend=","  property="cancel_order">
+				#cancel_order#
+			</isNotEmpty>
+			<isNotEmpty prepend=","  property="holdseat_cgl">
+				 #holdseat_cgl#
+			</isNotEmpty>
+			<isNotEmpty prepend=","  property="holdseat_sbl">
+				 #holdseat_sbl#
+			</isNotEmpty>
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 查询表中数据条数 -->
+	<select id="queryTable_Count" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM tj_hc_orderInfo
+	</select>
+	
+	<!-- 查询时间 -->
+	<select id="queryDate_List" resultClass="java.lang.String">
+		SELECT DISTINCT DATE_FORMAT(hc.create_time,'%Y-%m-%d')AS create_time 
+		FROM hc_orderinfo hc WHERE hc.create_time IS NOT NULL 
+		ORDER BY hc.create_time ASC
+	</select>
+	
+	<!-- 查询活跃用户数 -->
+	<select id="queryActiveTotal" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM(
+		SELECT DISTINCT hu.user_id FROM hc_userinfo hu  
+		LEFT JOIN hc_orderinfo hc ON hc.dealer_id=hu.user_id  
+		WHERE hc.order_id IS NOT NULL  
+		AND 
+		hc.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hc.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+		)AS a
+	</select>
+	
+	<!-- 查询Vip失败订单数，此为CP表数据 --> <!-- 19e/19pay/app -->
+	<select id="queryVip_lose" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM cp_orderinfo cp 
+		WHERE cp.LEVEL IS NOT NULL AND cp.order_status='10' AND (cp.LEVEL='1' OR cp.LEVEL='2')
+		AND cp.create_time<![CDATA[>=]]>#create_time#
+		AND cp.create_time<![CDATA[<]]>DATE_ADD(#create_time#,INTERVAL 1 DAY)
+		<isNotEqual property="channel" compareValue="mobile">
+		AND channel = #channel#
+		</isNotEqual>
+		<isEqual property="channel" compareValue="mobile">
+			AND channel = '19e'	AND order_id like 'SJ%'
+		</isEqual>
+	</select>
+	
+	<!-- 查询当天vip订单总数 --> <!-- 19e/19pay/cmpay -->
+	<select id="queryVip_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM cp_orderinfo cp 
+		WHERE cp.LEVEL<![CDATA[<>]]>0 AND cp.LEVEL IS NOT NULL 
+		AND cp.create_time<![CDATA[>=]]>#create_time#
+		AND cp.create_time<![CDATA[<]]>DATE_ADD(#create_time#,INTERVAL 1 DAY)
+		AND channel = #channel#
+	</select>
+	
+	<!-- 查询总出票效率 --><!-- 预订时长 -->
+	<select id="queryOut_ticket_XL" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(ROUND(AVG(TIME_TO_SEC(TIMEDIFF(cp.out_ticket_time,cp.create_time)))/60,2),0)*60 
+		FROM cp_orderinfo cp
+		<isEqual property="channel" compareValue="elong">
+		LEFT JOIN elong_orderinfo ho ON cp.order_id =ho.order_id 
+		</isEqual>
+		WHERE  cp.order_status='99' 
+		<isNotEqual property="channel" compareValue="mobile">
+		AND cp.channel=#channel# 
+		</isNotEqual>
+		<isEqual property="channel" compareValue="mobile">
+			AND cp.channel='19e'	AND cp.order_id like 'SJ%'
+		</isEqual>
+		AND cp.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 07:00:00') 
+		AND cp.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:00:00')
+		<isEqual property="order_type" compareValue="11">
+			  and ho.order_type='11'
+		</isEqual>
+		<isEqual property="order_type" compareValue="22">
+			 and (ho.order_type<![CDATA[<>]]>'11' or ho.order_type IS NULL )
+		</isEqual>
+	</select>
+	<!-- 查询当天支付时长平均数 -->
+	<select id="queryPay_time" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(ROUND(AVG(TIME_TO_SEC(TIMEDIFF(cp.pay_time,cp.out_ticket_time)))/60,2),0)*60 
+		FROM cp_orderinfo cp
+		<isEqual property="channel" compareValue="elong">
+		LEFT JOIN elong_orderinfo ho ON cp.order_id =ho.order_id 
+		</isEqual>
+		WHERE  cp.order_status='99' 
+		<isNotEqual property="channel" compareValue="mobile">
+		AND cp.channel=#channel# 
+		</isNotEqual>
+		<isEqual property="channel" compareValue="mobile">
+			AND cp.channel='19e'	AND cp.order_id like 'SJ%'
+		</isEqual>
+		AND cp.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 07:00:00') 
+		AND cp.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:00:00')
+		<isEqual property="order_type" compareValue="11">
+			  and ho.order_type='11'
+		</isEqual>
+		<isEqual property="order_type" compareValue="22">
+			 and (ho.order_type<![CDATA[<>]]>'11' or ho.order_type IS NULL )
+		</isEqual>
+	</select>
+	
+	<!-- 查询对外商户总出票效率 --><!-- 预订时长 -->
+	<select id="queryExtOut_ticket_XL" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(ROUND(AVG(TIME_TO_SEC(TIMEDIFF(out_ticket_time,create_time)))/60,2),0)*60 
+		FROM cp_orderinfo 
+		WHERE order_status='99' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 07:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:00:00')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="channelList">
+				channel in
+				<iterate open="(" close=")" conjunction=","
+					property="channelList">
+					#channelList[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询对外商户总的    支付时长平均数 -->
+	<select id="queryExtPay_time" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(ROUND(AVG(TIME_TO_SEC(TIMEDIFF(pay_time,out_ticket_time)))/60,2),0)*60 
+		FROM cp_orderinfo 
+		WHERE order_status='99' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 07:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:00:00')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="channelList">
+				channel in
+				<iterate open="(" close=")" conjunction=","
+					property="channelList">
+					#channelList[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	
+	
+	<!-- 以下为去哪儿的统计 -->
+	
+	<!-- 查询当天总条数 -->
+	<select id="qunar_query_day_order_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM qunar_orderinfo WHERE 1=1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_source">
+				order_source=#order_source#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 查询当天的票数 -->
+	<select id="qunar_query_ticket_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM qunar_orderinfo_cp cp LEFT JOIN qunar_orderinfo hc ON cp.order_id=hc.order_id 
+		WHERE  hc.order_status='44'		
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				 hc.create_time<![CDATA[>=]]>#create_time#
+		AND hc.create_time<![CDATA[<]]>DATE_ADD(#create_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_source">
+				hc.order_source=#order_source#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 查询当天订单失败的条数 -->
+	<select id="qunar_query_day_out_ticket_defeated"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM qunar_orderinfo 
+		WHERE order_status ='45' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_source">
+				order_source=#order_source#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 查询当天订单成功的条数 -->
+	<select id="qunar_query_day_out_ticket_succeed"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM qunar_orderinfo 
+		WHERE order_status ='44' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_source">
+				order_source=#order_source#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 查询当天订单成功的总价钱 -->
+	<select id="qunar_query_succeed_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(buy_money),0) FROM qunar_orderinfo 
+		WHERE order_status ='44' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_source">
+				order_source=#order_source#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 查询当天订单失败的总价钱 -->
+	<select id="qunar_query_defeated_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(pay_money),0) FROM qunar_orderinfo 
+		WHERE order_status ='45' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_source">
+				order_source=#order_source#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 统计同意退款的个数 -->
+	<select id="qunar_query_refund_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM (
+		SELECT order_id FROM qunar_orderinfo_refund
+		WHERE refund_status='11' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_source">
+				order_source=#order_source#
+			</isNotEmpty>
+		</dynamic>
+		GROUP BY order_id)AS a
+	</select>
+	
+	<!-- 查询前一天订单超过10分钟的个数 qunar-->
+	<select id="qunar_over_time" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo 
+		WHERE ABS(
+		    TIMESTAMPDIFF(MINUTE, create_time, option_time)
+		  ) > 10 
+		  AND DATE_FORMAT(create_time, '%H:%i:%s') BETWEEN '07:00:00' AND '22:50:00' 
+		  AND order_status IN ('99', '10') 
+		  AND channel = 'qunar' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+		AND order_id IN (SELECT order_id FROM qunar_orderinfo WHERE 1=1
+			<dynamic prepend="">
+				<isNotEmpty prepend=" and " property="order_source">
+					order_source=#order_source#
+				</isNotEmpty>
+			</dynamic>
+		)
+	</select>
+	
+	<!-- 以下为内嵌的统计 -->
+	
+	<!-- 查询当天总条数 -->
+	<select id="inner_query_day_order_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM inner_orderinfo WHERE order_status IN ('44','45','00','99') 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 查询当天的票数 -->
+	<select id="inner_query_ticket_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM inner_orderinfo_cp cp LEFT JOIN inner_orderinfo hc ON cp.order_id=hc.order_id 
+		WHERE hc.order_status='44' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				 hc.create_time<![CDATA[>=]]>#create_time#
+		AND hc.create_time<![CDATA[<]]>DATE_ADD(#create_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 查询当天订单失败的条数 -->
+	<select id="inner_query_day_out_ticket_defeated"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM inner_orderinfo 
+		WHERE order_status ='45' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 查询当天订单成功的条数 -->
+	<select id="inner_query_day_out_ticket_succeed"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM inner_orderinfo 
+		WHERE order_status ='44' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 查询当天订单成功的总价钱 -->
+	<select id="inner_query_succeed_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(buy_money),0) FROM inner_orderinfo 
+		WHERE order_status ='44' 
+		and	
+		 out_ticket_time<![CDATA[>=]]>#create_time#
+		AND out_ticket_time<![CDATA[<]]>DATE_ADD(#create_time#,INTERVAL 1 DAY)
+	</select>
+
+	<!-- 查询当天订单失败的总价钱 -->
+	<select id="inner_query_defeated_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(pay_money),0) FROM inner_orderinfo 
+		WHERE order_status ='45' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 统计同意退款的个数 -->
+	<select id="inner_query_refund_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM (
+		SELECT order_id FROM inner_orderinfo_refundstream
+		WHERE refund_status='11'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+		GROUP BY order_id)AS a
+	</select>
+	
+
+	<!-- 统计同意退款的个数 -->
+	<select id="inner_query_refund_money" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(IFNULL(refund_money,0)),0) 
+		FROM inner_orderinfo_refundstream hm WHERE 1=1 
+		AND refund_status='44'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				 hm.create_time<![CDATA[>=]]>#create_time#
+		AND hm.create_time<![CDATA[<]]>DATE_ADD(#create_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 保险个数-->
+	<select id="inner_queryPre_bx_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo_bx 
+		WHERE 1 = 1 
+		  AND order_channel='inner'
+		  AND bx_status IN (2, 5) 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 10元保险的利润 -->
+	<select id="inner_queryPre_bx_countMoney10" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(SUM(pay_money - 3), 0) 
+		FROM
+		  cp_orderinfo_bx 
+		WHERE 1 = 1 
+		  AND order_channel='inner'
+		  AND bx_status IN (2, 5) 
+		  AND pay_money = '10'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 20元保险的利润 -->
+	<select id="inner_queryPre_bx_countMoney20" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(SUM(pay_money - 4), 0) 
+		FROM
+		  cp_orderinfo_bx 
+		WHERE 1 = 1 
+	      AND order_channel='inner'
+		  AND bx_status IN (2, 5) 
+		  AND pay_money=#bxMoney#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 改签差额 -->
+	<select id="inner_queryPre_change_money" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(
+		    SUM(
+		      IFNULL(actual_refund_money, 0) + IFNULL(alter_tickets_money, 0) - IFNULL(refund_money, 0)
+		    ),
+		    0
+		  ) 
+		FROM
+		  inner_orderinfo_refundstream hm 
+		WHERE 1 = 1 
+		  AND refund_type = '1' 
+		  AND refund_status = '44' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				verify_time<![CDATA[>=]]>#create_time#
+		AND verify_time<![CDATA[<]]>DATE_ADD(#create_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 支付失败订单数 -->
+	<select id="inner_queryPre_pay_defeated" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  inner_orderinfo 
+		WHERE 1 = 1 
+		  AND order_status = '99' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 统计预下单的个数 -->
+	<select id="inner_queryPre_preparative_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  inner_orderinfo 
+		WHERE 1 = 1 
+		  AND order_status = '00' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!--超10分钟订单数-->
+	<select id="inner_over_time" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo 
+		WHERE ABS(
+		    TIMESTAMPDIFF(MINUTE, create_time, option_time)
+		  ) > 10 
+		  AND DATE_FORMAT(create_time, '%H:%i:%s') BETWEEN '07:00:00' 
+		  AND '22:50:00' 
+		  AND order_status IN ('99', '10') 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<!-- 以下为19pay的统计 -->
+	
+	<!-- 查询当天总条数 -->
+	<select id="pay_query_day_order_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM inner_orderinfo WHERE order_status IN ('44','45','00','99') AND inner_channel='19pay'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 查询当天的票数 -->
+	<select id="pay_query_ticket_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM inner_orderinfo_cp cp LEFT JOIN inner_orderinfo hc ON cp.order_id=hc.order_id 
+		WHERE hc.order_status='44' AND hc.inner_channel='19pay'	
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hc.create_time<![CDATA[>=]]>#create_time#
+		AND hc.create_time<![CDATA[<]]>DATE_ADD(#create_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 查询当天订单失败的条数 -->
+	<select id="pay_query_day_out_ticket_defeated"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM inner_orderinfo 
+		WHERE order_status ='45' AND inner_channel='19pay'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 查询当天订单成功的条数 -->
+	<select id="pay_query_day_out_ticket_succeed"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM inner_orderinfo 
+		WHERE order_status ='44' AND inner_channel='19pay'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 查询当天订单成功的总价钱 -->
+	<select id="pay_query_succeed_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(buy_money),0) FROM inner_orderinfo 
+		WHERE order_status ='44' AND inner_channel='19pay'
+		and	
+		out_ticket_time<![CDATA[>=]]>#create_time#
+		AND out_ticket_time<![CDATA[<]]>DATE_ADD(#create_time#,INTERVAL 1 DAY)
+	</select>
+
+	<!-- 查询当天订单失败的总价钱 -->
+	<select id="pay_query_defeated_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(pay_money),0) FROM inner_orderinfo 
+		WHERE order_status ='45' AND inner_channel='19pay'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 统计预下单的个数 -->
+	<select id="cmpay_queryPre_preparative_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM inner_orderinfo 
+		WHERE order_status ='00' AND inner_channel='cmpay'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 统计同意退款的个数 -->
+	<select id="pay_query_refund_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM (
+		SELECT order_id FROM inner_orderinfo_refundstream
+		WHERE refund_status='11' AND inner_channel='19pay'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+		GROUP BY order_id)AS a
+	</select>
+	
+	<!-- 保险个数-->
+	<select id="pay_queryPre_bx_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo_bx 
+		WHERE 1 = 1 
+		  AND order_channel='inner'
+		  AND merchant_id='401002'
+		  AND bx_status IN (2, 5) 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 10元保险的利润 -->
+	<select id="pay_queryPre_bx_countMoney10" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(SUM(pay_money - 3), 0) 
+		FROM
+		  cp_orderinfo_bx 
+		WHERE 1 = 1 
+		  AND order_channel='inner'
+		  AND merchant_id='401002'
+		  AND bx_status IN (2, 5) 
+		  AND pay_money = '10'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 20元保险的利润 -->
+	<select id="pay_queryPre_bx_countMoney20" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(SUM(pay_money - 4), 0) 
+		FROM
+		  cp_orderinfo_bx 
+		WHERE 1 = 1 
+	      AND order_channel='inner'
+		  AND merchant_id='401002'
+		  AND bx_status IN (2, 5) 
+		  AND pay_money=#bxMoney#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 改签差额 -->
+	<select id="pay_queryPre_change_money" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(
+		    SUM(
+		      IFNULL(actual_refund_money, 0) + IFNULL(alter_tickets_money, 0) - IFNULL(refund_money, 0)
+		    ),
+		    0
+		  ) 
+		FROM
+		  inner_orderinfo_refundstream hm 
+		WHERE 1 = 1 
+		  AND refund_type = '1' 
+		  AND refund_status = '44' 
+		  AND inner_channel='19pay'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				verify_time<![CDATA[>=]]>#create_time#
+		AND verify_time<![CDATA[<]]>DATE_ADD(#create_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 支付失败订单数 -->
+	<select id="pay_queryPre_pay_defeated" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  inner_orderinfo 
+		WHERE 1 = 1 
+		  AND order_status = '99' 
+		  AND inner_channel='19pay'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 统计预下单的个数 -->
+	<select id="pay_queryPre_preparative_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  inner_orderinfo 
+		WHERE 1 = 1 
+		  AND order_status = '00' 
+		  AND inner_channel='19pay'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!--19pay超10分钟订单数-->
+	<select id="pay_over_time" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo 
+		WHERE ABS(
+		    TIMESTAMPDIFF(MINUTE, create_time, option_time)
+		  ) > 10 
+		  AND DATE_FORMAT(create_time, '%H:%i:%s') BETWEEN '07:00:00' 
+		  AND '22:50:00' 
+		  AND order_status IN ('99', '10') 
+		  AND channel = '19pay' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- cmpay统计 -->
+	
+	<!-- 查询当天总条数 -->
+	<select id="cmpay_query_day_order_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM inner_orderinfo WHERE order_status IN ('44','45','00','99') AND inner_channel='cmpay'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 票数 -->
+	<select id="cmpay_query_ticket_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM inner_orderinfo_cp cp LEFT JOIN inner_orderinfo hc ON cp.order_id=hc.order_id 
+		WHERE  hc.order_status='44' AND hc.inner_channel='cmpay'		
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hc.create_time<![CDATA[>=]]>#create_time#
+		AND hc.create_time<![CDATA[<]]>DATE_ADD(#create_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 订单失败的条数 -->
+	<select id="cmpay_query_day_out_ticket_defeated"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM inner_orderinfo 
+		WHERE order_status ='45' AND inner_channel='cmpay'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 订单成功的条数 -->
+	<select id="cmpay_query_day_out_ticket_succeed"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM inner_orderinfo 
+		WHERE order_status ='44' AND inner_channel='cmpay'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 订单成功的总额 -->
+	<select id="cmpay_query_succeed_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(buy_money),0) FROM inner_orderinfo 
+		WHERE order_status ='44' AND inner_channel='cmpay'
+		and	
+			out_ticket_time<![CDATA[>=]]>#create_time#
+		AND out_ticket_time<![CDATA[<]]>DATE_ADD(#create_time#,INTERVAL 1 DAY)
+	</select>
+
+	<!-- 订单失败的总额 -->
+	<select id="cmpay_query_defeated_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(pay_money),0) FROM inner_orderinfo 
+		WHERE order_status ='45' AND inner_channel='cmpay'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 统计同意退款的个数 -->
+	<select id="cmpay_query_refund_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM (
+		SELECT order_id FROM inner_orderinfo_refundstream
+		WHERE refund_status='11' AND inner_channel='cmpay'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+		GROUP BY order_id)AS a
+	</select>
+	
+	<!-- 支付失败 -->
+	<select id="cmpay_queryPre_pay_defeated" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM inner_orderinfo 
+		WHERE 1=1 AND order_status ='99' AND inner_channel='cmpay'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 改签差价 -->
+	<select id="cmpay_queryPre_change_money" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(
+		    SUM(
+		      IFNULL(actual_refund_money, 0) + IFNULL(alter_tickets_money, 0) - IFNULL(refund_money, 0)
+		    ),
+		    0
+		  ) 
+		FROM
+		  inner_orderinfo_refundstream hm 
+		WHERE 1 = 1 
+		  AND refund_type = '1' 
+		  AND refund_status = '44' AND inner_channel='cmpay'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				verify_time<![CDATA[>=]]>#create_time#
+		AND verify_time<![CDATA[<]]>DATE_ADD(#create_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 保险个数-->
+	<select id="cmpay_queryPre_bx_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo_bx 
+		WHERE 1 = 1 
+		  AND order_channel='inner'
+		  AND bx_status IN (2, 5) 
+		  AND merchant_id='401003'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 出售10元保险利润-->
+	<select id="cmpay_queryPre_bx_countMoney10" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(SUM(pay_money - 3), 0) 
+		FROM
+		  cp_orderinfo_bx 
+		WHERE  bx_status IN (2, 5) 
+		  AND order_channel='inner'
+		  AND pay_money = #bxMoney#
+		  AND merchant_id='401003'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 出售20元保险利润 -->
+	<select id="cmpay_queryPre_bx_countMoney20" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(SUM(pay_money - 4), 0) 
+		FROM
+		  cp_orderinfo_bx 
+		WHERE bx_status IN (2, 5) 
+		  AND order_channel='inner'
+		  AND pay_money = #bxMoney# 
+		  AND merchant_id='401003'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+		
+	<!-- 查询订单超过10分钟的个数 cmpay-->
+	<select id="cmpay_over_time" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo 
+		WHERE ABS(
+		    TIMESTAMPDIFF(MINUTE, create_time, option_time)
+		  ) > 10 
+		  AND DATE_FORMAT(create_time, '%H:%i:%s') BETWEEN '07:00:00' 
+		  AND '22:50:00' 
+		  AND order_status IN ('99', '10') 
+		  AND channel = 'cmpay' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询今天19e渠道的数据的条数 -->
+	<select id="query19eTodayCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM tj_hc_orderInfo WHERE 
+		order_time<![CDATA[>=]]>#order_time#
+		AND order_time<![CDATA[<]]>DATE_ADD(#order_time#,INTERVAL 1 DAY)
+		and channel=#channel#
+	</select>
+	
+	<!-- 更新tj_hc_orderInfo表中的今日的数据 -->
+	<update id="updateToTj_Hc_orderInfo" parameterClass="java.util.HashMap">
+		update tj_hc_orderInfo 
+		<dynamic prepend="set">
+			<isNotEmpty prepend=","  property="out_ticket_succeed">
+				 out_ticket_succeed=#out_ticket_succeed#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="out_ticket_defeated">
+				 out_ticket_defeated=#out_ticket_defeated#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="preparative_count">
+				 preparative_count=#preparative_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_defeated">
+				 pay_defeated=#pay_defeated#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="over_time">
+				 over_time=#over_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_count">
+				 refund_count=#refund_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ticket_count">
+				 ticket_count=#ticket_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="order_count">
+				 order_count=#order_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="succeed_money">
+				 succeed_money=#succeed_money#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="defeated_money">
+				 defeated_money=#defeated_money#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="bx_count">
+				 bx_count=#bx_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="bx_countMoney">
+				 bx_countMoney=#bx_countMoney#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="change_money">
+				 change_money=#change_money#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_money">
+				 refund_money=#refund_money#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="succeed_odds">
+				 succeed_odds=#succeed_odds#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="succeed_cgl">
+				 succeed_cgl=#succeed_cgl#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="succeed_sbl">
+				 succeed_sbl=#succeed_sbl#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="succeed_vip_sbl">
+				 succeed_vip_sbl=#succeed_vip_sbl#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="active">
+				 active=#active#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="agent_login_num">
+				 agent_login_num=#agent_login_num#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="vip_lose">
+				 vip_lose=#vip_lose#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="svip_lose">
+				 svip_lose=#svip_lose#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="out_ticket_XL">
+				 out_ticket_XL=#out_ticket_XL#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_time">
+				 pay_time=#pay_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="order_time">
+				 order_time=#order_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="svip_num">
+				 svip_num=#svip_num#
+			</isNotEmpty>
+			<isNotEmpty prepend=","  property="out_time_order">
+				 out_time_order=#out_time_order#
+			</isNotEmpty>
+			<isNotEmpty prepend=","  property="cancel_order">
+				 cancel_order=#cancel_order#
+			</isNotEmpty>
+			<isNotEmpty prepend=","  property="holdseat_cgl">
+				 holdseat_cgl=#holdseat_cgl#
+			</isNotEmpty>
+			<isNotEmpty prepend=","  property="holdseat_sbl">
+				 holdseat_sbl=#holdseat_sbl#
+			</isNotEmpty>
+		</dynamic>
+		where 
+		order_time<![CDATA[>=]]>#order_time#
+		AND order_time<![CDATA[<]]>DATE_ADD(#order_time#,INTERVAL 1 DAY)
+		and channel=#channel#
+	</update>
+	
+	
+	
+	<!-- app统计 -->
+	
+	<!-- 查询当天总条数 -->
+	<select id="app_query_day_order_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM app_orderinfo WHERE order_status IN ('44','45','00','99') AND channel=#channel#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 票数 -->
+	<select id="app_query_ticket_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM app_orderinfo_cp cp LEFT JOIN app_orderinfo hc ON cp.order_id=hc.order_id 
+		WHERE  hc.order_status='44'	AND hc.channel=#channel#	
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hc.create_time<![CDATA[>=]]>#create_time#
+		AND hc.create_time<![CDATA[<]]>DATE_ADD(#create_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 订单失败的条数 -->
+	<select id="app_query_day_out_ticket_defeated"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM app_orderinfo  
+		WHERE order_status ='45' AND channel=#channel#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 订单成功的条数 -->
+	<select id="app_query_day_out_ticket_succeed"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM app_orderinfo 
+		WHERE order_status ='44' AND channel=#channel#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 订单成功的总额 -->
+	<select id="app_query_succeed_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(buy_money),0) FROM app_orderinfo 
+		WHERE order_status ='44' AND channel=#channel#
+		and	
+		finish_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND finish_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+	</select>
+
+	<!-- 订单失败的总额 -->
+	<select id="app_query_defeated_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(pay_money),0) FROM app_orderinfo 
+		WHERE order_status ='45' AND channel=#channel#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 统计同意退款的个数 -->
+	<select id="app_query_refund_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM (
+		SELECT hm.order_id FROM app_orderinfo_refundstream hm
+		LEFT JOIN app_orderinfo app ON hm.order_id=app.order_id
+		WHERE hm.refund_status='11' AND app.channel=#channel#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hm.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hm.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+		GROUP BY order_id)AS a
+	</select>
+	
+	<!-- 支付失败 -->
+	<select id="app_queryPre_pay_defeated" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM app_orderinfo 
+		WHERE 1=1 AND order_status ='99' AND channel=#channel# 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 改签差价 -->
+	<select id="app_queryPre_change_money" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(
+		    SUM(
+		      IFNULL(hm.actual_refund_money, 0) + IFNULL(hm.alter_tickets_money, 0) - IFNULL(hm.refund_money, 0)
+		    ),
+		    0
+		  ) 
+		FROM
+		  app_orderinfo_refundstream hm 
+		LEFT JOIN app_orderinfo app ON hm.order_id=app.order_id
+		WHERE 1 = 1 
+		  AND hm.refund_type = '1' 
+		  AND hm.refund_status = '44' AND app.channel=#channel#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hm.verify_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hm.verify_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 保险个数-->
+	<select id="app_queryPre_bx_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo_bx bx
+		WHERE 1 = 1 
+		  AND order_channel=#channel#
+		  AND bx_status IN (2, 5) 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				bx.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND bx.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 出售10元保险利润-->
+	<select id="app_queryPre_bx_countMoney10" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(SUM(pay_money - 3), 0) 
+		FROM
+		  cp_orderinfo_bx bx
+		WHERE  bx_status IN (2, 5) 
+		  AND order_channel=#channel#
+		  AND bx.pay_money = #bxMoney#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+			bx.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND bx.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 出售20元保险利润 -->
+	<select id="app_queryPre_bx_countMoney20" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(SUM(pay_money - 4), 0) 
+		FROM
+		  cp_orderinfo_bx bx
+		WHERE bx_status IN (2, 5) 
+		  AND order_channel=#channel#
+		  AND bx.pay_money = #bxMoney# 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+			bx.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND bx.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+		
+	<!-- 查询订单超过10分钟的个数 app-->
+	<select id="app_over_time" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo 
+		WHERE ABS(
+		    TIMESTAMPDIFF(MINUTE, create_time, option_time)
+		  ) > 10 
+		  AND DATE_FORMAT(create_time, '%H:%i:%s') BETWEEN '07:00:00' 
+		  AND '22:50:00' 
+		  AND order_status IN ('99', '10') 
+		  AND channel=#channel#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>		
+	
+	<!-- 统计预下单的个数 -->
+	<select id="app_queryPre_preparative_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM app_orderinfo 
+		WHERE order_status ='00' AND channel=#channel#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	
+	<!-- ccb统计 -->
+	
+	<!-- 查询当天总条数 -->
+	<select id="ccb_query_day_order_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM inner_orderinfo WHERE order_status IN ('44','45','00','99') AND inner_channel='ccb'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 票数 -->
+	<select id="ccb_query_ticket_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM inner_orderinfo_cp cp LEFT JOIN inner_orderinfo hc ON cp.order_id=hc.order_id 
+		WHERE  hc.order_status='44' AND hc.inner_channel='ccb'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hc.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hc.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 订单失败的条数 -->
+	<select id="ccb_query_day_out_ticket_defeated"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM inner_orderinfo 
+		WHERE order_status ='45' AND inner_channel='ccb'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 订单成功的条数 -->
+	<select id="ccb_query_day_out_ticket_succeed"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM inner_orderinfo 
+		WHERE order_status ='44' AND inner_channel='ccb'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 订单成功的总额 -->
+	<select id="ccb_query_succeed_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(buy_money),0) FROM inner_orderinfo 
+		WHERE order_status ='44' AND inner_channel='ccb'
+		and	
+		out_ticket_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND out_ticket_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+	</select>
+
+	<!-- 订单失败的总额 -->
+	<select id="ccb_query_defeated_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(pay_money),0) FROM inner_orderinfo 
+		WHERE order_status ='45' AND inner_channel='ccb'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 统计同意退款的个数 -->
+	<select id="ccb_query_refund_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM (
+		SELECT order_id FROM inner_orderinfo_refundstream
+		WHERE refund_status='11' AND inner_channel='ccb'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+		GROUP BY order_id)AS a
+	</select>
+	
+	<!-- 支付失败 -->
+	<select id="ccb_queryPre_pay_defeated" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM inner_orderinfo 
+		WHERE 1=1 AND order_status ='99' AND inner_channel='ccb'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 改签差价 -->
+	<select id="ccb_queryPre_change_money" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(
+		    SUM(
+		      IFNULL(actual_refund_money, 0) + IFNULL(alter_tickets_money, 0) - IFNULL(refund_money, 0)
+		    ),
+		    0
+		  ) 
+		FROM
+		  inner_orderinfo_refundstream hm 
+		WHERE 1 = 1 
+		  AND refund_type = '1' 
+		  AND refund_status = '44' AND inner_channel='ccb'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				verify_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND verify_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 保险个数-->
+	<select id="ccb_queryPre_bx_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo_bx 
+		WHERE 1 = 1 
+		  AND order_channel='inner'
+		  AND merchant_id='401001'
+		  AND bx_status IN (2, 5) 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 出售10元保险利润-->
+	<select id="ccb_queryPre_bx_countMoney10" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(SUM(pay_money - 3), 0) 
+		FROM
+		  cp_orderinfo_bx 
+		WHERE  bx_status IN (2, 5) 
+		  AND order_channel='inner'
+		  AND merchant_id='401001'
+		  AND pay_money = #bxMoney#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 出售20元保险利润 -->
+	<select id="ccb_queryPre_bx_countMoney20" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(SUM(pay_money - 4), 0) 
+		FROM
+		  cp_orderinfo_bx 
+		WHERE bx_status IN (2, 5) 
+		  AND order_channel='inner'
+		  AND merchant_id='401001' 
+		  AND pay_money = #bxMoney# 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+		
+	<!-- 查询订单超过10分钟的个数 ccb-->
+	<select id="ccb_over_time" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo 
+		WHERE ABS(
+		    TIMESTAMPDIFF(MINUTE, create_time, option_time)
+		  ) > 10 
+		  AND DATE_FORMAT(create_time, '%H:%i:%s') BETWEEN '07:00:00' 
+		  AND '22:50:00' 
+		  AND order_status IN ('99', '10') 
+		  AND channel = 'ccb' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>		
+	
+	<!-- 统计预下单的个数 -->
+	<select id="ccb_queryPre_preparative_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM inner_orderinfo 
+		WHERE order_status ='00' AND inner_channel='ccb'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+		<!-- chq统计 -->
+	
+	<!-- 查询当天总条数 -->
+	<select id="chq_query_day_order_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM inner_orderinfo WHERE order_status IN ('44','45','00','99') AND inner_channel='chq'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 票数 -->
+	<select id="chq_query_ticket_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM inner_orderinfo_cp cp LEFT JOIN inner_orderinfo hc ON cp.order_id=hc.order_id 
+		WHERE  hc.order_status='44' AND hc.inner_channel='chq'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hc.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hc.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 订单失败的条数 -->
+	<select id="chq_query_day_out_ticket_defeated"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM inner_orderinfo 
+		WHERE order_status ='45' AND inner_channel='chq'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 订单成功的条数 -->
+	<select id="chq_query_day_out_ticket_succeed"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM inner_orderinfo 
+		WHERE order_status ='44' AND inner_channel='chq'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 订单成功的总额 -->
+	<select id="chq_query_succeed_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(buy_money),0) FROM inner_orderinfo 
+		WHERE order_status ='44' AND inner_channel='chq'
+		and	
+		out_ticket_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND out_ticket_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+	</select>
+
+	<!-- 订单失败的总额 -->
+	<select id="chq_query_defeated_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(pay_money),0) FROM inner_orderinfo 
+		WHERE order_status ='45' AND inner_channel='chq'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 统计同意退款的个数 -->
+	<select id="chq_query_refund_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM (
+		SELECT order_id FROM inner_orderinfo_refundstream
+		WHERE refund_status='11' AND inner_channel='chq'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+		GROUP BY order_id)AS a
+	</select>
+	
+	<!-- 支付失败 -->
+	<select id="chq_queryPre_pay_defeated" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM inner_orderinfo 
+		WHERE 1=1 AND order_status ='99' AND inner_channel='chq'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 改签差价 -->
+	<select id="chq_queryPre_change_money" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(
+		    SUM(
+		      IFNULL(actual_refund_money, 0) + IFNULL(alter_tickets_money, 0) - IFNULL(refund_money, 0)
+		    ),
+		    0
+		  ) 
+		FROM
+		  inner_orderinfo_refundstream hm 
+		WHERE 1 = 1 
+		  AND refund_type = '1' 
+		  AND refund_status = '44' AND inner_channel='chq'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				verify_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND verify_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 保险个数-->
+	<select id="chq_queryPre_bx_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo_bx 
+		WHERE 1 = 1 
+		  AND order_channel='inner'
+		  AND merchant_id='401004'
+		  AND bx_status IN (2, 5) 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 出售10元保险利润-->
+	<select id="chq_queryPre_bx_countMoney10" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(SUM(pay_money - 3), 0) 
+		FROM
+		  cp_orderinfo_bx 
+		WHERE  bx_status IN (2, 5) 
+		  AND order_channel='inner'
+		  AND merchant_id='401004'
+		  AND pay_money = #bxMoney#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 出售20元保险利润 -->
+	<select id="chq_queryPre_bx_countMoney20" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(SUM(pay_money - 4 - 6.4), 0) 
+		FROM
+		  cp_orderinfo_bx 
+		WHERE bx_status IN (2, 5) 
+		  AND order_channel='inner'
+		  AND merchant_id='401004' 
+		  AND pay_money = #bxMoney# 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+		
+	<!-- 查询订单超过10分钟的个数 chq-->
+	<select id="chq_over_time" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo 
+		WHERE ABS(
+		    TIMESTAMPDIFF(MINUTE, create_time, option_time)
+		  ) > 10 
+		  AND DATE_FORMAT(create_time, '%H:%i:%s') BETWEEN '07:00:00' 
+		  AND '22:50:00' 
+		  AND order_status IN ('99', '10') 
+		  AND channel = 'chq' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>		
+	
+	<!-- 统计预下单的个数 -->
+	<select id="chq_queryPre_preparative_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM inner_orderinfo 
+		WHERE order_status ='00' AND inner_channel='chq'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<!-- ext统计 -->
+	
+	<!-- 查询当天总条数 -->
+	<select id="ext_query_day_order_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM ext_orderinfo WHERE order_status IN ('44','45','00','99') 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="channel">
+				merchant_id=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 票数 -->
+	<select id="ext_query_ticket_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM ext_orderinfo_cp cp LEFT JOIN ext_orderinfo hc ON cp.order_id=hc.order_id 
+		WHERE  hc.order_status='44'	 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="channel">
+				hc.merchant_id=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time">
+				hc.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hc.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 订单失败的条数 -->
+	<select id="ext_query_day_out_ticket_defeated"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM ext_orderinfo  
+		WHERE order_status ='45' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="channel">
+				merchant_id=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 订单成功的条数 -->
+	<select id="ext_query_day_out_ticket_succeed"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM ext_orderinfo 
+		WHERE order_status ='44' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="channel">
+				merchant_id=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 订单成功的总额 -->
+	<select id="ext_query_succeed_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(buy_money),0) FROM ext_orderinfo 
+		WHERE order_status ='44'  
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="channel">
+				merchant_id=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time">
+			out_ticket_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND out_ticket_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 订单失败的总额 -->
+	<select id="ext_query_defeated_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(pay_money),0) FROM ext_orderinfo 
+		WHERE order_status ='45'  
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="channel">
+				merchant_id=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 统计同意退款的个数 -->
+	<select id="ext_query_refund_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM (
+		SELECT hm.order_id FROM ext_orderinfo_refundstream hm
+		LEFT JOIN ext_orderinfo ext ON hm.order_id=ext.order_id
+		WHERE hm.refund_status='11'  
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="channel">
+				ext.merchant_id=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time">
+				hm.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hm.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+		GROUP BY order_id)AS a
+	</select>
+	
+	<!-- 支付失败 -->
+	<select id="ext_queryPre_pay_defeated" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM ext_orderinfo 
+		WHERE 1=1 AND order_status ='99'  
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="channel">
+				merchant_id=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 改签差价 -->
+	<select id="ext_queryPre_change_money" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(
+		    SUM(
+		      IFNULL(hm.actual_refund_money, 0) + IFNULL(hm.alter_tickets_money, 0) - IFNULL(hm.refund_money, 0)
+		    ),
+		    0
+		  ) 
+		FROM
+		  ext_orderinfo_refundstream hm 
+		LEFT JOIN ext_orderinfo ext ON hm.order_id=ext.order_id
+		WHERE 1 = 1 
+		  AND hm.refund_type = '1' 
+		  AND hm.refund_status = '44'  
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="channel">
+				ext.merchant_id=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time">
+				hm.verify_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hm.verify_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 保险个数-->
+	<select id="ext_queryPre_bx_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo_bx bx
+		WHERE 1 = 1 
+		  AND order_channel='ext'
+		  AND bx_status IN (2, 5) 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="channel">
+				bx.merchant_id=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time">
+				bx.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND bx.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<!--10元保险个数 -->
+	<select id="ext_queryPre_bx_count10" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo_bx bx
+		WHERE 1 = 1 
+		  AND order_channel='ext'
+		  AND bx_status IN (2, 5) 
+		  AND bx.pay_money = #bxMoney# 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				bx.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND bx.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="channel">
+				bx.merchant_id=#channel#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<!--20元保险个数 -->
+	<select id="ext_queryPre_bx_count20" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo_bx bx
+		WHERE 1 = 1 
+		  AND order_channel='ext'
+		  AND bx_status IN (2, 5) 
+		  AND bx.pay_money = #bxMoney# 
+		  <dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				bx.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND bx.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="channel">
+				bx.merchant_id=#channel#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<!-- 出售10元保险利润-->
+	<select id="ext_queryPre_bx_countMoney10" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(SUM(pay_money - 3), 0) 
+		FROM
+		  cp_orderinfo_bx bx
+		WHERE  bx_status IN (2, 5) 
+		  AND order_channel='ext' 
+		  AND bx.pay_money = #bxMoney#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="channel">
+				bx.merchant_id=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time">
+				bx.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND bx.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 出售20元保险利润 -->
+	<select id="ext_queryPre_bx_countMoney20" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(SUM(pay_money - 4), 0) 
+		FROM
+		  cp_orderinfo_bx bx
+		WHERE bx_status IN (2, 5) 
+		  AND order_channel='ext' 
+		  AND bx.pay_money = #bxMoney# 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="channel">
+				bx.merchant_id=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time">
+				bx.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND bx.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+		
+	<!-- 查询订单超过10分钟的个数 ext-->
+	<select id="ext_over_time" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo 
+		WHERE ABS(
+		    TIMESTAMPDIFF(MINUTE, create_time, option_time)
+		  ) > 10 
+		  AND DATE_FORMAT(create_time, '%H:%i:%s') BETWEEN '07:00:00' 
+		  AND '22:50:00' 
+		  AND order_status IN ('99', '10') 
+		  AND channel=#channel#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>		
+	
+	<!-- 统计预下单的个数 -->
+	<select id="ext_queryPre_preparative_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM ext_orderinfo 
+		WHERE order_status ='00' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="channel">
+				merchant_id=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询对外商户的商户编号 -->
+	<select id="queryMerchantId" resultClass="java.util.HashMap">
+		SELECT merchant_id,merchant_name FROM ext_merchantinfo
+	</select>
+	
+	
+	
+	<!-- 以下为艺龙的统计 -->
+	
+	<!-- 查询当天总条数 -->
+	<select id="elong_query_day_order_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM elong_orderinfo WHERE 1=1 and channel=#channel#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (order_type<![CDATA[<>]]>'11' or order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+
+	<!-- 查询当天的票数（订单状态为“出票成功33”） -->
+	<select id="elong_query_ticket_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM elong_orderinfo_cp cp LEFT JOIN elong_orderinfo hc ON cp.order_id=hc.order_id 
+		WHERE  hc.order_status='33'	and hc.channel=#channel#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hc.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hc.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and hc.order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (hc.order_type<![CDATA[<>]]>'11' or hc.order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+
+	<!-- 查询当天订单失败的条数 -->
+	<select id="elong_query_day_out_ticket_defeated"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM elong_orderinfo 
+		WHERE order_status ='44' and  channel=#channel#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (order_type<![CDATA[<>]]>'11' or order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+
+	<!-- 查询当天订单成功的条数 -->
+	<select id="elong_query_day_out_ticket_succeed"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM elong_orderinfo 
+		WHERE order_status ='33' and  channel=#channel# 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (order_type<![CDATA[<>]]>'11' or order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 查询当天成功票数 -->
+	<select id="elong_query_day_out_ticket_num_succeed"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		  SELECT 
+      	  IFNULL(SUM(IFNULL(ticket_num,0)) ,0)
+	      FROM
+	        elong_orderinfo 
+	      WHERE order_status = '33' and  channel=#channel#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (order_type<![CDATA[<>]]>'11' or order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+
+	<!-- 查询当天订单成功的总价钱 -->
+	<select id="elong_query_succeed_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(buy_money),0) FROM elong_orderinfo 
+		WHERE order_status ='33' and  channel=#channel#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (order_type<![CDATA[<>]]>'11' or order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+
+	<!-- 查询当天订单失败的总价钱 -->
+	<select id="elong_query_defeated_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(pay_money),0) FROM elong_orderinfo 
+		WHERE order_status ='44' and  channel=#channel#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (order_type<![CDATA[<>]]>'11' or order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+
+	<!-- 统计同意退款的个数 -->
+	<select id="elong_query_refund_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM (
+		SELECT hm.order_id FROM elong_orderinfo_refundstream hm
+		LEFT JOIN elong_orderinfo ho ON hm.order_id =ho.order_id 
+		WHERE hm.refund_status='11' and  hm.channel=#channel#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hm.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hm.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and ho.order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (ho.order_type<![CDATA[<>]]>'11' or ho.order_type IS NULL )
+			</isEqual>
+		</dynamic>
+		GROUP BY order_id)AS a
+	</select>
+	
+	<!-- 统计同意退款的票数 -->
+	<select id="elong_query_refund_cp_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM (
+		SELECT cp_id FROM elong_orderinfo_refundstream
+		WHERE refund_status='11' and  channel=#channel#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+		GROUP BY cp_id)AS a
+	</select>
+	
+	<!-- 查询前一天订单超过10分钟的个数 elong-->
+	<select id="elong_over_time" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo 
+		WHERE ABS(TIMESTAMPDIFF(MINUTE, create_time, option_time)) > 10 
+		  AND DATE_FORMAT(create_time, '%H:%i:%s') BETWEEN '07:00:00' 
+		  AND '22:50:00' 
+		  AND order_status IN ('99', '10') 
+		  AND channel = #channel# 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<!-- 查询前一天qunar的查询总退款金额 -->
+	<select id="qunar_query_refund_money" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(IFNULL(refund_money,0)),0) 
+		FROM qunar_orderinfo_refund hm WHERE 1=1 AND 
+		 hm.refund_status='11'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hm.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hm.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_source">
+				hm.order_source=#order_source#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询前一天app的查询总退款金额 -->
+	<select id="app_query_refund_money" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(IFNULL(refund_money,0)),0) 
+		FROM app_orderinfo_refundstream hm WHERE 1=1  AND refund_status='33'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hm.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hm.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询前一天对外商户的查询总退款金额 -->
+	<select id="ext_query_refund_money" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(IFNULL(refund_money,0)),0) 
+		FROM ext_orderinfo_refundstream hm 
+		LEFT JOIN ext_orderinfo ext ON hm.order_id=ext.order_id
+		WHERE 1=1  AND hm.refund_status='33'
+		
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="channel">
+				ext.merchant_id=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time">
+				hm.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hm.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="channelList">
+				channel in
+				<iterate open="(" close=")" conjunction=","
+					property="channelList">
+					#channelList[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询前一天艺龙的查询总退款金额 -->
+	<select id="elong_query_refund_money" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(IFNULL(hm.refund_money,0)),0) 
+		FROM elong_orderinfo_refundstream hm 
+		LEFT JOIN elong_orderinfo ho ON hm.order_id =ho.order_id 
+		WHERE 1=1  AND hm.refund_status='11' AND hm.channel=#channel#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hm.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hm.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and ho.order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (ho.order_type<![CDATA[<>]]>'11' or ho.order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 查询前一天cmpay的查询总退款金额 -->
+	<select id="cmpay_query_refund_money" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(IFNULL(refund_money,0)),0) 
+		FROM inner_orderinfo_refundstream hm WHERE 1=1 
+		AND refund_status='44' AND inner_channel='cmpay'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hm.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hm.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询前一天19pay的查询总退款金额 -->
+	<select id="pay_query_refund_money" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(IFNULL(refund_money,0)),0) 
+		FROM inner_orderinfo_refundstream hm WHERE 1=1 
+		AND refund_status='44' AND inner_channel='19pay'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+			hm.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hm.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 查询前一天ccb的查询总退款金额 -->
+	<select id="ccb_query_refund_money" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(IFNULL(refund_money,0)),0) 
+		FROM inner_orderinfo_refundstream hm WHERE 1=1 
+		AND refund_status='44' AND inner_channel='ccb'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hm.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hm.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询前一天春秋的查询总退款金额 -->
+	<select id="chq_query_refund_money" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(IFNULL(refund_money,0)),0) 
+		FROM inner_orderinfo_refundstream hm WHERE 1=1 
+		AND refund_status='44' AND inner_channel='chq'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hm.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hm.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+
+<!-- cmwap统计 -->
+	
+	<!-- 查询当天总条数 -->
+	<select id="cmwap_query_day_order_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM inner_orderinfo WHERE order_status IN ('44','45','00','99') AND inner_channel='cmwap'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 票数 -->
+	<select id="cmwap_query_ticket_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM inner_orderinfo_cp cp LEFT JOIN inner_orderinfo hc ON cp.order_id=hc.order_id 
+		WHERE  hc.order_status='44' AND hc.inner_channel='cmwap'		
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hc.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hc.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 订单失败的条数 -->
+	<select id="cmwap_query_day_out_ticket_defeated"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM inner_orderinfo 
+		WHERE order_status ='45' AND inner_channel='cmwap'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 订单成功的条数 -->
+	<select id="cmwap_query_day_out_ticket_succeed"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM inner_orderinfo 
+		WHERE order_status ='44' AND inner_channel='cmwap'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 订单成功的总额 -->
+	<select id="cmwap_query_succeed_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(buy_money),0) FROM inner_orderinfo 
+		WHERE order_status ='44' AND inner_channel='cmwap'
+		and	
+		out_ticket_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND out_ticket_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+	</select>
+
+	<!-- 订单失败的总额 -->
+	<select id="cmwap_query_defeated_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(pay_money),0) FROM inner_orderinfo 
+		WHERE order_status ='45' AND inner_channel='cmwap'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 统计同意退款的个数 -->
+	<select id="cmwap_query_refund_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM (
+		SELECT order_id FROM inner_orderinfo_refundstream
+		WHERE refund_status='11' AND inner_channel='cmwap'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+		GROUP BY order_id)AS a
+	</select>
+	
+	<!-- 支付失败 -->
+	<select id="cmwap_queryPre_pay_defeated" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM inner_orderinfo 
+		WHERE 1=1 AND order_status ='99' AND inner_channel='cmwap'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 改签差价 -->
+	<select id="cmwap_queryPre_change_money" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(
+		    SUM(
+		      IFNULL(actual_refund_money, 0) + IFNULL(alter_tickets_money, 0) - IFNULL(refund_money, 0)
+		    ),
+		    0
+		  ) 
+		FROM
+		  inner_orderinfo_refundstream hm 
+		WHERE 1 = 1 
+		  AND refund_type = '1' 
+		  AND refund_status = '44' AND inner_channel='cmwap'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				verify_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND verify_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 保险个数-->
+	<select id="cmwap_queryPre_bx_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo_bx 
+		WHERE 1 = 1 
+		  AND order_channel='inner'
+		  AND bx_status IN (2, 5) 
+		  AND merchant_id='401005'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 出售10元保险利润-->
+	<select id="cmwap_queryPre_bx_countMoney10" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(SUM(pay_money - 3), 0) 
+		FROM
+		  cp_orderinfo_bx 
+		WHERE  bx_status IN (2, 5) 
+		  AND order_channel='inner'
+		  AND pay_money = #bxMoney#
+		  AND merchant_id='401005'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 出售20元保险利润 -->
+	<select id="cmwap_queryPre_bx_countMoney20" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(SUM(pay_money - 4), 0) 
+		FROM
+		  cp_orderinfo_bx 
+		WHERE bx_status IN (2, 5) 
+		  AND order_channel='inner'
+		  AND pay_money = #bxMoney# 
+		  AND merchant_id='401005'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+		
+	<!-- 查询订单超过10分钟的个数 cmwap-->
+	<select id="cmwap_over_time" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo 
+		WHERE ABS(
+		    TIMESTAMPDIFF(MINUTE, create_time, option_time)
+		  ) > 10 
+		  AND DATE_FORMAT(create_time, '%H:%i:%s') BETWEEN '07:00:00' 
+		  AND '22:50:00' 
+		  AND order_status IN ('99', '10') 
+		  AND channel = 'cmwap' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+
+	<!-- 查询前一天cmwap的查询总退款金额 -->
+	<select id="cmwap_query_refund_money" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(IFNULL(refund_money,0)),0) 
+		FROM inner_orderinfo_refundstream hm WHERE 1=1 
+		AND refund_status='44' AND inner_channel='cmwap'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hm.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hm.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 统计预下单的个数 -->
+	<select id="cmwap_queryPre_preparative_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM inner_orderinfo 
+		WHERE order_status ='00' AND inner_channel='cmwap'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	
+	
+	<!-- 查询超时订单数 -->
+	<select id="elong_out_time_order" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM elong_orderinfo WHERE 1=1 and channel=#channel# and order_status='88'
+ 		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (order_type<![CDATA[<>]]>'11' or order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 查询取消订单数 -->
+	<select id="elong_cancel_order" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM elong_orderinfo WHERE 1=1 and channel=#channel# and order_status='24'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (order_type<![CDATA[<>]]>'11' or order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	
+	<!-- 查询总出票效率    利安渠道 --><!-- 预订时长 -->
+	<select id="queryExtOut_ticket_XL_lian" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(ROUND(AVG(TIME_TO_SEC(TIMEDIFF(out_ticket_time,create_time)))/60,2),0)*60 
+		FROM cp_orderinfo 
+		WHERE channel in ('301016','30101601','30101602' ) AND order_status='99' AND create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 07:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:00:00')
+	</select>
+	<!-- 查询当天支付时长平均数    利安渠道-->
+	<select id="queryExtPay_time_lian" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(ROUND(AVG(TIME_TO_SEC(TIMEDIFF(pay_time,out_ticket_time)))/60,2),0)*60 
+		FROM cp_orderinfo 
+		WHERE channel in ('301016','30101601','30101602' ) AND order_status='99' AND create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 07:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:00:00')
+	</select>
+	
+	
+	
+	<!-- 高铁管家统计 -->
+	
+	<!-- 查询当天总条数 -->
+	<select id="gt_query_day_order_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM gt_orderinfo WHERE order_status IN ('44','45','00','99') 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="channel">
+				merchant_id=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 票数 -->
+	<select id="gt_query_ticket_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM gt_orderinfo_cp cp LEFT JOIN gt_orderinfo hc ON cp.order_id=hc.order_id 
+		WHERE  hc.order_status='44'	 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="channel">
+				hc.merchant_id=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time">
+				hc.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hc.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 订单失败的条数 -->
+	<select id="gt_query_day_out_ticket_defeated"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM gt_orderinfo  
+		WHERE order_status ='45' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="channel">
+				merchant_id=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 订单成功的条数 -->
+	<select id="gt_query_day_out_ticket_succeed"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM gt_orderinfo 
+		WHERE order_status ='44' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="channel">
+				merchant_id=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 订单成功的总额 -->
+	<select id="gt_query_succeed_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(buy_money),0) FROM gt_orderinfo 
+		WHERE order_status ='44'  
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="channel">
+				merchant_id=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time">
+			out_ticket_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND out_ticket_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 订单失败的总额 -->
+	<select id="gt_query_defeated_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(pay_money),0) FROM gt_orderinfo 
+		WHERE order_status ='45'  
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="channel">
+				merchant_id=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 统计同意退款的个数 -->
+	<select id="gt_query_refund_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT count(hm.cp_id) FROM gt_orderinfo_refundstream hm
+		LEFT JOIN gt_orderinfo ext ON hm.order_id=ext.order_id
+		WHERE hm.refund_status IN ('11','33')   
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hm.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hm.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 支付失败 -->
+	<select id="gt_queryPre_pay_defeated" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM gt_orderinfo 
+		WHERE 1=1 AND order_status ='99'  
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="channel">
+				merchant_id=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 改签差价 -->
+	<select id="gt_queryPre_change_money" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(
+		    SUM(
+		      IFNULL(hm.actual_refund_money, 0) + IFNULL(hm.alter_tickets_money, 0) - IFNULL(hm.refund_money, 0)
+		    ),
+		    0
+		  ) 
+		FROM
+		  gt_orderinfo_refundstream hm 
+		LEFT JOIN gt_orderinfo ext ON hm.order_id=ext.order_id
+		WHERE 1 = 1 
+		  AND hm.refund_type = '1' 
+		  AND hm.refund_status = '44'  
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="channel">
+				ext.merchant_id=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time">
+				hm.verify_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hm.verify_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 保险个数-->
+	<select id="gt_queryPre_bx_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo_bx bx
+		WHERE 1 = 1 
+		  AND order_channel='ext'
+		  AND bx_status IN (2, 5) 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="channel">
+				bx.merchant_id=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time">
+				bx.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND bx.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询订单超过10分钟的个数 ext-->
+	<select id="gt_over_time" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo 
+		WHERE ABS(
+		    TIMESTAMPDIFF(MINUTE, create_time, option_time)
+		  ) > 10 
+		  AND DATE_FORMAT(create_time, '%H:%i:%s') BETWEEN '07:00:00' 
+		  AND '22:50:00' 
+		  AND order_status IN ('99', '10') 
+		  AND channel=#channel#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>		
+	
+	<!-- 统计预下单的个数 -->
+	<select id="gt_queryPre_preparative_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM gt_orderinfo 
+		WHERE order_status ='00' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="channel">
+				merchant_id=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<!-- 查询前一天总退款金额 -->
+	<select id="gt_query_refund_money" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(IFNULL(refund_money,0)),0) 
+		FROM gt_orderinfo_refundstream hm 
+		LEFT JOIN gt_orderinfo ext ON hm.order_id=ext.order_id
+		WHERE 1=1  AND hm.refund_status='33'
+		
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="channel">
+				ext.merchant_id=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time">
+				hm.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hm.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="channelList">
+				channel in
+				<iterate open="(" close=")" conjunction=","
+					property="channelList">
+					#channelList[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 携程统计 -->
+	
+	<!-- 查询当天总条数 -->
+	<select id="xc_query_day_order_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM xc_orderinfo WHERE order_status IN ('44','45','00','99') 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 票数 -->
+	<select id="xc_query_ticket_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM xc_orderinfo_cp cp LEFT JOIN xc_orderinfo hc ON cp.order_id=hc.order_id 
+		WHERE  hc.order_status='44'	 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hc.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hc.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 订单失败的条数 -->
+	<select id="xc_query_day_out_ticket_defeated"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM xc_orderinfo  
+		WHERE order_status ='45' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 订单成功的条数 -->
+	<select id="xc_query_day_out_ticket_succeed"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM xc_orderinfo 
+		WHERE order_status ='44' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 订单成功的总额 -->
+	<select id="xc_query_succeed_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(buy_money),0) FROM xc_orderinfo 
+		WHERE order_status ='44'  
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+			out_ticket_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND out_ticket_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 订单失败的总额 -->
+	<select id="xc_query_defeated_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(pay_money),0) FROM xc_orderinfo 
+		WHERE order_status ='45'  
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 统计同意退款的个数 -->
+	<select id="xc_query_refund_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(hm.cp_id) FROM xc_orderinfo_refundstream hm
+		LEFT JOIN xc_orderinfo ext ON hm.order_id=ext.order_id
+		WHERE hm.refund_status IN ('11','33')   
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hm.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hm.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 支付失败
+	<select id="xc_queryPre_pay_defeated" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM xc_orderinfo 
+		WHERE 1=1 AND order_status ='99'  
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select> -->
+	
+	<!-- 改签差价 -->
+	<select id="xc_queryPre_change_money" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT 
+		  IFNULL(
+		    SUM(
+		      IFNULL(hm.actual_refund_money, 0) + IFNULL(hm.alter_tickets_money, 0) - IFNULL(hm.refund_money, 0)
+		    ),
+		    0
+		  ) 
+		FROM
+		  xc_orderinfo_refundstream hm 
+		LEFT JOIN xc_orderinfo ext ON hm.order_id=ext.order_id
+		WHERE 1 = 1 
+		  AND hm.refund_type = '1' 
+		  AND hm.refund_status = '44'  
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hm.verify_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hm.verify_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 保险个数-->
+	<select id="xc_queryPre_bx_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo_bx bx
+		WHERE 1 = 1 
+		  AND order_channel='ext'
+		  AND bx_status IN (2, 5) 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="channel">
+				bx.merchant_id=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="create_time">
+				bx.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND bx.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询订单超过10分钟的个数 ext
+	<select id="xc_over_time" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo 
+		WHERE ABS(
+		    TIMESTAMPDIFF(MINUTE, create_time, option_time)
+		  ) > 10 
+		  AND DATE_FORMAT(create_time, '%H:%i:%s') BETWEEN '07:00:00' 
+		  AND '22:50:00' 
+		  AND order_status IN ('99', '10') 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>	-->	
+	
+	<!-- 统计预下单的个数 
+	<select id="xc_queryPre_preparative_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM xc_orderinfo 
+		WHERE order_status ='00' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>-->
+	<!-- 查询前一天总退款金额 -->
+	<select id="xc_query_refund_money" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(IFNULL(refund_money,0)),0) 
+		FROM xc_orderinfo_refundstream hm 
+		LEFT JOIN xc_orderinfo ext ON hm.order_id=ext.order_id
+		WHERE 1=1  AND hm.refund_status='33'
+		
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hm.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hm.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<!--  以下是美团统计 -->
+	<!-- 查询当天订单成功的条数 -->
+	<select id="meituan_query_day_out_ticket_succeed"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM mt_orderinfo 
+		WHERE order_status ='33' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (order_type<![CDATA[<>]]>'11' or order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 查询当天订单失败的条数 -->
+	<select id="meituan_query_day_out_ticket_defeated"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM mt_orderinfo 
+		WHERE order_status ='44' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (order_type<![CDATA[<>]]>'11' or order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 查询当天总条数 -->
+	<select id="meituan_query_day_order_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM mt_orderinfo WHERE 1=1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (order_type<![CDATA[<>]]>'11' or order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+	
+		<!-- 统计同意退款的个数 -->
+	<select id="meituan_query_refund_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM (
+		SELECT hm.order_id FROM mt_orderinfo_refundstream hm
+		LEFT JOIN mt_orderinfo ho ON hm.order_id =ho.order_id 
+		WHERE hm.refund_status='11'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hm.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hm.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and ho.order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (ho.order_type<![CDATA[<>]]>'11' or ho.order_type IS NULL )
+			</isEqual>
+		</dynamic>
+		GROUP BY order_id)AS a
+	</select>
+	
+	<!-- 查询当天订单成功的总价钱 -->
+	<select id="meituan_query_succeed_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(buy_money),0) FROM mt_orderinfo 
+		WHERE order_status ='33' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (order_type<![CDATA[<>]]>'11' or order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 查询当天订单失败的总价钱 -->
+	<select id="meituan_query_defeated_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(pay_money),0) FROM mt_orderinfo 
+		WHERE order_status ='44' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (order_type<![CDATA[<>]]>'11' or order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 查询前一天艺龙的查询总退款金额 -->
+	<select id="meituan_query_refund_money" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(IFNULL(hm.refund_money,0)),0) 
+		FROM mt_orderinfo_refundstream hm 
+		LEFT JOIN mt_orderinfo ho ON hm.order_id =ho.order_id 
+		WHERE 1=1  AND hm.refund_status='11' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hm.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hm.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and ho.order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (ho.order_type<![CDATA[<>]]>'11' or ho.order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 查询当天的票数（订单状态为“出票成功33”） -->
+	<select id="meituan_query_ticket_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM mt_orderinfo_cp cp LEFT JOIN mt_orderinfo hc ON cp.order_id=hc.order_id 
+		WHERE  hc.order_status='33'	
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hc.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hc.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and hc.order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (hc.order_type<![CDATA[<>]]>'11' or hc.order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 查询前一天订单超过10分钟的个数 elong-->
+	<select id="meituan_over_time" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo 
+		WHERE ABS(TIMESTAMPDIFF(MINUTE, create_time, option_time)) > 10 
+		  AND DATE_FORMAT(create_time, '%H:%i:%s') BETWEEN '07:00:00' 
+		  AND '22:50:00' 
+		  AND order_status IN ('99', '10') 
+		 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<!-- 查询超时订单数 -->
+	<select id="meituan_out_time_order" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM mt_orderinfo WHERE  order_status='88'
+ 		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (order_type<![CDATA[<>]]>'11' or order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 查询取消订单数 -->
+	<select id="meituan_cancel_order" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM mt_orderinfo WHERE  order_status='24'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (order_type<![CDATA[<>]]>'11' or order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	
+	
+	<!--  以下是途牛统计 -->
+	<!-- 查询当天订单成功的条数 -->
+	<select id="tuniu_query_day_out_ticket_succeed"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM tuniu_orderinfo 
+		WHERE order_status ='33' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (order_type<![CDATA[<>]]>'11' or order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 查询当天订单失败的条数 -->
+	<select id="tuniu_query_day_out_ticket_defeated"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM tuniu_orderinfo 
+		WHERE order_status ='44' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (order_type<![CDATA[<>]]>'11' or order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 查询当天总条数 -->
+	<select id="tuniu_query_day_order_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM tuniu_orderinfo WHERE 1=1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (order_type<![CDATA[<>]]>'11' or order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+	
+		<!-- 统计同意退款的个数 -->
+	<select id="tuniu_query_refund_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM (
+		SELECT hm.order_id FROM tuniu_orderinfo_refund  hm
+		LEFT JOIN tuniu_orderinfo ho ON hm.order_id =ho.order_id 
+		WHERE hm.refund_status='11'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hm.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hm.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and ho.order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (ho.order_type<![CDATA[<>]]>'11' or ho.order_type IS NULL )
+			</isEqual>
+		</dynamic>
+		GROUP BY order_id)AS a
+	</select>
+	
+	<!-- 查询当天订单成功的总价钱 -->
+	<select id="tuniu_query_succeed_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(buy_money),0) FROM tuniu_orderinfo 
+		WHERE order_status ='33' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (order_type<![CDATA[<>]]>'11' or order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 查询当天订单失败的总价钱 -->
+	<select id="tuniu_query_defeated_money"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(pay_money),0) FROM tuniu_orderinfo 
+		WHERE order_status ='44' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (order_type<![CDATA[<>]]>'11' or order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 查询前一天艺龙的查询总退款金额 -->
+	<select id="tuniu_query_refund_money" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT IFNULL(SUM(IFNULL(hm.refund_money,0)),0) 
+		FROM tuniu_orderinfo_refund  hm 
+		LEFT JOIN tuniu_orderinfo ho ON hm.order_id =ho.order_id 
+		WHERE 1=1  AND hm.refund_status='11' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hm.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hm.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and ho.order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (ho.order_type<![CDATA[<>]]>'11' or ho.order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 查询当天的票数（订单状态为“出票成功33”） -->
+	<select id="tuniu_query_ticket_count" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM tuniu_orderinfo_cp cp LEFT JOIN tuniu_orderinfo hc ON cp.order_id=hc.order_id 
+		WHERE  hc.order_status='33'	
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				hc.create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND hc.create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and hc.order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (hc.order_type<![CDATA[<>]]>'11' or hc.order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 查询前一天订单超过10分钟的个数-->
+	<select id="tuniu_over_time" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  cp_orderinfo 
+		WHERE ABS(TIMESTAMPDIFF(MINUTE, create_time, option_time)) > 10 
+		  AND DATE_FORMAT(create_time, '%H:%i:%s') BETWEEN '07:00:00' 
+		  AND '22:50:00' 
+		  AND order_status IN ('99', '10') 
+		 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	<!-- 查询超时订单数 -->
+	<select id="tuniu_out_time_order" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM tuniu_orderinfo WHERE  order_status='88'
+ 		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (order_type<![CDATA[<>]]>'11' or order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 查询取消订单数 -->
+	<select id="tuniu_cancel_order" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM tuniu_orderinfo WHERE  order_status='24'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="create_time">
+				create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<]]> CONCAT(#create_time#, ' 23:59:59')
+			</isNotEmpty>
+			<isEqual property="order_type" compareValue="11">
+			  and order_type='11'
+			  </isEqual>
+			<isEqual property="order_type" compareValue="22">
+			  and (order_type<![CDATA[<>]]>'11' or order_type IS NULL )
+			</isEqual>
+		</dynamic>
+	</select>
+</sqlMap>

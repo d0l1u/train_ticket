@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="/css/jquery.autocomplete.css"
+	type="text/css" />
+<script type="text/javascript" src="/js/jquery.js"></script>
+<script type="text/javascript" src="/js/jquery/jquery.autocomplete.js"></script>
+</head>
+<body>
+	<input type="text" id="auto">
+	<script type="text/javascript">
+		var array = [];
+		$(function() {
+			 $.post("/js/rob/school.json", function(data) {
+				var arr = data.data;
+				for (var i = 0; i < arr.length; i++) {
+					var obj = arr[i]
+					var name = obj.chineseName;
+					var code = obj.stationTelecode;
+					var o = {};
+					o.name = name;
+					o.code = code
+					array.push(o);
+				}
+
+				console.log(JSON.stringify(array));
+			}) 
+		});
+	</script>
+</body>
+</html>

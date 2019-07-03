@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="count">
+	<!-- 查询系统配置 -->
+	<insert id="insertIntoCount" parameterClass="com.l9e.transaction.vo.Count">
+		insert into count (source, channel, type, ip, create_time, message, code) value
+		(#source:VARCHAR#, #channel:VARCHAR#, #type:VARCHAR#, #ip:VARCHAR#, now(), #message:VARCHAR#, #code:VARCHAR#)
+	</insert>
+</sqlMap>

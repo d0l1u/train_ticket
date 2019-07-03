@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="oldOrder">
+
+	<!-- 查询出票订单条数 -->
+	<select id="queryOldOrderCount" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		 SELECT 
+		     COUNT(hc.order_id)
+		  FROM
+		    cp_orderinfo_backup hc 
+		  WHERE 1 = 1 
+			<dynamic prepend="">
+	          <isNotEmpty prepend=" and " property="order_id">
+	              hc.order_id=#order_id:VARCHAR#
+	          </isNotEmpty>
+	           <isNotEqual property="order_status" compareValue="-1">
+	          <isNotEmpty prepend=" and " property="order_status">
+	         	  order_status in
+		          <iterate open="(" close=")" conjunction="," property="order_status">
+		            	#order_status[]:VARCHAR#
+		      	  </iterate>
+	      	  </isNotEmpty>
+	      	  </isNotEqual>
+	      	  <isNotEmpty prepend=" and " property="out_ticket_billno">
+              hc.out_ticket_billno=#out_ticket_billno:VARCHAR#
+         	 </isNotEmpty>
+	      	  <isNotEmpty prepend=" and " property="opt_ren">
+	              hc.opt_ren=#opt_ren:VARCHAR#
+	          </isNotEmpty>
+	      	  <isNotEmpty prepend=" and " property="channel">
+	         	  channel in
+		          <iterate open="(" close=")" conjunction="," property="channel">
+		            	#channel[]:VARCHAR#
+		      	  </iterate>
+	      	  </isNotEmpty>
+	      	  <isNotEmpty prepend=" and " property="begin_info_time">
+				hc.create_time <![CDATA[>=]]> #begin_info_time:VARCHAR#
+			  </isNotEmpty>
+			  <isNotEmpty prepend=" and " property="end_info_time">
+				hc.create_time <![CDATA[<]]> DATE_ADD(#end_info_time:VARCHAR#,INTERVAL 1 DAY)
+			  </isNotEmpty>
+	      	  <isNotEmpty prepend=" and " property="level">
+	                 hc.level=#level#
+	          </isNotEmpty>
+	            <isNotEqual property="pay_type" compareValue="-1">
+	          <isNotEmpty prepend=" and " property="pay_type">
+	         	  pay_type in
+		          <iterate open="(" close=")" conjunction="," property="pay_type">
+		            	#pay_type[]:VARCHAR#
+		      	  </iterate>
+	      	  </isNotEmpty>
+	      	  </isNotEqual>
+	        </dynamic>
+	</select>
+	
+	<!-- 查询出票订单列表 -->
+	<select id="queryOldOrderList" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT hc.order_id, hc.from_city, hc.to_city,hc.return_optlog,
+			CONVERT(hc.pay_money,CHAR) AS pay_money,hc.order_status,
+				DATE_FORMAT(hc.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+				DATE_FORMAT(hc.pay_time,'%Y-%m-%d %H:%i:%s') AS pay_time,
+				DATE_FORMAT(hc.out_ticket_time,'%Y-%m-%d %H:%i:%s') AS out_ticket_time,
+				hc.out_ticket_type,hc.opt_ren, w.worker_name, w.worker_type, hc.buy_money,
+				hc.out_ticket_billno, hc.error_info, hc.channel,CONVERT(hc.seat_type,CHAR)AS seat_type ,
+				DATE_FORMAT(hc.travel_time,'%Y-%m-%d') AS travel_time,
+				DATE_FORMAT(hc.from_time,'%Y-%m-%d %H:%i:%s') AS from_time,
+				DATE_FORMAT(hc.from_time,'%Y-%m-%d') AS from_date,
+				hc.level,hc.train_no
+				FROM cp_orderinfo_backup hc  left join cp_workerinfo w on hc.worker_id = w.worker_id 
+			WHERE 1=1 
+		<dynamic prepend="">
+          <isNotEmpty prepend=" and " property="order_id">
+              hc.order_id=#order_id:VARCHAR#
+          </isNotEmpty>
+           <isNotEmpty prepend=" and " property="out_ticket_billno">
+              hc.out_ticket_billno=#out_ticket_billno:VARCHAR#
+          </isNotEmpty>
+          <isNotEmpty prepend=" and " property="opt_ren">
+	              hc.opt_ren=#opt_ren:VARCHAR#
+	      </isNotEmpty>
+      	  <isNotEqual property="order_status" compareValue="-1">
+          <isNotEmpty prepend=" and " property="order_status">
+          	  order_status in
+	          <iterate open="(" close=")" conjunction="," property="order_status">
+	          		#order_status[]:VARCHAR#
+	      	  </iterate>
+      	  </isNotEmpty>
+          </isNotEqual>
+           <isNotEmpty prepend=" and " property="begin_info_time">
+				hc.create_time <![CDATA[>=]]> #begin_info_time:VARCHAR#
+			  </isNotEmpty>
+			  <isNotEmpty prepend=" and " property="end_info_time">
+				hc.create_time <![CDATA[<]]> DATE_ADD(#end_info_time:VARCHAR#,INTERVAL 1 DAY)
+			  </isNotEmpty>
+           <isNotEmpty prepend=" and " property="channel">
+	         	  channel in
+		          <iterate open="(" close=")" conjunction="," property="channel">
+		            	#channel[]:VARCHAR#
+		      	  </iterate>
+	      </isNotEmpty>
+	       <isNotEmpty prepend=" and " property="level">
+	              hc.level=#level#
+	       </isNotEmpty>
+	       <isNotEqual property="pay_type" compareValue="-1">
+	          <isNotEmpty prepend=" and " property="pay_type">
+	         	  pay_type in
+		          <iterate open="(" close=")" conjunction="," property="pay_type">
+		            	#pay_type[]:VARCHAR#
+		      	  </iterate>
+	      	  </isNotEmpty>
+	        </isNotEqual>
+        </dynamic>
+        GROUP BY hc.order_id 
+        ORDER BY hc.create_time 
+        LIMIT #everyPagefrom:Integer#, #pageSize:Integer#
+	</select>
+	
+	
+	<!-- 查询出票订单条数 -->
+	<select id="queryOldOrderCountCp" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		 SELECT 
+		     COUNT(hc.order_id)
+		  FROM
+		    cp_orderinfo_backup hc 
+		    LEFT JOIN
+			  cp_orderinfo_cp_backup a 
+			  ON hc.order_id=a.order_id 
+		  WHERE 1 = 1 
+			<dynamic prepend="">
+	          <isNotEmpty prepend=" and " property="order_id">
+	              hc.order_id=#order_id:VARCHAR#
+	          </isNotEmpty>
+	           <isNotEqual property="order_status" compareValue="-1">
+	          <isNotEmpty prepend=" and " property="order_status">
+	         	  order_status in
+		          <iterate open="(" close=")" conjunction="," property="order_status">
+		            	#order_status[]:VARCHAR#
+		      	  </iterate>
+	      	  </isNotEmpty>
+	      	  </isNotEqual>
+	      	  <isNotEmpty prepend=" and " property="out_ticket_billno">
+              hc.out_ticket_billno=#out_ticket_billno:VARCHAR#
+         	 </isNotEmpty>
+	      	  <isNotEmpty prepend=" and " property="opt_ren">
+	              hc.opt_ren=#opt_ren:VARCHAR#
+	          </isNotEmpty>
+	          <isNotEmpty prepend=" and " property="user_name">
+	              a.user_name=#user_name:VARCHAR#
+	    	  </isNotEmpty>
+	      	  <isNotEmpty prepend=" and " property="channel">
+	         	  channel in
+		          <iterate open="(" close=")" conjunction="," property="channel">
+		            	#channel[]:VARCHAR#
+		      	  </iterate>
+	      	  </isNotEmpty>
+	      	  <isNotEmpty prepend=" and " property="begin_info_time">
+				hc.create_time <![CDATA[>=]]> #begin_info_time:VARCHAR#
+			  </isNotEmpty>
+			  <isNotEmpty prepend=" and " property="end_info_time">
+				hc.create_time <![CDATA[<]]> DATE_ADD(#end_info_time:VARCHAR#,INTERVAL 1 DAY)
+			  </isNotEmpty>
+	      	  <isNotEmpty prepend=" and " property="level">
+	                 hc.level=#level#
+	          </isNotEmpty>
+	            <isNotEqual property="pay_type" compareValue="-1">
+	          <isNotEmpty prepend=" and " property="pay_type">
+	         	  pay_type in
+		          <iterate open="(" close=")" conjunction="," property="pay_type">
+		            	#pay_type[]:VARCHAR#
+		      	  </iterate>
+	      	  </isNotEmpty>
+	      	  </isNotEqual>
+	        </dynamic>
+	        ORDER BY hc.create_time DESC
+	</select>
+	
+	<!-- 查询出票订单列表 -->
+	<select id="queryOldOrderListCp" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT hc.order_id, hc.from_city, hc.to_city,
+			CONVERT(hc.pay_money,CHAR) AS pay_money,hc.order_status,
+				DATE_FORMAT(hc.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+				DATE_FORMAT(hc.pay_time,'%Y-%m-%d %H:%i:%s') AS pay_time,
+				DATE_FORMAT(hc.out_ticket_time,'%Y-%m-%d %H:%i:%s') AS out_ticket_time,
+				hc.out_ticket_type,hc.opt_ren, w.worker_name, w.worker_type, hc.buy_money,
+				hc.out_ticket_billno, hc.error_info, hc.channel,CONVERT(hc.seat_type,CHAR)AS seat_type ,
+				DATE_FORMAT(hc.travel_time,'%Y-%m-%d') AS travel_time,
+				DATE_FORMAT(hc.from_time,'%Y-%m-%d %H:%i:%s') AS from_time,
+				DATE_FORMAT(hc.from_time,'%Y-%m-%d') AS from_date,
+				hc.level,hc.train_no
+				FROM cp_orderinfo_backup hc  left join cp_workerinfo w on hc.worker_id = w.worker_id 
+				LEFT JOIN cp_orderinfo_cp_backup a  ON hc.order_id=a.order_id 
+			WHERE 1=1 
+		<dynamic prepend="">
+          <isNotEmpty prepend=" and " property="order_id">
+              hc.order_id=#order_id:VARCHAR#
+          </isNotEmpty>
+           <isNotEmpty prepend=" and " property="out_ticket_billno">
+              hc.out_ticket_billno=#out_ticket_billno:VARCHAR#
+          </isNotEmpty>
+          <isNotEmpty prepend=" and " property="opt_ren">
+	              hc.opt_ren=#opt_ren:VARCHAR#
+	      </isNotEmpty>
+	      <isNotEmpty prepend=" and " property="user_name">
+	              a.user_name=#user_name:VARCHAR#
+	      </isNotEmpty>
+      	  <isNotEqual property="order_status" compareValue="-1">
+          <isNotEmpty prepend=" and " property="order_status">
+          	  order_status in
+	          <iterate open="(" close=")" conjunction="," property="order_status">
+	          		#order_status[]:VARCHAR#
+	      	  </iterate>
+      	  </isNotEmpty>
+          </isNotEqual>
+           <isNotEmpty prepend=" and " property="begin_info_time">
+				hc.create_time <![CDATA[>=]]> #begin_info_time:VARCHAR#
+			  </isNotEmpty>
+			  <isNotEmpty prepend=" and " property="end_info_time">
+				hc.create_time <![CDATA[<]]> DATE_ADD(#end_info_time:VARCHAR#,INTERVAL 1 DAY)
+			  </isNotEmpty>
+           <isNotEmpty prepend=" and " property="channel">
+	         	  channel in
+		          <iterate open="(" close=")" conjunction="," property="channel">
+		            	#channel[]:VARCHAR#
+		      	  </iterate>
+	      </isNotEmpty>
+	       <isNotEmpty prepend=" and " property="level">
+	              hc.level=#level#
+	       </isNotEmpty>
+	        <!--     <isNotEmpty prepend=" and " property="pay_type">
+	                 hc.pay_type=#pay_type#
+	          </isNotEmpty> --> 
+	            <isNotEqual property="pay_type" compareValue="-1">
+	          <isNotEmpty prepend=" and " property="pay_type">
+	         	  pay_type in
+		          <iterate open="(" close=")" conjunction="," property="pay_type">
+		            	#pay_type[]:VARCHAR#
+		      	  </iterate>
+	      	  </isNotEmpty>
+	      	  </isNotEqual>
+        </dynamic>
+        ORDER BY hc.create_time 
+        LIMIT #everyPagefrom:Integer#, #pageSize:Integer#
+	</select>
+	
+	
+	<!-- 导出出票订单列表 -->
+	<select id="queryOldOrderExcel" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT hc.order_id, hc.from_city, hc.to_city,
+			CONVERT(hc.pay_money,CHAR) AS pay_money,hc.order_status,
+				DATE_FORMAT(hc.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+				DATE_FORMAT(hc.pay_time,'%Y-%m-%d %H:%i:%s') AS pay_time,
+				DATE_FORMAT(hc.out_ticket_time,'%Y-%m-%d %H:%i:%s') AS out_ticket_time,
+				hc.out_ticket_type,hc.opt_ren, w.worker_name, w.worker_type, hc.buy_money,
+				hc.out_ticket_billno, hc.error_info, hc.channel,CONVERT(hc.seat_type,CHAR)AS seat_type ,
+				DATE_FORMAT(hc.travel_time,'%Y-%m-%d') AS travel_time,
+				DATE_FORMAT(hc.from_time,'%Y-%m-%d %H:%i:%s') AS from_time,
+				DATE_FORMAT(hc.from_time,'%Y-%m-%d') AS from_date,
+				hc.level,hc.train_no
+				FROM cp_orderinfo_backup hc  left join cp_workerinfo w on hc.worker_id = w.worker_id 
+			WHERE 1=1 
+		<dynamic prepend="">
+          <isNotEmpty prepend=" and " property="order_id">
+              hc.order_id=#order_id:VARCHAR#
+          </isNotEmpty>
+           <isNotEmpty prepend=" and " property="out_ticket_billno">
+              hc.out_ticket_billno=#out_ticket_billno:VARCHAR#
+          </isNotEmpty>
+          <isNotEmpty prepend=" and " property="opt_ren">
+	              hc.opt_ren=#opt_ren:VARCHAR#
+	      </isNotEmpty>
+      	  <isNotEqual property="order_status" compareValue="-1">
+          <isNotEmpty prepend=" and " property="order_status">
+          	  order_status in
+	          <iterate open="(" close=")" conjunction="," property="order_status">
+	          		#order_status[]:VARCHAR#
+	      	  </iterate>
+      	  </isNotEmpty>
+          </isNotEqual>
+           <isNotEmpty prepend=" and " property="begin_info_time">
+				hc.create_time <![CDATA[>=]]> #begin_info_time:VARCHAR#
+			  </isNotEmpty>
+			  <isNotEmpty prepend=" and " property="end_info_time">
+				hc.create_time <![CDATA[<]]> DATE_ADD(#end_info_time:VARCHAR#,INTERVAL 1 DAY)
+			  </isNotEmpty>
+           <isNotEmpty prepend=" and " property="channel">
+	         	  channel in
+		          <iterate open="(" close=")" conjunction="," property="channel">
+		            	#channel[]:VARCHAR#
+		      	  </iterate>
+	      </isNotEmpty>
+	       <isNotEmpty prepend=" and " property="level">
+	              hc.level=#level#
+	       </isNotEmpty>
+	            <isNotEqual property="pay_type" compareValue="-1">
+	          <isNotEmpty prepend=" and " property="pay_type">
+	         	  pay_type in
+		          <iterate open="(" close=")" conjunction="," property="pay_type">
+		            	#pay_type[]:VARCHAR#
+		      	  </iterate>
+	      	  </isNotEmpty>
+	      	  </isNotEqual>
+	      
+        </dynamic>
+         GROUP BY hc.order_id
+        ORDER BY hc.create_time 
+	</select>
+		<!-- 查询出票订单信息 -->
+	<select id="queryOldOrderInfo" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT hc.order_id,hc.order_status,hc.train_no,hc.from_city,hc.to_city,
+			CONVERT(hc.pay_money,CHAR) AS pay_money,hc.order_status,
+				DATE_FORMAT(hc.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+				DATE_FORMAT(hc.pay_time,'%Y-%m-%d %H:%i:%s') AS pay_time,
+				DATE_FORMAT(hc.out_ticket_time,'%Y-%m-%d %H:%i:%s') AS out_ticket_time,
+				 hc.out_ticket_type,hc.opt_ren, hc.seat_type, DATE_FORMAT(hc.from_time,'%H:%i') AS from_time,
+				 DATE_FORMAT(hc.from_time,'%Y-%m-%d %H:%i') AS from_time_all,
+				 DATE_FORMAT(hc.to_time,'%H:%i') AS to_time,IFNULL(hc.ext_seattype,'')AS ext_seattype,
+				 DATE_FORMAT(hc.travel_time,'%Y-%m-%d') AS travel_time, hc.channel,
+				 a.acc_id, a.acc_username, a.acc_password,hc.bank_pay_seq,hc.error_info,
+				 w.worker_name, w.worker_type, hc.out_ticket_account, hc.out_ticket_billno, hc.buy_money, hc.error_info
+				FROM cp_orderinfo_backup hc 
+				left join cp_accountinfo a on hc.account_id = a.acc_id 
+				left join cp_workerinfo w on hc.worker_id = w.worker_id
+		WHERE hc.order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 查询出票订单-车票 -->
+	<select id="queryOldOrderInfoCp" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+
+	SELECT cp.cp_id,cp.order_id,cp.user_name,
+			CONVERT(cp.ticket_type,CHAR)as ticket_type,CONVERT(cp.cert_type,CHAR)as cert_type,
+			cp.cert_no,cp.telephone,
+			cp.create_time,cp.pay_money,
+			cp.buy_money,
+			CONVERT(cp.buy_money, DECIMAL) buyMoney,
+  			CONVERT(cp.pay_money, DECIMAL) payMoney,
+			cp.modify_time,
+			CONVERT(cp.seat_type,CHAR)as seat_type,cp.train_box,cp.seat_no,co.channel
+		FROM  cp_orderinfo_cp_backup cp LEFT JOIN cp_orderinfo_backup co
+		ON cp.order_id=co.order_id
+		WHERE cp.order_id=#order_id:VARCHAR#
+	</select>
+
+</sqlMap>

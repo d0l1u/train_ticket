@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="refund">
+
+	<!-- 退款流水中是否包含该车票的退款信息 -->
+	<select id="queryRefundStreamContainCp" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM gt_orderinfo_refundstream er
+		WHERE er.order_id=#order_id:VARCHAR#
+		AND er.cp_id=#cp_id:VARCHAR#
+		AND er.refund_type='1'
+		AND er.refund_status <![CDATA[<>]]> '22'
+	</select>
+	
+	<!-- 根据cp_id查询乘客信息 -->
+	<select id="queryPassengerInfoByCpId" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT user_name,user_ids FROM gt_orderinfo_cp WHERE cp_id=#cp_id:VARCHAR#
+	</select>
+	
+	<!-- 删除老的拒绝退款的退款流水 -->
+	<delete id="deleteRefundStreamOnRefuse" parameterClass="java.util.HashMap">
+		DELETE FROM gt_orderinfo_refundstream
+		WHERE order_id=#order_id:VARCHAR#
+		AND cp_id=#cp_id:VARCHAR#
+		AMD refund_seq=#refund_seq:VARCHAR#
+		AND refund_type='1'
+		AND refund_status='22'
+	</delete>
+	
+	<!-- 添加退款流水 -->
+	<insert id="addRefundStream" parameterClass="java.util.HashMap">
+		insert into gt_orderinfo_refundstream
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="order_id">
+				order_id
+			</isNotNull>
+			<isNotNull prepend="," property="merchant_order_id">
+				merchant_order_id
+			</isNotNull>
+			<isNotNull prepend="," property="refund_type">
+				refund_type
+			</isNotNull>
+			<isNotNull prepend="," property="cp_id">
+				cp_id
+			</isNotNull>
+			<isNotNull prepend="," property="refund_seq">
+				refund_seq
+			</isNotNull>
+			<isNotNull prepend="," property="merchant_refund_seq">
+				merchant_refund_seq
+			</isNotNull>
+			<isNotNull prepend="," property="refund_money">
+				refund_money
+			</isNotNull>
+			,create_time
+			<isNotNull prepend="," property="refund_purl">
+				refund_purl
+			</isNotNull>
+			<isNotNull prepend="," property="user_remark">
+				user_remark
+			</isNotNull>
+			<isNotNull prepend="," property="refund_status">
+				refund_status
+			</isNotNull>
+			<isNotNull prepend="," property="refund_percent">
+				refund_percent
+			</isNotNull>
+			<isNotNull prepend="," property="channel">
+				channel
+			</isNotNull>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="order_id">
+				#order_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="merchant_order_id">
+				#merchant_order_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="refund_type">
+				#refund_type:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="cp_id">
+				#cp_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="refund_seq">
+				#refund_seq:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="merchant_refund_seq">
+				#merchant_refund_seq:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="refund_money">
+				#refund_money:DECIMAL#
+			</isNotNull>
+			,NOW()
+			<isNotNull prepend="," property="refund_purl">
+				#refund_purl:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="user_remark">
+				#user_remark:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="refund_status">
+				#refund_status:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="refund_percent">
+				#refund_percent:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="channel">
+				#channel:VARCHAR#
+			</isNotNull>
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 查询发车前的特殊时间点-->
+	<select id="querySpecTimeBeforeFrom" resultClass="java.util.HashMap"
+		parameterClass="java.lang.String">
+		select h.from_time,DATE_FORMAT(h.travel_time,'%Y-%m-%d') AS travel_time 
+		FROM gt_orderinfo h 
+		WHERE h.order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 添加退款流水 -->
+	<insert id="addRefundNotify" parameterClass="java.util.HashMap">
+		insert into gt_orderinfo_refundnotify
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="order_id">
+				order_id
+			</isNotNull>
+			<isNotNull prepend="," property="cp_id">
+				cp_id
+			</isNotNull>
+			<isNotNull prepend="," property="refund_seq">
+				refund_seq
+			</isNotNull>
+			,create_time
+			<isNotNull prepend="," property="notify_status">
+				notify_status
+			</isNotNull>
+			<isNotNull prepend="," property="notify_url">
+				notify_url
+			</isNotNull>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="order_id">
+				#order_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="cp_id">
+				#cp_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="refund_seq">
+				#refund_seq:VARCHAR#
+			</isNotNull>
+			,NOW()
+			<isNotNull prepend="," property="notify_status">
+				#notify_status:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="notify_url">
+				#notify_url:VARCHAR#
+			</isNotNull>
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 查询退款总计 -->
+	<select id="queryRefundTotalInOrder" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT CONVERT(IFNULL(h.refund_total,0),CHAR) AS refund_total
+			FROM gt_orderinfo h 
+		WHERE h.order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 查询未发生退款的票数 -->
+	<select id="queryRefundLeftCount" parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		SELECT a.num-b.num AS left_count
+		FROM (SELECT COUNT(1) AS num FROM gt_orderinfo_cp 
+		WHERE order_id=#order_id:VARCHAR#) AS a,( 
+		SELECT COUNT(1) AS num FROM  gt_orderinfo_refundstream
+		WHERE order_id=#order_id:VARCHAR#
+		AND refund_type='1' and refund_status <![CDATA[<>]]> '22') AS b
+	</select> 
+	
+	<!-- 定时查询待通知退票结果的列表 -->
+	<select id="queryRefundResultWaitList" resultClass="java.util.HashMap">
+		SELECT CONVERT(er.notify_id,CHAR) AS notify_id,er.order_id,er.cp_id,er.refund_seq,notify_url,er.notify_status
+			FROM gt_orderinfo_refundnotify er
+			WHERE (er.notify_status='11' OR (er.notify_status='22' AND DATE_ADD(er.notify_time, INTERVAL 5 MINUTE)<![CDATA[<=]]>NOW()))
+			AND er.notify_num <![CDATA[<]]>10
+			ORDER BY er.create_time DESC
+			LIMIT 0,20
+	</select>
+	
+	<!-- 根据流水号查询退票的流水 -->
+	<select id="queryRefundStreamListBySeq" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT order_id,merchant_order_id,refund_type,cp_id,refund_seq,
+			merchant_refund_seq,CONVERT(refund_money,CHAR) as refund_money,our_remark,refund_status,channel
+			FROM gt_orderinfo_refundstream
+			WHERE refund_seq=#refund_seq:VARCHAR#
+			AND order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 根据订单号查询车票信息 -->
+	<select id="queryCpListByOrderId" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT cp_id,order_id,user_name,ids_type,user_ids,ticket_type
+			FROM  gt_orderinfo_cp 
+			WHERE order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 更新退款结果通知请求开始  -->
+	<update id="updateRefundNotfiyBegin" parameterClass="java.util.HashMap">
+		UPDATE gt_orderinfo_refundnotify
+		set
+		notify_time=NOW(),
+		notify_num=notify_num+1,
+		notify_status=#notify_status:VARCHAR# 
+		WHERE notify_id=#notify_id:INTEGER#
+		AND order_id=#order_id:VARCHAR#
+		AND notify_status=#old_notify_status:VARCHAR#
+	</update>
+	
+	<!-- 更新退款结果通知重新开始  -->
+	<update id="updateRefundNotifyRestart" parameterClass="java.util.HashMap">
+		UPDATE gt_orderinfo_refundnotify
+		set
+		notify_time=NOW(),
+		notify_num=1,
+		notify_status=#notify_status:VARCHAR#
+		WHERE order_id=#order_id:VARCHAR#
+		<dynamic prepend="">
+			<isNotNull prepend=" and " property="refund_seq">
+			refund_seq=#refund_seq:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend=" and " property="cp_id">
+			cp_id=#cp_id:VARCHAR#
+			</isNotNull>
+		</dynamic>
+	</update>
+	
+	<!-- 更新退退款结果通知请求完成 -->
+	<update id="updateRefundNotfiyFinish" parameterClass="java.util.HashMap">
+		UPDATE gt_orderinfo_refundnotify
+		set
+		notify_finish_time=NOW(),
+		notify_status=#notify_status:VARCHAR# 
+		WHERE notify_id=#notify_id:INTEGER#
+		AND order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 查询是否已存在该订单的退票通知数据 -->
+	<select id="queryRefundNotifyNum" parameterClass="java.util.HashMap" 
+		resultClass="java.lang.Integer">
+		select count(1) from gt_orderinfo_refundnotify where order_id = #order_id:VARCHAR# and refund_seq=#refund_seq:VARCHAR#
+			AND cp_id =#cp_id:VARCHAR#
+	</select>
+	<!-- 验证退票申请是否为重复申请 -->
+	<select id="queryRefundCountByMerchantSeq" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM gt_orderinfo_refundstream 
+		WHERE merchant_refund_seq=#merchant_refund_seq:VARCHAR#
+		AND channel=#channel:VARCHAR#
+		AND merchant_order_id=#merchant_order_id:VARCHAR#
+	</select>
+	
+	<!-- 验证是否出票完成的，否则不能进行退票申请 -->
+	<select id="queryOrderStatusById" parameterClass="java.util.HashMap"
+		resultClass="java.lang.String">
+		SELECT order_status FROM gt_orderinfo 
+		WHERE order_id=#order_id:VARCHAR#
+		AND merchant_order_id=#merchant_order_id:VARCHAR#
+		AND merchant_id=#merchant_id:VARCHAR#
+	</select>
+	
+	<!-- 更新退票状态 -->
+	<update id="updateOrderRefundStatus" parameterClass="java.util.HashMap">
+		update gt_orderinfo set refund_status=#status:VARCHAR# 
+			WHERE order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 添加退款流水 -->
+	<insert id="addEopRefundNotify" parameterClass="java.util.HashMap">
+		insert into gt_orderinfo_refundeopnotify
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="order_id">
+				order_id
+			</isNotNull>
+			<isNotNull prepend="," property="eop_order_id">
+				eop_order_id
+			</isNotNull>
+			<isNotNull prepend="," property="refund_seq">
+				refund_seq
+			</isNotNull>
+			<isNotNull prepend="," property="refund_money">
+				refund_money
+			</isNotNull>
+			<isNotNull prepend="," property="refund_reason">
+				refund_reason
+			</isNotNull>
+			,create_time
+			<isNotNull prepend="," property="notify_status">
+				notify_status
+			</isNotNull>
+			<isNotNull prepend="," property="notify_url">
+				notify_url
+			</isNotNull>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="order_id">
+				#order_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="eop_order_id">
+				#eop_order_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="refund_seq">
+				#refund_seq:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="refund_money">
+				#refund_money:DOUBLE#
+			</isNotNull>
+			<isNotNull prepend="," property="refund_reason">
+				#refund_reason:VARCHAR#
+			</isNotNull>
+			,NOW()
+			<isNotNull prepend="," property="notify_status">
+				#notify_status:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="notify_url">
+				#notify_url:VARCHAR#
+			</isNotNull>
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 更新退款通知平台请求开始  -->
+	<update id="updateEopRefundNotfiyBegin" parameterClass="java.util.HashMap">
+		UPDATE gt_orderinfo_refundeopnotify
+		set
+		notify_time=NOW(),
+		notify_num=notify_num+1,
+		notify_status=#notify_status:VARCHAR#
+		WHERE notify_id=#notify_id:INTEGER#
+		AND order_id=#order_id:VARCHAR#
+		AND notify_status=#old_notify_status:VARCHAR#
+	</update>
+	
+	<!-- 更新退款通知平台请求完成 -->
+	<update id="updateEopRefundNotfiyFinish" parameterClass="java.util.HashMap">
+		UPDATE gt_orderinfo_refundeopnotify
+		set
+		notify_finish_time=NOW(),
+		notify_status=#notify_status:VARCHAR# 
+		WHERE notify_id=#notify_id:INTEGER#
+		AND order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 定时查询待通知退票结果的列表 -->
+	<select id="queryEopRefundResultWaitList" resultClass="java.util.HashMap">
+		SELECT CONVERT(er.notify_id,CHAR) AS notify_id,er.order_id,er.refund_seq,notify_url
+			,er.notify_status,er.eop_order_id, CONVERT(er.refund_money,CHAR) refund_money,er.refund_reason
+			FROM gt_orderinfo_refundeopnotify er
+			WHERE (er.notify_status='11' OR (er.notify_status='22' AND DATE_ADD(er.notify_time, INTERVAL 5 MINUTE)<![CDATA[<=]]>NOW()))
+			AND er.notify_num <![CDATA[<]]>10
+			ORDER BY er.create_time DESC
+			LIMIT 0,20
+	</select>
+	
+	<!-- 更新退款表平台申请退款流水号 -->
+	<update id="updateRefundStreamEopRefundSeq" parameterClass="java.util.HashMap">
+		UPDATE gt_orderinfo_refundstream
+		set eop_refund_seq=#eop_refund_seq:VARCHAR# 
+		WHERE refund_seq=#refund_seq:VARCHAR#
+	</update>
+	
+	<!-- 根据平台退款异步通知结果更新退款表数据 -->
+	<update id="updateEopRefundStreamInfo" parameterClass="java.util.HashMap">
+		UPDATE gt_orderinfo_refundstream
+		set
+		eop_refund_status=#eop_refund_status:VARCHAR#,
+		<isNotEmpty property="eop_refund_money">
+			eop_refund_money=#eop_refund_money:DECIMAL#,
+		</isNotEmpty>
+		<isNotEmpty property="refund_status">
+			refund_status=#refund_status:DECIMAL#,
+		</isNotEmpty>
+		eop_refund_time=#eop_refund_time:VARCHAR#
+		WHERE eop_refund_seq=#eop_refund_seq:VARCHAR# AND (eop_refund_status <![CDATA[<>]]> '22' OR eop_refund_status IS NULL)
+		limit 1
+	</update>
+	
+	<!-- 查询旧的退款状态 -->
+	<select id="queryRefundStatusByCpId" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT refund_status FROM elong_orderinfo_refundstream  WHERE order_id=#order_id#  AND  cp_id=#cp_id#
+	</select>
+	
+	<!-- 退款表修改为退款完成 -->
+	<update id="updateRefundStreamTo33" parameterClass="java.util.HashMap">
+		UPDATE gt_orderinfo_refundstream
+		set
+			refund_status='33',verify_time =now() 
+		WHERE refund_seq=#refund_seq:VARCHAR# AND order_id=#order_id:VARCHAR# 
+		AND refund_status ='11'
+		limit 1
+	</update>
+	 
+    <select id="queryChangeRefundCpOrderInfo" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		select changeInfo.order_id,changeInfo.change_train_no train_no,changeInfo.from_city,
+		changeInfo.to_city,CONVERT(changeInfo.change_from_time, CHAR) from_time,
+		CONVERT(changeInfo.change_travel_time, CHAR) travel_time,changeInfo.out_ticket_billno,
+		CONVERT(changeInfo.option_time, CHAR) out_ticket_time,
+		cp.new_cp_id cp_id,CONVERT(cp.change_buy_money, CHAR) buy_money,
+		cp.user_name,cp.ticket_type,cp.ids_type,cp.user_ids,cp.change_seat_type seat_type,cp.change_train_box train_box,
+		cp.change_seat_no seat_no,changeInfo.merchant_id as channel
+		from elong_orderinfo_change changeInfo,elong_change_cp cp,gt_orderinfo hc
+		where changeInfo.change_id=cp.change_id and hc.order_id=changeInfo.order_id and
+		changeInfo.order_id=#order_id# and cp.new_cp_id=#cp_id#
+    </select>
+    
+</sqlMap>

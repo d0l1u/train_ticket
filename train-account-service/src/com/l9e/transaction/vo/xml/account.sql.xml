@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="account">
+
+	<!-- 查询12306账号 -->
+	<select id="selectAccount" parameterClass="Map" resultClass="com.l9e.transaction.vo.Account">
+		SELECT
+		acc_id id,
+		acc_username username,
+		acc_password password,
+		acc_status status,
+		channel,
+		stop_reason stopReason,
+		contact_num contact,
+		book_num bookNum
+		FROM
+		cp_accountinfo
+		WHERE
+		 1=1
+		<dynamic>
+			<isNotEmpty prepend="AND" property="id">
+				acc_id = #id:INTEGER#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookNum">
+				book_num <![CDATA[<=]]> #bookNum:INTEGER#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="contact">
+				contact_num <![CDATA[=]]> #contact:INTEGER#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="status">
+				acc_status = #status:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="channel">
+				channel = #channel:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="priority">
+				priority <![CDATA[>]]> #priority:INTEGER#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="priority">
+				option_time <![CDATA[<]]>#optionTime#
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY
+		option_time
+		ASC
+		<dynamic>
+			<isNotEmpty property="limit">
+				LIMIT #limit:INTEGER#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 查询联系人个数小于10的12306账号 -->
+	<select id="selectLess10Account" parameterClass="Map" resultClass="com.l9e.transaction.vo.Account">
+		SELECT
+		acc_id id,
+		acc_username username,
+		acc_password password,
+		acc_status status,
+		channel,
+		stop_reason stopReason,
+		contact_num contact,
+		book_num bookNum
+		FROM
+		cp_accountinfo
+		WHERE
+		is_alive = '1'
+		<dynamic>
+			<isNotEmpty prepend="AND" property="id">
+				acc_id = #id:INTEGER#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="bookNum">
+				book_num <![CDATA[<=]]>
+				#bookNum:INTEGER#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="contact">
+				contact_num <![CDATA[<]]>
+				'10'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="status">
+				acc_status = #status:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="channel">
+				channel = #channel:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="priority">
+				priority <![CDATA[>]]>
+				#priority:INTEGER#
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY
+		option_time
+		ASC
+		<dynamic>
+			<isNotEmpty property="limit">
+				LIMIT #limit:INTEGER#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 查询匹配账号id -->
+	<select id="selectFilterId" parameterClass="String" resultClass="Integer">
+		SELECT
+		account_id
+		id
+		FROM
+		cp_accountinfo_filter
+		WHERE
+		ids_card = #passportNo:VARCHAR#
+	</select>
+
+	<!-- 查询匹配账号id列表 （改进版本 ） --><!-- <select id="selectFilterIdList" parameterClass="java.lang.String" resultClass="Integer"> 
+		SELECT acc_id id FROM cp_pass_whitelist WHERE cert_no = #passportNo:VARCHAR# limit 1 </select> -->
+	<!-- 查询匹配账号id列表 -->
+	<select id="selectFilterIdList" parameterClass="java.util.List" resultClass="com.l9e.transaction.vo.Account">
+
+		SELECT
+		cwl.acc_id AS id,COUNT(cwl.cert_no) AS contact
+		FROM
+		cp_pass_whitelist AS cwl
+		WHERE
+		cwl.acc_status = '2' AND cwl.contact_status = '0'
+		AND cwl.cert_no IN
+		<iterate conjunction="," open="(" close=")">
+
+			#certNo[]#
+
+		</iterate>
+		GROUP BY
+		cwl.acc_id
+		ORDER BY
+		contact DESC
+	</select>
+
+	<!-- 根据账号名查询12306账号 -->
+	<select id="selectAccountByName" parameterClass="Map" resultClass="com.l9e.transaction.vo.Account">
+		SELECT
+		acc_id id,
+		acc_username username,
+		acc_password password,
+		acc_status status,
+		channel,
+		stop_reason stopReason,
+		contact_num contact,
+		book_num bookNum
+		FROM
+		cp_accountinfo
+		WHERE
+		is_alive = '1'
+		<dynamic>
+			<isNotEmpty prepend="AND" property="channel">
+				channel = #channel:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="userName">
+				acc_username = #userName:VARCHAR#
+			</isNotEmpty>
+		</dynamic>
+		LIMIT 1
+	</select>
+
+	<!-- 订单改签退票时更新用户密码 -->
+	<update id="updateAccountPwd" parameterClass="Map">
+		UPDATE
+		cp_accountinfo
+		SET
+		acc_password =
+		#userPassWord:VARCHAR#
+		WHERE
+		acc_id = #id:INTEGER#
+	</update>
+
+	<!-- 更新12306账号 -->
+	<update id="updateAccount" parameterClass="com.l9e.transaction.vo.Account">
+		UPDATE
+		cp_accountinfo
+		SET
+		option_time = NOW()
+		<dynamic>
+			<isNotEmpty prepend="," property="status">
+				acc_status = #status:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="bookNum">
+				book_num = #bookNum:INTEGER#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="contact">
+				contact_num = #contact:INTEGER#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="stopReason">
+				stop_reason = #stopReason:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="stopTime">
+				stop_time = NOW()
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="orderId">
+				order_id = #orderId:VARCHAR#
+			</isNotEmpty>
+		</dynamic>
+		WHERE
+		acc_id = #id:INTEGER#
+	</update>
+
+	<!-- 白名单更改账号表信息 -->
+	<update id="updateAccountInfo" parameterClass="Map">
+		UPDATE
+		cp_accountinfo
+		SET
+		option_time = NOW()
+		<dynamic>
+			<isNotEmpty prepend="," property="status">
+				acc_status = #status:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="contact">
+				contact_num = #contact:INTEGER#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="realCheckStatus">
+				real_check_status = #realCheckStatus:BYTE#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="realReceive">
+				real_receive = #realReceive:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="realContactNum">
+				real_contact_num = #realContactNum:INTEGER#
+			</isNotEmpty>
+		</dynamic>
+		WHERE
+		acc_id = #id:INTEGER#
+	</update>
+
+	<!-- 查询匹配的证件号码 -->
+	<select id="queryCertnoList" parameterClass="Map" resultClass="String">
+		SELECT
+		cwl.cert_no
+		FROM
+		cp_pass_whitelist AS cwl
+		WHERE cwl.acc_status = '2' AND
+		cwl.contact_status = '0'
+		AND cwl.acc_id=#accountId#
+		AND cwl.cert_no IN
+		<iterate property="passportNus" conjunction="," open="(" close=")">
+			#passportNus[]#
+		</iterate>
+		ORDER BY cwl.cert_no DESC
+	</select>
+
+	<!-- 插入cp_match表一条记录 -->
+	<insert id="insertCpMatch" parameterClass="java.util.HashMap">
+		insert into cp_match
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="channel">
+				channel
+			</isNotNull>
+			<isNotNull prepend="," property="param_num">
+				param_num
+			</isNotNull>
+			<isNotNull prepend="," property="param_cardno">
+				param_cardno
+			</isNotNull>
+			<isNotNull prepend="," property="match_num">
+				match_num
+			</isNotNull>
+			<isNotNull prepend="," property="match_cardno">
+				match_cardno
+			</isNotNull>
+			<isNotNull prepend="," property="match_account_id">
+				match_account_id
+			</isNotNull>
+			<isNotNull prepend="," property="match_status">
+				match_status
+			</isNotNull>
+			<isNotNull prepend="," property="create_time">
+				create_time
+			</isNotNull>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="channel">
+				#channel:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="param_num">
+				#param_num:INTEGER#
+			</isNotNull>
+			<isNotNull prepend="," property="param_cardno">
+				#param_cardno:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="match_num">
+				#match_num:INTEGER#
+			</isNotNull>
+			<isNotNull prepend="," property="match_cardno">
+				#match_cardno:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="match_account_id">
+				#match_account_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="match_status">
+				#match_status:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="create_time">
+				now()
+			</isNotNull>
+			)
+		</dynamic>
+	</insert>
+
+	<!-- 释放账号至空闲 -->
+	<update id="reset2Free">
+		UPDATE
+		cp_accountinfo
+		SET
+		acc_status = '33'
+		WHERE
+		DATE_SUB(now(), interval 3
+		hour) > option_time
+		AND(
+		acc_status = '00'
+		OR
+		acc_status = '66'
+		)
+	</update>
+
+</sqlMap>

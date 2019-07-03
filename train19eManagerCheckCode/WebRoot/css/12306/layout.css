@@ -1,0 +1,17 @@
+/*本样式是12306验证码专用*/
+#container {margin:0 auto; width:700px; height:600px;}
+
+#playCard {float:left;width:300px; height:200px;}
+#dataShow {float:left;width:150px; height:130px; padding:50px;font:bold 30px/30px "宋体";color:#f60;}
+#codeimg {padding-left:3px;width:295px; height:190px;z-index:-1;}
+
+.play_manage p .btn{background-position:0 -458px;width:103px;height:35px;font:bold 14px/35px "宋体";}
+.play_manage p .btn:hover{background-position:-109px -458px;}
+
+#header {height:30px;margin-bottom:8px;}
+#topContent {height:70px;}
+.odd-content {float:left;width:70px;height:70px;}
+.even-content {float:left;width:70px;height:70px;}
+
+#botContent {height:70px;}
+

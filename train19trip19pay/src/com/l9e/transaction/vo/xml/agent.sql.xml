@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="agent">
+
+	<!-- 添加代理商信息 -->
+	<insert id="addAgentInfo" parameterClass="com.l9e.transaction.vo.AgentVo">
+		insert into hc_userinfo
+		<dynamic prepend="(">
+			user_id,
+			<isNotNull prepend="," property="province_id">
+				province_id
+			</isNotNull>
+			<isNotNull prepend="," property="city_id">
+				city_id
+			</isNotNull>
+			<isNotNull prepend="," property="district_id">
+				district_id
+			</isNotNull>
+			<isNotNull prepend="," property="shop_type">
+				shop_type
+			</isNotNull>
+			<isNotNull prepend="," property="shop_name">
+				shop_name
+			</isNotNull>
+			<isNotNull prepend="," property="shop_short_name">
+				shop_short_name
+			</isNotNull>
+			<isNotNull prepend="," property="user_name">
+				user_name
+			</isNotNull>
+			<isNotNull prepend="," property="user_phone">
+				user_phone
+			</isNotNull>
+			<isNotNull prepend="," property="user_qq">
+				user_qq
+			</isNotNull>
+			<isNotNull prepend="," property="user_address">
+				user_address
+			</isNotNull>
+			<isNotNull prepend="," property="user_level">
+				user_level
+			</isNotNull>			
+			<isNotNull prepend="," property="estate">
+				estate
+			</isNotNull>
+				,apply_time
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			#user_id:VARCHAR#,
+			<isNotNull prepend="," property="province_id">
+				#province_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="city_id">
+				#city_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="district_id">
+				#district_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="shop_type">
+				#shop_type:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="shop_name">
+				#shop_name:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="shop_short_name">
+				#shop_short_name:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="user_name">
+				#user_name:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="user_phone">
+				#user_phone:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="user_qq">
+				#user_qq:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="user_address">
+				#user_address:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="user_level">
+				#user_level:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="estate">
+				#estate:VARCHAR#
+			</isNotNull>
+				,NOW()
+			)
+		</dynamic>
+	</insert>
+	
+	
+	<!-- 根据城市ID查询区域列表 -->
+	<select id="queryDistrictList" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT g.area_no, g.area_name FROM gen_area g 
+		WHERE g.area_rank='3'
+		AND	g.area_parentno=#cityId:VARCHAR#
+	</select>
+	
+	<!-- 根据订单号查询订单信息 -->
+	<select id="queryAgentInfo" parameterClass="java.lang.String"
+		resultClass="com.l9e.transaction.vo.AgentVo">
+		SELECT hc.user_id,hc.province_id,hc.city_id,hc.district_id,hc.shop_type,hc.shop_name,hc.shop_short_name,
+			hc.user_name,hc.user_phone,hc.user_qq,hc.user_address,hc.user_level,hc.estate,hc.apply_time,
+			DATE_FORMAT(hc.begin_time,'%Y-%m-%d') as begin_time,DATE_FORMAT(hc.end_time,'%Y-%m-%d') as end_time,
+			hc.opt_person,g1.area_name AS province_name,g2.area_name AS city_name,g3.area_name AS district_name,
+			hc.product_id,hc.jm_order_id,DATE_ADD(hc.auditing_time, INTERVAL 10 DAY)>NOW() AS is_probation
+		 FROM hc_userinfo hc
+		 LEFT JOIN gen_area g1
+		 ON hc.province_id=g1.area_no
+		 AND g1.area_rank=1
+		 LEFT JOIN gen_area g2
+		 ON hc.city_id=g2.area_no
+		 AND g2.area_rank=2
+		 LEFT JOIN gen_area g3
+		 ON hc.district_id=g3.area_no
+		 AND g3.area_rank=3
+		WHERE hc.user_id=#user_id:VARCHAR#
+	</select>
+	
+	<!-- 添加加盟产品订单 -->
+	<insert id="addJmOrder" parameterClass="java.util.HashMap">
+		INSERT INTO hc_jm_order (order_id, user_id, 
+			product_id, order_status, pay_money, create_time)
+		VALUES (#order_id:VARCHAR#, #user_id:VARCHAR#, 
+			#product_id:VARCHAR#, #order_status:Integer#, #pay_money:DECIMAL#, NOW())
+	</insert>
+	
+	<!-- 更新加盟订单状态（支付）  -->
+	<update id="updateJmOrderEopInfo" parameterClass="java.util.HashMap">
+		UPDATE hc_jm_order
+		SET
+		order_status=#order_status:Integer#
+		<isEqual prepend="," compareValue="11" property="order_status">
+			pay_time=NOW()
+		</isEqual>
+		<isNotEmpty prepend="," property="asp_order_type">
+			asp_order_type=#asp_order_type:VARCHAR#
+		</isNotEmpty>
+		WHERE order_id=#asp_order_id:VARCHAR#
+		<isNotEmpty prepend=" and " property="old_status">
+			order_status=#old_status:Integer#
+		</isNotEmpty>
+	</update>
+	
+	<!-- 代理商支付成功更新审核状态 -->
+	<update id="updateAgentJmInfo" parameterClass="java.util.HashMap">
+		UPDATE hc_userinfo
+			SET
+			user_level=#user_level:VARCHAR#
+			<isNotEmpty prepend="," property="estate">
+				estate=#estate:VARCHAR#
+			</isNotEmpty>
+			,product_id=#product_id:VARCHAR#,
+			jm_order_id=#asp_order_id:VARCHAR#
+		WHERE user_id=#user_id:VARCHAR#
+	</update>
+	
+	<!-- 代理商续费发货后更新审核状态 被动续费 -->
+	<update id="updateAgentJmSysXf" parameterClass="java.util.HashMap">
+		UPDATE hc_userinfo
+			SET
+			estate=#estate:VARCHAR#,
+			begin_time=NOW(),
+			end_time=DATE_ADD(NOW(), INTERVAL 30 DAY)
+		WHERE user_id=#user_id:VARCHAR#
+		and estate=#old_estate:VARCHAR#
+	</update>
+	
+	<!-- 主动续费 -->
+	<update id="updateAgentJmHumXf" parameterClass="java.util.HashMap">
+		UPDATE hc_userinfo
+			SET
+			end_time=DATE_ADD(end_time, INTERVAL 30 DAY)
+		WHERE user_id=#user_id:VARCHAR#
+		and estate=#old_estate:VARCHAR#
+	</update>
+	
+	<!-- 定时查询加盟订单退款 -->
+	<select id="queryTimedJmRefundList" resultClass="java.util.HashMap">
+		SELECT o.order_id, e.eop_order_id, e.eop_refund_url, 
+			CONVERT(o.pay_money, CHAR) AS refund_money
+			FROM hc_jm_order o
+			LEFT JOIN hc_order_eop e
+			ON o.order_id=e.order_id
+			WHERE o.order_status='33'
+			ORDER BY o.create_time DESC
+			LIMIT 0,5
+	</select>
+	
+	<!-- 查询加盟订单状态 -->
+	<select id="queryJmOrderInfo" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT order_id, CONVERT(order_status, CHAR) AS order_status
+			FROM hc_jm_order
+			WHERE order_id=#order_id:VARCHAR#
+			AND user_id=#user_id:VARCHARA#
+			AND product_id=#product_id:VARCHAR#
+	</select>
+	
+	<!-- 查询代理商信息 -->
+	<select id="queryAgentInfoById" parameterClass="java.lang.String"
+		resultClass="com.l9e.transaction.vo.AgentVo">
+		SELECT user_id, shop_short_name,user_name,user_phone,user_address 
+			FROM hc_userinfo
+			WHERE user_id=#user_id:VARCHAR#
+	</select>
+</sqlMap>

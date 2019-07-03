@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="tjInsurance">
+	
+	<!-- 添加当天点击次数 -->
+	<insert id="clickNumAdd" parameterClass="java.util.HashMap">
+	INSERT INTO tj_insurance (create_time,click_num,date_time,click_type) VALUES (NOW(),1,#date_time:varchar#,#type:varchar#)
+	</insert>
+	
+	<!-- 查询是否有当天点击次数纪录 -->
+	<select id="queryclickNum" parameterClass="java.util.HashMap"
+	resultClass="java.lang.Integer">
+		SELECT count(*) from tj_insurance where date_time =#date_time:varchar# and click_type=#type:varchar#
+	</select>
+	
+	<!-- 添加当天点击次数 -->
+	<update id="clickNumUpdate" parameterClass="java.util.HashMap">
+		UPDATE tj_insurance SET click_num = click_num+1 
+		<isEqual property="isSuccess" compareValue="11">
+		  , isSuccess = isSuccess+1 
+		  </isEqual>
+		WHERE date_time =#date_time:varchar# and click_type=#type:varchar#
+		
+	</update>
+</sqlMap>

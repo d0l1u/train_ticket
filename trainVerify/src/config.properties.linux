@@ -1,0 +1,8 @@
+##### accountService ##### 
+getOrderAccount=http://10.16.22.31:19020/accountN/getOrderAccount
+getAccountMappingNum=http://10.16.22.31:19020/accountN/getAccountMappingNum
+getChannelAccount=http://10.16.22.31:19020/accountN/getChannelAccount
+
+##### ip service ##### 
+getIpById=http://10.3.12.103:19000/ipInfo/getIpInfoById
+getIpByType=http://10.3.12.103:19000/ipInfo/getIpInfo

@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/mvc  
+	http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+	<context:component-scan base-package="com.l9e.transaction.job"/>
+	
+	<!-- 总管理类,执行调度程序  -->
+	<bean id="startQuertz"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="TjPicJob_Time" />
+				<ref bean="ClearTableRh_pictureJob_Time" />
+				<ref bean="TjRhPicHourJob_Timer"/>
+				<ref bean="TjRhLoginHourJob_Timer"/>
+				<ref bean="TjCodeRateJob_Timer" />
+				<ref bean="TjQunarGetCodeJob_Timer" />
+				<ref bean="TjQunarErrorSentJob_Timer" />
+				 
+				<!--
+				<ref bean="lZErrorSentJob_Timer" />
+				<ref bean="lZGetCodeJob_Timer" />
+				<ref bean="lZUploadJob_Timer"/>
+				<ref bean="lZUploadJob_Timer"/>
+				 -->
+				
+				<ref bean="Tjdama2UploadJob_Timer" />
+				<ref bean="Tjdama2GetCodeJob_Timer" />
+				<ref bean="Tjdama2ErrorSentJob_Timer" />
+				
+				<!--	
+				<ref bean="moveFileTimer"/>
+				-->
+				 <ref bean="qunarCodeTimer"/>
+				 <ref bean="TcErrorSentJob_Timer" />
+				 <ref bean="RkErrorSentJob_Timer" />
+				
+			</list>
+		</property>
+	</bean>
+
+
+	<!-- 移动重命名文件  
+	<bean id="moveFileTimer" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="moveFileTask"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 45 13 * * ?</value>
+		</property>
+	</bean>
+	<bean id="moveFileTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="qunarCodeJob"/>
+		</property>
+		<property name="targetMethod">
+			<value>resetFileName</value>
+		</property>
+	</bean>
+	-->
+	<!-- 自动使用qunar打码 -->
+	<bean id="qunarCodeTimer" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="qunarCodeTask"/>
+		</property>
+		<property name="cronExpression">
+			<value>0/3 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="qunarCodeTask" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="qunarCodeJob"/>
+		</property>
+		<property name="targetMethod">
+			<value>qunarCode</value>
+		</property>
+	</bean>
+
+	<!-- 统计插入图片tj_rh_picture表 -->
+	<bean id="TjPicJob_Time" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="TjPicJob_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 0/10 * * * ?</value>
+		</property>
+	</bean>
+	<bean id="TjPicJob_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="TjPicJob"/>
+		</property>
+		<property name="targetMethod">
+			<value>queryTjPic</value>
+		</property>
+	</bean>
+	
+	<!-- 自动清空rh_picture表中今日之前的数据 -->
+	<bean id="ClearTableRh_pictureJob_Time" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="ClearTableRh_pictureJob_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 0 3 * * ?</value>
+		</property>
+	</bean>
+	<bean id="ClearTableRh_pictureJob_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="clearTableRh_pictureJob"/>
+		</property>
+		<property name="targetMethod">
+			<value>clearTable</value>
+		</property>
+	</bean>
+
+	<!-- 自动统计插入tj_rhPic_hour表中的数据 -->
+	<bean id="TjRhPicHourJob_Timer" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="TjRhPicHourJob_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 0/10 * * * ?</value>
+		</property>
+	</bean>
+	<bean id="TjRhPicHourJob_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="tjRhPicHourJob"/>
+		</property>
+		<property name="targetMethod">
+			<value>queryRhPicHour</value>
+		</property>
+	</bean>
+	
+	
+	
+	
+	<!-- 联众打码 上传图片-->
+	<bean id="lZUploadJob_Timer" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="lZUploadJob_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0/5 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="lZUploadJob_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="lZUploadJob"/>
+		</property>
+		<property name="targetMethod">
+			<value>upload</value>
+		</property>
+	</bean>
+	
+	
+	<!-- 联众打码 获取code -->
+	<bean id="lZGetCodeJob_Timer" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="lZGetCodeJob_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0/5 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="lZGetCodeJob_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="lZGetCodeJob"/>
+		</property>
+		<property name="targetMethod">
+			<value>getCode</value>
+		</property>
+	</bean>
+	
+	
+	<!-- 联众打码 上传错误码 -->
+	<bean id="lZErrorSentJob_Timer" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="lZErrorSentJob_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 0/2 * * * ?</value>
+		</property>
+	</bean>
+	<bean id="lZErrorSentJob_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="lZErrorSentJob"/>
+		</property>
+		<property name="targetMethod">
+			<value>errorUpload</value>
+		</property>
+	</bean>
+	
+	
+	<!-- 登入次数的分时统计 -->
+	<bean id="TjRhLoginHourJob_Timer" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="TjRhLoginHourJob_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 0/10 * * * ? </value>
+		</property>
+	</bean>
+	<bean id="TjRhLoginHourJob_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="tjRhPicHourJob"/>
+		</property>
+		<property name="targetMethod">
+			<value>queryRhLoginHour</value>
+		</property>
+	</bean>
+	<!-- 自动统计插入tj_code_rate表中的数据 -->
+	<bean id="TjCodeRateJob_Timer" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="TjCodeRateJob_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0 5/10 * * * ?</value>
+		</property>
+	</bean>
+	<bean id="TjCodeRateJob_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="tjCodeRateJob"/>
+		</property>
+		<property name="targetMethod">
+			<value>queryCodeRate</value>
+		</property>
+	</bean>
+	
+	<!-- 自动上传打码兔打码的图片 -->
+	<bean id="Tjdama2UploadJob_Timer" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="Tjdama2UploadJob_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0/1 * * * * ?</value>
+		</property>
+	</bean>
+	
+	<bean id="Tjdama2UploadJob_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="dama2UploadJob"/>
+		</property>
+		<property name="targetMethod">
+			<value>upload</value>
+		</property>
+	</bean>
+	
+	<!-- 自动获得打码兔打码的结果 -->
+	<bean id="Tjdama2GetCodeJob_Timer" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="Tjdama2GetCodeJob_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0/1 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="Tjdama2GetCodeJob_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="dama2GetCodeJob"/>
+		</property>
+		<property name="targetMethod">
+			<value>getCode</value>
+		</property>
+	</bean>
+	
+	<!-- 自动报告打码兔打码的错误结果 -->
+	<bean id="Tjdama2ErrorSentJob_Timer" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="Tjdama2ErrorSentJob_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0/5 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="Tjdama2ErrorSentJob_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="dama2ErrorSentJob"/>
+		</property>
+		<property name="targetMethod">
+			<value>errorReport</value>
+		</property>
+	</bean>
+
+
+
+
+
+	
+	<!-- 自动获得qunar打码的结果 -->
+	<bean id="TjQunarGetCodeJob_Timer" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="TjQunarGetCodeJob_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0/1 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="TjQunarGetCodeJob_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="qunarGetCodeJob"/>
+		</property>
+		<property name="targetMethod">
+			<value>getCode</value>
+		</property>
+	</bean>
+	
+	<!-- 自动报告qunar打码的错误结果 -->
+	<bean id="TjQunarErrorSentJob_Timer" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="TjQunarErrorSentJob_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0/5 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="TjQunarErrorSentJob_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="qunarErrorSentJob"/>
+		</property>
+		<property name="targetMethod">
+			<value>errorReport</value>
+		</property>
+	</bean>
+
+
+	<!-- 自动报告同程打码的错误结果 -->
+	<bean id="TcErrorSentJob_Timer" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="tcErrorSentJob_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0/20 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="tcErrorSentJob_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="tcErrorSentJob"/>
+		</property>
+		<property name="targetMethod">
+			<value>errorTcReport</value>
+		</property>
+	</bean>
+	
+	<!-- 自动报告ruokuai/yunsu打码的错误结果 -->
+	<bean id="RkErrorSentJob_Timer" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="rkErrorSentJob_Task"/>
+		</property>
+		<property name="cronExpression">
+			<value>0/20 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="rkErrorSentJob_Task" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="rkErrorSentJob"/>
+		</property>
+		<property name="targetMethod">
+			<value>errorRkReport</value>
+		</property>
+	</bean>
+	
+</beans>

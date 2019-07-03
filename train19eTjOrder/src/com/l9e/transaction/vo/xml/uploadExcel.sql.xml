@@ -1,0 +1,915 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="uploadExcel">
+<!-- 查询所有订单 -->
+	<select id="queryExcelList"  parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		select excel_id ,excel_url ,create_time,excel_name ,excel_channel,excel_type from elong_excel 
+		where 1=1
+		<isNotEmpty prepend=" and " property="begin_info_time">
+			create_time<![CDATA[>=]]>#begin_info_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_info_time">
+			create_time<![CDATA[<]]>DATE_ADD(#end_info_time#,INTERVAL 1 DAY)
+					</isNotEmpty>
+		<isNotEmpty prepend=" and " property="channel">
+			excel_channel in
+				<iterate open="(" close=")" conjunction=","
+					property="channel">
+					#channel[]#
+				</iterate>
+		</isNotEmpty>
+		order by create_time desc LIMIT #everyPagefrom:Integer#,
+		#pageSize:Integer#
+	</select>
+	
+	<select id="queryExcelListCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		select count(1) from elong_excel 
+		where 1=1
+		<isNotEmpty prepend=" and " property="begin_info_time">
+			create_time<![CDATA[>=]]>#begin_info_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_info_time">
+			create_time<![CDATA[<]]>DATE_ADD(#end_info_time#,INTERVAL 1 DAY)
+					</isNotEmpty>
+		<isNotEmpty prepend=" and " property="channel">
+			excel_channel in
+				<iterate open="(" close=")" conjunction=","
+					property="channel">
+					#channel[]#
+				</iterate>
+		</isNotEmpty>
+	</select>
+	
+	
+	<insert id="insertIntoExcel" parameterClass="java.util.HashMap">
+		INSERT INTO elong_excel (excel_url ,create_time,excel_name ,excel_channel,excel_type) 
+		VALUES (#excel_url#,now(),#excel_name#,#excel_channel#,#excel_type#)
+	</insert>
+	
+	<delete id="deleteExcelById" parameterClass="java.lang.String" >
+		DELETE FROM elong_excel WHERE excel_id = #excel_id#
+	</delete>
+	
+	
+	<!-- 查询退款详情 -->
+	<select id="queryTcRefundList" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT 
+		 er.order_id,qo.out_ticket_billno,er.refund_type,
+		 CONVERT(er.refund_money, CHAR) AS refund_money,
+		 DATE_FORMAT(er.create_time, '%Y-%m-%d %H:%i:%s') AS create_time,
+		 DATE_FORMAT(er.verify_time, '%Y-%m-%d %H:%i:%s') AS verify_time
+		FROM
+		  elong_orderinfo_refundstream AS er
+		LEFT JOIN
+		  elong_orderinfo AS qo ON qo.order_id = er.order_id  
+		WHERE 1 = 1 
+		AND er.refund_status='11'
+		AND er.notify_status='22'
+		AND er.channel=#channel#
+		<isNotEmpty prepend=" and " property="begin_time">
+			er.verify_time<![CDATA[>=]]>#begin_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			er.verify_time<![CDATA[<]]>DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		</isNotEmpty>
+	</select>
+	
+	<!-- 查询车票明细-->
+	<select id="getElongAlterCpList" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT 
+		  user_name,fee,
+		  CONVERT(cp.buy_money,CHAR) AS buy_money,
+		  CONVERT(cp.change_buy_money,CHAR) AS change_buy_money 
+		FROM
+		   elong_change_cp cp
+		WHERE cp.change_id = #change_id:varchar# 
+	</select>
+	
+	
+	<!-- 获取按条件查询所有的订单 -->
+	<select id="queryTcAlterList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  change_id,
+		  order_id,
+		  out_ticket_billno,
+		  CONVERT(fee,CHAR) AS fee,
+		  bank_pay_seq,
+		  change_notify_finish_time 
+		FROM
+		  elong_orderinfo_change 
+		WHERE 1 = 1 
+			and change_status ='34'
+			and change_notify_status ='222'
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_time">
+					change_notify_finish_time <![CDATA[>=]]>#begin_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+					change_notify_finish_time <![CDATA[<]]> DATE_ADD(#end_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="channel">
+				merchant_id = #channel#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	
+	<!-- 获取按条件查询所有的订单 -->
+	<select id="queryAlterList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  change_id,
+		  order_id,
+		  create_time,
+		  out_ticket_billno,
+		  CONVERT(fee,CHAR) AS fee,
+		  bank_pay_seq,
+		  change_notify_finish_time 
+		FROM
+		  elong_orderinfo_change 
+		WHERE 1 = 1 
+			and change_status ='34' 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="change_notify_status">
+					change_notify_status =#change_notify_status#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_time">
+					create_time <![CDATA[>=]]>#begin_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+					create_time <![CDATA[<]]> DATE_ADD(#end_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="channel">
+				merchant_id = #channel#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	
+	
+	<!-- 查询普通订单信息 -->
+	<select id="queryTcBookList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT order_id,out_ticket_billno,
+			CONVERT(buy_money,CHAR) AS all_buy_money,
+			CONVERT(ticket_num, CHAR) ticket_num,
+			DATE_FORMAT(out_ticket_time, '%Y-%m-%d %H:%i:%s') AS out_ticket_time 
+		FROM elong_orderinfo 
+		WHERE 1=1 
+		and order_status='33' and notice_status='22' and channel=#channel#
+		<isNotEmpty prepend=" and " property="begin_time">
+			out_ticket_time<![CDATA[>=]]>#begin_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			out_ticket_time<![CDATA[<]]>DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		</isNotEmpty>
+	</select>
+	
+	<select id="queryAllBook" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT order_id,out_ticket_time,buy_money,bank_pay_seq,'11' AS ticket_type,channel FROM cp_orderinfo 
+		where 1=1 
+		<isNotEmpty prepend=" and " property="begin_time">
+			create_time<![CDATA[>=]]>DATE_ADD(#begin_time#,INTERVAL -1 DAY)
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			create_time<![CDATA[<]]>DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		</isNotEmpty>
+			AND order_status ='99' AND manual_order not in ('11','22','44')
+		<isNotEmpty prepend=" and " property="begin_time">
+			out_ticket_time<![CDATA[>=]]>#begin_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			out_ticket_time<![CDATA[<]]>DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		</isNotEmpty>
+	</select>
+	
+	
+	<!-- 查询普通订单信息 -->
+	<select id="queryElongBookCp" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+			SELECT qunar.order_id,ec.cp_id,qunar.out_ticket_billno,ec.user_name,qunar.order_name,
+			CONVERT(ec.pay_money,CHAR) AS pay_money,
+			CONVERT(ec.buy_money,CHAR) AS buy_money,
+			CONVERT(ec.pay_money-ec.buy_money,CHAR) AS differ, 
+			CONVERT(qunar.pay_money,CHAR) AS all_pay_money,
+			CONVERT(qunar.buy_money,CHAR) AS all_buy_money,
+			CONVERT(qunar.pay_money-qunar.buy_money,CHAR) AS all_differ, 
+			DATE_FORMAT(qunar.order_time,'%Y-%m-%d %H:%i:%s') AS order_time, 
+			DATE_FORMAT(qunar.from_time,'%Y-%m-%d %H:%i:%s') AS from_time, qunar.channel,
+			DATE_FORMAT(qunar.out_ticket_time, '%Y-%m-%d %H:%i:%s') AS out_ticket_time, cp.out_ticket_account,
+			cp.bank_pay_seq, CONVERT(qunar.ticket_num, CHAR) ticket_num
+		FROM elong_orderinfo AS qunar
+			LEFT JOIN cp_orderinfo AS cp ON qunar.order_id=cp.order_id 
+		LEFT JOIN elong_orderinfo_cp AS ec ON qunar.order_id=ec.order_id 
+		WHERE 1=1 
+		<isNotEmpty prepend=" and " property="order_id">
+			qunar.order_id=#order_id#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="out_ticket_billno">
+			quanr.out_ticket_billno=#out_ticket_billno#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="begin_time">
+			qunar.create_time
+			<![CDATA[>=]]>#begin_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			qunar.create_time
+			<![CDATA[<]]>
+			DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="order_status">
+			qunar.order_status in
+			<iterate open="(" close=")" conjunction=","
+				property="order_status">
+				#order_status[]#
+			</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="notify_status">
+			qunar.notice_status in
+			<iterate open="(" close=")" conjunction=","
+				property="notify_status">
+				#notify_status[]#
+			</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="channel">
+						qunar.channel in
+						<iterate open="(" close=")" conjunction=","
+							property="channel">
+							#channel[]#
+						</iterate>
+	</isNotEmpty>
+	</select>
+	
+	
+	<!-- 查询退款订单信息 -->
+	<select id="queryElongRefundTicket" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT 
+		  qunar.refund_seq,qo.order_name,
+		  qunar.order_id, qunar.cp_id,
+		  CONVERT(qunar.refund_money, CHAR) AS refund_money,
+		  DATE_FORMAT(qunar.create_time, '%Y-%m-%d %H:%i:%s') AS create_time,
+		  DATE_FORMAT(qunar.verify_time, '%Y-%m-%d %H:%i:%s') AS verify_time,
+		  DATE_FORMAT(qunar.user_time, '%Y-%m-%d %H:%i:%s') AS user_time,
+		  qunar.refund_12306_seq,
+		  CONVERT(qunar.alter_tickets_money, CHAR) AS alter_tickets_money,
+		  CONVERT(qunar.actual_refund_money, CHAR) actual_refund_money,
+		  qunar.detail_refund,
+		  qunar.detail_alter_tickets,
+		  qunar.change_ticket_info,qunar.channel,qo.out_ticket_billno,qunar.refund_type,
+		  CONVERT(qo.ticket_num, CHAR) ticket_num
+		FROM
+		  elong_orderinfo_refundstream AS qunar
+		LEFT JOIN
+		  elong_orderinfo AS qo ON qo.order_id = qunar.order_id  
+		WHERE 1 = 1 
+		<isNotEmpty prepend=" and " property="order_id">
+			qunar.order_id=#order_id#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="refund_12306_seq">
+			qunar.refund_12306_seq=#refund_12306_seq#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="begin_time">
+			qunar.verify_time
+			<![CDATA[>=]]>#begin_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			qunar.verify_time
+			<![CDATA[<]]>
+			DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="refund_status">
+			qunar.refund_status in
+			<iterate open="(" close=")" conjunction=","
+				property="refund_status">
+				#refund_status[]#
+			</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="notify_status">
+				qunar.notify_status in
+				<iterate open="(" close=")" conjunction=","
+					property="notify_status">
+					#notify_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+		<isNotEmpty prepend=" and " property="refund_type">
+			qunar.refund_type in
+			<iterate open="(" close=")" conjunction=","
+				property="refund_type">
+				#refund_type[]#
+			</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="channel">
+						qunar.channel in
+						<iterate open="(" close=")" conjunction=","
+							property="channel">
+							#channel[]#
+						</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="opt_person">
+			qunar.opt_person=#opt_person#
+		</isNotEmpty>
+	</select>
+	
+	<select id="queryElongRefundTicketName" parameterClass="java.lang.String" resultClass="java.lang.String">
+       SELECT ec.user_name FROM  elong_orderinfo_cp AS ec WHERE ec.cp_id=#cp_id#
+    </select>
+    
+    
+    <!-- 19e退票管理 -->
+	<select id="queryl9eRefundList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  hm.order_id,
+		  hm.eop_order_id,
+		  hm.cp_id,
+		  hm.refund_money,
+		  hm.actual_refund_money,
+		  DATE_FORMAT(hm.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+		  DATE_FORMAT(hm.verify_time,'%Y-%m-%d %H:%i:%s') AS verify_time,
+		  DATE_FORMAT(hm.refund_plan_time,'%Y-%m-%d %H:%i:%s') AS refund_plan_time,
+		  (hu.user_phone) AS dealer_phone,
+		  hm.alter_tickets_money,
+		  hm.refund_12306_seq,
+		  hm.change_ticket_info
+		FROM
+		  hc_orderinfo_refundstream hm 
+		  LEFT JOIN
+		  hc_orderinfo h 
+		  ON h.order_id = hm.order_id 
+		  LEFT JOIN
+		  hc_userinfo hu 
+		  ON h.dealer_id = hu.user_id 
+		WHERE 
+		 hm.refund_plan_time	<![CDATA[>=]]>#begin_time#
+		and hm.refund_plan_time<![CDATA[<]]>DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		and hm.refund_status in ('11','22','33','44')
+		and hm.refund_type in ('1','6')
+	</select>
+	
+	<!-- inner退票 -->
+	<select id="queryInnerRefundList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  hm.order_id,
+		  hm.cp_id,
+		  hm.refund_money,
+		  hm.actual_refund_money,
+		  DATE_FORMAT(hm.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+		  DATE_FORMAT(hm.verify_time,'%Y-%m-%d %H:%i:%s') AS verify_time,
+		  DATE_FORMAT(hm.refund_plan_time,'%Y-%m-%d %H:%i:%s') AS refund_plan_time,
+		  (h.user_id) AS user_id,
+		  hm.alter_tickets_money,
+		  hm.refund_12306_seq,
+		  change_ticket_info
+		FROM
+		  inner_orderinfo_refundstream hm 
+		  LEFT JOIN
+		  inner_orderinfo h 
+		  ON h.order_id = hm.order_id 
+		  LEFT JOIN
+		  hc_userinfo hu 
+		  ON h.user_id = hu.user_id 
+		WHERE 
+		 hm.create_time	<![CDATA[>=]]>#begin_time#
+		and hm.create_time <![CDATA[<]]>DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		and hm.refund_status ='44'
+		and hm.refund_type ='1'
+	</select>
+	
+	
+	<!-- 合作商户退票 -->
+	<select id="queryExtRefundList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  hm.order_id,
+		  h.eop_order_id,
+		  hm.cp_id,
+		  hm.refund_money,
+		  hm.actual_refund_money,
+		  DATE_FORMAT(hm.create_time, '%Y-%m-%d %H:%i:%s') AS create_time,
+		  DATE_FORMAT(hm.verify_time, '%Y-%m-%d %H:%i:%s') AS verify_time,
+		  DATE_FORMAT(hm.refund_plan_time, '%Y-%m-%d %H:%i:%s') AS refund_plan_time,
+		  (h.merchant_id) AS dealer_phone,
+		  hm.alter_tickets_money,
+		  hm.refund_12306_seq,
+		  hm.change_ticket_info,
+		  h.ticket_num
+		FROM
+		  ext_orderinfo_refundstream hm LEFT JOIN ext_orderinfo h ON h.order_id = hm.order_id 
+		  LEFT JOIN hc_userinfo hu ON h.merchant_id = hu.user_id 
+		  LEFT JOIN ext_orderinfo_refundnotify fy ON fy.refund_seq=hm.refund_seq 
+	    WHERE 
+	     hm.create_time	<![CDATA[>=]]>#begin_time#
+		and hm.create_time <![CDATA[<]]>DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		and hm.refund_status in ('11','33')
+		and hm.refund_type in ('1')
+	</select>
+
+
+	<!-- 高铁管家退票 -->
+	<select id="queryGtRefundList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  hm.order_id,
+		  h.eop_order_id,
+		  hm.cp_id,
+		  hm.refund_money,
+		  hm.actual_refund_money,
+		  DATE_FORMAT(hm.create_time, '%Y-%m-%d %H:%i:%s') AS create_time,
+		  DATE_FORMAT(hm.verify_time, '%Y-%m-%d %H:%i:%s') AS verify_time,
+		  DATE_FORMAT(hm.refund_plan_time, '%Y-%m-%d %H:%i:%s') AS refund_plan_time,
+		  (h.merchant_id) AS dealer_phone,
+		  hm.alter_tickets_money,
+		  hm.refund_12306_seq,
+		  hm.change_ticket_info,
+		  h.ticket_num
+		FROM
+		  gt_orderinfo_refundstream hm LEFT JOIN gt_orderinfo h ON h.order_id = hm.order_id 
+		  LEFT JOIN hc_userinfo hu ON h.merchant_id = hu.user_id 
+		  LEFT JOIN gt_orderinfo_refundnotify fy ON fy.refund_seq=hm.refund_seq 
+	    WHERE 
+	     hm.create_time	<![CDATA[>=]]>#begin_time#
+		and hm.create_time <![CDATA[<]]>DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		and hm.refund_status in ('11','33')
+		and hm.refund_type in ('1','2')
+	</select>
+	
+	<!-- 携程退票 -->
+	<select id="queryXcRefundList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  hm.order_id,
+		  h.eop_order_id,
+		  hm.cp_id,
+		  hm.refund_money,
+		  hm.actual_refund_money,
+		  DATE_FORMAT(hm.create_time, '%Y-%m-%d %H:%i:%s') AS create_time,
+		  DATE_FORMAT(hm.verify_time, '%Y-%m-%d %H:%i:%s') AS verify_time,
+		  DATE_FORMAT(hm.refund_plan_time, '%Y-%m-%d %H:%i:%s') AS refund_plan_time,
+		  (h.merchant_id) AS dealer_phone,
+		  hm.alter_tickets_money,
+		  hm.refund_12306_seq,
+		  hm.change_ticket_info,
+		  h.ticket_num
+		FROM
+		  xc_orderinfo_refundstream hm LEFT JOIN xc_orderinfo h ON h.order_id = hm.order_id 
+		  LEFT JOIN hc_userinfo hu ON h.merchant_id = hu.user_id 
+		  LEFT JOIN xc_orderinfo_refundnotify fy ON fy.refund_seq=hm.refund_seq 
+	    WHERE 
+	     hm.create_time	<![CDATA[>=]]>#begin_time#
+		and hm.create_time <![CDATA[<]]>DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		and hm.refund_status in ('11','33')
+		and hm.refund_type in ('1','2')
+	</select>
+
+	<!-- app:退票 -->
+	<select id="queryAppRefundList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  hm.order_id,
+		  hm.cp_id,
+		  hm.refund_money,
+		  hm.actual_refund_money,
+		  DATE_FORMAT(hm.create_time, '%Y-%m-%d %H:%i:%s') AS create_time,
+		  DATE_FORMAT(hm.verify_time, '%Y-%m-%d %H:%i:%s') AS verify_time,
+		  DATE_FORMAT(hm.refund_plan_time, '%Y-%m-%d %H:%i:%s') AS refund_plan_time,
+		  (au.user_phone) AS dealer_phone,
+		  hm.alter_tickets_money,
+		  hm.refund_12306_seq,
+		  hm.change_ticket_info,
+		  hm.bank_account,hm.bank_openName,hm.bank_type,hm.bank_username
+		FROM
+		  app_orderinfo_refundstream hm LEFT JOIN app_orderinfo h ON h.order_id = hm.order_id 
+		LEFT JOIN app_userinfo au ON au.user_id=h.user_id 
+		WHERE 
+		 hm.create_time	<![CDATA[>=]]>#begin_time#
+		and hm.create_time <![CDATA[<]]>DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		and hm.refund_status in ('11','44')
+		and hm.refund_type in ('1','3')
+	</select>	
+	
+	
+	<!-- 查询退款订单信息 -->
+	<select id="queryQunarRefundList" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT 
+		  qunar.refund_seq,
+		  qunar.order_id,
+		  CONVERT(qunar.refund_money, CHAR) AS refund_money,
+		  DATE_FORMAT(
+		    qunar.create_time,
+		    '%Y-%m-%d %H:%i:%s'
+		  ) AS create_time,
+		  DATE_FORMAT(
+		    qunar.verify_time,
+		    '%Y-%m-%d %H:%i:%s'
+		  ) AS verify_time,
+		  qunar.refund_12306_seq,
+		  CONVERT(qunar.alter_tickets_money, CHAR) AS alter_tickets_money,
+		  CONVERT(qunar.actual_refund_money, CHAR) actual_refund_money,
+		  qunar.detail_refund,
+		  qunar.detail_alter_tickets,
+		  qunar.change_ticket_info,
+		  qunar.order_type 
+		FROM
+		  qunar_orderinfo_refund AS qunar 
+		WHERE  
+		 qunar.create_time	<![CDATA[>=]]>#begin_time#
+		and qunar.create_time <![CDATA[<]]>DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		and qunar.refund_status ='11'
+		and qunar.notify_status ='22'
+	</select>
+	
+		<!-- 查询退款订单信息 -->
+	<select id="queryElongRefundList" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT 
+		  elong.refund_seq,qo.order_name,
+		  elong.order_id, elong.cp_id,
+		  CONVERT(elong.refund_money, CHAR) AS refund_money,
+		  DATE_FORMAT(elong.create_time, '%Y-%m-%d %H:%i:%s') AS create_time,
+		  DATE_FORMAT(elong.verify_time, '%Y-%m-%d %H:%i:%s') AS verify_time,
+		  DATE_FORMAT(elong.user_time, '%Y-%m-%d %H:%i:%s') AS user_time,
+		  elong.refund_12306_seq,
+		  CONVERT(elong.alter_tickets_money, CHAR) AS alter_tickets_money,
+		  CONVERT(elong.actual_refund_money, CHAR) actual_refund_money,
+		  elong.detail_refund,
+		  elong.detail_alter_tickets,
+		  elong.change_ticket_info,elong.channel,qo.out_ticket_billno,elong.refund_type,
+		  CONVERT(qo.ticket_num, CHAR) ticket_num
+		FROM
+		  elong_orderinfo_refundstream AS elong
+		LEFT JOIN
+		  elong_orderinfo AS qo ON qo.order_id = elong.order_id  
+		WHERE
+		 elong.refund_status='11'
+		AND elong.notify_status='22'
+		and	elong.verify_time<![CDATA[>=]]>#begin_time#
+		and	elong.verify_time<![CDATA[<]]>DATE_ADD(#end_time#,INTERVAL 1 DAY)
+	</select>
+	
+	<!-- 查询退款订单信息 -->
+	<select id="queryMtRefundList" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT 
+		  mt.refund_seq,qo.order_name,
+		  mt.order_id, mt.cp_id,
+		  CONVERT(mt.refund_money, CHAR) AS refund_money,
+		  DATE_FORMAT(mt.create_time, '%Y-%m-%d %H:%i:%s') AS create_time,
+		  DATE_FORMAT(mt.verify_time, '%Y-%m-%d %H:%i:%s') AS verify_time,
+		  DATE_FORMAT(mt.user_time, '%Y-%m-%d %H:%i:%s') AS user_time,
+		  mt.refund_12306_seq,
+		  CONVERT(mt.alter_tickets_money, CHAR) AS alter_tickets_money,
+		  CONVERT(mt.actual_refund_money, CHAR) actual_refund_money,
+		  mt.detail_refund,
+		  mt.detail_alter_tickets,
+		  mt.change_ticket_info,qo.out_ticket_billno,mt.refund_type,
+		  CONVERT(qo.ticket_num, CHAR) ticket_num
+		FROM
+		  mt_orderinfo_refundstream AS mt
+		LEFT JOIN
+		  mt_orderinfo AS qo ON qo.order_id = mt.order_id  
+		WHERE
+		 mt.refund_status='11'
+		AND mt.notify_status='22'
+		and	mt.verify_time<![CDATA[>=]]>#begin_time#
+		and	mt.verify_time<![CDATA[<]]>DATE_ADD(#end_time#,INTERVAL 1 DAY)
+	</select>
+	
+	
+	<!-- 查询退款订单信息 -->
+	<select id="queryTuniuRefundList" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT 
+		  tuniu.refund_seq,qo.order_name,
+		  tuniu.order_id, tuniu.cp_id,
+		  CONVERT(tuniu.refund_money, CHAR) AS refund_money,
+		  DATE_FORMAT(tuniu.create_time, '%Y-%m-%d %H:%i:%s') AS create_time,
+		  DATE_FORMAT(tuniu.verify_time, '%Y-%m-%d %H:%i:%s') AS verify_time,
+		  DATE_FORMAT(tuniu.user_time, '%Y-%m-%d %H:%i:%s') AS user_time,
+		  tuniu.refund_12306_seq,
+		  CONVERT(tuniu.actual_refund_money, CHAR) AS actual_refund_money,
+		  CONVERT(tuniu.detail_alter, CHAR) AS  alter_tickets_money,
+		  tuniu.detail_refund,
+		  qo.out_ticket_billno,tuniu.refund_type,
+		  CONVERT(qo.ticket_num, CHAR) ticket_num
+		FROM
+		  tuniu_orderinfo_refund AS tuniu
+		LEFT JOIN
+		  tuniu_orderinfo AS qo ON qo.order_id = tuniu.order_id  
+		WHERE
+		 tuniu.refund_status='11'
+		and	tuniu.create_time<![CDATA[>=]]>#begin_time#
+		and	tuniu.create_time<![CDATA[<]]>DATE_ADD(#end_time#,INTERVAL 1 DAY)
+	</select>
+	
+	<!-- 跑数据专用 -->
+	<select id="queryTestList"  parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		  SELECT cp.order_id AS key1,ca.acc_username AS key2 FROM cp_orderInfo cp LEFT JOIN cp_accountinfo ca ON cp.account_id=ca.acc_id
+		where 1=1
+		<isNotEmpty prepend=" and " property="begin_time">
+			cp.create_time<![CDATA[>=]]>#begin_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			cp.create_time<![CDATA[<]]>DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		</isNotEmpty>
+		 AND cp.order_status='99'
+	</select>
+	
+	<!-- 跑数据专用 -->
+	<select id="queryTestMap"  parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		select user_name AS  test1,cert_type AS test2,cert_no AS test3 from cp_orderinfo_cp 
+		where order_id=#order_id:VARCHAR# AND ticket_type=0
+	</select>
+	
+	
+	<!-- 插入同程对账数据到表格 -->
+	<insert id="tcAddTcCheck" parameterClass="java.util.HashMap">
+		INSERT INTO elong_billinfo (
+		   create_time
+		<isNotEmpty prepend=" , " property="order_id">
+			order_id
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="out_ticket_billno">
+			out_ticket_billno
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="settlement_type">
+			settlement_type
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="amount">
+			amount
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="quantity">
+			quantity
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="trade_date">
+			trade_date
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="settlement_date">
+			settlement_date
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="channel">
+			channel
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="account_balance">
+			account_balance
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="opt_person">
+			opt_person
+		</isNotEmpty>
+		) VALUES (
+			now()
+		<isNotEmpty prepend=" , " property="order_id">
+			#order_id#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="out_ticket_billno">
+			#out_ticket_billno#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="settlement_type">
+			#settlement_type:Integer#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="amount">
+			#amount#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="quantity">
+			#quantity:Integer#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="trade_date">
+			#trade_date#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="settlement_date">
+			#settlement_date#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="channel">
+			#channel#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="account_balance">
+			#account_balance#
+		</isNotEmpty>
+		<isNotEmpty prepend=" , " property="opt_person">
+			#opt_person#
+		</isNotEmpty>
+		)
+	</insert>
+	
+	<!-- 查询高铁管家预订信息 -->
+	<select id="queryGtBookList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT gt.order_id,gt.out_ticket_billno,gt.merchant_order_id,
+			CONVERT(gt.buy_money,CHAR) AS all_buy_money,
+			CONVERT(gt.ticket_num, CHAR) ticket_num,
+			DATE_FORMAT(gr.notify_finish_time, '%Y-%m-%d %H:%i:%s') AS notify_finish_time,
+			DATE_FORMAT(gt.out_ticket_time, '%Y-%m-%d %H:%i:%s') AS out_ticket_time 
+		FROM gt_orderinfo gt LEFT JOIN gt_orderinfo_returnnotify gr ON gt.order_id=gr.order_id
+		WHERE 1=1 
+		<isNotEmpty prepend=" and " property="order_status">
+			gt.order_status in
+				<iterate open="(" close=")" conjunction=","
+					property="order_status">
+					#order_status[]#
+				</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="notify_status">
+			gr.notify_status in
+				<iterate open="(" close=")" conjunction=","
+					property="notify_status">
+					#notify_status[]#
+				</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="begin_time">
+			gr.notify_finish_time<![CDATA[>=]]>#begin_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			gr.notify_finish_time<![CDATA[<]]>DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		</isNotEmpty>
+	</select>
+	
+	<!-- 高铁管家退票 -->
+	<select id="queryGtRefundNotifyList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  hm.order_id,
+		  h.merchant_order_id,
+		  h.out_ticket_billno,
+		  hm.cp_id,
+		  hm.refund_money,
+		  hm.actual_refund_money,
+		  DATE_FORMAT(hm.create_time, '%Y-%m-%d %H:%i:%s') AS create_time,
+		  DATE_FORMAT(hm.verify_time, '%Y-%m-%d %H:%i:%s') AS verify_time,
+		  DATE_FORMAT(fy.notify_finish_time, '%Y-%m-%d %H:%i:%s') AS notify_finish_time,
+		  hm.refund_12306_seq
+		FROM
+		  gt_orderinfo_refundstream hm LEFT JOIN gt_orderinfo h ON h.order_id = hm.order_id 
+		  LEFT JOIN gt_orderinfo_refundnotify fy ON fy.refund_seq=hm.refund_seq 
+	    WHERE 
+		 hm.refund_status ='33' and fy.notify_status ='33'
+	    and fy.notify_finish_time <![CDATA[>=]]>#begin_time#
+		and fy.notify_finish_time <![CDATA[<]]>DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		
+	</select>
+	
+	<!-- 获取按条件查询高铁改签订单 -->
+	<select id="queryGtgjAlterList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap"> 
+		SELECT gt.merchant_order_id,
+		  c.change_id,
+		  c.order_id,
+		  c.create_time,
+		  c.out_ticket_billno,
+		  CONVERT(c.fee,CHAR) AS fee,
+		  c.bank_pay_seq,
+		  c.change_notify_finish_time 
+		FROM
+		  elong_orderinfo_change c,gt_orderinfo gt
+		WHERE 1 = 1 
+			and c.change_status ='34'
+			and c.change_notify_status ='222' and c.order_id = gt.order_id
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_time">
+					c.change_notify_finish_time <![CDATA[>=]]>#begin_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+					c.change_notify_finish_time <![CDATA[<]]> DATE_ADD(#end_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="channel">
+				c.merchant_id = #channel#
+			</isNotEmpty> 
+		</dynamic>
+	</select>
+	
+	<!-- 查询美团预订信息 -->
+	<select id="queryMtBookList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT mt.order_id,mt.out_ticket_billno,
+			CONVERT(mt.buy_money,CHAR) AS all_buy_money,
+			CONVERT(mt.ticket_num, CHAR) ticket_num,
+			DATE_FORMAT(mt.out_ticket_time, '%Y-%m-%d %H:%i:%s') AS out_ticket_time 
+		FROM mt_orderinfo mt 
+		WHERE 1=1 
+		<isNotEmpty prepend=" and " property="begin_time">
+			mt.out_ticket_time<![CDATA[>=]]>#begin_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			mt.out_ticket_time<![CDATA[<]]>DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="order_status">
+			mt.order_status in
+				<iterate open="(" close=")" conjunction=","
+					property="order_status">
+					#order_status[]#
+				</iterate>
+		</isNotEmpty>
+	</select>
+	
+	<!-- 查询携程预订信息 -->
+	<select id="queryXcBookList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT xc.order_id,xc.out_ticket_billno,xc.merchant_order_id,
+			CONVERT(xc.buy_money,CHAR) AS all_buy_money,
+			CONVERT(xc.ticket_num, CHAR) ticket_num,
+			DATE_FORMAT(gr.notify_finish_time, '%Y-%m-%d %H:%i:%s') AS notify_finish_time,
+			DATE_FORMAT(xc.out_ticket_time, '%Y-%m-%d %H:%i:%s') AS out_ticket_time 
+		FROM xc_orderinfo xc LEFT JOIN xc_orderinfo_returnnotify gr ON xc.order_id=gr.order_id
+		WHERE 1=1 
+		<isNotEmpty prepend=" and " property="order_status">
+			xc.order_status in
+				<iterate open="(" close=")" conjunction=","
+					property="order_status">
+					#order_status[]#
+				</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="notify_status">
+			gr.notify_status in
+				<iterate open="(" close=")" conjunction=","
+					property="notify_status">
+					#notify_status[]#
+				</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="begin_time">
+			gr.notify_finish_time<![CDATA[>=]]>#begin_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			gr.notify_finish_time<![CDATA[<]]>DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		</isNotEmpty>
+	</select>
+	
+	<!-- 携程退票 -->
+	<select id="queryXcRefundNotifyList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+		  hm.order_id,
+		  h.merchant_order_id,
+		  hm.cp_id,
+		  hm.refund_money,
+		  hm.actual_refund_money,
+		  DATE_FORMAT(hm.create_time, '%Y-%m-%d %H:%i:%s') AS create_time,
+		  DATE_FORMAT(hm.verify_time, '%Y-%m-%d %H:%i:%s') AS verify_time,
+		  DATE_FORMAT(fy.notify_finish_time, '%Y-%m-%d %H:%i:%s') AS notify_finish_time,
+		  hm.refund_12306_seq
+		FROM
+		  xc_orderinfo_refundstream hm LEFT JOIN xc_orderinfo h ON h.order_id = hm.order_id 
+		  LEFT JOIN xc_orderinfo_refundnotify fy ON fy.refund_seq=hm.refund_seq 
+	    WHERE 
+		 hm.refund_status ='33' and fy.notify_status ='33'
+	    and fy.notify_finish_time <![CDATA[>=]]>#begin_time#
+		and fy.notify_finish_time <![CDATA[<]]>DATE_ADD(#end_time#,INTERVAL 1 DAY)
+	</select>
+	
+	
+	<!-- 获取按条件查询需要对帐的订单 -->
+	<select id="queryCheckTcAlter" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+			ec.order_id,
+			(CASE
+ 			WHEN ec.bank_pay_seq IS NULL OR LENGTH(TRIM(ec.bank_pay_seq))<![CDATA[<]]>1   THEN co.bank_pay_seq ELSE ec.bank_pay_seq
+ 			END) AS bank_pay_seq,
+			  ec.change_notify_finish_time AS out_ticket_time,
+			  merchant_id AS channel,'33' AS ticket_type,
+			  ec.change_receive_money AS buy_money 
+			FROM
+			  elong_orderinfo_change ec LEFT JOIN cp_orderinfo co ON ec.order_id = co.order_id 
+			WHERE 1 = 1 
+				AND ec.change_status ='34'
+				AND ec.change_notify_status ='222'
+				AND ec.change_receive_money IS NOT NULL and ec.change_receive_money>0
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_time">
+					ec.change_notify_finish_time <![CDATA[>=]]>#begin_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+					ec.change_notify_finish_time <![CDATA[<]]> DATE_ADD(#end_time#,INTERVAL 1 DAY)
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 插入对账表格 -->
+	<insert id="addCheckOrderInfo" parameterClass="java.util.HashMap">
+		INSERT INTO check_price_orderinfo (order_id ,bank_pay_seq,out_ticket_time ,out_ticket_price,ticket_type,create_time,opt_person,channel) 
+		VALUES (#order_id#,#bank_pay_seq#,#out_ticket_time#,#buy_money#,#ticket_type#,now(),'add_job',#channel#)
+	</insert>
+	
+	<!-- 查询途牛预订信息 -->
+	<select id="queryTuniuBookList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT tu.order_id,tu.out_ticket_billno,cp.user_name,
+			CONVERT(tu.buy_money,CHAR) AS all_buy_money,
+			CONVERT(cp.buy_money,CHAR) AS buy_money,
+			CONVERT(tu.ticket_num, CHAR) ticket_num,
+			DATE_FORMAT(tu.out_ticket_time, '%Y-%m-%d %H:%i:%s') AS out_ticket_time 
+		FROM tuniu_orderinfo tu LEFT JOIN tuniu_orderinfo_cp cp ON tu.order_id =cp.order_id
+		WHERE tu.order_status='33' 
+		<isNotEmpty prepend=" and " property="begin_time">
+			tu.out_ticket_time<![CDATA[>=]]>#begin_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			tu.out_ticket_time<![CDATA[<]]>DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		</isNotEmpty>
+	</select>
+	
+	<!-- 查询退款订单信息 -->
+	<select id="queryTuniuRefundTicket" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT 
+		  tuniu.order_id, cp.user_name,
+		  CONVERT(tuniu.refund_money, CHAR) AS refund_money,
+		  DATE_FORMAT(tuniu.verify_time, '%Y-%m-%d %H:%i:%s') AS verify_time,
+		  qo.out_ticket_billno
+		FROM
+		  tuniu_orderinfo_refund AS tuniu
+		LEFT JOIN
+		  tuniu_orderinfo AS qo ON qo.order_id = tuniu.order_id  
+		LEFT JOIN
+		  tuniu_orderinfo_cp AS cp ON cp.order_id = tuniu.order_id  AND cp.cp_id =tuniu.cp_id
+		WHERE
+		 tuniu.refund_status='11'
+		and	tuniu.verify_time<![CDATA[>=]]>#begin_time#
+		and	tuniu.verify_time<![CDATA[<]]>DATE_ADD(#end_time#,INTERVAL 1 DAY)
+	</select>
+</sqlMap>

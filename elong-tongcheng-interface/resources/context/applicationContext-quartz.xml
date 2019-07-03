@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/mvc  
+	http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+	<context:component-scan base-package="com.l9e.transaction.job"/>
+
+	<!-- 总管理类,执行调度程序  -->
+	<bean id="startQuertz"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+			<!-- 
+				<ref bean="elongRefundNoticeQuartzTime"/>
+				
+				<ref bean="elongOrdersNoticeQuartzTime"/>
+				<ref bean="sendQuartzTime" />	
+				
+				<ref bean="elongRefundQuartzTime"/>
+				<ref bean="elongGoBackQuartzTime"/>
+				
+				 -->
+				
+				<!--同程渠道 通知出票系统出票   
+				<ref bean="sendTCQuartzTime" />--> 
+				<!-- 同程预订结果通知 
+				<ref bean="sendBookTCQuartzTime" />--> 
+				<!-- 同程出票成功确定 
+				<ref bean="sendResultTCQuartzTime" />-->
+				
+				
+				
+				
+				<!-- 通知退票系统退票 
+				<ref bean="sendSysRefundQuartzTime"/>
+				<ref bean="elongRefundQuartzTime"/>
+				
+				<ref bean="sendResultRemedyQuartzTime"/>-->
+				
+				<!-- 同程改签 超时转人工
+				<ref bean="tongchengChangeTimeoutQuartzTime"/>-->
+				
+				<!--elong change callback 
+				<ref bean="elongSendChangeQuartzTime"/> -->
+				
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 向出票系统发送出票请求 -->
+	<bean id="sendQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="sendTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/15 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="sendTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="sendJob" />
+		</property>
+		<property name="targetMethod">
+			<value>send</value>
+		</property>
+	</bean>
+	
+	
+	<!-- Elong出票结果通知 -->
+	<bean id="elongOrdersNoticeQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="elongOrdersNoticeStreamTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/15 * * * * ?</value>
+		</property>
+	</bean>
+	
+	<bean id="elongOrdersNoticeStreamTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="elongOrdersNoticeJob" />
+		</property>
+		<property name="targetMethod">
+			<value>ordersStatusNotice</value>
+		</property>
+	</bean>
+	
+	<!-- Elong退票结果通知 -->
+	<bean id="elongRefundNoticeQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="elongRefundNoticeStreamTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/30 * * * * ?</value>
+		</property>
+	</bean>
+	
+	<bean id="elongRefundNoticeStreamTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="elongRefundNoticeJob" />
+		</property>
+		<property name="targetMethod">
+			<value>refundnotice</value>
+		</property>
+	</bean>
+	
+	
+	
+	<!--退款通知 -->
+	<bean id="elongRefundQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="elongRefundStreamTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/10 * * * * ?</value>
+		</property>
+	</bean>
+	
+	<bean id="elongRefundStreamTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="elongRefundJob" />
+		</property>
+		<property name="targetMethod">
+			<value>offlineRefund</value>
+		</property>
+	</bean>
+	
+	
+	
+	<!--艺龙订单回库 -->
+	<bean id="elongGoBackQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="elongGoBackStreamTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/15 * * * * ?</value>
+		</property>
+	</bean>
+	
+	<bean id="elongGoBackStreamTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="elongOrderGoBackJob" />
+		</property>
+		<property name="targetMethod">
+			<value>goBack</value>
+		</property>
+	</bean>
+	
+	<!-- Elong获取最新订单信息 废弃 -->
+	<!--<bean id="elongGetOrdersQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="elongGetOrdersStreamTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0/10 * * * * ?</value>
+		</property>
+	</bean>
+	
+	<bean id="elongGetOrdersStreamTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="elongGetOrdersJob" />
+		</property>
+		<property name="targetMethod">
+			<value>getOrders</value>
+		</property>
+	</bean>
+	
+	--><!-- Elong获取退票订单 -->
+	<!--<bean id="elongGetReturnOrdersQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="elongGetReturnOrdersStreamTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/45 * * * * ?</value>
+		</property>
+	</bean>
+	
+	<bean id="elongGetReturnOrdersStreamTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="elongGetReturnOrdersJob" />
+		</property>
+		<property name="targetMethod">
+			<value>getReturnOders</value>
+		</property>
+	</bean>
+	-->
+	
+	
+	<!-- 同城   向出票系统发送出票请求 -->
+	<bean id="sendTCQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="sendTCTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0/15 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="sendTCTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="sendJob" />
+		</property>
+		<property name="targetMethod">
+			<value>sendTc</value>
+		</property>
+	</bean>
+	
+	
+	<!--向同程发预订结果异步通知 -->
+	<bean id="sendBookTCQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="sendBookTCTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0/15 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="sendBookTCTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="bookResultJob" />
+		</property>
+		<property name="targetMethod">
+			<value>sendTc</value>
+		</property>
+	</bean>
+	
+	<!--向同程发出票成功确定 -->
+	<bean id="sendResultTCQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="sendResultTCTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0/15 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="sendResultTCTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="orderResultJob" />
+		</property>
+		<property name="targetMethod">
+			<value>sendTc</value>
+		</property>
+	</bean>
+	
+	
+	<!--向同程发出补单通知 -->
+	<bean id="sendResultRemedyQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="sendResultRemedyTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0/15 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="sendResultRemedyTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="orderResultJob" />
+		</property>
+		<property name="targetMethod">
+			<value>sendRemedyTc</value>
+		</property>
+	</bean>
+	
+	
+	
+	
+	
+	<!-- 通知退票系统退票 -->
+	<bean id="sendSysRefundQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="sendSysRefundTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0/20 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="sendSysRefundTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="sendJob" />
+		</property>
+		<property name="targetMethod">
+			<value>sendRefund</value>
+		</property>
+	</bean>
+	
+	<!--同程改签通知 -->
+	<bean id="tongchengChangeCallbackQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="tongchengChangeCallbackTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0/20 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="tongchengChangeCallbackTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="tongChengChangeNoticeJob" />
+		</property>
+		<property name="targetMethod">
+			<value>tongChengChangeNotice</value>
+		</property>
+	</bean>
+	
+	<!--同程改签timeout转人工 -->
+	<bean id="tongchengChangeTimeoutQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="tongchengChangeTimeoutTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0 0/1 * * * ?</value>
+		</property>
+	</bean>
+	<bean id="tongchengChangeTimeoutTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="tongChengChangeManualJob" />
+		</property>
+		<property name="targetMethod">
+			<value>changeManual</value>
+		</property>
+	</bean>
+	
+	<!-- 艺龙改签回调 -->
+	<bean id="elongSendChangeQuartzTime"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="elongSendChangeTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0/15 * * * * ?</value>
+		</property>
+	</bean>
+	<bean id="elongSendChangeTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="elongChangeNoticeJob" />
+		</property>
+		<property name="targetMethod">
+			<value>changeNotice</value>
+		</property>
+	</bean>
+	
+</beans>

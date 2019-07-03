@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="userIdsCardInfo">
+	<!-- 根据用户身份证查询用户身份信息 -->
+	<select id="queryUserIdsCardInfo" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT user_name,ids_card,status,
+		DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+		DATE_FORMAT(update_time,'%Y-%m-%d %H:%i:%s') AS update_time
+		FROM hc_userinfo_check
+		WHERE ids_card=#ids_card:VARCHAR# AND user_name=#user_name:VARCHAR#
+	</select>
+	
+	<!-- 插入用户身份证信息表数据 -->
+	<insert id="addUserInfoCheck" parameterClass="java.util.HashMap">
+		INSERT INTO hc_userinfo_check(user_name,ids_card,create_time,update_time,status)
+		VALUES(#user_name:VARCHAR#,#ids_card:VARCHAR#,NOW(),NOW(),#status:VARCHAR#)
+	</insert>
+	<!-- 修改用户身份证信息 -->
+	<update id="updateUserInfoCheck" parameterClass="java.util.HashMap">
+		UPDATE hc_userinfo_check 
+			SET status=#status:VARCHAR#,
+				update_time=NOW()
+			<isNotEmpty prepend="," property="user_name">
+				user_name=#user_name:VARCHAR#
+			</isNotEmpty>
+			WHERE ids_card=#ids_card:VARCHAR#
+	</update>
+	
+	<!-- 查询待审核并且七天之前的身份证信息 -->
+	<select id="queryUserInfoCheckList" resultClass="java.util.HashMap">
+		SELECT user_name,ids_card,status,
+		DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+		DATE_FORMAT(update_time,'%Y-%m-%d %H:%i:%s') AS update_time
+		FROM hc_userinfo_check
+		WHERE status='1' AND NOW()>DATE_ADD(update_time, INTERVAL 84 HOUR) 
+	</select>
+</sqlMap>

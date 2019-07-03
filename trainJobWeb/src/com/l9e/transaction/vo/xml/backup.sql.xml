@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="backup">
+	<!-- 导入车票信息备份表 -->
+	<insert id="backupCpInfo" parameterClass="java.util.Map">
+		insert into cp_orderinfo_cp_backup (
+			select * from cp_orderinfo_cp where create_time<![CDATA[>]]>#begin:VARCHAR# )
+	</insert>
+	
+	<!-- 导入订单信息备份表  -->
+	<insert id="backupOrderInfo" parameterClass="java.util.Map">
+		insert into cp_orderinfo_backup (
+			select * from cp_orderinfo where create_time<![CDATA[>]]>#begin:VARCHAR# )
+	</insert>
+	
+	<!-- 导入订单通知备份表  -->
+	<insert id="backupCpOrderNotifyInfo" parameterClass="java.util.Map">
+		insert into cp_orderinfo_notify_backup (
+			select * from cp_orderinfo_notify where create_time<![CDATA[>]]>#begin:VARCHAR# )
+	</insert>
+	
+	
+	<update id="updateOrderStatus" parameterClass="java.lang.String">
+		update  hc_orderinfo set order_status='11' where order_status='77' and   from_time<![CDATA[<=]]>#beginTime:VARCHAR#
+	</update>
+	
+	<!-- 拉取待备份数据 -->
+	<select id="queryRecords" resultClass="java.util.LinkedHashMap" remapResults="true">
+		SELECT
+			$columnString$
+		FROM $tableName$
+		WHERE 1=1 
+		<dynamic>
+			<isNotEmpty prepend="AND" property="conditionName">
+				$conditionName$ = #conditionValue:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="begin">
+				create_time <![CDATA[>=]]> #begin:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="end">
+				create_time <![CDATA[<]]> #end:VARCHAR#
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY create_time 
+		LIMIT 0,#limit:Integer#
+	</select>
+	
+	<!-- 批插入sql -->
+	<insert id="insertBatch" parameterClass="java.util.HashMap">
+		INSERT INTO $tableName$($columnString$)
+		VALUES
+		<iterate conjunction="," open="(" close=")" property="values">
+			#values[]#
+		</iterate>
+		<isNotEmpty property="data">
+			ON DUPLICATE KEY UPDATE 
+			<iterate conjunction="," property="data">
+				$data[].key$ = #data[].value#
+			</iterate>
+		</isNotEmpty>
+	</insert>
+	
+	<!-- 删除 sql-->
+	<delete id="deleteBatch" parameterClass="java.util.HashMap">
+		DELETE FROM $tableName$
+		WHERE $primaryKeyName$ = #key#
+	</delete>
+	
+	<!-- 查询表列名 -->
+	<select id="queryColumns" parameterClass="java.lang.String" resultClass="java.util.LinkedHashMap">
+		DESC $tableName$
+	</select>
+	<!-- 
+	<statement id="createTable">
+		CREATE TABLE test_table_for_backup
+		(
+			name varchar(50),
+			phone varchar(11)
+		)
+	</statement>
+	 -->
+</sqlMap>

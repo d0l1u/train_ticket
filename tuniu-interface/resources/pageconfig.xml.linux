@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sysInfo>
+	
+	<!-- 途牛接入参数 -->
+	<tuniu>
+		<!-- 接入账号 -->
+		<account>tuniu19e</account>
+		
+		<!-- 签名密匙 -->
+		<signKey>f121bb2174d27f7b76682903cda672f0</signKey>
+        
+        <!-- 商户id -->
+		<merchantId>tuniu</merchantId>	
+
+		<!-- 白名单接口地址 -->
+		<idenValiUploadUrl>http://api.tuniu.cn/aln/common/identityValidationUpload</idenValiUploadUrl>
+
+		<!-- 12306排队订单推送地址 -->
+		<reserveStatusPushUrl>http://api.tuniu.cn/aln/common/reserveStatusPush</reserveStatusPushUrl>
+	</tuniu>
+	
+	<tuniu_bak1>
+		<!-- 途牛接入参数 -->
+		<!-- 接入账号 -->
+		<account>tuniu19e1</account>
+		<!-- 签名密匙 -->
+		<signKey>1f3be1fc9b26cf4c08b00a56eeb6d2fe</signKey>
+	</tuniu_bak1>
+	
+	<tuniu_bak2>
+		<!-- 途牛接入参数 -->
+		<!-- 接入账号 -->
+		<account>tuniu19e2</account>
+		<!-- 签名密匙 -->
+		<signKey>b6f43cb021e1be316d1907466cb3c37c</signKey>
+	</tuniu_bak2>
+	
+
+	<!-- 出票系统参数 -->
+	<cp>
+		<!-- 19e收单系统-出票 -->
+		<cp_out_ticket_url>http://10.3.12.94:18018/order</cp_out_ticket_url>
+		<!-- 19e收单系统-取消 -->
+		<cp_cancel_url>http://10.3.12.94:18018/cancle</cp_cancel_url>
+		<!-- 19e收单系统-支付 -->
+		<cp_pay_url>http://10.3.12.94:18018/pay</cp_pay_url>
+		<!-- 19e收单系统-退票 -->
+		<cp_refund_url>http://10.3.12.94:18018/refund</cp_refund_url>
+		
+		<!-- nginx 负载 -->
+		<!-- 出票系统回调出票结果 -->
+		<cp_out_ticket_callback>http://10.16.22.22:18088/train-tuniu/outTicket/orderCallback</cp_out_ticket_callback>
+		<!-- 退款系统回调退款结果 -->
+		<cp_refund_callback>http://10.16.22.22:18088/train-tuniu/outTicket/refundCallback</cp_refund_callback>
+	</cp>
+	
+	<interface>
+	</interface>
+</sysInfo>

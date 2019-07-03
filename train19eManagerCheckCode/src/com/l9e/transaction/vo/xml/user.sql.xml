@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="user">
+	
+	<!-- 查询用户个人信息 -->
+	<select id="queryUserInfo" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT user_id,username,real_name,pwd,department,telephone,email,get_code_time_limit FROM rh_user WHERE username=#opt_name#
+	</select>
+	
+	<!-- 修改用户个人信息 -->
+	<update id="updateUser" parameterClass="java.util.HashMap">
+		UPDATE rh_user
+			<dynamic prepend="SET">
+				<isNotEmpty prepend="," property="pwd">
+				 	pwd=#pwd:VARCHAR#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="department">
+					department=#department#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="telephone">
+					telephone=#telephone#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="email">
+					email=#email#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="get_code_time_limit">
+					get_code_time_limit=#get_code_time_limit#
+				</isNotEmpty>
+			</dynamic>
+		WHERE user_id=#user_id:VARCHAR#
+	</update>
+	
+	<!-- 查询用户每天打码情况的条数 -->
+	<select id="queryDayUserCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM (SELECT DISTINCT opt_time FROM tj_rh_picture 
+		WHERE opt_ren=#opt_ren#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_time">
+				opt_time<![CDATA[>=]]>
+				#begin_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+				opt_time<![CDATA[<]]>DATE_ADD(#end_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+	    </dynamic>
+		)AS temp
+	</select>
+	
+	<!-- 查询用户每天打码情况List -->
+	<select id="queryDayUserList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT opt_ren,opt_time,pic_count,pic_success,pic_fail,pic_unkonwn FROM tj_rh_picture 
+		where opt_ren=#opt_ren#
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_time">
+				opt_time<![CDATA[>=]]>
+				#begin_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+				opt_time<![CDATA[<]]>DATE_ADD(#end_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+	    </dynamic>
+		GROUP BY opt_time ORDER BY opt_time DESC LIMIT #everyPagefrom:Integer#,#pageSize:Integer#	
+	</select>
+	
+	<!-- 修改用户的登录状态，登录过状态为1，默认为0 -->
+	<update id="updateLogined" parameterClass="java.util.HashMap">
+		UPDATE rh_user SET logined='1' WHERE user_id=#user_id#
+	</update>
+	
+	
+</sqlMap>

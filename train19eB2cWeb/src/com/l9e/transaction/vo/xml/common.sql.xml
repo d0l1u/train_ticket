@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="common">
+
+	<!-- 查询产品信息 -->
+	<select id="queryProductInfoList" parameterClass="com.l9e.transaction.vo.ProductVo"
+		resultClass="com.l9e.transaction.vo.ProductVo">
+		SELECT p.product_id,p.type,p.name,p.status,p.province_id,
+			p.city_id,p.sale_type,p.sale_price,p.create_time,p.describe,p.level
+			FROM hc_productinfo p
+			WHERE 1=1
+		<isNotEmpty prepend=" and " property="province_id">
+			(p.province_id=#province_id:VARCHAR# or p.province_id is null)
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="city_id">
+			(p.city_id=#city_id:VARCHAR# or p.city_id is null)
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="type">
+			p.type=#type:INTEGER#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="status">
+			p.status=#status:INTEGER#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="status">
+			p.status=#status:INTEGER#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="product_id">
+			p.product_id=#product_id:VARCHAR#
+		</isNotEmpty>
+		ORDER BY p.product_id
+	</select>
+	
+	<!-- 查询产品信息 -->
+	<select id="queryProductInfoYuyueList" parameterClass="com.l9e.transaction.vo.ProductVo"
+		resultClass="com.l9e.transaction.vo.ProductVo">
+		SELECT p.product_id,p.type,p.name,p.status,p.province_id,
+			p.city_id,p.sale_type,p.sale_price,p.create_time,p.describe,p.level
+			FROM hc_productinfo p
+			WHERE 1=1 AND p.product_id != 'BX_NO'
+		<isNotEmpty prepend=" and " property="province_id">
+			(p.province_id=#province_id:VARCHAR# or p.province_id is null)
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="city_id">
+			(p.city_id=#city_id:VARCHAR# or p.city_id is null)
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="type">
+			p.type=#type:INTEGER#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="status">
+			p.status=#status:INTEGER#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="status">
+			p.status=#status:INTEGER#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="product_id">
+			p.product_id=#product_id:VARCHAR#
+		</isNotEmpty>
+		ORDER BY p.product_id
+	</select>
+	
+	
+	
+	<!-- 查询省份名称 -->
+	<select id="queryProvinceName" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+		SELECT g.area_name FROM gen_area g WHERE g.area_no=#provinceId:VARCHAR# AND g.area_rank=1
+	</select>
+	
+	
+	<!-- 查询老的区域no -->
+	<select id="queryOldAreaInfo" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT g.area_oldno, g.area_name 
+		FROM gen_area g WHERE g.area_no=#provinceId:VARCHAR#
+	</select>
+	
+	<!-- 查询系统接口频道  -->
+	<select id="queryInterfaceChannel" resultClass="java.lang.String">
+		SELECT s.setting_value FROM hc_system_setting s 
+		WHERE s.setting_name='INTERFACE_CHANNEL'
+	</select>
+	
+	<!-- 查询系统配置的12306接口url -->
+	<select id="querySysInterfaceUrl" resultClass="java.lang.String">
+		SELECT setting_value FROM hc_system_setting 
+		WHERE setting_name='INTERFACE_12306_URL' AND setting_status='1' 
+	</select>
+	
+	<!-- 查询获取系统设置属性值 -->
+	<select id="querySysSettingValue" parameterClass="java.util.HashMap"
+		resultClass="java.lang.String">
+		SELECT setting_value FROM hc_system_setting 
+		 WHERE setting_name=#setting_name:VARCHAR#
+		 <isNotEmpty prepend=" and " property="setting_status">
+		 	setting_status=#setting_status:VARCHAR#
+		 </isNotEmpty>
+	</select>
+	
+	<!-- 根据key查询系统设置 -->
+	<select id="querySysSettingByKey" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+		SELECT setting_value FROM app_system_setting 
+		WHERE setting_name=#key:VARCHAR#
+	</select>
+	
+	
+	<!-- 查询发车前多少小时停止购票 -->
+	<select id="querySysStopTime" resultClass="java.lang.String">
+		SELECT setting_value FROM hc_system_setting 
+		WHERE setting_name='stop_buyTicket_time' 
+	</select>
+	
+	<!-- 根据车次cc、发站fz、到站dz查询各种坐席的票价 -->
+	<select id="querySeatMap" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT CONVERT(a.yz,CHAR) AS 'seat8', CONVERT(a.rz,CHAR) AS 'seat7', 
+		CONVERT(a.ywx,CHAR) AS 'seat6', CONVERT(a.rwx,CHAR) AS 'seat5', 
+		CONVERT(a.rz2,CHAR) AS 'seat3', CONVERT(a.rz1,CHAR) AS 'seat2', 
+		CONVERT(a.swz,CHAR) AS 'seat0', CONVERT(a.tdz,CHAR) AS 'seat1', 
+		CONVERT(a.gwx,CHAR) AS 'seat4',
+		CONVERT((CASE WHEN a.rz2>0 THEN a.rz2 ELSE a.yz END),CHAR) AS 'seat9'
+		FROM t_zjpj_a a 
+		WHERE a.cc LIKE CONCAT('%',#cc#, '%') AND fz=#fz# AND dz=#dz#
+		LIMIT 0,1
+	</select>
+	
+	<!-- 查询统计车站信息 -->
+	<select id="queryOftenStation" resultClass="java.lang.String">
+		SELECT station FROM app_oftentraininfo GROUP BY station ORDER BY show_order ASC 
+	</select>
+	<!-- 根据车站，查询统计车站的详细信息 -->
+	<select id="queryOftenStationInfo" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT from_station, arrive_station, price
+		FROM app_oftentraininfo
+		WHERE station = #station:VARCHAR#
+	</select>
+	
+	
+	<!-- 查询全部省信息 -->
+	<select id="getProvince" resultClass="java.util.HashMap">
+		SELECT area_no,(CASE area_no WHEN '000000' THEN '请选择省' ELSE area_name END) area_name FROM gen_area 
+		WHERE area_rank=1 ORDER BY area_id ASC
+	</select>
+
+	<!-- 根据省id查询本省的所有市信息 -->
+	<select id="getCity" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT area_no, area_name FROM gen_area WHERE area_rank=2 AND
+		area_parentno=#provinceid# ORDER BY area_id ASC
+	</select>
+
+	<!-- 根据市id查询本市的所有区信息 -->
+	<select id="getArea" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT area_no, area_name FROM gen_area WHERE area_rank=3 AND
+		area_parentno=#cityid# ORDER BY area_id ASC
+	</select>
+</sqlMap>

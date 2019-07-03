@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="tj_Channel">
+
+	<!-- 查询今天查询总数 -->
+	<select id="search_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM cp_count WHERE type='01' and code='00'
+		and  create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59')
+		 and channel=#channel#
+	</select>
+	<!-- 查询今天查询成功数 -->
+	<select id="search_success" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM cp_count WHERE type='01' and code='01'
+		and  create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59') and channel=#channel#
+	</select>
+	<!-- 查询今天查询失败数 -->
+	<select id="search_fail" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM cp_count WHERE type='01' and code='02'
+		and  create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59') and channel=#channel#
+	</select>
+	<!-- 查询今天下发短信数 -->
+	<select id="msg_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT IFNULL(SUM(ROUND(send_num-1,0)),0) AS number
+		FROM train_phone_plat  WHERE phone_status='22' 
+		and create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59') and source_channel=#channel#
+	</select>
+	<!-- 查询今天改签成功 -->
+	<select id="alter_success" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM cp_count WHERE type='03' and code='01'
+		and  create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59') and channel=#channel#
+	</select>
+	<!-- 查询今天改签失败 -->
+	<select id="alter_fail" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM cp_count WHERE type='03' and code='02'
+		and  create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59') and channel=#channel#
+	</select>
+	<!-- 查询今天退款成功 -->
+	<select id="refund_success" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM cp_count WHERE type='04' and code='01'
+		and  create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59') and channel=#channel#
+	</select>
+	<!-- 查询今天退款失败 -->
+	<select id="refund_fail" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM cp_count WHERE type='04' and code='02'
+		and  create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59') and channel=#channel#
+	</select>
+	
+	
+	<!-- 查询今天渠道统计的数据的条数 -->
+	<select id="query19eTodayCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM tj_channel WHERE create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59') and channel=#channel#
+	</select>
+	
+	<!-- 更新tj_channel表中的今日的数据 -->
+	<update id="updateToTj_Channel" parameterClass="java.util.HashMap">
+		update tj_channel 
+		<dynamic prepend="set">
+			<isNotEmpty prepend=","  property="channel">
+				 channel=#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				 create_time=#create_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="search_count">
+				 search_count=#search_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="search_success">
+				 search_success=#search_success#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="search_fail">
+				 search_fail=#search_fail#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="msg_count">
+				 msg_count=#msg_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alter_count">
+				 alter_count=#alter_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alter_success">
+				 alter_success=#alter_success#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alter_fail">
+				 alter_fail=#alter_fail#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_count">
+				 refund_count=#refund_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_success">
+				 refund_success=#refund_success#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_fail">
+				 refund_fail=#refund_fail#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alter_success_cgl">
+				 alter_success_cgl=#alter_success_cgl#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_success_cgl">
+				 refund_success_cgl=#refund_success_cgl#
+			</isNotEmpty>
+		</dynamic>
+		where create_time <![CDATA[>=]]> CONCAT(#create_time#, ' 00:00:00') AND create_time <![CDATA[<=]]> CONCAT(#create_time#, ' 23:59:59') and channel=#channel#
+	</update>
+	
+	<!-- 插入统计完成的信息 -->
+	<insert id="addToTj_Channel" parameterClass="java.util.HashMap">
+		INSERT INTO tj_channel
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="channel_id">
+				channel_id
+			</isNotEmpty>
+			<isNotEmpty prepend=","  property="channel">
+				 channel
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				 create_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="search_count">
+				 search_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="search_success">
+				 search_success
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="search_fail">
+				 search_fail
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="msg_count">
+				 msg_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alter_count">
+				 alter_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alter_success">
+				 alter_success
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alter_fail">
+				 alter_fail
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_count">
+				 refund_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_success">
+				 refund_success
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_fail">
+				 refund_fail
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alter_success_cgl">
+				 alter_success_cgl
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_success_cgl">
+				 refund_success_cgl
+			</isNotEmpty>
+			)
+		</dynamic>
+		 values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="channel_id">
+				#channel_id#
+			</isNotEmpty>
+			<isNotEmpty prepend=","  property="channel">
+				 #channel#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				 #create_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="search_count">
+				 #search_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="search_success">
+				 #search_success#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="search_fail">
+				 #search_fail#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="msg_count">
+				 #msg_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alter_count">
+				 #alter_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alter_success">
+				 #alter_success#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alter_fail">
+				 #alter_fail#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_count">
+				 #refund_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_success">
+				 #refund_success#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_fail">
+				 #refund_fail#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="alter_success_cgl">
+				 #alter_success_cgl#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_success_cgl">
+				 #refund_success_cgl#
+			</isNotEmpty>
+			)
+		</dynamic>
+	</insert>
+	
+	
+</sqlMap>

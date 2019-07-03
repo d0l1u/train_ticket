@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="common">
+
+	<!-- 查询产品信息 -->
+	<select id="queryProductInfoList" parameterClass="com.l9e.transaction.vo.ProductVo"
+		resultClass="com.l9e.transaction.vo.ProductVo">
+		SELECT p.product_id,p.type,p.name,p.status,p.province_id,
+			p.city_id,p.sale_type,p.sale_price,p.create_time,p.describe,p.level
+			FROM inner_productinfo p
+			WHERE 1=1 AND p.product_id<![CDATA[<>]]>'BX_10'
+		<isNotEmpty prepend=" and " property="province_id">
+			(p.province_id=#province_id:VARCHAR# or p.province_id is null)
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="city_id">
+			(p.city_id=#city_id:VARCHAR# or p.city_id is null)
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="type">
+			p.type=#type:INTEGER#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="status">
+			p.status=#status:INTEGER#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="status">
+			p.status=#status:INTEGER#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="product_id">
+			p.product_id=#product_id:VARCHAR#
+		</isNotEmpty>
+		order by p.product_id
+	</select>
+	
+	<!-- 添加EOP交互参数表 -->
+	<insert id="addOrderEopInfo" parameterClass="java.util.HashMap">
+		INSERT INTO hc_order_eop (order_id, eop_order_id, query_result_url, pay_url)
+		VALUES (#asp_order_id:VARCHAR#, #eop_order_id:VARCHAR#, #query_result_url:VARCHAR#, #pay_url:VARCHAR#)
+	</insert>
+	
+	<!-- 查询EOP交互参数 -->
+	<select id="queryEopInfo" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT hc.order_id, hc.eop_order_id, hc.asp_refund_seq, hc.eop_refund_url,
+			hc.pay_url,hc.query_result_url,hc.send_notify_url
+			FROM hc_order_eop hc 
+		WHERE hc.order_id=#asp_order_id:VARCHAR#
+	</select>
+	
+	<!-- 更新EOP交互参数 -->
+	<update id="updateOrderEop" parameterClass="java.util.HashMap">
+		UPDATE hc_order_eop 
+		<dynamic prepend="set">
+			<isNotEmpty prepend="," property="send_notify_url">
+				send_notify_url=#send_notify_url:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="eop_refund_url">
+				eop_refund_url=#eop_refund_url:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="plat_refund_seq">
+				plat_refund_seq=#plat_refund_seq:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="asp_refund_seq">
+				asp_refund_seq=#asp_refund_seq:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="eop_refund_time">
+				eop_refund_time=STR_TO_DATE(#eop_refund_time:VARCHAR#,'%Y-%m-%d %H:%i:%s')
+			</isNotEmpty>
+		</dynamic>
+		WHERE order_id=#asp_order_id:VARCHAR#
+	</update>
+	
+	<!-- 根据EOP订单号查询订单号 -->
+	<select id="queryOrderIdByEopId" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+		SELECT e.order_id FROM hc_order_eop e WHERE e.eop_order_id=#eop_order_id:VARCHAR#
+	</select>
+	
+	<!-- 根据省份查询系统配置信息 -->
+	<select id="querySysConf" parameterClass="java.lang.String"
+		resultClass="com.l9e.common.SystemConfInfo">
+		SELECT hc.config_id,hc.province_id,
+			hc.is_open,hc.is_cost,hc.is_ps,hc.is_buyable,
+			hc.rule_content,hc.opt_ren
+			from hc_system_config hc
+		where hc.province_id=#province_id:VARCHAR#
+	</select>
+	
+	<!-- 查询省份名称 -->
+	<select id="queryProvinceName" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+		SELECT g.area_name FROM gen_area g WHERE g.area_no=#provinceId:VARCHAR# AND g.area_rank=1
+	</select>
+	
+	<!-- 查询部分公告列表 -->
+	<select id="queryNoticeList" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT n.notice_id, n.notice_name, n.notice_content, n.pub_time FROM inner_noticeinfo n 
+		WHERE n.notice_status = '11' AND n.inner_channel='chq' 
+		AND n.pub_time <![CDATA[<=]]> NOW()
+		AND n.stop_time <![CDATA[>=]]> NOW()
+		ORDER BY n.pub_time DESC,n.create_time DESC 
+	</select>
+	
+	<!-- 查询全部公告列表 -->
+	<select id="queryNoticeAllList" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT n.notice_id, n.notice_name, n.notice_content, n.pub_time, 
+		DATE_ADD(n.pub_time,INTERVAL 7 DAY)>NOW() AS is_new
+		FROM inner_noticeinfo n 
+		WHERE n.notice_status = '11' AND n.inner_channel='chq'  
+		AND n.pub_time <![CDATA[<=]]> NOW()
+		AND n.stop_time <![CDATA[>=]]> NOW()
+		ORDER BY n.pub_time DESC,n.create_time DESC
+	</select>
+	
+	<!-- 查询公告信息 -->
+	<select id="queryNoticeInfo" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT n.notice_name, n.pub_time, n.notice_content 
+		FROM inner_noticeinfo n 
+		WHERE n.notice_id=#noticeId:VARCHAR#
+	</select>
+	
+	<!-- 查询老的区域no -->
+	<select id="queryOldAreaInfo" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT g.area_oldno, g.area_name 
+		FROM gen_area g WHERE g.area_no=#provinceId:VARCHAR#
+	</select>
+	
+	<!-- 查询系统接口频道  -->
+	<select id="queryInterfaceChannel" resultClass="java.lang.String">
+		SELECT s.setting_value FROM inner_system_setting s 
+		WHERE s.setting_name='INTERFACE_CHANNEL'
+	</select>
+	
+	<!-- 查询系统配置的12306接口url -->
+	<select id="querySysInterfaceUrl" resultClass="java.lang.String">
+		SELECT setting_value FROM inner_system_setting 
+		WHERE setting_name='INTERFACE_12306_URL' AND setting_status='1' 
+	</select>
+	
+	<!-- 查询获取系统设置属性值 -->
+	<select id="querySysSettingValue" parameterClass="java.util.HashMap"
+		resultClass="java.lang.String">
+		SELECT setting_value FROM inner_system_setting 
+		 WHERE setting_name=#setting_name:VARCHAR#
+		 <isNotEmpty prepend=" and " property="setting_status">
+		 	setting_status=#setting_status:VARCHAR#
+		 </isNotEmpty>
+	</select>
+	
+	<!-- 根据key查询系统设置 -->
+	<select id="querySysSettingByKey" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+		SELECT setting_value FROM inner_system_setting 
+		WHERE setting_name=#key:VARCHAR#
+	</select>
+	
+
+	
+	<!-- 根据id查询加盟商最新投诉时间 -->
+	<select id="querySuitDate" parameterClass="java.lang.String"
+		resultClass="com.l9e.transaction.vo.SuitVo">
+		SELECT DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,suit_count
+				 FROM user_suit_info a
+				WHERE 1=1	
+				and a.gent_id=#gent_id:VARCHAR#
+	        ORDER BY a.create_time DESC
+		 LIMIT 0 , 1
+	</select>
+	
+	
+	<!-- 更新EOP交互参数 -->
+	<update id="updateSuit" parameterClass="com.l9e.transaction.vo.SuitVo">
+		UPDATE user_suit_info a
+		<dynamic prepend="set">
+			<isNotEmpty prepend="," property="suit_count">
+				a.suit_count=#suit_count:VARCHAR#
+			</isNotEmpty>
+		</dynamic>
+		WHERE a.gent_id=#gent_id:VARCHAR#
+	</update>
+	
+	<!-- 查询发车前多少小时停止购票 -->
+	<select id="querySysStopTime" resultClass="java.lang.String">
+		SELECT setting_value FROM inner_system_setting 
+		WHERE setting_name='stop_buyTicket_time' 
+	</select>
+</sqlMap>

@@ -1,0 +1,10 @@
+{
+    "agentId": "AA0ae2b2013100815533885265",
+    "agentName": "18611339439",
+    "cityId": "110100",
+    "districtId": "110108",
+    "eopAgentLevel": "0001",
+    "eop_order_url": "http://openapi1.19e.cn/eopInforms.do?sso_session_id=sso_account_9608_92723_20161129171726&u_login_name=1c39c50335feba3b78ec13614d909168&wid=&w_login_name=&terminal=web&uid=UA0ae2b2013100815533848510&portype=11",
+    "provinceId": "110000",
+    "terminal": "web"
+}

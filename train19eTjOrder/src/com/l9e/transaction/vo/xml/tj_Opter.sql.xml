@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="tj_Opter">
+	<!-- 查询数据库中的条数 -->
+	<select id="queryTableTotal" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM tj_opter
+	</select>
+	<!-- 查询数据表中的天数列表CP -->
+	<select id="queryAllDate" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT DISTINCT DATE_FORMAT(create_time,'%Y-%m-%d')AS create_time 
+		FROM #table_name# WHERE create_time IS NOT NULL 
+		AND create_time<![CDATA[>]]>'2013-10-01'
+		ORDER BY DATE_FORMAT(create_time,'%Y-%m-%d') ASC
+	</select>
+	<!-- 查询所有操作人 -->
+	<select id="queryAllOpter" resultClass="java.lang.String">
+		SELECT real_name FROM login_userinfo WHERE real_name IS NOT NULL AND user_level=1 AND user_IsOpen='0'
+	</select>
+	
+	<!-- 查询当天操作人操作退款的次数19e -->
+	<select id="queryRefund_total" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM (
+			SELECT DISTINCT order_id FROM hc_orderinfo_history 
+			WHERE create_time<![CDATA[>]]>#pre_time# AND order_time IS NOT NULL AND opter=#opter# AND DATE_FORMAT(create_time,'%Y-%m-%d')=#create_time#
+		)AS temp
+	</select>
+	<!-- 查询当天操作人操作退款的次数quanr -->
+	<select id="queryRefund_totalQunar" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM (
+			SELECT DISTINCT order_id FROM qunar_orderinfo_log 
+			WHERE create_time<![CDATA[>]]>#pre_time# AND order_time IS NOT NULL AND opt_person=#opter# AND DATE_FORMAT(create_time,'%Y-%m-%d')=#create_time#
+		)AS temp
+	</select>
+	<!-- 查询当天操作人操作退款的次数app -->
+	<select id="queryRefund_totalApp" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM (
+			SELECT DISTINCT order_id FROM app_orderinfo_history 
+			WHERE create_time<![CDATA[>]]>#pre_time# AND order_time IS NOT NULL AND opter=#opter# AND DATE_FORMAT(create_time,'%Y-%m-%d')=#create_time#
+		)AS temp
+	</select>
+
+
+	<!-- 查询当天操作人操作退款的次数ext -->
+	<select id="queryRefund_totalExt" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM (
+			SELECT DISTINCT order_id FROM ext_orderinfo_history 
+			WHERE create_time<![CDATA[>]]>#pre_time# AND order_time IS NOT NULL AND opter=#opter# AND DATE_FORMAT(create_time,'%Y-%m-%d')=#create_time#
+		)AS temp
+	</select>
+	
+	<!-- 查询当天操作人操作退款的次数内嵌 -->
+	<select id="queryRefund_totalInner" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM (
+			SELECT DISTINCT order_id FROM inner_orderinfo_history 
+			WHERE create_time<![CDATA[>]]>#pre_time# AND order_time IS NOT NULL AND opter=#opter# AND DATE_FORMAT(create_time,'%Y-%m-%d')=#create_time#
+		)AS temp
+	</select>
+	<!-- 查询当天操作人操作退款的次数艺龙 -->
+	<select id="queryRefund_totalElong" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+			SELECT COUNT(1)FROM (
+			SELECT DISTINCT l.order_id FROM elong_orderinfo_logs l,elong_orderinfo_refundstream t
+			WHERE  l.order_id=t.order_id AND l.create_time<![CDATA[>]]>#pre_time# AND l.order_time IS NOT NULL AND l.opt_person=#opter# AND DATE_FORMAT(l.create_time,'%Y-%m-%d')=#create_time#
+			AND t.channel ='elong'
+		)AS temp
+	</select>
+	<!-- 查询当天操作人操作退款的次数同程-->
+	<select id="queryRefund_totaltongcheng" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1)FROM (
+			SELECT DISTINCT l.order_id FROM elong_orderinfo_logs l,elong_orderinfo_refundstream t
+			WHERE  l.order_id=t.order_id AND l.create_time<![CDATA[>]]>#pre_time# AND l.order_time IS NOT NULL AND l.opt_person=#opter# AND DATE_FORMAT(l.create_time,'%Y-%m-%d')=#create_time#
+			AND t.channel ='tongcheng'
+		)AS temp
+	</select>
+	
+	<!-- 查询当天操作人操作退款的次数同程-->
+	<select id="queryRefundnew" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+			  COUNT(1) 
+			FROM
+			  (SELECT DISTINCT 
+			    l.order_id 
+			  FROM
+			    cp_orderinfo_refund_history l,
+			    cp_orderinfo_refund t 
+			  WHERE l.order_id = t.order_id 
+			    AND l.create_time <![CDATA[>]]> #pre_time# 
+			    AND l.order_time IS NOT NULL 
+			    AND l.opter=#opter# 
+			    AND DATE_FORMAT(l.create_time,'%Y-%m-%d')=#create_time#
+			 <dynamic prepend="">
+					<isNotEmpty prepend=" and " property="channel">
+				         	  t.channel IN
+					          <iterate open="(" close=")" conjunction="," property="channel">
+					            	#channel[]:VARCHAR#
+					      	  </iterate>
+				     </isNotEmpty>   
+			</dynamic> 
+			 ) AS temp 
+	</select>
+	
+	<!-- 查询当天操作人操作的订单 -->
+	<select id="queryOrder_List" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT DISTINCT h.order_id FROM cp_orderinfo_history h 
+		WHERE h.create_time<![CDATA[>]]>#pre_time# AND h.order_time IS NOT NULL AND h.opter=#opter# AND DATE_FORMAT(h.create_time,'%Y-%m-%d')=#create_time#
+	</select>
+	
+	<!-- 添加统计之后的数据 -->
+	<insert id="addStatToTj_Opter" parameterClass="java.util.HashMap">
+		INSERT INTO tj_opter
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="tj_id">
+				 tj_id
+			</isNotEmpty>
+			,create_time
+			<isNotEmpty prepend="," property="tj_time">
+				tj_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_person">
+				opt_person
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="out_ticket_total">
+				out_ticket_total
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_total">
+				refund_total
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_total_19e">
+				refund_total_19e
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_total_qunar">
+				refund_total_qunar
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_total_ext">
+				refund_total_ext
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_total_app">
+				refund_total_app
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_total_inner">
+				refund_total_inner
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_total_elong">
+				refund_total_elong
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_total_tongcheng">
+				refund_total_tongcheng
+			</isNotEmpty>
+			)
+		</dynamic>
+		 values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="tj_id">
+				 #tj_id#
+			</isNotEmpty>
+				,NOW()
+			<isNotEmpty prepend="," property="tj_time">
+				#tj_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_person">
+				#opt_person#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="out_ticket_total">
+				#out_ticket_total#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_total">
+				#refund_total#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_total_19e">
+				#refund_total_19e#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_total_qunar">
+				#refund_total_qunar#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_total_ext">
+				#refund_total_ext#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_total_app">
+				#refund_total_app#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_total_inner">
+				#refund_total_inner#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_total_elong">
+				#refund_total_elong#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_total_tongcheng">
+				#refund_total_tongcheng#
+			</isNotEmpty>
+			)
+		</dynamic>
+	</insert>
+	
+	
+	
+	<!-- 异常统计相关操作 -->
+	<!-- 查询cp_exception_config表的关键字信息列表 -->
+	<select id="queryExceptionConfig" resultClass="java.util.HashMap">
+		SELECT config_id, config_name, config_desc, config_type, config_status, create_time, config_person
+		FROM cp_exception_config WHERE config_status='1'
+	</select>
+	
+	<!-- 去查询cp_orderinfo_history表的日志，来统计异常数目 -->
+	<select id="queryExceptionNum" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM cp_orderinfo_history cp
+		WHERE cp.create_time <![CDATA[>=]]> #begin_time#
+		AND cp.create_time <![CDATA[<]]> #end_time#
+		AND order_optlog LIKE CONCAT('%', #config_name:VARCHAR#, '%') 
+	</select>
+	
+	<!-- 查询tj_exception表是否存在该数据 -->
+	<select id="queryTjExceptionCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM tj_exception 
+		WHERE tj_date=#tj_date# 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="execption_id">
+		    	execption_id=#execption_id:VARCHAR#
+		    </isNotEmpty>   
+		    <isNotEmpty prepend=" and " property="execption_type">
+		    	execption_type=#execption_type:VARCHAR#
+		    </isNotEmpty> 
+		</dynamic> 
+	</select>
+	
+	<!-- 添加到表tj_exception表中 -->
+	<insert id="addToTjException" parameterClass="java.util.HashMap">
+		INSERT INTO tj_exception
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="tj_date">
+				 tj_date
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				create_time
+			</isNotEmpty>
+			,update_time
+			<isNotEmpty prepend="," property="execption_id">
+				execption_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="execption_name">
+				execption_name
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="execption_type">
+				execption_type
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="execption_num">
+				execption_num
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opter">
+				opter
+			</isNotEmpty>
+			)
+		</dynamic>
+		 values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="tj_date">
+				 #tj_date#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				 #create_time#
+			</isNotEmpty>
+				,NOW()
+			<isNotEmpty prepend="," property="execption_id">
+				#execption_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="execption_name">
+				#execption_name#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="execption_type">
+				#execption_type#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="execption_num">
+				#execption_num#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opter">
+				#opter#
+			</isNotEmpty>
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 更新tj_exception表中数据-->
+	<update id="updateToTjException" parameterClass="java.util.HashMap">
+		update tj_exception 
+		<dynamic prepend="set">
+			<isNotEmpty prepend=","  property="execption_num">
+				 execption_num=execption_num+#execption_num#
+			</isNotEmpty>
+			<isNotEmpty prepend=","  property="update_time">
+				 update_time=now()
+			</isNotEmpty>
+			<isNotEmpty prepend=","  property="opter">
+				 opter=#opter#
+			</isNotEmpty>
+		</dynamic>
+		where tj_date = #tj_date#
+		AND execption_id = #execption_id#
+		<isNotEmpty prepend=" and " property="execption_type">
+			execption_type=#execption_type#
+		</isNotEmpty>
+	</update>
+	
+	
+	<!-- 查询传入证件总数param_count、匹配证件总数match_count、channel、tj_date -->
+	<select id="queryMatchList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT channel, IFNULL(SUM(param_num), 0) param_sum, IFNULL(SUM(match_num), 0) match_sum, COUNT(1) query_count
+		FROM cp_match 
+		WHERE DATE_FORMAT(create_time, '%Y-%m-%d')=#tj_date#
+		GROUP BY channel
+	</select>
+	
+	<!-- 根据状态查询传入证件总数param_count、匹配证件总数match_count、channel、tj_date -->
+	<select id="queryStatusMatch" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT IFNULL(SUM(match_num),0) match_sum, COUNT(1) query_count
+		FROM cp_match 
+		WHERE DATE_FORMAT(create_time, '%Y-%m-%d')=#tj_date# AND match_status=#match_status# AND channel=#channel#
+		LIMIT 1
+	</select>
+	
+	<!-- 添加到表tj_match表中 -->
+	<insert id="insertTjMatch" parameterClass="java.util.HashMap">
+		INSERT INTO tj_match
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="tj_date">
+				 tj_date
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				create_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="channel">
+				channel
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="query_count">
+				query_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="param_sum">
+				param_sum
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="match_sum">
+				match_sum
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="match_ratio">
+				match_ratio
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="all_count">
+				all_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="all_qratio">
+				all_qratio
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="all_sum">
+				all_sum
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="all_ratio">
+				all_ratio
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="partOk_count">
+				partOk_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="partOk_qratio">
+				partOk_qratio
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="partOk_sum">
+				partOk_sum
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="partOk_ratio">
+				partOk_ratio
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="partNo_count">
+				partNo_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="partNo_qratio">
+				partNo_qratio
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="partNo_sum">
+				partNo_sum
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="partNo_ratio">
+				partNo_ratio
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="unmatch_count">
+				unmatch_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="unmatch_qratio">
+				unmatch_qratio
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="unmatch_sum">
+				unmatch_sum
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="unmatch_ratio">
+				unmatch_ratio
+			</isNotEmpty>
+			)
+		</dynamic>
+		 values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="tj_date">
+				 #tj_date#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="create_time">
+				 NOW()
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="channel">
+				#channel#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="query_count">
+				#query_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="param_sum">
+				#param_sum#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="match_sum">
+				#match_sum#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="match_ratio">
+				#match_ratio#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="all_count">
+				#all_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="all_qratio">
+				#all_qratio#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="all_sum">
+				#all_sum#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="all_ratio">
+				#all_ratio#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="partOk_count">
+				#partOk_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="partOk_qratio">
+				#partOk_qratio#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="partOk_sum">
+				#partOk_sum#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="partOk_ratio">
+				#partOk_ratio#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="partNo_count">
+				#partNo_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="partNo_qratio">
+				#partNo_qratio#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="partNo_sum">
+				#partNo_sum#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="partNo_ratio">
+				#partNo_ratio#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="unmatch_count">
+				#unmatch_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="unmatch_qratio">
+				#unmatch_qratio#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="unmatch_sum">
+				#unmatch_sum#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="unmatch_ratio">
+				#unmatch_ratio#
+			</isNotEmpty>
+			)
+		</dynamic>
+	</insert>
+</sqlMap>

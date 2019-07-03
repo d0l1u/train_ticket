@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="worker">
+	<typeAlias alias="Worker" type="com.l9e.transaction.vo.Worker" />
+
+	<update id="updateWorkerObject" parameterClass="Worker">
+		update cp_workerinfo set opt_name="train_job", option_time=NOW()
+
+		<isNotEmpty prepend=", " property="workerStatus">
+			worker_status =
+			#workerStatus:VARCHAR#
+		</isNotEmpty>
+		where 1 = 1
+		<isNotEmpty prepend=" and " property="workerId">
+			worker_id=#workerId:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="workerName">
+			worker_name=#workerName:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="robotId">
+			robot_id=#robotId:VARCHAR#
+		</isNotEmpty>
+	</update>
+
+	<update id="updateWorker" parameterClass="java.util.HashMap">
+		update cp_workerinfo set opt_name="app helper"
+		<isNotEmpty prepend=", " property="spare_thread">
+			spare_thread=#spare_thread:INTEGER#
+		</isNotEmpty>
+		WHERE 1=1
+		<isNotEmpty prepend=" and " property="worker_id">
+			worker_id=#worker_id:INTEGER#
+		</isNotEmpty>
+	</update>
+	
+	<!-- 查询机器操作时间距离当前时间大于10分钟，并且机器已锁定的所有lua机器人 -->
+    <select id="selectTimeOutWorkerList" parameterClass="Map" resultClass="Worker">
+		SELECT
+			worker_id workerId,
+			worker_name workerName,
+			worker_type workerType,
+			worker_status workerStatus,
+			worker_ext workerExt,
+			work_num workNum,
+			worker_language_type workerLangType,
+			pay_device_type pay_device_type
+		FROM
+			cp_workerinfo
+		WHERE
+		        worker_language_type = 1
+			<isNotEmpty prepend="AND" property="workerId">
+				worker_id = #workerId:INTEGER#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="workerType">
+				worker_type = #workerType:INTEGER#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="workerStatus">
+				worker_status = #workerStatus:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="workerLock">
+				worker_lock = #workerLock:TINYINT#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="optionTime">
+				option_time 
+				<![CDATA[<]]>
+				DATE_SUB(NOW(), INTERVAL 10 MINUTE)
+			</isNotEmpty>
+		ORDER BY
+			option_time ASC
+	</select>
+
+
+	<select id="selectWorker" parameterClass="java.util.HashMap" resultClass="Worker">
+		SELECT 
+			worker_id AS workerId, 
+			worker_name AS workerName, 
+			worker_ext AS workerExt, 
+			worker_type AS workerType,
+			worker_status AS workerStatus,
+			robot_id AS robotId, 
+			spare_thread AS spareThread,
+			public_ip AS publicIp
+		FROM 
+			cp_workerinfo
+		WHERE 1 = 1
+		<isNotEmpty prepend=" and " property="worker_type">
+			worker_type=#worker_type:INTEGER#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="worker_status">
+			worker_status=#worker_status:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="worker_id">
+			worker_id=#worker_id:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="worker_name">
+			worker_name=#worker_name:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="robot_id">
+			robot_id=#robot_id:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="worker_language_type">
+			worker_language_type = #worker_language_type:INT#
+		</isNotEmpty>
+	</select>
+
+	<select id="selectRobot" parameterClass="java.util.HashMap"
+		resultClass="com.l9e.transaction.vo.Robot">
+		select robot_id, robot_name, robot_status, robot_register, robot_book,
+		robot_pay,
+		robot_check, robot_cancel, robot_endorse, robot_refund, robot_query, robot_enroll,
+		robot_activate, robot_money, opt_name, robot_delete from
+		robot_system_setting
+		where 1 = 1
+		<isNotEmpty prepend=" and " property="robot_id">
+			robot_id=#robot_id:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="robot_status">
+			robot_status=#robot_status:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="robot_register">
+			robot_register=#robot_register:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="robot_book">
+			robot_book=#robot_book:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="robot_pay">
+			robot_pay=#robot_pay:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="robot_check">
+			robot_check=#robot_check:VARCHAR#
+		</isNotEmpty>
+	</select>
+
+	<update id="updateRobot" parameterClass="com.l9e.transaction.vo.Robot">
+		update robot_system_setting set opt_name="train_job"
+		<isNotEmpty prepend=", " property="robot_book">
+			robot_book=#robot_book:VARCHAR#
+		</isNotEmpty>
+		where robot_id=#robot_id:VARCHAR#
+	</update>
+
+	<!--查询注册机器人,根据机器人类型查询 -->
+	<select id="selectRegRobot" parameterClass="java.util.HashMap"
+		resultClass="Worker">
+		select worker_id as workerId, worker_name as workerName, worker_ext as
+		workerExt, worker_type as workerType,
+		worker_status as workerStatus,
+		proxy_status as proxyStatus from cp_workerinfo
+		where  proxy_status not in
+		 <iterate open="(" close=")" conjunction="," property="keyList" > 
+                     #keyList[]# 
+         </iterate> 
+		
+		<isNotEmpty prepend=" and " property="worker_type">
+			worker_type=#worker_type:VARCHAR#
+		</isNotEmpty>
+
+	</select>
+	
+	
+	<update id="updateRegRobot1" parameterClass="java.util.HashMap">
+	 	update cp_workerinfo  set  worker_status='33'
+	 	where worker_id=#workerid:INTEGER#
+	
+	</update>
+	
+	<update id="updateRegRobot2" parameterClass="java.util.HashMap">
+	    update cp_workerinfo  set  worker_status='00'
+	 	where worker_id=#workerid:INTEGER#
+	</update>
+
+	<!-- 插入日志信息 -->
+	<insert id="insertLog" parameterClass="java.util.HashMap">
+		insert into cp_workerinfo_log
+		<dynamic prepend="(">
+				<isNotEmpty prepend="," property="content">
+				 	content
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="opt_person">
+					opt_person
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="worker_id">
+					worker_id
+				</isNotEmpty>
+				,create_time
+			)
+		</dynamic>
+		 values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="content">
+			 	#content:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_person">
+				#opt_person:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="worker_id">
+				#worker_id:VARCHAR#
+			</isNotEmpty>
+			,now()
+		)
+		</dynamic>
+	</insert>
+
+	<!--查询ip被封、关闭代理、停用状态的机器人信息 -->
+	<select id="queryCloseRobots" resultClass="java.util.HashMap">
+		SELECT CONVERT(worker_id, CHAR) worker_id, worker_ext, robot_id, worker_type FROM cp_workerinfo
+		WHERE (worker_type=1 OR worker_type=15) AND worker_status='22' AND stop_reason='22' AND proxy_status='22'
+	</select>
+	
+	
+	<!-- 启用机器人 -->
+	<update id="updateWorkerOpen" parameterClass="java.util.HashMap">
+		UPDATE cp_workerinfo
+		<dynamic prepend="SET">
+			<isNotEmpty prepend=" " property="worker_status">
+				worker_status=#worker_status:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_name">
+				opt_name=#opt_name:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="stop_reason">
+				stop_reason=#stop_reason:VARCHAR#
+			</isNotEmpty>
+			,option_time=now()
+		</dynamic>
+		where robot_id=#robot_id# and (worker_type=1 OR worker_type=15)
+	</update>
+	
+		<!--查询ip被封、关闭代理、停用状态的机器人信息 -->
+	<select id="queryClosePayRobots" resultClass="java.util.HashMap">
+		SELECT CONVERT(worker_id, CHAR) worker_id, worker_ext, robot_id, worker_type FROM cp_workerinfo
+		WHERE worker_type=3  AND worker_status='22' AND stop_reason='22' 
+	</select>
+	
+	
+	<!-- 启用机器人 -->
+	<update id="updateWorkerPayOpen" parameterClass="java.util.HashMap">
+		UPDATE cp_workerinfo
+		<dynamic prepend="SET">
+			<isNotEmpty prepend=" " property="worker_status">
+				worker_status=#worker_status:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="opt_name">
+				opt_name=#opt_name:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="stop_reason">
+				stop_reason=#stop_reason:VARCHAR#
+			</isNotEmpty>
+			,option_time=now()
+		</dynamic>
+		where robot_id=#robot_id# and worker_type=3
+	</update>
+	
+	
+</sqlMap>
+	

@@ -1,0 +1,5 @@
+mtyunAllocateAddress=http://10.3.12.103:18099/mtyun/interface.do
+mtyunReplaceAddress=http://10.3.12.103:18099/mtyun/interface.do
+
+checkIPUrl=http://103.37.158.92:8080/RunScript
+checkCtripIPUrl=http://43.241.225.169:8080/RunScript

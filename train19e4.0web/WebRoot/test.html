@@ -1,0 +1,3758 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>bookIndexNew</title>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<link rel="stylesheet" type="text/css" href="/css/sreachbar.css">
+<link rel="stylesheet" type="text/css" href="/css/default.css">
+<link rel="stylesheet" type="text/css" href="/css/style.css">
+<style>
+.dialog_p {
+	TEXT-INDENT: 32px;
+	FONT: 12px/22px Simsun;
+	COLOR: #333;
+}
+
+.yupiao {
+	text-align: center;
+	border: none;
+	color: #fff;
+	background-color: #ff6600;
+	cursor: pointer;
+	width: 60px;
+	height: 20px;
+}
+
+.yw {
+	border-bottom: 1px dotted #f60;
+}
+
+.rw {
+	border-bottom: 1px dotted #f60;
+}
+
+.yw_msg {
+	border: 1px solid #87B2D2;
+	background-color: #EFEFEF;
+	color: #555555;
+	font-family: "Microsoft YaHei";
+	width: 120px;
+	height: 50px;
+	position: absolute;
+	display: none;
+}
+</style>
+<script type="text/javascript" src="/js/jquery.js"></script>
+<script type="text/javascript" src="/js/My97DatePicker/WdatePicker.js"></script>
+<link rel="stylesheet" type="text/css"
+	href="http://ehcp.19e.cn/js/My97DatePicker/skin/WdatePicker.css">
+<script type="text/javascript" src="/js/artDialog.js"></script>
+<script type="text/javascript" src="/js/train_station.js"></script>
+<style></style>
+</head>
+<body>
+	<div style="display: none; position: absolute;">
+		<div class="aui_outer">
+			<table class="aui_border">
+				<tbody>
+					<tr>
+						<td class="aui_nw"></td>
+						<td class="aui_n"></td>
+						<td class="aui_ne"></td>
+					</tr>
+					<tr>
+						<td class="aui_w"></td>
+						<td class="aui_c"><div class="aui_inner">
+								<table class="aui_dialog">
+									<tbody>
+										<tr>
+											<td class="aui_header" colSpan="2"><div
+													class="aui_titleBar">
+													<div style="display: block; cursor: move;"
+														class="aui_title">&nbsp;</div>
+													<a style="display: block;" class="aui_close"
+														href="javascript:/*artDialog*/;">×</a>
+												</div></td>
+										</tr>
+										<tr>
+											<td style="display: none;" class="aui_icon"><div
+													style="" class="aui_iconBg"></div></td>
+											<td style="width: auto; height: auto;" class="aui_main"><div
+													style="padding: 20px 25px;" class="aui_content"></div></td>
+										</tr>
+										<tr>
+											<td class="aui_footer" colSpan="2"><div
+													style="display: none;" class="aui_buttons"></div></td>
+										</tr>
+									</tbody>
+								</table>
+							</div></td>
+						<td class="aui_e"></td>
+					</tr>
+					<tr>
+						<td class="aui_sw"></td>
+						<td class="aui_s"></td>
+						<td style="cursor: se-resize;" class="aui_se"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div style="display: none; position: absolute; z-index: 9999;"
+		id="cityList"></div>
+	<script type="text/javascript" src="/js/warnWindow.js"></script>
+	<script type="text/javascript" src="/js/newbanner aside.js"></script>
+	<script type="text/javascript" src="/js/train_station.js?version=10010"></script>
+	<div style="display: none; position: absolute; z-index: 9999;"
+		id="cityList"></div>
+	<script>
+		// 抢票controller入口
+		function qiangpiaogo(obj, seatType) {
+			var tr = $(obj).parents("tr");
+			var travelTime = $("#travel_time").val();
+			var trainCode = $(tr.find(".checi")[0]).text();
+			var startCity = $(tr.find(".startname")[0]).text();
+			var endCity = $(tr.find(".endname")[0]).text();
+			var startTime = $(tr.find("td")[2]).children("span").text();
+			var endTime = $(tr.find("td")[2]).text().substring(5);
+			var costTime_str = $(tr.find("td")[3]).text();
+			var defaultSelect = seatType;
+			var seatMsg = $("#seatMsg_" + trainCode).val();
+			costTime_str = costTime_str.replace("分", "");
+			var minuteCos = costTime_str.split("小时");
+			var costTime = parseInt(minuteCos[0]) * 60 + parseInt(minuteCos[1]);
+			var is_buyable = "11";
+			if (is_buyable == "00") {
+				alert("对不起，我们真的好忙，别着急等会再订吧！\nSorry,we are very busy now,please wait a minute!");
+				return false;
+			}
+			var url = "/rob/robTickect.jhtml?travelTime=" + travelTime
+					+ "&trainCode=" + trainCode + "&startCity=" + startCity
+					+ "&endCity=" + endCity + "&startTime=" + startTime
+					+ "&endTime=" + endTime + "&costTime=" + costTime
+					+ "&seatMsg=" + seatMsg + "&defaultSelect=" + defaultSelect;
+			window.location = encodeURI(url);
+		}
+	</script>
+
+
+
+
+
+
+
+	<div class="content shouy oz">
+		<div class="slogan"></div>
+	</div>
+	<!--导航条 end-->
+	<div class="index_all">
+		<!--左边内容 start-->
+
+
+
+
+
+		<script language="JavaScript" type="text/javascript">
+			$()
+					.ready(
+							function() {
+								var iframeSetHeightPath = 'http://dl4.19e.cn';
+								var windowHeight = document.body.scrollHeight + 100;
+								var urlRecordHeight = iframeSetHeightPath
+										+ "/40/pages/common/setiframeheight.jsp?documentHeight="
+										+ windowHeight
+										+ "&iframeName=portal30_right";
+								$("#iframeSetHeight").attr("src",
+										urlRecordHeight);
+							});
+
+			function changeHeight(len) {
+				try {
+					var path = $("#iframeSetHeight").attr("src");
+					var begin = path.indexOf("documentHeight=")
+							+ ("documentHeight=".length);
+					var end = path.indexOf("&iframeName=");
+					var height = parseInt(path.substring(begin, end)) + len;
+					var prePath = path.substring(0, begin);
+					var sufPath = path.substring(end);
+					$("#iframeSetHeight").attr("src",
+							prePath + height + sufPath);
+				} catch (e) {
+				}
+			}
+		</script>
+
+		<iframe style="display: none;" id="iframeSetHeight" height="0"
+			src="http://dl4.19e.cn/40/pages/common/setiframeheight.jsp?documentHeight=879&amp;iframeName=portal30_right"
+			width="0" name="iframeSetHeight"></iframe>
+
+		<!--左边内容 start-->
+		<div id="new_left">
+			<!--侧边栏 start-->
+			<script type="text/javascript">
+				$().ready(
+						function(e) {
+							$(".sidebar_con li").hover(
+									function() {
+										var myindex = $(this).index() + 1;
+
+										$(this).find("div").addClass(
+												"current_cat" + myindex);
+										$(this).siblings().each(
+												function(index, element) {
+													$(this).find("div")
+															.removeClass();
+												});
+
+										$(this).find("span").addClass(
+												"gcurrent");
+										$(this).siblings().each(
+												function(index, element) {
+													$(this).find("span")
+															.removeClass();
+												});
+									},
+									function() {
+
+										var myindex = $(this).index() + 1;
+										var mymum = $(this).index()
+										$(this).find("div").removeClass(
+												"current_cat" + myindex)
+												.addClass("cat" + mymum);
+										$(this).siblings().each(
+												function(index, element) {
+													$(this).find("div")
+															.removeClass();
+												});
+										$(this).find("span").removeClass(
+												"gcurrent")
+									});
+							//以上实现鼠标移上和移出li的样式改变	
+
+							//以下是鼠标移走之后恢复最初当前页面选项
+							var idx = $(".current_onclick").attr("id")
+									.substring(12);
+							//alert(idx);
+							var n = parseInt(idx) - 1;
+							$(".sidebar_con").mouseleave(
+									function() {
+										$(".sidebar_con li").eq(n).find("div")
+												.addClass("current_cat" + idx);
+										$(".sidebar_con li").eq(n).find("div")
+												.addClass("current_onclick");
+										$(".sidebar_con li").eq(n).siblings()
+												.removeClass();
+										$(".sidebar_con li").eq(n).find("span")
+												.addClass("gcurrent")
+												.siblings().removeClass();
+									});
+						});
+
+				//$(".current_cat1").onclick(function(){
+				//	alert("aa");
+				//var id = $(".current_choose").attr("id");
+				//});	
+				function toHref(id, url) {
+					var index = id.substring(12);
+					var oldId = $(".current_onclick").attr("id");
+					$("#" + oldId).removeClass("current_onclick");
+					$("#" + id).addClass("current_onclick");
+					//alert(oldId+"   "+id);
+					window.location = url;
+				}
+				var objWin;
+				function toOpen(url) {
+					//判断是否打开 
+					if (objWin == null || objWin.closed) {
+						objWin = window.open(url);
+					} else {
+						objWin.location.replace(url);
+					}
+				}
+			</script>
+
+			<h3 style="cursor: pointer;" class="sidebar_tit"
+				onclick="toHref(this.id, '/buyTicket/bookIndex.jhtml');">火车票业务
+			</h3>
+			<!--登录状态 start-->
+
+
+
+
+
+
+
+			<div class="vip-state oz">
+				<a class="box-a" href="/joinUs/realNameAuth.jhtml">
+					<dl class="oz">
+						<dt>
+							<div class="vip-icon nolevel-icon"></div>
+							<p
+								style="width: 63px; height: 25px; text-align: center; line-height: 25px;"
+								class="operate update">
+								<span>立即认证</span>
+							</p>
+						</dt>
+						<dd>
+							<p class="vip-mes">
+								<label>姓名：</label><span style="color: rgb(85, 85, 85);">未填写</span>
+							</p>
+
+
+
+							<p class="vip-mes">
+								<label>状态：</label><span style="color: rgb(85, 85, 85);">已开通</span>
+							</p>
+
+
+
+
+
+							<p class="vip-mes">
+								<label>实名：</label><span class="state">未认证</span>
+							</p>
+							<p class="vip-mes">
+								<label>等级：</label><span>无</span>
+							</p>
+						</dd>
+					</dl>
+				</a>
+			</div>
+
+
+			<!--登录状态 end-->
+			<div id="sidebar">
+
+
+
+				<ul id="all_menu" class="sidebar_con">
+					<li
+						style="border-left-color: rgb(146, 209, 79); border-left-width: 4px; border-left-style: solid;">
+						<div id="currentMenu_1" class="current_cat1 current_onclick"
+							onclick="toHref(this.id, '/buyTicket/bookIndex.jhtml');">
+							<a href="#">车票预订</a> <span class="gcurrent"></span>
+						</div>
+					</li>
+					<li
+						style="border-left-color: rgb(160, 78, 209); border-left-width: 4px; border-left-style: solid;">
+						<div id="currentMenu_2"
+							onclick="toHref(this.id, '/query/queryOrderList.jhtml');">
+							<a href="#">我的订单</a> <span></span>
+						</div>
+					</li>
+					<li
+						style="border-left-color: rgb(160, 78, 209); border-left-width: 4px; border-left-style: solid;">
+						<div id="currentMenu_2"
+							onclick="toHref(this.id, '/rob/robOrderList.jhtml');">
+							<a href="#">抢票订单</a> <span></span>
+						</div>
+					</li>
+					<li
+						style="border-left-color: rgb(252, 160, 171); border-left-width: 4px; border-left-style: solid;">
+						<div id="currentMenu_3" class="cat3"
+							onclick="toHref(this.id, '/query/querySaleReport.jhtml');">
+							<a href="#">销售报表</a> <span></span>
+						</div>
+					</li>
+					<!--	<li  style="border-left: 4px #c3a9aa solid;" >
+			<div id="currentMenu_4"  class="current_cat4 current_onclick" class="cat4" 
+				onclick="toHref(this.id, '/joinUs/agentInfoIndex.jhtml');"  > 
+				<a href="#">个人中心</a> 
+				<span  class="gcurrent" ></span>
+			</div>
+		</li>  -->
+					<li
+						style="border-left-color: rgb(255, 192, 1); border-left-width: 4px; border-left-style: solid;">
+						<div id="currentMenu_4"
+							onclick="toHref(this.id, '/complain/complainIndex.jhtml');">
+							<a href="#">投诉建议</a> <span></span>
+						</div>
+					</li>
+					<li
+						style="border-left-color: rgb(241, 95, 98); border-left-width: 4px; border-left-style: solid;">
+						<div id="currentMenu_5"
+							onclick="toHref(this.id, '/pages/guide/newKaiTong.jsp');">
+							<a href="#">常见问题</a> <span></span>
+						</div>
+					</li>
+					<li
+						style="border-left-color: rgb(195, 169, 170); border-left-width: 4px; border-left-style: solid;">
+						<div id="currentMenu_6" onclick="toOpen( '/game/playGame.jhtml');">
+							<a href="#">活动专区</a> <span></span>
+						</div>
+					</li>
+				</ul>
+
+
+
+
+
+
+				<!-- 
+			<li style="border-left: 4px #92d14f solid;">
+				<div class="current_cat1"> <a href="/buyTicket/bookIndex.jhtml">车票预订</a> <span class="gcurrent"></span> </div>
+			</li>
+			<li style="border-left: 4px #a04ed1 solid;"> 
+				<div class="cat2"> <a href="/query/queryOrderList.jhtml">我的订单</a> <span></span> </div>
+			</li>
+			<li style="border-left: 4px #fca0ab solid;">
+				<div class="cat3"> <a href="/query/querySaleReport.jhtml">销售报表</a> <span></span> </div>
+			</li>
+			<li style="border-left: 4px #c3a9aa solid;">
+				<div class="cat4"> <a href="/joinUs/agentInfoIndex.jhtml">个人中心</a> <span></span> </div>
+			</li>
+			<li style="border-left: 4px #ffc001 solid;">
+				<div class="cat5"> <a href="/complain/complainIndex.jhtml">投诉建议</a> <span></span> </div>
+			</li>
+			<li style="border-left: 4px solid #f15f62;">
+				<div class="cat6"> <a href="/pages/guide/newKaiTong.jsp">常见问题</a> <span></span> </div>
+			</li>
+		 -->
+			</div>
+			<!--侧边栏 end-->
+
+
+			<!--公告 start-->
+
+
+
+			<div id="new_ggao">
+				<h2>
+					<span>公告</span> <a href="/notice/queryNoticeAllList.jhtml">更多 </a>
+				</h2>
+				<div class="nggao_con">
+					<ul>
+
+
+						<li><span
+							style="width: 145px; overflow: hidden; display: block; white-space: nowrap; text-overflow: ellipsis;">
+								<a title="<b style='color:red'>火车票抢票功能隆重上线 </b>"
+								href="/notice/queryNoticeInfo_no.jhtml?noticeId=134"> <b
+									style="color: red;">火车票抢票功能隆重上线 </b>
+							</a>
+						</span> <span class="notice_time"> 2016/12/30 </span></li>
+
+
+
+						<li><span
+							style="width: 145px; overflow: hidden; display: block; white-space: nowrap; text-overflow: ellipsis;">
+								<a title="<b style='color:red'>车次数据全更新</b>"
+								href="/notice/queryNoticeInfo_no.jhtml?noticeId=126"> <b
+									style="color: red;">车次数据全更新</b>
+							</a>
+						</span> <span class="notice_time"> 2016/11/23 </span></li>
+
+
+
+						<li><span
+							style="width: 145px; overflow: hidden; display: block; white-space: nowrap; text-overflow: ellipsis;">
+								<a title="<b>预售时间调整公告</b>"
+								href="/notice/queryNoticeInfo_no.jhtml?noticeId=130"> <b>预售时间调整公告</b>
+							</a>
+						</span> <span class="notice_time"> 2016/11/02 </span></li>
+
+
+					</ul>
+				</div>
+			</div>
+			<!--公告 end-->
+
+			<!--联系方式 start-->
+			<div id="new_contact">
+				<h3>
+					<span>联系方式</span>
+				</h3>
+				<div class="new_contact">
+					<span>客服热线</span> <b>7:00-23:00</b> <a href="#">400-688-2666</a>
+				</div>
+			</div>
+			<!--联系方式 end-->
+
+
+
+
+
+		</div>
+
+		<!--左边内容 end-->
+		<!--右边部分start-->
+		<div class="rightIndex_con oz">
+			<div style="width: 785px;" class="tip_term oz">
+				<p class="price_tip"></p>
+			</div>
+			<form id="trainForm" method="post"
+				action="/buyTicket/queryByStation.jhtml">
+				<div style="margin-top: 5px;" class="ser_tab oz">
+					<ul class="tab">
+					</ul>
+					<div class="tab_list oz">
+						<div class="shou_query">
+							<dl class="shou_query_oz">
+								<dt>出发城市</dt>
+								<dd>
+									<input onblur="hideCity()" id="fromZh" class="text"
+										onfocus="showCity('fromZh')" name="from_city" value="湛江"
+										type="text">
+								</dd>
+							</dl>
+							<div class="swap" onclick="swapCity();"></div>
+							<dl style="margin-left: 35px;" class="shou_query_oz">
+								<dt>到达城市</dt>
+								<dd>
+									<input onblur="hideCity()" id="toZh" class="text"
+										onfocus="showCity('toZh')" name="to_city" value="重庆"
+										type="text">
+								</dd>
+							</dl>
+							<div style="position:absolute;left:646px;width:60px">
+								普通:<input id="adult_type" name="t_type" type="radio" value="ADULT" checked="checked">
+								学生:<input id="stu_type" name="t_type" type="radio" value="0X00">
+							</div>
+							<div id="query" class="search_query search_hover"
+								onmouseover="this.className='search_query search_link'"
+								onmouseout="this.className='search_query search_hover'">
+								查询</div>
+							<dl class="shou_query_oz">
+								<dt>出发日期</dt>
+								<dd>
+									<input id="travel_time" class="text text2"
+										onfocus="myfunction(this)" name="travel_time"
+										readOnly="readonly" value="2017-01-07" type="text">
+								</dd>
+							</dl>
+						</div>
+					</div>
+				</div>
+
+				<div class="ser_term oz">
+					<h3>
+						<span
+							style="color: rgb(50, 177, 240); font-size: 14px; font-weight: bold;">湛江</span>
+						<span class="nav_middle_bg">→</span> <span
+							style="color: rgb(50, 177, 240); font-size: 14px; font-weight: bold;">重庆</span>&nbsp;2017-01-07（
+
+
+						<span class="amount">共<strong id="train_total">1</strong>个车次
+						</span> ）
+
+					</h3>
+
+					<div class="choose_databox">
+						<span id="front_jiantou" class="choose_jiantouend"
+							onclick="toForwordDay();"></span>
+						<div class="choose_li">
+							<ul>
+
+
+
+
+
+
+
+								<li id="li_1" class="show_li"><span>01-05<input
+										id="li_span_1" value="2017-01-05" type="hidden"></span> <span>星期四</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_2" class="show_li"><span>01-06<input
+										id="li_span_2" value="2017-01-06" type="hidden"></span> <span>星期五</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_3" class="current_choose show_li"><span>01-07<input
+										id="li_span_3" value="2017-01-07" type="hidden"></span> <span>星期六</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_4" class="show_li"><span>01-08<input
+										id="li_span_4" value="2017-01-08" type="hidden"></span> <span>星期日</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_5" class="show_li"><span>01-09<input
+										id="li_span_5" value="2017-01-09" type="hidden"></span> <span>星期一</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_6" class="show_li"><span>01-10<input
+										id="li_span_6" value="2017-01-10" type="hidden"></span> <span>星期二</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_7" class="show_li"><span>01-11<input
+										id="li_span_7" value="2017-01-11" type="hidden"></span> <span>星期三</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_8" class="show_li"><span>01-12<input
+										id="li_span_8" value="2017-01-12" type="hidden"></span> <span>星期四</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_9" class="show_li"><span>01-13<input
+										id="li_span_9" value="2017-01-13" type="hidden"></span> <span>星期五</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_10" class="hide_li"><span>01-14<input
+										id="li_span_10" value="2017-01-14" type="hidden"></span> <span>星期六</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_11" class="hide_li"><span>01-15<input
+										id="li_span_11" value="2017-01-15" type="hidden"></span> <span>星期日</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_12" class="hide_li"><span>01-16<input
+										id="li_span_12" value="2017-01-16" type="hidden"></span> <span>星期一</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_13" class="hide_li"><span>01-17<input
+										id="li_span_13" value="2017-01-17" type="hidden"></span> <span>星期二</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_14" class="hide_li"><span>01-18<input
+										id="li_span_14" value="2017-01-18" type="hidden"></span> <span>星期三</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_15" class="hide_li"><span>01-19<input
+										id="li_span_15" value="2017-01-19" type="hidden"></span> <span>星期四</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_16" class="hide_li"><span>01-20<input
+										id="li_span_16" value="2017-01-20" type="hidden"></span> <span>星期五</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_17" class="hide_li"><span>01-21<input
+										id="li_span_17" value="2017-01-21" type="hidden"></span> <span>星期六</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_18" class="hide_li"><span>01-22<input
+										id="li_span_18" value="2017-01-22" type="hidden"></span> <span>星期日</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_19" class="hide_li"><span>01-23<input
+										id="li_span_19" value="2017-01-23" type="hidden"></span> <span>星期一</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_20" class="hide_li"><span>01-24<input
+										id="li_span_20" value="2017-01-24" type="hidden"></span> <span>星期二</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_21" class="hide_li"><span>01-25<input
+										id="li_span_21" value="2017-01-25" type="hidden"></span> <span>星期三</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_22" class="hide_li"><span>01-26<input
+										id="li_span_22" value="2017-01-26" type="hidden"></span> <span>星期四</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_23" class="hide_li"><span>01-27<input
+										id="li_span_23" value="2017-01-27" type="hidden"></span> <span>星期五</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_24" class="hide_li"><span>01-28<input
+										id="li_span_24" value="2017-01-28" type="hidden"></span> <span>星期六</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_25" class="hide_li"><span>01-29<input
+										id="li_span_25" value="2017-01-29" type="hidden"></span> <span>星期日</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_26" class="hide_li"><span>01-30<input
+										id="li_span_26" value="2017-01-30" type="hidden"></span> <span>星期一</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_27" class="hide_li"><span>01-31<input
+										id="li_span_27" value="2017-01-31" type="hidden"></span> <span>星期二</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_28" class="hide_li"><span>02-01<input
+										id="li_span_28" value="2017-02-01" type="hidden"></span> <span>星期三</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_29" class="hide_li"><span>02-02<input
+										id="li_span_29" value="2017-02-02" type="hidden"></span> <span>星期四</span></li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<li id="li_30" class="hide_li"><span>02-03<input
+										id="li_span_30" value="2017-02-03" type="hidden"></span> <span>星期五</span></li>
+
+
+							</ul>
+						</div>
+						<span id="end_jiantou" class="choose_jiantour"
+							onclick="toNextDay();"></span>
+					</div>
+					<script language="JavaScript" type="text/javascript">
+						$(document)
+								.ready(
+										function() {
+											var m = document
+													.getElementById("book_day_num").value;
+											$(".yw").hover(function(e) {
+												var top = e.pageY + 5;
+												var left = e.pageX + 5;
+												var pos = {//定位popudiv，这里以在td右边显示为例子，左边跟上边的时候还要计算popudiv的尺寸 
+													'top' : top + 'px',
+													'left' : left + 'px'
+												}
+												$('#yw_msg').css(pos).show();//设置left，top，并显示出来 
+											}, function() {
+												$('#yw_msg').hide();//鼠标离开，div隐藏 
+											});
+											$(".rw").hover(function(e) {
+												var top = e.pageY + 5;
+												var left = e.pageX + 5;
+												var pos = {//定位popudiv，这里以在td右边显示为例子，左边跟上边的时候还要计算popudiv的尺寸 
+													'top' : top + 'px',
+													'left' : left + 'px'
+												}
+												$('#yw_msg').css(pos).show();//设置left，top，并显示出来 
+											}, function() {
+												$('#yw_msg').hide();//鼠标离开，div隐藏 
+											});
+
+											$(".choose_li li")
+													.hover(
+															function() {
+																$(this)
+																		.addClass(
+																				"current_hover"); //鼠标悬浮：添加背景色 
+															},
+															function() {
+																$(this)
+																		.removeClass(
+																				"current_hover"); //鼠标离开：去掉背景色
+															});
+
+											if ($("#li_1").is(":visible")) {//第一个li显示，则不能再向前
+												$("#front_jiantou")
+														.removeClass(
+																"choose_jiantou");
+												$("#front_jiantou").addClass(
+														"choose_jiantouend");//不能选
+											}
+											if ($("#li_" + parseInt(m)).is(
+													":visible")) {//最后一个li显示，则不能再向后
+												$("#end_jiantou").removeClass(
+														"choose_jiantour");
+												$("#end_jiantou").addClass(
+														"choose_jiantourend");//不能选
+											}
+										});
+						//向前翻
+						function toForwordDay() {
+							// 获取第一个显示show_li的ID
+							var id = $(".show_li").attr("id");// li_12
+							var index = id.substring(3);// 12
+							var m = document.getElementById("book_day_num").value;
+							if (index == 1) {//第一个li显示，则不能再向前
+								$("#front_jiantou").removeClass(
+										"choose_jiantou");
+								$("#front_jiantou").addClass(
+										"choose_jiantouend");//不能选
+								return;
+							} else {
+								if ($("#front_jiantou").hasClass(
+										"choose_jiantouend")) {
+									$("#front_jiantou").addClass(
+											"choose_jiantou");
+									$("#front_jiantou").removeClass(
+											"choose_jiantouend");//不能选
+								}
+							}
+
+							$("#li_" + (parseInt(index) - 1)).addClass(
+									"show_li");//前一个显示
+							$("#li_" + (parseInt(index) - 1)).removeClass(
+									"hide_li");
+
+							$("#li_" + (parseInt(index) + 8)).addClass(
+									"hide_li");//最后一个隐藏
+							$("#li_" + (parseInt(index) + 8)).removeClass(
+									"show_li");
+							if ($(".show_li").attr("id").substring(3) == 1) {//第一个li显示，则不能再向前
+								$("#front_jiantou").removeClass(
+										"choose_jiantou");
+								$("#front_jiantou").addClass(
+										"choose_jiantouend");//不能选
+							} else if ($(".show_li").attr("id").substring(3) < parseInt(m) - 8) {//第一个li显示，则不能再向前
+								$("#end_jiantou").addClass("choose_jiantour");
+								$("#end_jiantou").removeClass(
+										"choose_jiantourend");//不能选
+							}
+							addWidth();
+						}
+						//向后翻
+						function toNextDay() {
+							// 获取第一个显示show_li的ID
+							var id = $(".show_li").attr("id");// li_12
+							var index = id.substring(3);// 12
+							var m = document.getElementById("book_day_num").value;
+							//alert(index);
+							if (index == parseInt(m) - 9) {//最后一个li显示，则不能再向后
+								$("#end_jiantou")
+										.removeClass("choose_jiantour");
+								$("#end_jiantou")
+										.addClass("choose_jiantourend");//不能选
+							} else if (index >= parseInt(m) - 8) {//最后一个li显示，则不能再向后
+								$("#end_jiantou")
+										.removeClass("choose_jiantour");
+								$("#end_jiantou")
+										.addClass("choose_jiantourend");//不能选
+								return;
+							} else {
+								if ($("#end_jiantou").hasClass(
+										"choose_jiantourend")) {
+									$("#end_jiantou").addClass(
+											"choose_jiantour");
+									$("#end_jiantou").removeClass(
+											"choose_jiantourend");//不能选
+								}
+							}
+							// alert(index+"隐藏："+"#li_"+(parseInt(index)));                	
+							$("#li_" + (parseInt(index)))
+									.removeClass("show_li");//第一个隐藏
+							$("#li_" + (parseInt(index))).addClass("hide_li");
+							//alert("显示："+"#li_"+(parseInt(index)+9));
+							$("#li_" + (parseInt(index) + 9)).removeClass(
+									"hide_li");//最后一个+1显示
+							$("#li_" + (parseInt(index) + 9)).addClass(
+									"show_li");
+							//$("#li_"+(parseInt(index)+9)).attr("onClick","show_li_click();");
+							if ($(".show_li").attr("id").substring(3) == 2) {//第一个li显示，则不能再向前
+								//alert("1");
+								$("#front_jiantou").addClass("choose_jiantou");
+								$("#front_jiantou").removeClass(
+										"choose_jiantouend");//不能选
+							} else if ($(".show_li").attr("id").substring(3) < parseInt(m) - 8) {//第一个li显示，则不能再向前
+								$("#end_jiantou").addClass("choose_jiantour");
+								$("#end_jiantou").removeClass(
+										"choose_jiantourend");//不能选
+							}
+							addWidth();
+						}
+
+						function addWidth() {//当前样式不显示的时候，加宽li的宽度
+							var id = $(".current_choose").attr("id");
+							if ($("#" + id).is(":hidden")) {
+								$(".show_li").addClass("addwidth");
+							} else {
+								$(".show_li").removeClass("addwidth");
+							}
+						}
+					</script>
+
+
+
+
+
+
+
+					<div class="box oz">
+						<!--查询条件区域-->
+						<ul id="sel_checkbox" class="sel_checkbox oz">
+							<li id="trainType"><strong>车型选择：</strong> <label
+								id="selectALLTrain" class="choose_all" for="sx_cb1">全选</label> <!-- 
+                                <input type="checkbox" id="trainType_GD" class="filter trainType" value="G/D"  /><label for="trainType_GD">G高铁/D动车</label>
+                                <input type="checkbox" id="trainType_G" class="filter trainType" value="G"  /><label for="trainType_G">G高铁</label>
+                                <input type="checkbox" id="trainType_C" class="filter trainType" value="C"  /><label for="trainType_C">C城际</label>
+                                 --> <input id="trainType_GD"
+								class="filter trainType" value="G/D" type="checkbox"><label
+								for="trainType_GD">G高铁/D动车</label> <input id="trainType_G"
+								class="filter trainType" value="G" type="checkbox"><label
+								for="trainType_G">G高铁</label> <input id="trainType_C"
+								class="filter trainType" value="C" type="checkbox"><label
+								for="trainType_C">C城际</label> <input id="trainType_D"
+								class="filter trainType" value="D" type="checkbox"><label
+								for="trainType_D">D动车</label> <input id="trainType_Z"
+								class="filter trainType" value="Z" type="checkbox"><label
+								for="trainType_Z">Z专列</label> <input id="trainType_T"
+								class="filter trainType" value="T" type="checkbox"><label
+								for="trainType_T">T特快</label> <input id="trainType_K"
+								class="filter trainType" value="K" type="checkbox"><label
+								for="trainType_K">K快速</label> <input id="trainType_L"
+								class="filter trainType" value="L/PT" type="checkbox"><label
+								for="trainType_L">L临客|普快</label> <!--<span id="sx_txt" class="xianshi_box">更多筛选条件</span>-->
+							</li>
+							<li id="fromTime"><strong>发车时间：</strong> <label
+								id="selectALLTime" class="choose_all" for="sx_cb1">全选</label> <span><input
+									id="fromTime_1" class="filter startTime" value="fzs"
+									type="checkbox"><label for="fromTime_1">早上(00:00-06:00)</label></span>
+								<span><input id="fromTime_2" class="filter startTime"
+									value="fam" type="checkbox"><label for="fromTime_2">上午(06:00-12:00)</label></span>
+								<span><input id="fromTime_3" class="filter startTime"
+									value="fpm" type="checkbox"><label for="fromTime_3">下午(12:00-18:00)</label></span>
+								<span><input id="fromTime_4" class="filter startTime"
+									value="fws" type="checkbox"><label for="fromTime_4">晚上(18:00-24:00)</label></span>
+							</li>
+							<!-- 发车站选择 -->
+
+							<!-- 到站选择 -->
+
+							<li style="display: none;" id="toTime"><strong>到达时间：</strong>
+								<label id="selectALLTo" class="choose_all" for="sx_cb1">全选</label>
+								<span><input id="toTime_1" class="filter arriveTime"
+									value="tzs" type="checkbox" filter="t"><label
+									for="toTime_1">早上(00:00-06:00)</label></span> <span><input
+									id="toTime_2" class="filter arriveTime" value="tam"
+									type="checkbox" filter="t"><label for="toTime_2">上午(06:00-12:00)</label></span>
+								<span><input id="toTime_3" class="filter arriveTime"
+									value="tpm" type="checkbox" filter="t"><label
+									for="toTime_3">下午(12:00-18:00)</label></span> <span><input
+									id="toTime_4" class="filter arriveTime" value="tws"
+									type="checkbox" filter="t"><label for="toTime_4">晚上(18:00-24:00)</label></span>
+							</li>
+							<!-- 可否预订 -->
+
+							<li style="display: none;" id="startAfter"><strong>可否预订：</strong>
+								<label id="selectStartAfter" class="choose_all" for="sx_cb1">全选</label>
+								<span><input id="ableBook" class="filter weatherBook"
+									value="预 订" type="checkbox" filter="o"><label
+									for="ableBook">可以预订</label></span> <span><input id="unableBook"
+									class="filter weatherBook" value="抢 票" type="checkbox"
+									filter="o"><label for="unableBook">抢 票</label></span></li>
+
+						</ul>
+						<div id="ser-more" class="down-arrow">
+							<a href="javascript:void(0);">更多筛选条件</a>
+						</div>
+					</div>
+				</div>
+				<div class="ser_result">
+					<table cellSpacing="0" cellPadding="0">
+						<tbody>
+							<tr class="tit">
+								<th width="12%">车次/车型</th>
+								<th width="16%">发站/到站</th>
+								<th width="12%">发车/到达</th>
+								<th width="12%">运行时间</th>
+								<th style="width: 34%; text-align: left; padding-left: 25px;">参考票价[余票]</th>
+								<th width="14%"></th>
+								<input id="book_day_num" name="book_day_num" value="30"
+									type="hidden">
+								<input id="stu_book_day_num" name="stu_book_day_num" value="2017-02-26"
+									type="hidden">
+
+							</tr>
+
+
+							<!-- 新接口展示页面 -->
+
+
+							<div style="left: 643px; top: 344px; display: none;" id="yw_msg"
+								class="yw_msg">注：暂收下铺价格，出票后根据实际票价退还差价。可选座位。</div>
+
+
+							<tr id="710000K8720C_ticket_K_fpm_tpm" class="trainBar"
+								startTime="16:00">
+								<td class="wayStastion"><strong id="710000K8720C"
+									class="checi">K872</strong><br>
+									<div class="down-arrow" value="湛江_重庆">
+										<a href="javascript:void(0);">途经站</a>
+									</div></td>
+								<td class="adr"><span id="710000K8720C_湛江"
+									class="startname start">湛江</span><br> <span
+									id="710000K8720C_重庆" class="endname end">重庆</span></td>
+								<td class="fd"><span>16:00</span><br>17:36</td>
+								<td>25小时36分</td>
+								<td class="seat">
+
+									<p>
+										硬座<span>￥180.5 [100] </span>
+									</p>
+
+
+
+									<p>
+										硬卧<span class="yw" onmousemove="myshow()"
+											onmouseout="myhide()">￥331.5 [0] </span>
+									</p>
+									<p>
+										软卧<span class="rw">￥509.5 <input class="yupiao"
+											value="仅剩1张" type="button">
+
+
+
+										</span>
+									</p>
+
+
+
+								</td>
+								<input id="seatMsg_K872"
+									value="无座_180.5_100,硬座_180.5_100,软座_-_-,一等座_-_-,二等座_-_-,硬卧_331.5_-,软卧_509.5_1,高级软卧_-_-,特等座_-_-,商务座_-_-"
+									type="hidden">
+
+
+
+
+
+
+								<td>
+
+
+
+									<p>
+										<input id="710000K8720C_yz_ableBook"
+											class="btn1 bookTicket btn_link"
+											onmouseover="this.className='btn1 bookTicket btn_hover'"
+											onmouseout="this.className='btn1 bookTicket btn_link'"
+											onclick="gotoBookOrder('2017-01-07','K872','湛江','重庆','16:00','17:36','1536','硬座');"
+											value="预 订" type="button">
+									</p>
+
+
+
+
+
+
+
+
+
+
+
+									<p>
+										<input class="btn2 bookTicket"
+											onclick="qiangpiaogo(this,'硬卧');" value="抢 票" type="button">
+									</p>
+
+
+
+									<p>
+										<input id="710000K8720C_rws_ableBook"
+											class="btn1 bookTicket btn_link"
+											onmouseover="this.className='btn1 bookTicket btn_hover'"
+											onmouseout="this.className='btn1 bookTicket btn_link'"
+											onclick="gotoBookOrder('2017-01-07','K872','湛江','重庆','16:00','17:36','1536','软卧');"
+											value="预 订" type="button">
+									</p>
+
+
+
+
+
+
+
+
+
+
+
+								</td>
+
+
+
+
+
+							</tr>
+							<tr>
+								<td
+									style="padding: 0px; border-bottom-color: currentColor; border-bottom-width: medium; border-bottom-style: none;"
+									colSpan="6">
+									<div style="display: none;" id="train_station_710000K8720C"
+										class="train_station">
+										<div class="station_tit oz">
+											<span class="zx">站序</span> <span class="zm">站名</span> <span
+												class="rq">天数</span> <span class="dzsj">到站时间</span> <span
+												class="fcsj">出发时间</span> <span class="tlsj">停留时间</span> <span
+												class="lcs">里程数</span>
+										</div>
+										<div id="station_con_710000K8720C" class="station_con">
+											<table>
+												<tbody id="station_tbody_710000K8720C">
+												</tbody>
+											</table>
+										</div>
+										<b class="station_icon"></b>
+									</div>
+								</td>
+							</tr>
+
+
+
+							<!-- 不可预订 -->
+
+						</tbody>
+					</table>
+				</div>
+			</form>
+		</div>
+		<!--左边内容 end-->
+
+	</div>
+	<!--右边部分end-->
+	<div style="display: none;" id="tip" class="tip_wrap">
+		<div class="tip">
+			<b></b><span class="errMsg"></span>
+		</div>
+	</div>
+	<script language="JavaScript" type="text/javascript">
+		//获取n天后的日期
+		function adddays(n) {
+			var newdate = new Date();
+			var newtimems = newdate.getTime() + (n * 24 * 60 * 60 * 1000);
+			newdate.setTime(newtimems);
+			var month = newdate.getMonth() + 1;
+			month < 10 ? month = '0' + month : month = month;
+			var day = newdate.getDate();
+			day < 10 ? day = '0' + day : day = day;
+			//只得到年月日的   
+			var newDay = newdate.getFullYear() + "-" + month + "-" + day;
+			return newDay;
+		}
+		//出发日期--日历控件
+		function myfunction(element) {
+			//var arr = new Array(adddays(20), adddays(21), adddays(22), adddays(23), adddays(24), adddays(25), adddays(26), adddays(27), adddays(28), adddays(29));
+			//WdatePicker({doubleCalendar: true ,dateFmt:'yyyy-MM-dd',minDate:'%y-%M-%d',maxDate:'%y-%M-{%d+29}', specialDates:arr}); 
+			var m = document.getElementById("book_day_num").value;
+			//去除 加10天预约购票服务
+			var i = parseInt(m);
+			//var j=i-1+10;
+			var j = i - 1;
+			var arr = new Array(adddays(parseInt(i)), adddays(parseInt(i) + 1),
+					adddays(parseInt(i) + 2), adddays(parseInt(i) + 3),
+					adddays(parseInt(i) + 4), adddays(parseInt(i) + 5),
+					adddays(parseInt(i) + 6), adddays(parseInt(i) + 7),
+					adddays(parseInt(i) + 8), adddays(parseInt(i) + 9));
+			
+			var is_stu = $("#stu_type").attr("checked")
+			if(is_stu){
+				WdatePicker({
+					doubleCalendar : true,
+					dateFmt : 'yyyy-MM-dd',
+					minDate : '%y-%M-%d',
+					maxDate : '2017-02-26'
+				});
+				
+			}else{
+				WdatePicker({
+					doubleCalendar : true,
+					dateFmt : 'yyyy-MM-dd',
+					minDate : '%y-%M-%d',
+					maxDate : '%y-%M-{%d+' + j + '}'
+				});
+			}
+
+		}
+		function swapCity() {
+			var fromCity = $("#fromZh").val().replace("出发城市", "");
+			var toCity = $("#toZh").val().replace("到达城市", "");
+			$("#fromZh").val(toCity);
+			$("#toZh").val(fromCity);
+		}
+		$()
+				.ready(
+						function() {
+							$(".show_li")
+									.live(
+											'click',
+											function() {//点击日期，查询车次
+												//消息框	
+												var dialog = art
+														.dialog({
+															lock : true,
+															fixed : true,
+															left : '50%',
+															top : '250px',
+															title : 'Loading...',
+															icon : "/images/loading.gif",
+															content : '正在查询，请稍候！'
+														});
+												var id = $(".current_choose")
+														.attr("id");
+												$("#" + id).removeClass(
+														"current_choose");//去除当前样式
+												$(this)
+														.attr("class",
+																"show_li current_choose");//当前样式
+												var str = $
+														.trim($(this).text());//11-18 周三
+												//alert(str);
+												if ($.trim($("#fromZh").val()) == ""
+														|| $.trim($("#fromZh")
+																.val()) == "出发城市") {
+													showErrMsg("fromZh",
+															"110px", "请输入出发城市！");
+													return;
+												} else {
+													hideErrMsg("fromZh");
+												}
+												if ($.trim($("#toZh").val()) == ""
+														|| $.trim($("#toZh")
+																.val()) == "到达城市") {
+													showErrMsg("toZh", "110px",
+															"请输入到达城市！");
+													return;
+												} else {
+													hideErrMsg("toZh");
+												}
+												var newId = $(".current_choose")
+														.attr("id")
+														.substring(3);
+												var date = $(
+														"#li_span_" + newId)
+														.val();
+												$("#travel_time").val(date);
+												if ($("#travel_time").val() == "") {
+													showErrMsg("travel_time",
+															"110px", "请输入出发日期！");
+													return;
+												} else {
+													hideErrMsg("travel_time");
+												}
+
+												$(".aui_titleBar").hide();
+												$("form:first").submit();
+
+											});
+
+							var animateAuto = function(prop, speed, callback) {
+								var elem, height, width;
+								return this.each(function(i, el) {
+									el = jQuery(el), elem = el.clone().css({
+										"height" : "auto",
+										"width" : "auto"
+									}).appendTo("body");
+									height = elem.css("height"), width = elem
+											.css("width"), elem.remove();
+									if (prop === "height")
+										el.animate({
+											"height" : height
+										}, speed, callback);
+									else if (prop === "width")
+										el.animate({
+											"width" : width
+										}, speed, callback);
+									else if (prop === "both")
+										el.animate({
+											"width" : width,
+											"height" : height
+										}, speed, callback);
+								});
+							}
+
+							//途经站
+							$(".wayStastion")
+									.click(
+											function() {
+												var chufa = $(this).children(
+														"div").attr("class");
+												var checi = $(this).children(
+														"strong").attr("id");
+												if (chufa == "up-arrow") {
+													$("#train_station_" + checi)
+															.hide();
+													$(this)
+															.children("div")
+															.attr("class",
+																	"down-arrow");
+													$(this)
+															.parents("tr")
+															.children("td")
+															.attr("style",
+																	"border-bottom:1px;");
+													$(this)
+															.parents("tr")
+															.children("td")
+															.removeAttr("style");
+												} else {
+													$(".up-arrow")
+															.each(
+																	function() {
+																		$(this)
+																				.attr(
+																						"class",
+																						"down-arrow");
+																	});
+													$(this).children("div")
+															.attr("class",
+																	"up-arrow");
+													$(this)
+															.parents("tr")
+															.children("td")
+															.attr("style",
+																	"border-bottom:0px;");
+													var stationame = $(this)
+															.children("div")
+															.val().split("_");
+													var fromName = stationame[0];
+													var toName = stationame[1];
+													if ($("#dis_" + checi)
+															.val() != undefined
+															&& $(
+																	"#dis_"
+																			+ checi)
+																	.val() != null) {
+														$(".train_station")
+																.each(
+																		function() {
+																			$(
+																					this)
+																					.hide();
+
+																		});
+														//$("#train_station_"+checi).fadeTo("slow",1);
+														$(
+																"#train_station_"
+																		+ checi)
+																.show();
+													} else {
+														$
+																.ajax({
+																	url : "/station/subwayName.jhtml?checi="
+																			+ $(
+																					this)
+																					.children(
+																							"strong")
+																					.text(),
+																	type : "POST",
+																	cache : false,
+																	dataType : "json",
+																	async : true,
+																	success : function(
+																			data) {
+																		if (data == ""
+																				|| data == null) {
+																			return false;
+																		}
+																		var size = data.length;
+																		for (var i = 0; i < size; i++) {
+																			$(
+																					"#station_con_"
+																							+ checi)
+																					.append(
+																							"<div id=\"dis_"+checi+"\" value=\""+checi+"\" style=\"display:none\"></div>");
+
+																			if (fromName == data[i].name
+																					|| toName == data[i].name) {
+																				$(
+																						"#station_tbody_"
+																								+ checi)
+																						.append(
+																								"<tr class=\"bgc\" id=\"tr_"+i+checi+"\"></tr>");
+																				$(
+																						"#tr_"
+																								+ i
+																								+ checi)
+																						.append(
+																								"<td style=\"width:80px;\">"
+																										+ data[i].stationno
+																										+ "</td>"
+																										+ "<td style=\"width:120px;\">"
+																										+ data[i].name
+																										+ "</td>"
+																										+ "<td style=\"width:90px;\">"
+																										+ data[i].costtime
+																										+ "</td>"
+																										+ "<td style=\"width:110px;\">"
+																										+ data[i].arrtime
+																										+ "</td>"
+																										+ "<td style=\"width:110px;\">"
+																										+ data[i].starttime
+																										+ "</td>"
+																										+ "<td style=\"width:110px;\">"
+																										+ data[i].interval
+																										+ "</td>"
+																										+ "<td style=\"width:110px;\">"
+																										+ data[i].distance
+																										+ "</td>");
+																			} else {
+																				$(
+																						"#station_tbody_"
+																								+ checi)
+																						.append(
+																								"<tr id=\"tr_"+i+checi+"\"></tr>");
+																				$(
+																						"#tr_"
+																								+ i
+																								+ checi)
+																						.append(
+																								"<td style=\"width:80px;\">"
+																										+ data[i].stationno
+																										+ "</td>"
+																										+ "<td style=\"width:120px;\">"
+																										+ data[i].name
+																										+ "</td>"
+																										+ "<td style=\"width:90px;\">"
+																										+ data[i].costtime
+																										+ "</td>"
+																										+ "<td style=\"width:110px;\">"
+																										+ data[i].arrtime
+																										+ "</td>"
+																										+ "<td style=\"width:110px;\">"
+																										+ data[i].starttime
+																										+ "</td>"
+																										+ "<td style=\"width:110px;\">"
+																										+ data[i].interval
+																										+ "</td>"
+																										+ "<td style=\"width:110px;\">"
+																										+ data[i].distance
+																										+ "</td>");
+																			}
+																		}
+																		$(
+																				".train_station")
+																				.each(
+																						function() {
+																							$(
+																									this)
+																									.hide();
+																						});
+																		//动态增加显示途经站区域高度
+																		$(
+																				"#train_station_"
+																						+ checi)
+																				.show();
+																		var down = $(
+																				"#station_con_"
+																						+ checi)
+																				.height();
+																		changeHeight(down + 20);
+																	}
+																});
+													}
+												}
+											});
+
+							//更多筛选条件
+							$("#ser-more").click(function() {
+								if ($(this).attr("class") == "down-arrow") {
+									$("#toStation").show();
+									$("#toTime").show();
+									$("#startAfter").show();
+									$(this).attr("class", "up-arrow");
+								} else {
+									$("#toStation").hide();
+									$("#toTime").hide();
+									$("#startAfter").hide();
+									$(this).attr("class", "down-arrow");
+								}
+							});
+							/**筛选功能初始化数组*/
+							var arrType = new Array();
+							var arrTime = new Array();
+							var toTime = new Array();
+							var arrStation = new Array();
+							var toStation = new Array();
+
+							/**初始化发车站、到达车站信息**/
+							var arrStationName = new Array();
+							var toStationName = new Array();
+							var count = $("#train_total").text();
+							if (count != 0) {
+								/**发车站信息*/
+								$(".startname")
+										.each(
+												function() {
+													var value = $(this).text();
+													var bo = false;
+													if (arrStationName.length == 0) {
+														arrStationName
+																.push(value);
+													}
+													for (var i = 0; i < arrStationName.length; i++) {
+														if (value == arrStationName[i]) {
+															bo = true;
+														}
+													}
+													if (!bo) {
+														arrStationName
+																.push(value);
+													}
+												});
+								if (arrStationName.length >= 2) {
+									$("#fromStation").append(
+											"<strong>发站选择：</strong>");
+									$("#fromStation")
+											.append(
+													"<label id=\"selectFromStation\" class=\"choose_all\" for=\"sx_cb1\">全选</label>");
+									for (var i = 0; i < arrStationName.length; i++) {
+										$("#fromStation")
+												.append(
+														"<span><input type=\"checkbox\" id=\"fromStation_"+arrStationName[i]+"\" class=\"filter fromStationName\" value=\""+arrStationName[i]+"\" filter=\"s\"><label for=\"fromStation_"+arrStationName[i]+"\">"
+																+ arrStationName[i]
+																+ "</label></span>");
+									}
+								} else {
+									$("#fromStation").remove();
+								}
+
+								/**到达站xinx*/
+								$(".endname")
+										.each(
+												function() {
+													var value = $(this).text();
+													var bo = false;
+													if (toStationName.length == 0) {
+														toStationName
+																.push(value);
+													}
+													for (var i = 0; i < toStationName.length; i++) {
+														if (value == toStationName[i]) {
+															bo = true;
+														}
+													}
+													if (!bo) {
+														toStationName
+																.push(value);
+													}
+												});
+								if (toStationName.length >= 2) {
+									$("#toStation").append(
+											"<strong>到站选择：</strong>");
+									$("#toStation")
+											.append(
+													"<label id=\"selectToStation\" class=\"choose_all\" for=\"sx_cb1\">全选</label>");
+									for (var i = 0; i < toStationName.length; i++) {
+										$("#toStation")
+												.append(
+														"<span><input type=\"checkbox\" id=\"toStation_"+toStationName[i]+"\" class=\"filter toStationName\" value=\""+toStationName[i]+"\" filter=\"s\"><label for=\"toStation_"+toStationName[i]+"\">"
+																+ toStationName[i]
+																+ "</label></span>");
+									}
+								} else {
+									$("#toStation").remove();
+								}
+							} else {
+								$("#fromStation").remove();
+								$("#toStation").remove();
+							}
+							/**车次全选**/
+							$("#selectALLTrain").click(
+									function() {
+										var len = arrType.length;
+										if (len == 8) {
+											$("li#trainType").find(":checkbox")
+													.attr("checked", false);
+										} else {
+											$("li#trainType").find(":checkbox")
+													.attr("checked", true);
+										}
+
+										totalChoose();
+									});
+
+							/**车次过滤器**/
+							$(":checkbox.trainType").click(function() {
+								totalChoose();
+							});
+							/**发车时间全选**/
+							$("#selectALLTime").click(
+									function() {
+										var len = arrTime.length;
+										if (len == 4) {
+											$("li#fromTime").find(":checkbox")
+													.attr("checked", false);
+										} else {
+											$("li#fromTime").find(":checkbox")
+													.attr("checked", true);
+										}
+
+										totalChoose();
+									});
+
+							/**发车时间过滤器**/
+							$(":checkbox.startTime").click(function() {
+								totalChoose();
+							});
+
+							/**到站时间全选**/
+							$("#selectALLTo").click(
+									function() {
+										var len = toTime.length;
+										if (len == 4) {
+											$("li#toTime").find(":checkbox")
+													.attr("checked", false);
+										} else {
+											$("li#toTime").find(":checkbox")
+													.attr("checked", true);
+										}
+
+										totalChoose();
+									});
+
+							/**到站时间过滤器**/
+							$(":checkbox.arriveTime").click(function() {
+								totalChoose();
+							});
+
+							/**发车站过滤器**/
+							$(":checkbox.fromStationName").click(function() {
+								totalChoose();
+
+							});
+							/**发车站全选**/
+							$("#selectFromStation").click(
+									function() {
+										var len = arrStation.length;
+										if (len == arrStationName.length) {
+											$("li#fromStation").find(
+													":checkbox").attr(
+													"checked", false);
+										} else {
+											$("li#fromStation").find(
+													":checkbox").attr(
+													"checked", true);
+										}
+										totalChoose();
+									});
+							///发车站筛选
+							function fromStationChoose() {
+								arrStation = new Array();
+								$(":checkbox.fromStationName:checked").each(
+										function() {
+											var station = $(this).val();
+											arrStation.push(station);
+										});
+								$(".startname")
+										.each(
+												function() {
+													var id = $(this).attr("id");
+													var value = $("#" + id)
+															.text();
+													var stationShow = false;
+													for (var num = 0; num < arrStation.length; num++) {
+														stationShow = true;
+														if (value == arrStation[num]) {
+															stationShow = false;
+															break;
+														}
+													}
+													if (stationShow) {
+														$(this).parents("tr")
+																.hide();
+													}
+												});
+							}
+
+							/**到站过滤器**/
+							$(":checkbox.toStationName").click(function() {
+								totalChoose();
+							});
+							/**到站全选**/
+							$("#selectToStation").click(
+									function() {
+										var len = toStation.length;
+										if (len == toStationName.length) {
+											$("li#toStation").find(":checkbox")
+													.attr("checked", false);
+										} else {
+											$("li#toStation").find(":checkbox")
+													.attr("checked", true);
+										}
+
+										totalChoose();
+									});
+							///到站筛选
+							function toStataionChoose() {
+								toStation = new Array();
+								$(":checkbox.toStationName:checked").each(
+										function() {
+											var station = $(this).val();
+											toStation.push(station);
+										});
+								$(".endname")
+										.each(
+												function() {
+													var id = $(this).attr("id");
+													var value = $("#" + id)
+															.text();
+													var stationShow = false;
+													for (var num = 0; num < toStation.length; num++) {
+														stationShow = true;
+														if (value == toStation[num]) {
+															stationShow = false;
+															break;
+														}
+													}
+													if (stationShow) {
+														$(this).parents("tr")
+																.hide();
+													}
+												});
+							}
+
+							/**可否预订全选**/
+							$("#selectStartAfter")
+									.click(
+											function() {
+												var this_selectAfter = new Array();
+												$(
+														":checkbox.weatherBook:checked")
+														.each(
+																function() {
+																	var station = $(
+																			this)
+																			.val();
+																	this_selectAfter
+																			.push(station);
+
+																});
+												if (this_selectAfter.length == 2) {
+													$("li#startAfter").find(
+															":checkbox").attr(
+															"checked", false);
+												} else {
+													$("li#startAfter").find(
+															":checkbox").attr(
+															"checked", true);
+												}
+												totalChoose();
+											});
+							/**可否预订过滤器**/
+							$(":checkbox.weatherBook").click(function() {
+								totalChoose();
+							});
+							///可否预订筛选
+							function selectAfterChoose() {
+								var selectAfter = new Array();
+								$(":checkbox.weatherBook:checked").each(
+										function() {
+											var station = $(this).val();
+											selectAfter.push(station);
+
+										});
+								if (selectAfter.length == 2
+										|| selectAfter.length == 0) {
+									for (var i = yuding.length - 1; i >= 0; i--) {
+										$(yuding[i]).show();
+									}
+									for (var i = qiangpiao.length - 1; i >= 0; i--) {
+										$(qiangpiao[i]).show();
+									}
+								} else {
+									if (selectAfter[0] == "预 订") {
+										for (var i = yuding.length - 1; i >= 0; i--) {
+											$(yuding[i]).show();
+										}
+										for (var i = qiangpiao.length - 1; i >= 0; i--) {
+											$(qiangpiao[i]).hide();
+										}
+									} else {
+										for (var i = qiangpiao.length - 1; i >= 0; i--) {
+											$(qiangpiao[i]).show();
+										}
+										for (var i = yuding.length - 1; i >= 0; i--) {
+											$(yuding[i]).hide();
+										}
+
+									}
+								}
+								$("td.seat")
+										.each(
+												function() {
+													if ($(this).children(
+															":visible").length == 0) {
+														$(this).parents("tr")
+																.hide();
+													}
+												});
+
+							}
+							var yuding;
+							var qiangpiao;
+							$()
+									.ready(
+											function() {
+												yuding = new Array();
+												qiangpiao = new Array();
+												$(".bookTicket")
+														.each(
+																function() {
+																	var id = $(
+																			this)
+																			.attr(
+																					"id");
+																	var value = $(
+																			this)
+																			.val();
+																	var td_this = $(
+																			this)
+																			.parent()
+																			.parent()[0];
+																	var tr_this = $(
+																			this)
+																			.parents(
+																					"tr")[0];
+																	var seat_td = $(
+																			tr_this)
+																			.children(
+																					"td.seat")[0];
+																	var p = $(
+																			this)
+																			.parent()[0];
+																	var p_index;
+																	$(td_this)
+																			.children(
+																					"p")
+																			.each(
+																					function(
+																							index,
+																							element) {
+																						if (p == element) {
+																							p_index = index;
+																							return false;
+																						}
+																					});
+
+																	if (value == "预 订") {
+																		yuding
+																				.push($(
+																						seat_td)
+																						.children(
+																								"p:eq("
+																										+ p_index
+																										+ ")"));
+																		yuding
+																				.push($(
+																						this)
+																						.parents(
+																								"p"));
+																	} else if (value = "抢 票") {
+																		qiangpiao
+																				.push($(
+																						seat_td)
+																						.children(
+																								"p:eq("
+																										+ p_index
+																										+ ")"));
+																		qiangpiao
+																				.push($(
+																						this)
+																						.parents(
+																								"p"));
+																	}
+
+																});
+
+											});
+
+							//车次、发车时间、到站时间筛选
+							function filterChoose() {
+								arrTime = new Array();
+								toTime = new Array();
+								arrType = new Array();
+								var count = $(":checkbox.filter:checked").length;
+								if (count == 0) {
+									$(".trainBar").show();
+								} else {
+									$(".trainBar").hide();
+								}
+								//车次类型
+								$(":checkbox.trainType:checked").each(
+										function() {
+											var type = $(this).val();
+											arrType.push(type);
+										});
+								//发车时间
+								$(":checkbox.startTime:checked").each(
+										function() {
+											var time = $(this).val();
+											arrTime.push(time);
+										});
+
+								if ($("#ser-more").attr("class") == "up-arrow") {
+									//到站时间
+									$(":checkbox.arriveTime:checked").each(
+											function() {
+												var time = $(this).val();
+												toTime.push(time);
+											});
+								}
+								$(".trainBar")
+										.each(
+												function() {
+													var id = $(this).attr("id");
+													var typeShow = true;
+													for (var num = 0; num < arrType.length; num++) {
+														typeShow = false;
+														if ((arrType[num]
+																.split("/").length > 1)) {
+															if (arrType[num]
+																	.split("/")[1] == 'PT') {
+																var patrn = /((ticket\_)[0-9])/;
+																if (id
+																		.indexOf("ticket_"
+																				+ arrType[num]
+																						.split("/")[0]) > 0
+																		|| id
+																				.match(patrn)) {
+																	typeShow = true;
+																	break;
+																}
+															} else {
+																if (id
+																		.indexOf("ticket_"
+																				+ arrType[num]
+																						.split("/")[0]) > 0
+																		|| id
+																				.indexOf("ticket_"
+																						+ arrType[num]
+																								.split("/")[1]) > 0) {
+																	typeShow = true;
+																	break;
+																}
+															}
+														} else {
+															if (id
+																	.indexOf("ticket_"
+																			+ arrType[num]) > 0) {
+																typeShow = true;
+																break;
+															}
+														}
+													}
+													var timeShow = true;
+													for (var num = 0; num < arrTime.length; num++) {
+														timeShow = false;
+														if (id
+																.indexOf(arrTime[num]) > 0) {
+															timeShow = true;
+															break;
+														}
+													}
+
+													var toTimeShow = true;
+													for (var num = 0; num < toTime.length; num++) {
+														toTimeShow = false;
+
+														if (id
+																.indexOf(toTime[num]) > 0) {
+															toTimeShow = true;
+															break;
+														}
+													}
+													if (typeShow && timeShow
+															&& toTimeShow) {
+														$("#" + id).show();
+													}
+												});
+							}
+							function totalChoose() {
+								filterChoose();
+								fromStationChoose();
+								if ($("#ser-more").attr("class") == "up-arrow") {
+									toStataionChoose();
+									selectAfterChoose();
+								}
+								$(".train_station").each(function() {
+									$(this).hide();
+								});
+								$(".trainBar:visible").each(
+										function() {
+											var chufa = $(this).children(
+													".wayStastion").children(
+													"div").attr("class");
+											var checi = $(this).children(
+													".wayStastion").children(
+													"strong").attr("id");
+											if (chufa == "up-arrow") {
+												//$("#train_station_"+checi).fadeTo("slow",1);
+												$("#train_station_" + checi)
+														.show();
+											}
+										});
+								$("#train_total").text(
+										$(".trainBar:visible").length);
+							}
+							/**筛选功能结束*/
+
+							$("#query")
+									.click(
+											function() {
+
+												if ($.trim($("#fromZh").val()) == ""
+														|| $.trim($("#fromZh")
+																.val()) == "出发城市") {
+													showErrMsg("fromZh",
+															"110px", "请输入出发城市！");
+													return;
+												} else {
+													hideErrMsg("fromZh");
+												}
+												if ($.trim($("#toZh").val()) == ""
+														|| $.trim($("#toZh")
+																.val()) == "到达城市") {
+													showErrMsg("toZh", "110px",
+															"请输入到达城市！");
+													return;
+												} else {
+													hideErrMsg("toZh");
+												}
+												if ($("#travel_time").val() == "") {
+													showErrMsg("travel_time",
+															"110px", "请输入出发日期！");
+													return;
+												} else {
+													hideErrMsg("travel_time");
+												}
+
+												//消息框	
+												var dialog = art
+														.dialog({
+															lock : true,
+															fixed : true,
+															left : '50%',
+															top : '250px',
+															title : 'Loading...',
+															icon : "/images/loading.gif",
+															content : '正在查询，请稍候！'
+														});
+												$(".aui_titleBar").hide();
+												$("form:first").submit();
+											});
+
+							function showErrMsg(id, _width, msg) {
+								$("#" + id + "_errMsg").remove();
+								var offset = $("#" + id).offset();
+								$obj = $("#tip").clone().attr("id",
+										id + "_errMsg").css({
+									'position' : 'absolute',
+									'top' : offset.top - 30,
+									'left' : offset.left,
+									'width' : _width
+								}).appendTo("body");
+								$obj.find(".errMsg").text(msg).end().show();
+							}
+
+							function hideErrMsg(id) {
+								$("#" + id + "_errMsg").remove();
+							}
+						});
+
+		//进入下单页面
+		function gotoBookOrder(travelTime, trainCode, startCity, endCity,
+				startTime, endTime, costTime, defaultSelect) {
+			var is_buyable = "11";
+			var seatMsg = $("#seatMsg_" + trainCode).val();
+			if (is_buyable == "00") {
+				alert("对不起，我们真的好忙，别着急等会再订吧！\nSorry,we are very busy now,please wait a minute!");
+				return false;
+			}
+			var url = "/buyTicket/gotoBookOrder.jhtml?travelTime=" + travelTime
+					+ "&trainCode=" + trainCode + "&startCity=" + startCity
+					+ "&endCity=" + endCity + "&startTime=" + startTime
+					+ "&endTime=" + endTime + "&costTime=" + costTime
+					+ "&seatMsg=" + seatMsg + "&defaultSelect=" + defaultSelect;
+			window.location = encodeURI(url);
+		}
+		//切换出发和到达城市
+		function swapCity() {
+			var fromCity = $("#fromZh").val().replace("出发城市", "");
+			var toCity = $("#toZh").val().replace("到达城市", "");
+			$("#fromZh").val(toCity);
+			$("#toZh").val(fromCity);
+		}
+	</script>
+
+
+
+
+
+	<div style="left: -1970px; top: -1970px; position: absolute;">
+		<iframe style="width: 186px; height: 178px;" border="0"
+			src="http://ehcp.19e.cn/js/My97DatePicker/My97DatePicker.htm"
+			frameBorder="0" scrolling="no"></iframe>
+	</div>
+</body>
+</html>

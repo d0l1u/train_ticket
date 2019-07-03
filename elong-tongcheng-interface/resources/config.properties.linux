@@ -1,0 +1,10 @@
+#systemID--艺龙
+SYSTEM_ID=801
+
+#核验接口
+l9helper_url=http://10.3.12.95:18070/l9helper/interface.do
+
+#查询车站 
+query_left_ticket_url=http://10.3.12.95:18015/queryTicket
+#通过robotinterface查询车次信息
+soukd_query_left_ticket_url=http://10.3.12.95:18015/soukdQueryTicket

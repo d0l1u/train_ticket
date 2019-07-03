@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="receiveNotify">
+
+	<!-- 保存出票接口返回信息-订单 -->
+	<update id="updateOrderWithCpNotify" parameterClass="java.util.HashMap">
+		UPDATE cm_orderinfo hc 
+			SET hc.order_status=#order_status:VARCHAR#
+			<isNotEmpty prepend="," property="buy_money">
+				hc.buy_money=#buy_money:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="out_ticket_billno">
+				hc.out_ticket_billno=#out_ticket_billno:VARCHAR#,
+				hc.out_ticket_time=NOW()
+			</isNotEmpty>
+			WHERE hc.order_id=#order_id:VARCHAR#
+	</update>
+	
+	<!-- 保存出票接口返回信息-车票订单 -->
+	<update id="updateCpOrderWithCpNotify" parameterClass="java.util.HashMap">
+		UPDATE cm_orderinfo_cp cp 
+		SET cp.buy_money=#buy_money:DECIMAL#,
+			cp.train_box=#train_box:VARCHAR#,
+			cp.seat_no=#seat_no:VARCHAR#
+		WHERE cp.cp_id=#cp_id:VARCHAR#
+	</update>
+</sqlMap>

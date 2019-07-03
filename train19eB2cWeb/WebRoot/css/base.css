@@ -1,0 +1,39 @@
+@charset "utf-8";
+/* CSS Document */
+/*
+ *@description:基础样式表
+ *author:zhang xu;	
+*/
+/*****public1 start*****/
+html{background-color:#fff;}
+body,ol,ul,li,p,h2,h3,h4,h5,dl,dt,dd,table,tr,th,td,img,form,select,option,textarea,span,button,label,b,i,s{margin:0;padding:0;color:#555;}
+body{font:12px/150% tahoma,arial,\5b8b\4f53, sans-serif;}
+input{padding:0 3px;margin:0;}
+table{border-collapse: collapse;border-spacing: 0;}
+ol,ul{list-style:none;}
+a:link,a:visited{color:#007ed9;text-decoration:none;}
+a:hover,a:active{color:#f60;text-decoration:none;}
+.oz{overflow:hidden;/*zoom:1;*/}
+.fl{float:left;}
+.fr{float:right;}
+img{border:0;vertical-align:top;/*display:block;*/}
+.spacer{content:".";height:0;clear:both;visibility:hidden;font-size:0;line-height:0;}
+*:focus{outline:none;}
+.btn{cursor:pointer;border:0;text-align:center;color:#fff;background:url(../images/app/icon-sprite.png) no-repeat;padding:0;}
+textarea { resize: none; }
+input::-moz-focus-inner {border:none;padding:0;}
+/*****public1 end*****/
+.content{width:960px;margin:8px auto 20px;overflow:hidden;zoom:1;}
+.required{color:#f60;padding-right:4px;}
+.left-wrap{width:170px;}
+.right-wrap{width:776px;}
+.grey-shadow{-moz-box-shadow:0 0 2px 0 #bbb;-webkit-box-shadow:0 0 2px 0 #bbb;box-shadow:0 0 2px 0 #bbb;}
+.grey-shadow2{-moz-box-shadow:0 0 4px 0 #d5d5d5;-webkit-box-shadow:0 0 4px 0 #d5d5d5;box-shadow:0 0 4px 0 #d5d5d5;}
+.blue-shadow{-moz-box-shadow:0 0 2px 0 #66c4f2;-webkit-box-shadow:0 0 2px 0 #bbb;box-shadow:0 0 2px 0 #66c4f2;}
+.mb{margin-bottom:14px;}
+.mb10{margin-bottom:10px;}
+.mb15{margin-bottom:15px;}
+.mb20{margin-bottom:20px;}
+
+
+

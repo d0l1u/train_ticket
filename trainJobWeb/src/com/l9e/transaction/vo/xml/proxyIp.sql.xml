@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="proxyIp">
+
+	<!-- 禁用还有2天过期的代理IP -->
+	<update id="updateDisable">
+		update proxy_ip set status = 0 where DATE_ADD(now(),INTERVAL 2 DAY) > end_time;
+	</update>
+
+</sqlMap>

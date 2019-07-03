@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="trainIpService"
+  id="myeclipse.1446197047794"
+  context-root="/trainIpService"
+  j2ee-spec="5.0"
+  archive="trainIpService.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+

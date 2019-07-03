@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="coupon">
+
+	<!-- 批量插入优惠劵 -->
+	<insert id="insertCoupons" parameterClass="java.util.List">
+		INSERT coupon_info (
+			coupon_no,
+			get_time,
+			end_time,
+			price,
+			limit_price,
+			account_id,
+			channal
+		)
+		VALUES
+		<iterate conjunction=",">
+          (
+              #list[].couponNo#,
+              #list[].getTime#,
+              #list[].endTime#,
+              #list[].price#,
+              #list[].limitPrice#,
+              #list[].accountId#,
+              #list[].channal#
+          )
+		</iterate>
+		ON DUPLICATE KEY UPDATE coupon_no = VALUES(coupon_no)
+	</insert>
+
+	<update id="disableExpiredCoupons" >
+		update coupon_info set status = 8 where end_time <![CDATA[<]]> now()
+	</update>
+ 
+
+	<select id="selectExpiredCouponsOfJdAccount" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT
+			jd_id
+		FROM
+			jd_account
+		WHERE
+			account_status = '00'
+		AND (
+			SELECT
+				count(1)
+			FROM
+				coupon_info
+			WHERE
+				account_id = jd_id
+			AND status <![CDATA[<>]]> 0
+		) = (
+			SELECT
+				count(1)
+			FROM
+				coupon_info
+			WHERE
+				account_id = jd_id
+		)
+	</select>
+
+</sqlMap>

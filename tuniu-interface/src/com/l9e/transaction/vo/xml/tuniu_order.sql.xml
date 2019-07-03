@@ -1,0 +1,696 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="order">
+	
+	<!-- 根据订单号查询订单数量 -->
+	<select id="selectOrderCount" parameterClass="String" resultClass="Integer">
+		SELECT
+			count(1)
+		FROM
+			tuniu_orderinfo
+		WHERE
+			order_id = #orderId:VARCHAR#
+	</select>
+	
+	<!-- 查询订单 -->
+	<select id="selectOrder" parameterClass="Map" resultClass="com.l9e.transaction.vo.TuniuOrder">
+		SELECT
+			order_id orderId,
+			order_name orderName,
+			pay_money payMoney,
+			buy_money buyMoney,
+			order_status orderStatus,
+			out_ticket_time outTicketTime,
+			out_ticket_billno outTicketBillno,
+			out_fail_reason outFailReason,
+			train_no trainNo,
+			from_city_code fromCityCode,
+			from_city fromCity,
+			to_city_code toCityCOde,
+			to_city toCity,
+			from_time fromTime,
+			to_time toTime,
+			travel_date travelDate,
+			pay_limit_time payLimitTime,
+			has_seat hasSeat,
+			order_type orderType,
+			contact contact,
+			phone phone,
+			user_name userName,
+			user_pwd userPassword,
+			isChooseSeats isChooseSeats,
+			chooseSeats chooseSeats,
+			insure_code insureCode,
+			ticket_num ticketNumber,
+			create_time createTime,
+			opt_time optTime
+		FROM
+			tuniu_orderinfo
+		<dynamic prepend="WHERE">
+			<isNotEmpty property="orderId" prepend="AND">
+				order_id = #orderId:VARCHAR#
+			</isNotEmpty>
+		</dynamic>
+		
+	</select>
+	
+	<!-- 查询乘客，附带学生票信息 -->
+	<select id="selectPassenger" parameterClass="Map" resultClass="com.l9e.transaction.vo.TuniuPassenger">
+		SELECT
+			cp.cp_id cpId,
+			cp.order_id orderId,
+			cp.user_name userName,
+			cp.insure_number insureNumber,
+			cp.insure_price insurePrice,
+			cp.tuniu_seat_type tuniuSeatType,
+			cp.seat_type seatType,
+			cp.tuniu_ticket_type tuniuTicketType,
+			cp.ticket_type ticketType,
+			cp.tuniu_ids_type tuniuIdsType,
+			cp.ids_type idsType,
+			cp.user_ids userIds,
+			cp.telephone telephone,
+			cp.pay_money payMoney,
+			cp.buy_money buyMoney,
+			cp.train_box trainBox,
+			cp.seat_no seatNo,
+			cp.out_ticket_billno outTicketBillno,
+			cp.passenger_id passengerId,
+			cp.reason reason,
+			stu.province_code provinceCode,
+			stu.school_code schoolCode,
+			stu.school_name schoolName,
+			stu.student_no studentNo,
+			stu.school_system schoolSystem,
+			stu.enter_year enterYear,
+			stu.preference_from_station_name preferenceFromStationName,
+			stu.preference_from_station_code preferenceFromStationCode,
+			stu.preference_to_station_name preferenceToStationName,
+			stu.preference_to_station_code preferenceToStationCode
+		FROM
+			tuniu_orderinfo_cp cp left join tuniu_orderinfo_student stu
+			on cp.cp_id = stu.cp_id
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="AND" property="orderId">
+				cp.order_id = #orderId:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="cpId">
+				cp.cp_id = #cpId:VARCHAR#
+			</isNotEmpty>
+		</dynamic>
+		
+	</select>
+	
+	<!-- 查询检票口，信息 -->
+	<select id="selectTicketEntrance" parameterClass="Map" resultClass="com.l9e.transaction.vo.TicketEntrance">
+		SELECT
+			auto_id,
+		    order_id as orderId,
+		    train_num as trainNum,
+		    station_name as stationName,
+		    entrance as entrance
+		FROM
+		    cp_orderinfo_ct WHERE order_id =#order_id:VARCHAR#
+	</select>
+	
+	
+	<!-- 订单入库 -->
+	<insert id="insertOrder" parameterClass="com.l9e.transaction.vo.TuniuOrder">
+		INSERT INTO
+			tuniu_orderinfo
+			(
+				order_id,
+				order_name,
+				create_time,
+				train_no,
+				from_city,
+				to_city,
+				travel_date,
+				opt_ren,
+				opt_time,
+				ticket_num,
+				contact,
+				phone
+				<dynamic>
+					<isNotEmpty prepend="," property="fromCityCode">
+						from_city_code
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="toCityCode">
+						to_city_code
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="hasSeat">
+						has_seat
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="orderType">
+						order_type
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="userName">
+						user_name
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="userPassword">
+						user_pwd
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="insureCode">
+						insure_code
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="payMoney">
+						pay_money
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="orderStatus">
+						order_status
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="outFailReason">
+						out_fail_reason
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="isChooseSeats">
+						isChooseSeats
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="chooseSeats">
+						chooseSeats
+					</isNotEmpty>
+				</dynamic>
+			) 
+			VALUES
+			(
+				#orderId:VARCHAR#,
+				#orderName:VARCHAR#,
+				NOW(),
+				#trainNo:VARCHAR#,
+				#fromCity:VARCHAR#,
+				#toCity:VARCHAR#,
+				#travelDate:DATE#,
+				'tuniu_app',
+				NOW(),
+				#ticketNumber:INTEGER#,
+				#contact:VARCHAR#,
+				#phone:VARCHAR#
+				<dynamic>
+					<isNotEmpty prepend="," property="fromCityCode">
+						#fromCityCode:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="toCityCode">
+						#toCityCode:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="hasSeat">
+						#hasSeat:TINYINT#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="orderType">
+						#orderType:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="userName">
+						#userName:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="userPassword">
+						#userPassword:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="insureCode">
+						#insureCode:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="payMoney">
+						#payMoney:DECIMAL#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="orderStatus">
+						#orderStatus:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="isChooseSeats">
+						#isChooseSeats:TINYINT#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="chooseSeats">
+						#chooseSeats:VARCHAR#
+					</isNotEmpty>
+				</dynamic>
+			)
+	</insert>
+	
+	<!-- 乘客车票信息入库 -->
+	<insert id="insertPassenger" parameterClass="com.l9e.transaction.vo.TuniuPassenger">
+		INSERT INTO
+			tuniu_orderinfo_cp
+			(
+				cp_id,
+				order_id,
+				user_name,
+				tuniu_seat_type,
+				seat_type,
+				tuniu_ticket_type,
+				ticket_type,
+				tuniu_ids_type,
+				ids_type,
+				user_ids,
+				create_time,
+				passenger_id
+				<dynamic>
+					<isNotEmpty prepend="," property="insureNumber">
+						insure_number
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="insurePrice">
+						insure_price
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="telephone">
+						telephone
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="payMoney">
+						pay_money
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="buyMoney">
+						buy_money
+					</isNotEmpty>
+				</dynamic>
+			)
+			VALUES
+			(
+				#cpId:VARCHAR#,
+				#orderId:VARCHAR#,
+				#userName:VARCHAR#,
+				#tuniuSeatType:VARCHAR#,
+				#seatType:VARCHAR#,
+				#tuniuTicketType:VARCHAR#,
+				#ticketType:VARCHAR#,
+				#tuniuIdsType:VARCHAR#,
+				#idsType:VARCHAR#,
+				#userIds:VARCHAR#,
+				NOW(),
+				#passengerId:INTEGER#
+				<dynamic>
+					<isNotEmpty prepend="," property="insureNumber">
+						#insureNumber:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="insurePrice">
+						#insurePrice:DECIMAL#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="telephone">
+						#telephone:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="payMoney">
+						#payMoney:DECIMAL#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="buyMoney">
+						#buyMoney:DECIMAL#
+					</isNotEmpty>
+				</dynamic>
+			)
+	</insert>
+	
+	<!-- 学生票信息入库 -->
+	<insert id="insertStudent" parameterClass="com.l9e.transaction.vo.TuniuPassenger">
+		INSERT INTO
+			tuniu_orderinfo_student
+			(
+				cp_id,
+				order_id,
+				create_time
+				<dynamic>
+					<isNotEmpty prepend="," property="provinceCode">
+						province_code
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="schoolCode">
+						school_code
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="schoolName">
+						school_name
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="studentNo">
+						student_no
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="schoolSystem">
+						school_system
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="enterYear">
+						enter_year
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="preferenceFromStationName">
+						preference_from_station_name
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="preferenceFromStationCode">
+						preference_from_station_code
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="preferenceToStationName">
+						preference_to_station_name
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="preferenceToStationCode">
+						preference_to_station_code
+					</isNotEmpty>
+				</dynamic>
+			)
+			VALUES
+			(
+				#cpId:VARCHAR#,
+				#orderId:VARCHAR#,
+				NOW()
+				<dynamic>
+					<isNotEmpty prepend="," property="provinceCode">
+						#provinceCode:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="schoolCode">
+						#schoolCode:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="schoolName">
+						#schoolName:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="studentNo">
+						#studentNo:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="schoolSystem">
+						#schoolSystem:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="enterYear">
+						#enterYear:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="preferenceFromStationName">
+						#preferenceFromStationName:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="preferenceFromStationCode">
+						#preferenceFromStationCode:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="preferenceToStationName">
+						#preferenceToStationName:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="preferenceToStationCode">
+						#preferenceToStationCode:VARCHAR#
+					</isNotEmpty>
+				</dynamic>
+			)
+	</insert>
+		<!-- 学生票信息入库 -->
+	<insert id="insertCpStudent" parameterClass="com.l9e.transaction.vo.TuniuPassenger">
+		INSERT INTO
+			cp_orderinfo_student
+			(
+				cp_id,
+				order_id,
+				channel
+				<dynamic>
+					<isNotEmpty prepend="," property="provinceCode">
+						province_code
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="provinceName">
+						province_name
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="schoolCode">
+						school_code
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="schoolName">
+						school_name
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="studentNo">
+						student_no
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="schoolSystem">
+						school_system
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="enterYear">
+						enter_year
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="preferenceFromStationName">
+						preference_from_station_name
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="preferenceFromStationCode">
+						preference_from_station_code
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="preferenceToStationName">
+						preference_to_station_name
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="preferenceToStationCode">
+						preference_to_station_code
+					</isNotEmpty>
+				</dynamic>
+			)
+			VALUES
+			(
+				#cpId:VARCHAR#,
+				#orderId:VARCHAR#,
+				'tuniu'
+				<dynamic>
+					<isNotEmpty prepend="," property="provinceCode">
+						#provinceCode:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="provinceName">
+						#provinceName#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="schoolCode">
+						#schoolCode:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="schoolName">
+						#schoolName:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="studentNo">
+						#studentNo:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="schoolSystem">
+						#schoolSystem:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="enterYear">
+						#enterYear:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="preferenceFromStationName">
+						#preferenceFromStationName:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="preferenceFromStationCode">
+						#preferenceFromStationCode:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="preferenceToStationName">
+						#preferenceToStationName:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="preferenceToStationCode">
+						#preferenceToStationCode:VARCHAR#
+					</isNotEmpty>
+				</dynamic>
+			)
+	</insert>
+	
+	<!-- 更新途牛订单 -->
+	<update id="updateOrder" parameterClass="com.l9e.transaction.vo.TuniuOrder">
+		UPDATE
+			tuniu_orderinfo
+		SET
+			order_id = #orderId:VARCHAR#,
+			opt_time = NOW()
+			<dynamic>
+				<isNotEmpty prepend="," property="payMoney">
+					pay_money = #payMoney:DECIMAL#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="buyMoney">
+					buy_money = #buyMoney:DECIMAL#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="orderStatus">
+					order_status = #orderStatus:VARCHAR#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="notifyStatus">
+					notice_status = #notifyStatus:VARCHAR#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="outTicketTime">
+					out_ticket_time = #outTicketTime:DATETIME#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="outTicketBillno">
+					out_ticket_billno = #outTicketBillno:VARCHAR#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="outFailReason">
+					out_fail_reason = #outFailReason:VARCHAR#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="fromTime">
+					from_time = #fromTime:DATETIME#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="toTime">
+					to_time = #toTime:DATETIME#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="payLimitTime">
+					pay_limit_time = #payLimitTime:DATETIME#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="optPerson">
+					opt_ren = #optPerson:VARCHAR#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="userPassword">
+					user_pwd = #userPassword:VARCHAR#
+				</isNotEmpty>
+			</dynamic>
+		WHERE 
+			order_id = #orderId:VARCHAR#
+	</update>
+	
+	<!-- 更新途牛乘客车票信息 -->
+	<update id="updatePassenger" parameterClass="com.l9e.transaction.vo.TuniuPassenger">
+		UPDATE
+			tuniu_orderinfo_cp
+		SET
+			cp_id = #cpId:VARCHAR#
+			<dynamic>
+				<isNotEmpty prepend="," property="seatType">
+					seat_type = #seatType:VARCHAR#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="payMoney">
+					pay_money = #payMoney:DECIMAL#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="buyMoney">
+					buy_money = #buyMoney:DECIMAL#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="trainBox">
+					train_box = #trainBox:VARCHAR#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="seatNo">
+					seat_no = #seatNo:VARCHAR#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="outTicketBillno">
+					out_ticket_billno = #outTicketBillno:VARCHAR#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="reason">
+					reason = #reason:TINYINT#
+				</isNotEmpty>
+			</dynamic>
+		WHERE
+			cp_id = #cpId:VARCHAR#
+	</update>
+	<!-- 查询订单操作日志 -->
+	<select id="selectOrderLog" parameterClass="Map" resultClass="String">
+		SELECT order_optlog from cp_orderinfo_history 
+		t where t.order_id=#orderId:VARCHAR# and t.order_optlog like  #content:VARCHAR#
+		limit 1
+	</select>
+	
+	<!--  查询是否存在与原订单信息相同的订单-->
+	<select id="checkOrderIsRepeat" parameterClass="Map" resultClass="Integer">
+		SELECT count(1) from tuniu_orderinfo o,tuniu_orderinfo_cp c where o.order_id=c.order_id 
+			and o.from_city=#fromCity:VARCHAR# and o.to_city=#toCity:VARCHAR# and o.train_no=#trainNo:VARCHAR#
+			and o.travel_date=#trainDate:VARCHAR# and c.user_ids=#passportNo:VARCHAR# and o.order_status!='44'
+			and o.order_status!='24' and o.order_status!='88' 
+	</select>
+	
+	<select id="selectAccountByOrder" parameterClass="String" resultClass="String">
+		SELECT account_id
+		FROM
+			cp_orderinfo
+		WHERE
+			order_id = #orderId:VARCHAR#
+	</select>
+	
+	<insert id="inserOutimeOrderVO" parameterClass="com.l9e.transaction.vo.OutimeOrderVO">
+		INSERT INTO tuniu_order_pushtimeout
+		<dynamic prepend="(">
+			<isNotEmpty property="order_id">
+				order_id,
+			</isNotEmpty>
+			<isNotEmpty property="status">
+				status,
+			</isNotEmpty>
+			<isNotEmpty property="msg">
+				msg,
+			</isNotEmpty>
+			<isNotEmpty property="updateTime">
+				updateTime,
+			</isNotEmpty>
+			<isNotEmpty property="changeId">
+				changeId,
+			</isNotEmpty>
+			<isNotEmpty property="deal_status">
+				deal_status,
+			</isNotEmpty>
+			    create_time
+			)
+		</dynamic>
+		VALUES
+		<dynamic prepend="(">
+			<isNotEmpty property="order_id">
+				#order_id:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="status">
+				#status:INTEGER#,
+			</isNotEmpty>
+			<isNotEmpty property="msg">
+				#msg:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="updateTime">
+				#updateTime:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="changeId">
+				#changeId:VARCHAR#,
+			</isNotEmpty>
+			<isNotEmpty property="deal_status">
+				#deal_status:VARCHAR#,
+			</isNotEmpty>
+			    NOW()
+			)
+		</dynamic>
+	</insert>
+	
+	
+	
+	<select id="selectCpSysOrderStaus" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT  order_status   FROM  cp_orderinfo  WHERE  order_id =#orderId:VARCHAR#
+	</select>
+	
+	<insert id="inserCpSysOrderLog" parameterClass="com.l9e.transaction.vo.CpSysLogVO">
+		INSERT INTO
+			cp_orderinfo_history
+			(order_id
+			<dynamic>
+					<isNotEmpty prepend="," property="order_optlog">
+						order_optlog
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="opter">
+						opter,
+					</isNotEmpty>
+						create_time
+						,order_time
+			</dynamic>
+			)
+			VALUES
+			(
+			 #order_id:VARCHAR#
+			<dynamic>
+					<isNotEmpty prepend="," property="order_optlog">
+						#order_optlog:VARCHAR#
+					</isNotEmpty>
+					<isNotEmpty prepend="," property="opter">
+						#opter:VARCHAR#,
+					</isNotEmpty>
+					 NOW(),
+					 NOW())
+			</dynamic>
+			
+	</insert>
+	
+	<update id="updateCpSysOrderStatus" parameterClass="java.util.HashMap">
+		UPDATE   cp_orderinfo   SET  order_status =#order_status:VARCHAR#  WHERE  order_id =#order_id:VARCHAR#
+	</update>
+	
+	<update id="updateOutTimeOrder" parameterClass="com.l9e.transaction.vo.OutimeOrderVO">
+		 UPDATE
+			tuniu_order_pushtimeout
+		 SET
+			order_id = #order_id:VARCHAR#
+			<dynamic>
+				<isNotEmpty prepend="," property="status">
+					status = #status:INTEGER#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="msg">
+					msg = #msg:VARCHAR#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="updateTime">
+					updateTime = #updateTime:VARCHAR#
+				</isNotEmpty>
+				<isNotEmpty prepend="," property="deal_status">
+					deal_status = #deal_status:VARCHAR#
+				</isNotEmpty>
+			</dynamic>
+		WHERE
+			order_id = #order_id:VARCHAR#  and  status = #status:INTERGER#
+			<dynamic >
+				<isNotEmpty prepend="and" property="changeId">
+					    changeId = #changeId:VARCHAR#
+			    </isNotEmpty>
+			</dynamic>
+	</update>
+	
+	<select id="selectCpSysChangeOrderStatus" parameterClass="java.lang.String" resultClass="java.util.HashMap" >
+		 SELECT  order_id,change_id,change_status,reqtoken   FROM   elong_orderinfo_change
+		 WHERE   order_id =#orderId:VARCHAR#   ORDER  BY change_id  DESC  LIMIT 1
+	</select>
+	
+	<select id="selectCpSysChangeOrderStatusByChangeId" parameterClass="java.util.HashMap" resultClass="java.util.HashMap" >
+		 SELECT  order_id,change_id,change_status,reqtoken   FROM   elong_orderinfo_change
+		 WHERE   order_id =#orderId:VARCHAR#    AND   reqtoken =#changeId:VARCHAR#   ORDER  BY change_id  DESC  LIMIT 1
+	</select>
+	
+	
+	
+	
+</sqlMap>

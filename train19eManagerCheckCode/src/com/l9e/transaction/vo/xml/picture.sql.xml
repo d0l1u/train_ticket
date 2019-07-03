@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="picture">
+	
+	<!-- 查询条数 -->
+	<select id="queryPictureCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM (SELECT t.id,DATE_FORMAT(t.create_time,'%Y-%m-%d') create_time,t.opt_time,t.opt_ren,t.opt_name,t.pic_count,t.pic_success,t.pic_fail,t.pic_unkonwn,t.channel,r.department
+		FROM tj_rh_picture t LEFT JOIN rh_user r ON r.username=t.opt_ren WHERE 1=1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_time">
+				t.opt_time<![CDATA[>=]]>
+				#begin_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+				t.opt_time<![CDATA[<]]>DATE_ADD(#end_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="department">
+				department=#department#
+			</isNotEmpty>
+		<!-- 	<isNotEmpty prepend=" and " property="channel">
+	         	  channel in
+		          <iterate open="(" close=")" conjunction="," property="channel">
+		            	#channel[]:VARCHAR#
+		      	  </iterate>
+	      	 </isNotEmpty>    -->
+	    </dynamic>
+		)AS temp
+	</select>
+	
+	<!-- 查询列表 -->
+	<select id="queryPictureList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT t.id,DATE_FORMAT(t.create_time,'%Y-%m-%d') create_time,t.opt_time,t.opt_ren,t.opt_name,t.pic_count,t.pic_success,t.pic_fail,t.pic_unkonwn,t.channel,r.department
+		FROM tj_rh_picture t LEFT JOIN rh_user r ON r.username=t.opt_ren WHERE 1=1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_time">
+				t.opt_time<![CDATA[>=]]>
+				#begin_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+				t.opt_time<![CDATA[<]]>DATE_ADD(#end_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="department">
+				department=#department#
+			</isNotEmpty>
+	    </dynamic>
+		ORDER BY t.opt_time desc,t.pic_success desc LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select>
+	
+	<!-- 查询打码分时统计条数 -->
+	<select id="queryCodeHourCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM 
+		(SELECT DISTINCT day_stat FROM tj_rhpic_hour WHERE 1=1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_time">
+				STR_TO_DATE(day_stat, '%Y-%m-%d')<![CDATA[>=]]>#begin_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+				STR_TO_DATE(day_stat, '%Y-%m-%d')<![CDATA[<]]>DATE_ADD(#end_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<!-- 
+			<isNotEmpty prepend=" and " property="department">
+				department=#department#
+			</isNotEmpty>
+			 -->
+	    </dynamic>
+		)AS temp
+	</select>
+	
+	<!-- 查询打码分时统计列表 -->
+	<select id="queryCodeHourList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT day_stat, IFNULL(SUM(code_count),0) code_count FROM tj_rhpic_hour WHERE 1=1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_time">
+				STR_TO_DATE(day_stat, '%Y-%m-%d')<![CDATA[>=]]>
+				#begin_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+				STR_TO_DATE(day_stat, '%Y-%m-%d')<![CDATA[<]]>DATE_ADD(#end_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<!-- 
+			<isNotEmpty prepend=" and " property="department">
+				department=#department#
+			</isNotEmpty>
+			 -->
+	    </dynamic>
+	    GROUP BY day_stat
+		ORDER BY day_stat DESC LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select>
+	
+	<!-- 查询打码具体分时统计列表-->
+	<select id="queryCodeHourEveryDayList" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT hour_stat, CONVERT(code_count,CHAR) code_count FROM tj_rhpic_hour WHERE day_stat=#day_stat#
+	</select>
+	
+	<!-- 查询人数分时统计条数 -->
+	<select id="queryUserHourCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM 
+		(SELECT DISTINCT login_data FROM rh_login_notes WHERE 1=1  
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_time">
+				STR_TO_DATE(login_data, '%Y-%m-%d')<![CDATA[>=]]>#begin_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+				STR_TO_DATE(login_data, '%Y-%m-%d')<![CDATA[<]]>DATE_ADD(#end_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<!-- 
+			<isNotEmpty prepend=" and " property="department">
+				department=#department#
+			</isNotEmpty>
+			 -->
+	    </dynamic>
+		)AS temp
+	</select>
+	
+	<!-- 查询人数分时统计列表 -->
+	<select id="queryUserHourList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT CONVERT(DATE_FORMAT(login_data, '%Y-%m-%d'), CHAR) AS day_stat, 
+		IFNULL(SUM(login_num),0) AS code_count FROM rh_login_notes WHERE 1=1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_time">
+				STR_TO_DATE(login_data, '%Y-%m-%d')<![CDATA[>=]]>
+				#begin_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+				STR_TO_DATE(login_data, '%Y-%m-%d')<![CDATA[<]]>DATE_ADD(#end_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<!-- 
+			<isNotEmpty prepend=" and " property="department">
+				department=#department#
+			</isNotEmpty>
+			 -->
+	    </dynamic>
+	    GROUP BY login_data
+		ORDER BY login_data DESC LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select>
+	
+	<!-- 查询人数具体分时统计列表-->
+	<select id="queryUserHourEveryDayList" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT login_hour AS hour_stat, CONVERT(login_num,CHAR) code_count 
+		FROM rh_login_notes WHERE DATE_FORMAT(login_data, '%Y-%m-%d')=#day_stat#
+	</select>
+	
+	<!-- 查询打码成功分时统计列表 -->
+	<select id="querySuccessCodeHourList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT day_stat, IFNULL(SUM(code_success),0) code_count FROM tj_rhpic_hour WHERE 1=1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_time">
+				STR_TO_DATE(day_stat, '%Y-%m-%d')<![CDATA[>=]]>
+				#begin_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+				STR_TO_DATE(day_stat, '%Y-%m-%d')<![CDATA[<]]>DATE_ADD(#end_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<!-- 
+			<isNotEmpty prepend=" and " property="department">
+				department=#department#
+			</isNotEmpty>
+			 -->
+	    </dynamic>
+	    GROUP BY day_stat
+		ORDER BY day_stat DESC LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select>
+	
+	<!-- 查询打码成功具体分时统计列表-->
+	<select id="querySuccessCodeHourEveryDayList" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT hour_stat, CONVERT(code_success,CHAR) code_count FROM tj_rhpic_hour WHERE day_stat=#day_stat#
+	</select>
+	
+	<!-- 查询打码失败分时统计列表 -->
+	<select id="queryFailCodeHourList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT day_stat, IFNULL(SUM(code_fail),0) code_count FROM tj_rhpic_hour WHERE 1=1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_time">
+				STR_TO_DATE(day_stat, '%Y-%m-%d')<![CDATA[>=]]>
+				#begin_time#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_time">
+				STR_TO_DATE(day_stat, '%Y-%m-%d')<![CDATA[<]]>DATE_ADD(#end_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<!-- 
+			<isNotEmpty prepend=" and " property="department">
+				department=#department#
+			</isNotEmpty>
+			 -->
+	    </dynamic>
+	    GROUP BY day_stat
+		ORDER BY day_stat DESC LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select>
+	
+	<!-- 查询打码失败具体分时统计列表-->
+	<select id="queryFailCodeHourEveryDayList" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT hour_stat, CONVERT(code_fail,CHAR) code_count FROM tj_rhpic_hour WHERE day_stat=#day_stat#
+	</select>
+	
+</sqlMap>

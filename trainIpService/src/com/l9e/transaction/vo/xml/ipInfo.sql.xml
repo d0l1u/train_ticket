@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ipInfo">
+
+	<!-- 查询ip，按工作时间升序 -->
+	<select id="selectIpInfo" parameterClass="Map" resultClass="com.l9e.transaction.vo.IpInfo">
+		SELECT
+		    ip_id AS ipId,
+		    ip_type AS ipType,
+			ip_ext AS ipExt,
+			ip_status AS ipStatus,
+			request_num AS requestNum,
+			if_support_change ifSupportChange
+		FROM
+			cp_ipinfo
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="AND" property="ipId">
+				ip_id = #ipId:INTEGER#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="ipType">
+				ip_type = #ipType:INTEGER#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="ipStatus">
+				ip_status = #ipStatus:VARCHAR#
+			</isNotEmpty>
+
+		</dynamic>
+		ORDER BY
+			option_time
+		ASC
+		<dynamic>
+			<isNotEmpty property="limit">
+				LIMIT #limit:INTEGER#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 更新IP信息 -->
+	<update id="updateIpInfo" parameterClass="com.l9e.transaction.vo.IpInfo">
+		UPDATE
+			cp_ipinfo
+		<dynamic prepend="SET">
+			<isNotEmpty prepend="," property="createTime">
+				create_time = NOW()
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="optionTime">
+				option_time = NOW()
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ipType">
+				ip_type = #ipType:INTEGER#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ipStatus">
+				ip_status = #ipStatus:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="ipExt">
+				ip_ext = #ipExt:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="requestNum">
+				request_num = #requestNum:INTEGER#
+			</isNotEmpty>
+
+		</dynamic>
+		WHERE
+			ip_id = #ipId:INTEGER#
+	</update>
+	
+	<!-- 插入cp_ipinfo_log表一条日志记录 -->
+	<insert id="insertIpInfoLog" parameterClass="Map">
+		insert into cp_ipinfo_log
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="old_ip">
+				old_ip
+			</isNotNull>
+			<isNotNull prepend="," property="new_ip">
+				new_ip
+			</isNotNull>
+			<isNotNull prepend="," property="content">
+				content
+			</isNotNull>
+			<isNotNull prepend="," property="create_time">
+				create_time
+			</isNotNull>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="old_ip">
+				#old_ip:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="new_ip">
+				#new_ip:INTEGER#
+			</isNotNull>
+			<isNotNull prepend="," property="content">
+				#content:VARCHAR#
+			</isNotNull>		
+			<isNotNull prepend="," property="create_time">
+				now()
+			</isNotNull>
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 插入cp_ipinfo_release表一条待释放IP记录 -->
+	<insert id="insertIpInfoRelease" parameterClass="Map">
+		insert into cp_ipinfo_release
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="ip_ext">
+				ip_ext
+			</isNotNull>
+			<isNotNull prepend="," property="release_status">
+				release_status
+			</isNotNull>
+			<isNotNull prepend="," property="create_time">
+				create_time
+			</isNotNull>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="ip_ext">
+				#ip_ext:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="release_status">
+				#release_status:VARCHAR#
+			</isNotNull>		
+			<isNotNull prepend="," property="create_time">
+				now()
+			</isNotNull>
+			)
+		</dynamic>
+	</insert>
+
+</sqlMap>

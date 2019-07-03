@@ -1,0 +1,674 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/mvc  
+	http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+	<context:component-scan base-package="com.l9e.transaction.job" />
+
+	<!-- 总管理类,执行调度程序 -->
+	<bean id="startQuertz"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="accountOpenTime" />
+
+				<!--<ref bean="accountAliveTime" /> <ref bean="accountSupplyTime" /> -->
+				<ref bean="robotWarnningTime" />
+				<ref bean="extLockOrderBookTime" />
+				<ref bean="managerLockOrderTime" />
+				<ref bean="backupTime" />
+				<ref bean="lockAlterManagerTime" />
+				<ref bean="startAccountTime" />
+				<ref bean="tuniuNoPayOrderTime" />
+				<ref bean="tcNoPayOrderTime" />
+				<ref bean="channelLockOrderTime" />
+				<ref bean="createStationTime" />
+				<ref bean="updateAccountTime" />
+				<ref bean="updateAccountStatusTime" />
+				<ref bean="workerLockUpdateJobTime" />
+				<!-- 
+				<ref bean="qunarReserveTime"/> 
+				<ref bean="phonePlatTime" /> 
+				<ref bean="qunarOutTicketTime"/> 
+				-->
+				<ref bean="phonePlatTime" />
+				<ref bean="updateStatusToSendAgainJobTime" />
+
+				<!-- <ref bean="startBackBookRobotTime"/> -->
+				<ref bean="changeRegRobotStatuesTime" />
+				<ref bean="openRobotJobTime" />
+				<ref bean="openpayRobotJobTime" />
+				<!--
+				<ref bean="accountCheckJobTime" />
+				<ref bean="accountHandleJobTime"/> 
+				<ref bean="ctripAccountUpdateJobTime" />
+				-->
+				<ref bean="releaseIpInfoJobTime" />
+				<ref bean="meituanNoPayOrderTime" />
+				<ref bean="gaotieNoPayOrderTime" />
+			</list>
+		</property>
+	</bean>
+
+
+	<!--tigger 定时修改注册机器人的状态，每10s -->
+	<bean id="changeRegRobotStatuesTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="changeRegRobotStatuesTask"></property>
+		<property name="cronExpression" value="0 0/5 * * * ?"></property>
+
+	</bean>
+	<!--JobDetail的配置 -->
+	<bean id="changeRegRobotStatuesTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="changeRegRobotStatusJob" />
+		<property name="targetMethod" value="change" />
+
+	</bean>
+
+
+	<!-- 启用备用预定机器人，关闭开启的预定机器人 -->
+	<bean id="startBackBookRobotTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="startBackBookRobotTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0 0 0 * * ? </value>
+		</property>
+	</bean>
+	<bean id="startBackBookRobotTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="startBackWorkerJob" />
+		</property>
+		<property name="targetMethod">
+			<value>startBackWorker</value>
+		</property>
+	</bean>
+	<!--定时释放锁定超时的预定机器人 -->
+	<bean id="workerLockUpdateJobTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="workerLockUpdateJobTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0 0/2 * * * ? </value>
+		</property>
+	</bean>
+	<bean id="workerLockUpdateJobTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="workerLockUpdateJob" />
+		</property>
+		<property name="targetMethod">
+			<value>updateWorkerLockStatus</value>
+		</property>
+	</bean>
+	<!--重新启用帐号 -->
+	<bean id="updateAccountStatusTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="updateAccountStatusTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0 0 05 * * ? </value>
+		</property>
+	</bean>
+	<bean id="updateAccountStatusTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="startUseAccountJob" />
+		</property>
+		<property name="targetMethod">
+			<value>startUpdateAccountStatus</value>
+		</property>
+	</bean>
+
+
+	<!--更新帐号未下单天数 -->
+	<bean id="updateAccountTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="updateAccountTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0 5 01 * * ? </value>
+		</property>
+	</bean>
+	<bean id="updateAccountTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="startUseAccountJob" />
+		</property>
+		<property name="targetMethod">
+			<value>startUpdateAccountPriority</value>
+		</property>
+	</bean>
+
+
+	<!--生成车站列表 -->
+	<bean id="createStationTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="createStationTask" />
+		</property>
+		<property name="cronExpression">
+			<value>00 33 09 * * ? </value>
+		</property>
+	</bean>
+	<bean id="createStationTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="createStationJob" />
+		</property>
+		<property name="targetMethod">
+			<value>createStation</value>
+		</property>
+	</bean>
+	<!-- 处理渠道卡单 -->
+	<bean id="channelLockOrderTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="channelLockOrderTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0 0/5 * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="channelLockOrderTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="lockAlterManagerJob" />
+		</property>
+		<property name="targetMethod">
+			<value>channelLockOrder</value>
+		</property>
+	</bean>
+
+	<!-- 同程预定超时未支付处理 -->
+	<bean id="tcNoPayOrderTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="tcNoPayOrderTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/30 * * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="tcNoPayOrderTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="extLockOrderBookJob" />
+		</property>
+		<property name="targetMethod">
+			<value>tcNoPay</value>
+		</property>
+	</bean>
+
+	<!-- 途牛超时未支付订单 -->
+	<bean id="tuniuNoPayOrderTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="tuniuNoPayOrderTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/30 * * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="tuniuNoPayOrderTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="extLockOrderBookJob" />
+		</property>
+		<property name="targetMethod">
+			<value>tuniuNoPay</value>
+		</property>
+	</bean>
+	<!-- 美团超时未支付订单 -->
+	<bean id="meituanNoPayOrderTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="meituanNoPayOrderTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/30 * * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="meituanNoPayOrderTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="extLockOrderBookJob" />
+		</property>
+		<property name="targetMethod">
+			<value>meituanNoPay</value>
+		</property>
+	</bean>
+
+	<!-- 高铁未支付订单 -->
+	<bean id="gaotieNoPayOrderTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="gaotieNoPayOrderTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0/30 * * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="gaotieNoPayOrderTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="extLockOrderBookJob" />
+		</property>
+		<property name="targetMethod">
+			<value>gaotieNoPay</value>
+		</property>
+	</bean>
+
+	<!--重置账号预订次数 -->
+	<bean id="startAccountTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="startAccountTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0 0 03 * * ? </value>
+		</property>
+	</bean>
+	<bean id="startAccountTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="startUseAccountJob" />
+		</property>
+		<property name="targetMethod">
+			<value>startUseAccount</value>
+		</property>
+	</bean>
+
+	<!--短信平台发送短信setTime -->
+	<bean id="phonePlatTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="phonePlatTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0 0/1 * * * ? </value>
+		</property>
+	</bean>
+	<bean id="phonePlatTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="phonePlatJob" />
+		</property>
+		<property name="targetMethod">
+			<value>phone</value>
+		</property>
+	</bean>
+
+
+	<!-- 唤醒账号 -->
+	<bean id="accountAliveTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="accountAliveTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/15 * * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="accountAliveTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="accountAliveJob" />
+		</property>
+		<property name="targetMethod">
+			<value>live</value>
+		</property>
+	</bean>
+
+	<!-- 补充账号 -->
+	<bean id="accountSupplyTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="accountSupplyTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0 0/2 * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="accountSupplyTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="accountSupplyJob" />
+		</property>
+		<property name="targetMethod">
+			<value>supply</value>
+		</property>
+	</bean>
+	<!-- 发起机器人短信警告通知 -->
+	<bean id="robotWarnningTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="robotWarnningTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0 0/3 * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="robotWarnningTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="robotWarnningJob" />
+		</property>
+		<property name="targetMethod">
+			<value>robotNotify</value>
+		</property>
+	</bean>
+
+	<!-- 预定超时未支付处理 -->
+	<bean id="extLockOrderBookTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="extLockOrderBookTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0 0/10 * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="extLockOrderBookTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="extLockOrderBookJob" />
+		</property>
+		<property name="targetMethod">
+			<value>bookNotify</value>
+		</property>
+	</bean>
+
+	<!-- 处理卡单 -->
+	<bean id="managerLockOrderTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="managerLockOrderTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0 0/6 * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="managerLockOrderTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="managerLockOrderJob" />
+		</property>
+		<property name="targetMethod">
+			<value>managerLockOrder</value>
+		</property>
+	</bean>
+	<!-- 处理改签卡单 -->
+	<bean id="lockAlterManagerTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="lockAlterManagerTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0 0/1 * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="lockAlterManagerTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="lockAlterManagerJob" />
+		</property>
+		<property name="targetMethod">
+			<value>lockAlterManager</value>
+		</property>
+	</bean>
+
+	<!-- 订单信息备份、车票信息备份 自启动 setTime -->
+	<bean id="backupTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="backupTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0 0 1 * * ? </value>
+		</property>
+	</bean>
+
+	<bean id="backupTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="backupOrderCpJob" />
+		</property>
+		<property name="targetMethod">
+			<value>backup</value>
+		</property>
+	</bean>
+	<bean id="qunarReserveTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="qunarReserveTask" />
+		</property>
+		<property name="cronExpression">
+			<value>00 58 06 * * ? </value>
+		</property>
+	</bean>
+	<bean id="qunarOutTicketTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="qunarOutTicketTask" />
+		</property>
+		<property name="cronExpression">
+			<value>00 30 22 * * ? </value>
+		</property>
+	</bean>
+
+	<bean id="qunarReserveTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="updateOutTicketSendStatusJob" />
+		</property>
+		<property name="targetMethod">
+			<value>reserve</value>
+		</property>
+	</bean>
+	<bean id="qunarOutTicketTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="updateOutTicketSendStatusJob" />
+		</property>
+		<property name="targetMethod">
+			<value>outTicket</value>
+		</property>
+	</bean>
+
+	<!-- 开启账号 -->
+	<bean id="accountOpenTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="accountOpenTask" />
+		</property>
+
+		<property name="cronExpression">
+			<value>0/30 * * * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="accountOpenTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="startAccountJob" />
+		</property>
+		<property name="targetMethod">
+			<value>StartAccount</value>
+		</property>
+	</bean>
+
+	<!--启用ip被封的机器人 -->
+	<bean id="openRobotJobTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="openRobotJobTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0 0/10 * * * ? </value>
+		</property>
+	</bean>
+	<bean id="openRobotJobTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="openRobotJob" />
+		</property>
+		<property name="targetMethod">
+			<value>openRobot</value>
+		</property>
+	</bean>
+	<!--启用ip被封的支付机器人 -->
+	<bean id="openpayRobotJobTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="openPayRobotJobTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0 0/5 * * * ? </value>
+		</property>
+	</bean>
+	<bean id="openPayRobotJobTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="openPayRobotJob" />
+		</property>
+		<property name="targetMethod">
+			<value>openRobot</value>
+		</property>
+	</bean>
+
+	<!--排队重发job -->
+	<bean id="updateStatusToSendAgainJobTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="updateStatusToSendAgainJobTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0/10 * * * * ? </value>
+		</property>
+	</bean>
+	<bean id="updateStatusToSendAgainJobTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="updateStatusToSendAgainJob" />
+		</property>
+		<property name="targetMethod">
+			<value>sendJob</value>
+		</property>
+	</bean>
+
+	<bean id="accountCheckJobTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+
+		<property name="jobDetail">
+
+			<ref bean="accountCheckJobTask" />
+
+		</property>
+
+		<property name="cronExpression">
+
+			<value>0 0/1 * * * ? </value>
+
+		</property>
+
+	</bean>
+
+	<bean id="accountCheckJobTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+
+		<property name="targetObject">
+
+			<ref bean="accountCheckJob" />
+
+		</property>
+
+		<property name="targetMethod">
+
+			<value>accountCheck</value>
+
+		</property>
+
+	</bean>
+	<!-- 账号清理，非19e渠道的更改为19e，状态非33的改为999 -->
+
+	<bean id="accountHandleJobTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+
+		<property name="jobDetail">
+
+			<ref bean="accountHandleJobTask" />
+
+		</property>
+
+		<property name="cronExpression">
+
+			<value>0 0/1 0-7 * * ? </value>
+
+		</property>
+
+	</bean>
+
+	<bean id="accountHandleJobTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+
+		<property name="targetObject">
+
+			<ref bean="accountHandleJob" />
+
+		</property>
+
+		<property name="targetMethod">
+
+			<value>accountHandle</value>
+
+		</property>
+
+	</bean>
+
+	<bean id="ctripAccountUpdateJobTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="ctripAccountUpdateJobTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0 0 23 * * ?</value>
+		</property>
+	</bean>
+
+	<bean id="ctripAccountUpdateJobTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="ctripAccountUpdateJob" />
+		</property>
+		<property name="targetMethod">
+			<value>updateCtripAcc</value>
+		</property>
+	</bean>
+
+	<bean id="releaseIpInfoJobTime" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="releaseIpInfoJobTask" />
+		</property>
+		<property name="cronExpression">
+			<value>0 0/3 * * * ? </value>
+		</property>
+	</bean>
+	<bean id="releaseIpInfoJobTask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="releaseIpInfoJob" />
+		</property>
+		<property name="targetMethod">
+			<value>releaseIpInfo</value>
+		</property>
+	</bean>
+
+</beans>

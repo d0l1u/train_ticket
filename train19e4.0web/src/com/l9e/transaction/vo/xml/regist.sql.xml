@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="regist">
+
+	<!-- 添加代理商账号信息 -->
+	<insert id="addAgentRegistInfo" parameterClass="com.l9e.transaction.vo.AgentRegistVo">
+		insert into hc_orderinfo_regist
+		<dynamic prepend="(">
+			user_id,
+			regist_status,
+			create_time,
+			regist_num,
+			<isNotNull prepend="," property="user_name">
+				user_name
+			</isNotNull>
+			<isNotNull prepend="," property="ids_card">
+				ids_card
+			</isNotNull>
+			<isNotNull prepend="," property="user_phone">
+				user_phone
+			</isNotNull>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			#user_id:VARCHAR#,
+			'00',
+			now(),
+			0,
+			<isNotNull prepend="," property="user_name">
+				#user_name:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="ids_card">
+				#ids_card:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="user_phone">
+				#user_phone:VARCHAR#
+			</isNotNull>
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 根据代理商id，身份证号等查询某账号信息 -->
+	<select id="queryAgentRegistInfo" parameterClass="java.util.HashMap"
+		resultClass="com.l9e.transaction.vo.AgentRegistVo">
+		SELECT regist_id,user_id,user_name,ids_card,user_phone,account_name,account_pwd,regist_status,
+			fail_reason,description FROM hc_orderinfo_regist WHERE
+			user_id=#user_id:VARCHAR# 
+			<isNotEmpty prepend=" and " property="ids_card">
+				ids_card=#ids_card:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="user_name">
+				user_name=#user_name:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="regist_id">
+				regist_id=#regist_id:VARCHAR#
+			</isNotEmpty>
+	</select>
+	<!-- 根据代理商id查询账号信息集合 -->
+	<select id="queryAgentRegistListInfo" parameterClass="java.lang.String"
+		resultClass="com.l9e.transaction.vo.AgentRegistVo">
+		SELECT regist_id,user_id,user_name,ids_card,user_phone,account_name,account_pwd,regist_status,
+			fail_reason,description FROM hc_orderinfo_regist WHERE
+			user_id=#user_id:VARCHAR# 
+	</select>
+	
+	<!-- 更新代理商账号信息  -->
+	<update id="updateAgentRegistInfo" parameterClass="com.l9e.transaction.vo.AgentRegistVo">
+		UPDATE hc_orderinfo_regist
+		SET
+		user_name=#user_name:VARCHAR#,
+		ids_card=#ids_card:VARCHAR#,
+		user_phone=#user_phone:VARCHAR#,
+		create_time = now(),
+		regist_num = 0,
+		regist_status = '00' 
+		WHERE regist_id=#regist_id:VARCHAR#
+		<isNotEmpty prepend=" and " property="user_id">
+			user_id=#user_id:VARCHAR#
+		</isNotEmpty>
+	</update>
+	
+	<!-- 删除代理商账号信息  -->
+	<delete id="deleteAgentRegistInfo" parameterClass="java.util.HashMap">
+		DELETE FROM hc_orderinfo_regist
+		WHERE regist_id=#regist_id:VARCHAR#
+		<isNotEmpty prepend=" and " property="user_id">
+			user_id=#user_id:VARCHAR#
+		</isNotEmpty>
+	</delete>
+	
+	<!-- 根据代理商id查询代理商的实名信息 -->
+	<select id="queryAgentRegisterInfo" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT regist_id,regist_status,user_id,user_name,ids_card,user_phone,fail_reason,
+		 DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') AS create_time
+		 FROM hc_orderinfo_regist 
+		 WHERE user_id=#userId:VARCHAR# 
+	</select>
+	
+</sqlMap>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="prepaidCard">
+
+	<!-- 查询京东预付卡 -->
+	<procedure id="jdSelectCard" resultClass="com.l9e.transaction.vo.PrepaidCard">    
+    	{call jdSelectCard()}     
+	</procedure>  
+	
+	<!-- 更新京东预付卡余额 -->
+	<update id="jdUpdateCardMoney" parameterClass="com.l9e.transaction.vo.PrepaidCard">
+		UPDATE jd_card SET card_money =  #cardMoney:VARCHAR#
+		WHERE card_no = #cardNo:VARCHAR#
+	</update>
+	
+	
+	
+	<update id="jdUpdateCardStatus">
+		UPDATE 
+			jd_card 
+		SET 
+			card_status = '22' 
+		WHERE 
+			card_status <![CDATA[<>]]> '22' 
+			AND  
+			CONVERT( card_money,DECIMAL(5,2)) =  0  
+			AND 
+			<![CDATA[option_time < DATE_SUB(NOW(),INTERVAL 2 MONTH)]]>
+	</update>
+	
+</sqlMap>

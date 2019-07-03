@@ -1,0 +1,120 @@
+package com.l9e.producerConsumer.distinct;
+
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.log4j.Logger;
+
+import com.l9e.producerConsumer.ReOfferResourceThread;
+import com.l9e.transaction.service.RobotCodeService;
+import com.l9e.util.LRULinkedHashMap;
+
+
+/**
+ * 
+ * 不包含去重功能的生产者-消费者模式 消费者抽象类
+ * @author liyong
+ */
+
+public abstract class DistinctConsumer<T> implements Runnable {
+	
+	private static final Logger logger = Logger.getLogger(ReOfferResourceThread.class);
+	
+	private String consumerid;
+	private BlockingQueue<T> queue;
+	private RobotCodeService robotService;
+	//处理中的资源列表
+	private ConcurrentHashMap<String,Long> dealingmap;
+	//待重发的资源列表
+	private BlockingQueue<T> reofferqueue;
+	//处理成功的资源列表
+	private LRULinkedHashMap<String, Long> succmap;
+	
+	private Map<String,String> param;
+	
+	private boolean isNeedReOffer;//发送失败是否需要从新插入队列标识
+	
+	
+	public final void run() {
+		try{
+			while(!Thread.interrupted()){
+				//从队列中获取资源，并从队列移除该资源
+				T t = queue.take();
+				
+				logger.debug("消费者"+consumerid+"获取到待消费资源"+getObjectKeyId(t));
+				boolean consumeresult = false;
+				try{
+					consumeresult = consume(t,robotService,param);
+				}catch (Exception e) {
+					logger.info("",e);
+				}
+				if(consumeresult){
+					//如果消费成功，则完成,添加到已成功队列，并从已存在的资源列表中删除
+					succmap.put(getObjectKeyId(t), System.currentTimeMillis());
+					dealingmap.remove(getObjectKeyId(t));
+					logger.debug("消费者"+consumerid+"完成"+getObjectKeyId(t)+"消费");
+				}else{
+					//消费不成功时
+					if(isNeedReOffer){
+						//需要重新插入队列标识时，则重新加入队列等待处理
+						//此处不采取阻塞等待方式，因为可能产生死锁，所以新增加一个需要重新offer的Map,该Map由另一线程负责reoffer
+						reofferqueue.put(t);
+						logger.debug("消费者"+consumerid+"未完成"+getObjectKeyId(t)+"消费,将资源放入reoffer队列");
+						
+					}else{
+						//不需要重新插入队列标识时，从存在的资源列表中删除
+						dealingmap.remove(getObjectKeyId(t));
+						logger.debug("消费者"+consumerid+"未完成"+getObjectKeyId(t)+"消费,从存在的资源列表中删除");
+					}
+					
+				}
+			}
+		}catch (Exception e) {
+			logger.info("",e);
+		}
+
+	}
+	
+	
+	//消费抽象方法
+	public abstract boolean consume(T t,RobotCodeService robotService,Map<String, String> param);
+	
+	public abstract String getObjectKeyId(T t);
+	
+	public void setRobotService(RobotCodeService robotService) {
+		this.robotService = robotService;
+	}
+
+	public void setConsumerid(String consumerid) {
+		this.consumerid = consumerid;
+	}
+
+	public void setQueue(BlockingQueue<T> queue) {
+		this.queue = queue;
+	}
+
+
+	public void setDealingmap(ConcurrentHashMap<String, Long> dealingmap) {
+		this.dealingmap = dealingmap;
+	}
+
+	public void setReofferqueue(BlockingQueue<T> reofferqueue) {
+		this.reofferqueue = reofferqueue;
+	}
+
+
+	public void setNeedReOffer(boolean isNeedReOffer) {
+		this.isNeedReOffer = isNeedReOffer;
+	}
+
+
+	public void setSuccmap(LRULinkedHashMap<String, Long> succmap) {
+		this.succmap = succmap;
+	}
+
+	public void setParam(Map<String, String> param) {
+		this.param = param;
+	}
+
+}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="train19eTjOrder"
+  id="myeclipse.1400737722923"
+  context-root="/train19eTjOrder"
+  j2ee-spec="5.0"
+  archive="train19eTjOrder.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+

@@ -1,0 +1,18 @@
+#注册核验工程，账号登录，查询联系人等
+identityURL=http://10.3.12.95:18070/l9helper/interface.do
+
+# 已经停用，貌似是途牛人工打码的一个借口
+#changeUrl=http://43.241.225.165:8080/RunScript
+
+#帐号服务,在获取验证码中使用，已停用
+#accountUrl=http://10.16.22.31:19020/accountN/getChannelAccount
+
+#查询车次信息，用于补全出发时间。到达时间
+queryTicket=http://10.3.12.95:18015/queryTicket
+
+#12306订单状态查询，这个机器已经没了，代码没有找到，接口返回为空
+search_status=http://43.241.225.126:8080/train_serviceRobot/train_Robot/orderStatus
+
+#修改账号密码
+cp_edit_account=http://10.16.22.31:19020/accountN/modifyAccountPwd
+

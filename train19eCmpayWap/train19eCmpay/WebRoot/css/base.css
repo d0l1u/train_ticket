@@ -1,0 +1,193 @@
+@charset "utf-8";
+/* ---------------------------------------- */
+/* Reset Css
+/* ---------------------------------------- */
+
+html, body, div, span, object, iframe,h1, h2, h3, h4, h5, h6, p, blockquote, pre, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp,
+small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label,textarea, legend, table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary, time, mark, audio, video {
+margin:0; padding:0; border:0; outline:0; vertical-align:baseline; background:transparent;}
+body{font-family:Microsoft YaHei, calibri, verdana; font-size:12px; line-height:1; color:#666; background:#ccc;}
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display: block;}
+ul,ol,li{list-style-type:none;}
+blockquote, q { quotes: none;}
+blockquote:before, blockquote:after, q:before, q:after {content: ''; content: none;}
+input, select, button {vertical-align:middle; padding:0;}
+input {outline:none;}
+img, button {border:0;}
+table {border-collapse:collapse; border-spacing:0; }
+a {text-decoration:none; color:#555;}
+
+/* ---------------------------------------- */
+/* Common Classes
+/* ---------------------------------------- */
+
+.b{font-weight:bold;}
+.font_24{font-size:24px;}
+.font_20{font-size:20px;}
+.font_18{font-size:18px;}
+.font_16{font-size:16px;}
+.font_14{font-size:14px;}
+.font_12{font-size:12px;}
+.font_10{font-size:10px;}
+.text {text-indent:-9999px;}
+.center {text-align:center;}
+.yahei {font-family:Microsoft YaHei, calibri, verdana;}
+.white {color:#fff;}
+.red {color:#ff0000;}
+.blk {color:#000;}
+.org {color:#ff5400;}
+.blue {color:#0081CC;}
+.blue_pay {color:#0f63b8;}
+.blue_icon {color:#1B9CD9;}
+.green {color:green;}
+.grey {color:#999;}
+.left {float:left;}
+.right {float:right;}
+.clear{clear:both;}
+.box_960 {width:960px; margin:0 auto;}
+.box_1000 {width:1000px; margin:0 auto;}
+.opacity {filter:alpha(opacity=50); /* ie */ opacity: 0.5;}
+.En { font-family:Arial, Helvetica, sans-serif;}
+
+
+/* ---------------------------------------- */
+/* Common Styles
+/* ---------------------------------------- */
+
+/* index.html */
+.wrap {width:100%; height:100%; background-color:#f5f6f6; position:relative;}
+.wrap1 {width:100%; height:100%; background-color:#f5f6f6; position:absolute;}
+#bar {width:100%; height:40px; line-height:40px; display:-webkit-box;background:url(/images/bar_h1_bg.gif) repeat-x; align:center;}
+.m19e_ret {display:block; height:40px;position:absolute;left:0;top:0; width:20%; border-right:1px solid #0776ab; background:url(/images/m19e_ret_bg.png) no-repeat center center;color:white;font-size:15px; text-align:center;}
+.m19e_first_ret {display:block; height:40px;position:absolute;left:0;top:0; width:20%; border-right:1px solid #0776ab; color:white;font-size:15px; text-align:center;}
+.m19e_home {display:block; height:40px; width:20%;background:url(/images/home-icon.png) no-repeat center center;position:absolute;top:0;right:0;height:40px;border-left:1px solid #0776ab;}
+.m19e_home span{display:block;height:100%;background:url(/images/home-icon.png) no-repeat center center;}*/
+
+a.m19e_ok{display:block; position:absolute; right: 15px;height:40px;/*background:url(/images/ok-icon.png) no-repeat center center;*/}
+a.m19e_ok h6{position:absolute; right:15px;top:5px;color:#ddf;display:block; font-size:14px;height:40px;/*background:url(/images/ok-icon.png) no-repeat center center;*/}
+#bar h1 {width:60%; height:100%;  text-align:center; -webkit-text-size-adjust:100%; color:#f5f6f6; font-size:22px; font-family:"Microsoft yahei"; font-weight:normal; -webkit-box-flex:1;}
+#bar span{ height:40px; text-align:center; -webkit-text-size-adjust:100%; color:#f5f6f6; font-size:26px; font-family:"Microsoft yahei"; font-weight:normal; -webkit-box-flex:1;}
+
+#main {-webkit-box-sizing:border-box; margin:0 auto; padding:36px 28px 0;}
+.city {width:100%; height:120px; -webkit-box-sizing:border-box; overflow:hidden; border-radius:4px; border:1px solid #189bd9; background:#e0f3fc; display:-webkit-box; margin-bottom:30px;}
+.city_sel_t {width:50px; height:100%; background:url(/images/change.png) no-repeat left center; text-indent:-9999px;}
+.city_sel_c {height:100%; -webkit-box-flex:1; -webkit-box-sizing:border-box; padding:6px 10px;}
+.city_s {height:48px; background:#fff; border-radius:3px; line-height:48px; width:100%;}
+.datapick {width:100%;display:-webkit-box; line-height:48px; -webkit-box-sizing:border-box; background:#fff; border:1px solid #c6dfeb;}
+.datapick #weekday {position:absolute; right:12%; font-size:16px;height:48px;line-height:48px;vertical-align:middle;}
+.switch{font-size:16px;display: -webkit-inline-block; height:30px; line-height:30px;width:100%;}
+.switch label{display:-webkit-inline-block; position: absolute;height:30px; line-height:30px;}
+.datapick label {display: -webkit-inline-block;vertical-align: middle; -webkit-box-flex:1; height:48px; line-height:48px;font-size:16px;}
+.datapick_txt {position:relative; font-size:18px; padding-left:5px; -webkit-box-flex:3;width:50%; color:#888; height:48px;line-height:48px; font-family:"Microsoft yahei"; border:none; background:#fff;vertical-align: middle; }
+.from_to_icon{display:block;width:100%;height:40px;background:url(/images/arrow-icon.png) no-repeat center center;background-size:81px auto;align:center;}
+.ticket_ser_w {width:100%; height: 48px; margin-top:60px; overflow:hidden;}
+.ticket_ser {background:#ff7200; border-radius:3px; width:100%; height:100%; line-height: 48px; color:#fff; font-size: 20px; font-family:"Microsoft yahei"; border:none;}
+.ticket_add {background:#ff7200; border-radius:3px; width:90%; height:100%; line-height:48px; color:#fff; font-size:26px; font-family:"Microsoft yahei"; border:none;margin-left:5%;}
+.start_city, .arrive_city {position:relative;width:100%;display:-webkit-inline-box; top:0;}
+/* search train_list.html */
+.ser_data, .ser_condit {width:100%; border-bottom:1px solid #dedede; text-align:center; font-size:16px; font-family:"Microsoft yahei";display:-webkit-flex; -webkit-flex-flow:row; overflow:hidden;}
+.ser_data {height:48px; line-height:48px;}
+.ser_condit {height:52px; line-height:52px;}
+.cur_data {background:#e3eaec; color:#111;}
+.cur_data strong {font-weight:normal;}
+.prev_data, .cur_data, .next_data, .start_time, .screening, .consum_time { display:block; height:100%;}
+.cur_data {width:70%;}
+.prev_data {width:15%;background:url(/images/prev_data_bg.gif) no-repeat 8% center;}
+.next_data {width:15%;background:url(/images/next_data_bg.gif) no-repeat 8% center;}
+.start_time:active, .consum_time:active {background:#e6ecee;}
+
+.train_list {width:100%; font-size:18px; color:#909090; font-family:"Microsoft yahei"; background:#fff;border:none;}
+/*.train_list .infotable { border-bottom:1px solid #cbcbcb; vertical-align:middle;}*/
+.infotable td {vertical-align:middle;}
+.none, .infotable { border-bottom:1px solid #cbcbcb; width:100%;}
+.train_time {width:18%; font-size:16px; font-family:Arial;text-align:center;}
+.train_time span {display:block; -webkit-box-sizing:border-box; width:100%; padding-left:18%; line-height:22px;}
+.train_time strong {color:#000; font-size:20px; font-weight:normal;}
+.checi {line-height:22px;height:22px;}
+.checi span {display:block; line-height:22px; font-size:16px;-webkit-box-sizing:border-box; width:100%; padding-left:10px;}
+.chici em {font-style:normal; font-size:12px; color:#fff; padding:0 2px; vertical-align:middle; margin-right:10px;}
+.train_number {width:35%;line-height:22px;height:22;}
+.train_number span {display:block; line-height:22px; font-size:16px;-webkit-box-sizing:border-box; width:100%; padding-left:10px;}
+.train_number em {font-style:normal; font-size:12px; color:#fff; padding:0 2px; vertical-align:middle; margin-right:10px;}
+.st {margin-bottom:-4px; color:#000;}
+.st em {background:#27adeb;}
+.ed em {background:#ff5a00;}
+.ps em {background:green;}
+.duration {width:22%; text-align:center;}
+.duration span {color:#000; font-size:16px;}
+.train_price {width:25%; color:#000; text-align:center; background:url(/images/train_price_bg.gif) no-repeat 92% center;}
+.train_price strong {font-size:20px; color:#ff5a00; font-weight:normal;}
+
+.none td, .none .train_time strong, .none .st, .none .duration span, .none .train_price strong{color:#8f8f8f;}
+.none .st em, .none .ed em {background:#8f8f8f;} 
+.none .train_price {background:url(../images/no_seat_bg.gif) no-repeat right top;}
+
+
+/* booking.html */
+.book_title {height:60px; line-height:60px; border-bottom:1px solid #fdfdfd; background:#dedede; padding-left:5%; font-family:"Microsoft yahei"; color:#040404; font-weight:normal;}
+.book_datapcik {height:50px; background:#a0d8f2; line-height:50px; color:#006391; display:-webkit-box;}
+.book_prev, .book_data, .book_next {display:block; height:100%;}
+.book_prev, .book_next {width:60px; background-repeat:no-repeat; background-position:center center;}
+.book_prev {background-image:url(../images/book_prev_bg.gif);}
+.book_next {background-image:url(../images/book_next_bg.gif);}
+.book_data {-webkit-box-flex:1; text-align:center; font-size:20px; font-family:"Microsoft yahei";}
+
+.book_list {width:100%; font-size:20px; font-family:"Microsoft yahei"; background:#fdfdfd;}
+.book_list td {height:50px; border-bottom:1px solid #cbcbcb; vertical-align:middle; text-align:center;}
+.book_seat {width:25%; color:#555;}
+.book_price {width:25%; color:#ff5400;}
+.book_remain {width:20%; color:#000;}
+.book_btn {width:30%;}
+.book_btn a {display:inline-block; width:86px; height:36px; line-height:36px; text-align:center; color:#fff; font-size:18px; background:#14b54d; border-radius:3px;}
+.noseat .book_remain{color:#8f8f8f;}
+.noseat .book_btn a{background:#ff5400;}
+
+.station_list {width:100%; font-size:16px; font-family:"Microsoft yahei"; color:#333; background:#fdfdfd;}
+.station_list td {width:20%; height:40px; vertical-align:middle; text-align:center;}
+
+/* ordert.html */
+.order_title {height:54px; line-height:54px; font-family:"Microsoft yahei"; overflow:hidden; background:#fff; width:100%; position:relative;} 
+.order_title h2 {height:100%; font-size:20px; font-weight:normal; color:#040404; padding-left:26px;}
+.login_btn {position:absolute; width:86px; height:36px; font-family:"Microsoft yahei"; line-height:36px; color:#fff; font-size:#fff; font-size:18px; right:20px; top:8px; background:#ff5400; border-radius:3px; text-align:center;}
+.order_con {-webkit-box-sizing:border-box; padding:0 5px; font-size:20px; font-family:"Microsoft yahei";} 
+.order_item {width:100%; overflow:hidden; color:#000;}
+.order_item dt {height:30px; padding-left:10px; line-height:30px; position:relative; color:#333; margin-top:3px;margin:bottom:3px; overflow:hidden;}
+.order_item dd {padding:10px 5px; -webkit-box-sizing:border-box; background:#fff; line-height:46px;}
+.order_item .org {font-size:18px;} 
+.order_item .cons_tim {text-align:right; margin-top:-46px; color:#7e7e7e; padding-right:10px;}
+.order_ticket_s {position:absolute; right:0; top:0; height:40px; color:#0054d1; text-decoration:underline;}
+.order_infor dd {line-height:40px;}
+.order_infor dd span {color:#7e7e7e; }
+.passenger_del {position:absolute; right:0; top:0; height:40px; width:30px; background:url(/images/pas_del_bg.gif) no-repeat center center; text-indent:-9999px;}
+.pass_inp, .pass_sel {-webkit-box-sizing:border-box; border:1px solid #e9e9e9; background:#f6f4f4; padding-left:15px; width:100%; height:40px; font-family:"Microsoft yahei"; font-size:18px; color:#7e7e7e; margin:14px 0; display:block; border-radius:3px;}
+.pass_sel {color:#030303;}
+.contacts p {line-height:26px; color:#555; font-size:16px;}
+
+.passenger_add {position:absolute; right:0; top:0; height:40px; padding-right:40px; background:url(/images/pas_add_bg.gif) no-repeat right center; color:#0f63b8;}
+.order_foot {height:55px; width:100%; display:-webkit-box; overflow:hidden; font-size:20px; font-family:"Microsoft yahei";}
+.order_d {-webkit-box-flex:1; height:100%; position:relative;}
+.order_pay, .order_btn {position:absolute; width:95%; height:55px; top:0; line-height:55px;}
+.order_pay {right:0; color:#ffcf3c; text-align:center;}
+.order_pay strong {color:#fff; font-size:18px; font-weight:normal; vertical-align:-2px;}
+.order_btn {left:0; background:url(/images/order_btn_bg.gif) no-repeat;}
+.order_btn .order_submit {background:none; display:block; width:120%; height:100%; border:none; font-size:18px; color:#fff; font-family:"Microsoft yahei"; text-align: center;}
+
+#order_result {width:100%; -webkit-box-sizing:border-box; font-family:"Microsoft yahei"; font-size:14px;}
+.order_res_box {width:100%; -webkit-box-sizing:border-box; border:1px solid #dcdcdc; padding:0 5px; border-radius:2px; background:#fff;}
+.order_res_box h2 {height:76px; line-height:76px; text-align:center; color:#ff5400; border-bottom:1px solid #dfdfdf; font-size:16px; font-weight:normal;}
+.order_res_c {line-height:35px; color:#010101; padding:10px 0;}
+.order_res_c span {color:#555; margin-right:10px;}
+.order_res_c em {font-style:normal;}
+.order_res_c .org {font-size:18px; vertical-align:-2px;}
+#order_f_bar {height:55px; width:100%; position:fixed; bottom:0; left:0;}
+.order_not {line-height:30px; text-align:center; font-size:14px;}
+
+
+.passenger_choose {position:absolute; right:8px; top:0; padding-right:30px; background:url(/images/add-btn.png) no-repeat right center; color:#0f63b8;}
+.insurance_choose {position:absolute; right:25px; top:0; padding-right:30px; background:url(/images/train_price_bg.gif) no-repeat right center; }
+.order_fail {position:relative; font-size:16px;background:url(/images/warn-icon.png) no-repeat center center;background-size:95%; color:#0f63b8;}
+/*.border_style {position:relative; right:0; top:0; background:url(/images/border-radius.png) no-repeat 75% center; color:#0f63b8;}*/
+.border_style {position:relative;border-radius:8px;font-size:16px; border:solid 2px #0f63b8; color:#0f63b8;}
+.order_succeed {position:relative; right:0; top:0; background:url(/images/succeed-icon.png) no-repeat center center;background-size:85%; color:green;}
+.order_to_pay {position:relative; right:0; top:0; padding-right:0; background:url(/images/wait-icon.png) no-repeat right center; background-size:85%; color:#0f63b8;}

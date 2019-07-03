@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="dm">
+	
+	<select id="querySendCodeList" parameterClass="java.util.HashMap" resultClass="com.l9e.transaction.vo.CodeVo">
+		SELECT pic_id,pic_filename FROM rh_picture 
+		WHERE DATE_SUB(effect_time,INTERVAL 5 SECOND) > now() AND user_pic_status=0 
+		AND status='00' AND channel='damatu'
+		ORDER BY create_time DESC LIMIT 0,#upload_num:VARCHAR# 
+	</select>
+	
+	<select id="queryCatchCodeList" parameterClass="java.util.HashMap" resultClass="com.l9e.transaction.vo.CodeVo">
+		SELECT pic_id,pic_filename,shyzmid,order_id FROM rh_picture 
+		WHERE effect_time > now() AND opt_ren=#opt_ren:VARCHAR#
+		AND  update_status='11'
+		AND status='00'
+		ORDER BY create_time DESC LIMIT 0,#get_code_num:VARCHAR# 
+	</select>
+	
+	<update id="updateCodeUserPicStatus" parameterClass="com.l9e.transaction.vo.CodeVo">
+		UPDATE rh_picture SET user_pic_status=#user_pic_status:VARCHAR#,start_time=now() 
+		WHERE pic_id = #pic_id:VARCHAR# and user_pic_status='0'
+	</update>
+	
+	<update id="updateUploadStatus" parameterClass="com.l9e.transaction.vo.CodeVo">
+		UPDATE rh_picture SET opt_ren=#opt_ren:VARCHAR#,update_status=#update_status:VARCHAR#
+		<isNotEmpty  property="shyzmid">
+				,shyzmid=#shyzmid:VARCHAR#   
+		</isNotEmpty>
+		<isNotEmpty  property="verify_code">
+				,verify_code=#verify_code:VARCHAR#   
+		</isNotEmpty>
+		<isNotEmpty  property="verify_code">
+				,status='11'  
+		</isNotEmpty>
+		<isNotEmpty  property="verify_code">
+				,finish_time=now()
+		</isNotEmpty>
+		WHERE pic_id = #pic_id:VARCHAR#   
+	</update>
+	
+	<update id="updateCodeInfo" parameterClass="com.l9e.transaction.vo.CodeVo">
+		UPDATE rh_picture SET verify_code=#verify_code:VARCHAR#,status='11',finish_time=#finish_time#,shyzmid=#shyzmid:VARCHAR#
+		WHERE pic_id = #pic_id:VARCHAR#   
+	</update>
+	
+	<select id="queryErrorCodeList" resultClass="com.l9e.transaction.vo.CodeVo">
+		SELECT pic_id,pic_filename,shyzmid FROM rh_picture 
+		WHERE opt_ren=#opt_ren:VARCHAR#  and update_status='11' and result_status='0' and (back_status='00' or back_status='11') and shyzmid is not null
+	</select>
+	
+	<update id="updateErrorInfo" parameterClass="com.l9e.transaction.vo.CodeVo">
+		UPDATE rh_picture SET back_status=#back_status:VARCHAR#
+		WHERE pic_id = #pic_id:VARCHAR#   
+	</update>
+	
+	
+</sqlMap>

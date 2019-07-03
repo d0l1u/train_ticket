@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="tj_hc_outTicketSbl">
+	<!-- 查询每天每前半小时订单失败率 -->
+	<select id="queryOutTicketSblBefore" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT CONVERT((TRUNCATE(ROUND((IFNULL(a.failCount,0)/b.orderCount)*10000)/100,2)),CHAR) AS sbl,
+			CONCAT(b.hourstat2,':00')AS hour_stat ,
+			b.day_stat AS day_stat 
+		FROM 	
+			(SELECT COUNT(1) orderCount, DATE_FORMAT(create_time,'%H') hourstat2,DATE_FORMAT(create_time,'%Y-%m-%d')AS day_stat 
+			 FROM hc_orderinfo 
+			 WHERE 1=1 AND order_status IN ('44','45') AND (DATE_FORMAT(create_time,'%i:%s') BETWEEN DATE_FORMAT('1970-01-01 00:00:00','%i:%s') 
+				AND DATE_FORMAT(DATE_ADD('1970-01-01 00:00:00',INTERVAL 1799 SECOND),'%i:%s'))
+				AND DATE_FORMAT(create_time,'%Y-%m-%d') = #create_time#
+				GROUP BY DATE_FORMAT(create_time,'%m-%d'), DATE_FORMAT(create_time,'%H')) b
+		LEFT JOIN 
+			(SELECT COUNT(1) failCount, DATE_FORMAT(create_time,'%H') hourstat1 
+			 FROM hc_orderinfo 
+			 WHERE 1=1 AND order_status ='45' AND (DATE_FORMAT(create_time,'%i:%s') BETWEEN DATE_FORMAT('1970-01-01 00:00:00','%i:%s') 
+				AND DATE_FORMAT(DATE_ADD('1970-01-01 00:00:00',INTERVAL 1799 SECOND),'%i:%s'))
+				AND DATE_FORMAT(create_time,'%Y-%m-%d') = #create_time#
+				GROUP BY DATE_FORMAT(create_time,'%m-%d'), DATE_FORMAT(create_time,'%H')) a 
+		ON a.hourstat1=b.hourstat2
+	</select>
+	
+	<!-- 查询每天后半个小时的出票失败情况 -->
+	<select id="queryOutTicketSblAfter" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT CONVERT((TRUNCATE(ROUND((IFNULL(a.failCount,0)/b.orderCount)*10000)/100,2)),CHAR) AS sbl,
+			CONCAT(b.hourstat2,':30')AS hour_stat ,
+			b.day_stat AS day_stat 
+		FROM 	
+			(SELECT COUNT(1) orderCount, DATE_FORMAT(create_time,'%H') hourstat2,DATE_FORMAT(create_time,'%Y-%m-%d')AS day_stat 
+			 FROM hc_orderinfo 
+			 WHERE 1=1 AND order_status IN ('44','45') AND (DATE_FORMAT(create_time,'%i:%s') BETWEEN DATE_FORMAT('1970-01-01 00:30:00','%i:%s') 
+				AND DATE_FORMAT(DATE_ADD('1970-01-01 00:30:00',INTERVAL 1799 SECOND),'%i:%s'))
+				AND DATE_FORMAT(create_time,'%Y-%m-%d') = #create_time#
+				GROUP BY DATE_FORMAT(create_time,'%m-%d'), DATE_FORMAT(create_time,'%H')) b
+		LEFT JOIN 
+			(SELECT COUNT(1) failCount, DATE_FORMAT(create_time,'%H') hourstat1 
+			 FROM hc_orderinfo 
+			 WHERE 1=1 AND order_status ='45' AND (DATE_FORMAT(create_time,'%i:%s') BETWEEN DATE_FORMAT('1970-01-01 00:30:00','%i:%s') 
+				AND DATE_FORMAT(DATE_ADD('1970-01-01 00:30:00',INTERVAL 1799 SECOND),'%i:%s'))
+				AND DATE_FORMAT(create_time,'%Y-%m-%d') = #create_time#
+				GROUP BY DATE_FORMAT(create_time,'%m-%d'), DATE_FORMAT(create_time,'%H')) a 
+		ON a.hourstat1=b.hourstat2
+	</select>
+	
+	<!-- 插入统计完成的信息 -->
+	<insert id="addToTj_hc_outTicketSbl" parameterClass="java.util.HashMap">
+		INSERT INTO tj_hc_outticketsbl
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="hour_stat">
+				hour_stat
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="day_stat">
+				day_stat
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="sbl">
+				sbl
+			</isNotEmpty>
+			,create_time
+			)
+		</dynamic>
+		 values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="hour_stat">
+				 #hour_stat#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="day_stat">
+				#day_stat#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="sbl">
+				#sbl#
+			</isNotEmpty>
+			,now()
+			)
+		</dynamic>
+	</insert>
+	
+	<!-- 查询表中数据条数 -->
+	<select id="queryCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer" >
+		SELECT COUNT(1) FROM tj_hc_outticketsbl WHERE day_stat=#day_stat# and hour_stat=#hour_stat#
+	</select>
+	
+	<!-- 更新tj_hc_outTicketSbl表中的今日的数据 -->
+	<update id="updateTj_hc_outTicketSbl" parameterClass="java.util.HashMap">
+		update tj_hc_outticketsbl 
+		<dynamic prepend="set">
+			<isNotEmpty prepend=","  property="sbl">
+				 sbl=#sbl#
+			</isNotEmpty>
+		</dynamic>
+		where day_stat=#day_stat# and hour_stat=#hour_stat#
+	</update>
+	
+</sqlMap>

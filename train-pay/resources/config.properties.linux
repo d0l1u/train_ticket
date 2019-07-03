@@ -1,0 +1,7 @@
+consumersize=55
+queuesize=30
+sleepMilliSecondsWhenNolist=2000
+sleepMilliSecondsWhenHaslist=1000
+stopAndStartPreparedWorker=http://10.16.22.34:20116/worker/stopAndStartPreparedWorker
+getWorker=http://10.16.22.34:20116/worker/getWorker
+msg_url=http://10.3.12.95:18033/main/insertPhone.do

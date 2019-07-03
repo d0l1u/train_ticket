@@ -1,0 +1,811 @@
+﻿@charset "utf-8";
+/* CSS Document */
+html{background-color:#fff;}
+body,ul,li,p,h2,h3,h4,h5,h6,dl,dt,dd,table,tr,td,option,form,textarea,span,button,img{margin:0;padding:0;border:0;font-size:12px;font-family:"Simsun";}
+body{color:#555;}
+li{list-style:none;}
+table{border-collapse:collapse;border-spacing:0;}
+a{text-decoration:none;}
+input,select{font-size:12px;}
+textarea{resize:none;overflow-y:hidden;}
+.oz{overflow:hidden;zoom:1;}
+.spacer{content:".";height:0;clear:both;visibility:hidden;font-size:0;line-height:0;}
+*:focus{outline:none;}
+
+.content{margin:0 auto;width:786px;position:relative;}
+.btn,.btn1,.btn2{border:0;cursor:pointer;text-align:center;}
+
+button{cursor:pointer;}
+.fl{float:left;}
+.fr{float:right;}
+h2{height:35px;}
+h2 span{float:left;display:block;height:35px;}
+.nav_left_bg{background:url(../images/nav_left_bg.png) no-repeat;width:5px;}
+.nav_mid_bg{background:url(../images/nav_mid_bg.png) repeat-x;color:#333;line-height:36px;width:766px;padding-left:4px ;}
+.nav_right_bg{background:url(../images/nav_right_bg.png) no-repeat;width:5px;}
+
+/*垂直居中*/
+.display_mid{display:inline-block;line-height:32px;vertical-align:middle;}
+
+/*20130902 
+.main_nav{background:url(../images/mainnav_bg.jpg) repeat-x;width:780px;height:38px;padding:1px;position:relative;}
+.main_nav ul{border-color:#5ca8d9 #5ca8d9 #2d85c5;border-width:1px;border-style:solid;width:780px;height:36px;}
+.main_nav li {float: left; width:96px; text-align: center;}
+.main_nav a:link,.main_nav a:visited{border-left:1px solid #459ad3;border-right:1px solid #116dac;display:block;color:#fff;font:bold 14px/38px "Microsoft yahei";}
+.main_nav a:hover,.main_nav a:active{background:url(../images/nav_current.jpg) no-repeat;border:none;}
+.main_nav .no_rborder a:hover,.main_nav .no_rborder a:active{border-left:1px solid #459ad3;}
+.main_nav .current a:link,.main_nav .current a:visited{background:url(../images/nav_current.jpg) no-repeat;border:none;}
+.main_nav .no_lborder a{border-left:none;}
+.main_nav .no_rborder a{border-right:none;}
+.slogan{width:237px;height:18px;background:url(../images/slogan.png) no-repeat;position:absolute;top:12px; right:40px;}
+ end*/
+
+/*20140126 导航来改版 start*/
+.main_nav{background-color:#fb9800;width:780px;height:36px;position:relative;}
+.main_nav ul{height:36px;}
+.main_nav li {float: left; width:100px; text-align: center;}
+.main_nav a:link,.main_nav a:visited{display:block;color:#fff;font:500 16px/36px "Microsoft yahei";}
+.main_nav a:hover,.main_nav a:active{background:url(../images/nav_current.png) no-repeat;border:none;}
+.main_nav .no_rborder a:hover,.main_nav .no_rborder a:active{border-left:1px solid #459ad3;}
+.main_nav .current a:link,.main_nav .current a:visited{background:url(../images/nav_current.png) no-repeat;border:none;}
+.main_nav .no_lborder a{border-left:none;}
+.main_nav .no_rborder a{border-right:none;}
+.slogan{width:308px;height:36px;background:url(../images/slogan.png) no-repeat;position:absolute;top:-2px; right:10px;}
+/*20140126 导航来改版 end
+*/
+
+/**index页面 start**/
+.shouy_ser{position:relative;width:314px;height:270px;float:left;border:3px solid #fb9800;background:url(../images/search_bg.png) no-repeat right bottom;margin-top:5px;}
+.shouy_ser h3{background:url(../images/ser_box_tit.png) no-repeat;height:38px;color:#fff;margin-bottom:10px;padding-left:60px;font:bold 14px/38px "Microsoft yahei","Simsun";}
+.shouy_r{width:451px;float:right;height:274px;margin-top:5px;}
+.shouy_r .ggao{border:1px solid #dadada;margin-bottom:10px;height:179px;}
+.shouy_r .ggao h2{line-height:30px;height:30px;padding-left:26px;color:#209cd2;font-size:14px;background:#F0F7FC url(../images/news.gif) 4px center no-repeat;}
+.shouy_r .ggao h2 a:link,.shouy_r .ggao h2 a:visited{float:right;font:normal 12px/30px arial,Vernada,"Simsun";color:#555;padding-right:5px;}
+.shouy_r .ggao h2 a:hover,.shouy_r .ggao h2 a:active{text-decoration:underline;color:#f60;}
+.shouy_r .ggao h2 b{font-size:10px;}
+.shouy_r .ggao .ggao_con{height:41px;padding:1px 9px 0 10px;}
+.shouy_r .ggao .ggao_con ul{padding-top:10px;}
+.shouy_r .ggao li{line-height:18px;padding:4px 0 0 10px;background:url(../images/sprites.png) no-repeat 0 -697px;}
+/**.shouy_r .ggao li span{position:absolute;top:center;right:0;}**/
+.shouy_r .ggao .notice_time{float:right;font-size:12px;}
+.shouy_r .ggao .list{-o-text-overflow: ellipsis;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:300px;display:inline-block;}
+.shouy_r .ggao li a:link,.shouy_r .ggao li a:visited{color:#555;}
+.shouy_r .ggao li a:hover,.shouy_r .ggao li a:active{text-decoration:underline;}
+.shouy_ser dl{overflow:hidden;line-height:24px;padding:18px 20px 0 30px;}
+.shouy_ser dt{float:left;color:#555;padding-right:10px;}
+.shouy_ser dd{float:left;}
+.shouy_ser input{background:url(../images/sprites.png) no-repeat;}
+.shouy_ser .text{border:1px solid #dcdcdc;height:24px;line-height:24px;padding-left:4px;width:160px;background-position: 144px -634px;}
+.shouy_ser .text2{background-position:144px -664px;}
+.shouy_ser .btn{background-position:0 -741px;width:126px;height:37px;font:bold 14px/37px "Simsun";text-align:center;color:#fff;}
+.shouy_ser p{padding-left:115px;margin:20px 0;}
+
+
+.shouy_r .ticketstyle{margin-bottom:4px;padding:0 7px;border:1px solid #dadada;width:422px;height:156px;background:#f4faff url(../images/cross.png) no-repeat center center;}
+.shouy_r .ticketstyle li{padding-left:57px;float:left;width:134px;height:70px;padding-top:8px;background:url(../images/sprite_icon.png) no-repeat;}
+.shouy_r .ticketstyle .zg{background-position:0 -72px;}
+.shouy_r .ticketstyle .ss{background-position:0 -168px;margin-left:30px;}
+.shouy_r .ticketstyle .aq{background-position:0 -280px;}
+.shouy_r .ticketstyle .kj{background-position:0 -388px;margin-left:30px;}
+.shouy_r h5{color:#209cd2;font:bold 14px/34px "Simsun";}
+.shouy_r .contact{border:1px solid #dadada;width:449px;height:83px;}
+.shouy_r .contact li{float:left;width:167px;padding:4px 0 0 24px;}
+.shouy_r .contact img{display:block;}
+.shouy_r h6{background:url(../images/sprite_icon.png) no-repeat;color:#005bac;font:normal 12px/26px "Simsun";padding-left:28px;}
+.shouy_r h6.kf{background-position:-78px -25px;}
+.shouy_r h6.tel{background-position:-78px 5px;}
+.shouy_r .contact p{padding-left:50px;color:#f60;font-size:14px;}
+.shouy .ques{border:1px solid #dadada;}
+.shouy .ques h3{padding-left:10px;background:url(../images/line_bg.jpg) repeat-x;height:30px;font:bold 14px/30px "Simsun";border-bottom:1px solid #dadada;}
+.shouy .ques h5{font:bold 13px/30px "Simsun";color:#026CC6;padding-left:13px;}
+.shouy .gp_flow{border-bottom:1px solid #dadada;margin:10px 4px 0;}
+.shouy .gp_flow p{margin:10px 0 10px 20px;height:46px;background:url(../images/gp_flow.png) no-repeat;}
+.shouy .gp_weak .cmpay_image{display:inline-block;width:750px;height:310px;background:url(../images/cmpay_image.jpg) no-repeat;}
+.shouy .gp_flow span{color:#333;font:bold 14px/46px "Microsoft yahei","Simsun";}
+.shouy .gp_flow b{font-size:24px;color:#f60;padding-right:4px;}
+.shouy .gp_flow .s1{padding-left:4px;}
+.shouy .gp_flow .s2{padding-left:19px;}
+.shouy .gp_flow .s3{padding-left:23px;}
+.shouy .gp_flow .s4{padding-left:22px;}
+.shouy .gp_flow .s5{padding-left:19px;}
+.shouy .gp_flow .s6{padding-left:22px;}
+.shouy .gp_weak,.shouy .gp_ex{margin:10px 4px 0;}
+.shouy .gp_weak p{padding:0 13px;color:#333;line-height:20px;text-indent:2em;}
+.shouy .gp_weak dl{color:#333;padding:0 33px;}
+.shouy .gp_weak dt{font-weight:bold;line-height:23px;padding-top:10px;color:#08c;}
+.shouy .gp_weak dd{line-height:22px;}
+.shouy .gp_weak ul{padding:0.5em 0 0 1em;}
+.shouy .gp_weak li{background:url(../images/dotted.gif) no-repeat left 8px;padding:0 0 4px 1em;line-height:20px;}
+.shouy .gp_weak li li{background:none;padding-left:0;line-height:18px;}
+.shouy .gp_weak a:link,.shouy .gp_weak a:visited{color:#026CC6;text-decoration:underline;}
+.shouy .gp_weak a:hover,.shouy .gp_weak a:active{color:#1178d0;}
+.shouy .gp_ex p{color:#555;padding-left:30px;line-height:30px;}
+
+/*举例start*/
+.shouy .gp_ex{margin-bottom:30px;}
+.shouy .gp_ex ul{line-height:20px;margin-left:30px;}
+.shouy .gp_ex li{float:left;width:44%;padding:4px 4px 4px 20px;}
+.shouy .gp_ex .bb{border-bottom:1px solid #dadada;}
+.shouy .gp_ex .lirui{color:#fff;margin-left:10px;line-height:23px;padding-left:5px;font-size:14px;background:url(../images/lirui.gif) no-repeat;display:inline-block;width:101px;}
+.shouy .gp_ex .lirui b{color:#f60;font-size:16px;font-weight:bold;padding-left:10px;}
+/*举例end*/
+/*切换城市*/
+.shouy_ser .swap {position:absolute;top:72px;right:14px;width:32px; background: url(../images/i-swapcity.png) no-repeat;height: 62px; margin-right: 10px; cursor: pointer;}
+/*高铁 start*/
+.gt_wrap{border:1px solid #ddd;width:778px;}
+.gt_wrap dt{background-color:#ecedee;height: 29px;overflow: hidden;zoom:1;}
+.gt_wrap h3{float: left;text-indent: 10px;margin: 3px 20px 0 0;line-height: 26px;font-size: 14px;}
+.gt_wrap dt span{float:left;margin-top: 3px;line-height: 26px;padding:0 8px;display:block;}
+.gt_wrap dt a:link,.gt_wrap dt a:visited{color:#555;}
+.gt_wrap dt a:hover,.gt_wrap dt a:active{color:#f80;}
+.gt_wrap dt .current{border-top: 2px solid #f80;border-left: 1px solid #D0D4D9;border-right: 1px solid #ddd;height: 24px;position: relative;background-color:#fff;line-height: 24px;z-index: 10;padding: 0 7px;}
+.gt_wrap dd{display:none;border-top: 1px solid #ddd;margin-top: -1px;padding: 12px 14px 10px;overflow: hidden;zoom:1;}
+.gt_wrap ul{border-right: 1px solid #E6E6E6;width: 345px;padding-right: 15px;height: 150px;}
+.gt_wrap li{height: 30px;overflow: hidden;line-height: 20px;}
+.gt_wrap dd label{float:left;}
+.gt_wrap dd .checi{width:50px;}
+.gt_wrap dd .fromto_city{width:150px;}
+.gt_wrap dd .price{width:50px;float:right;color: #F0831D;text-align: right;font-weight: normal;font-size:12px;font-family:Arial;}
+.gt_wrap dd a:link,.gt_wrap dd a:visited{color:#005bac;line-height: 20px;}
+.gt_wrap dd a:hover,.gt_wrap dd a:active{color:#005bac;text-decoration:underline;}
+.gt_wrap dd .checi a:link,.gt_wrap dd .checi a:visited{font-weight:bold;}
+.gt_wrap dd span{background: url(../images/station_icon.png) no-repeat;padding-left:16px;margin: 0 3px;}
+.gt_wrap dd .start{background-position:0 0;_background-position:0 4px;}
+.gt_wrap dd .pass{background-position:0 -50px;_background-position:0 -46px;}
+.gt_wrap dd .end{background-position:0 -25px;_background-position:0 -21px;}
+.gt_wrap ul.fr{border-right:none;}
+.gt_wrap dd.current{display:block;}
+/*高铁 end*/
+/**index页面 end**/
+
+/**预订页 start**/
+/*左边内容 start*/
+.content .left_con{float:left;width:780px;}
+
+.ser_tab{width:778px;border:1px solid #dadada;border-top-width:2px;margin:10px 0px 10px 0px auto;}
+.ser_tab .tab{float:left;}
+.ser_tab .tab s{display:inline-block;margin-top:3px;width:100px;height:100px;background:url(../images/hcp_query_img.png) no-repeat;}
+/*
+.ser_tab .tab li{color:#07679c;text-align:center;background:url(../images/sprites.png) no-repeat -109px -89px;width:108px;height:35px;border:1px solid #dadada;border-width:1px 1px 0px 0;line-height:35px;}
+.ser_tab .tab li.current{color:#f60;font:bold 12px/35px "Simsun";background:none;border-left:2px solid #f90;border-width:0 0 0 2px;}
+.ser_tab .tab li.no_border{border-bottom-width:0;}
+*/
+.ser_tab .tab_list{width:650px;float:right;}
+
+/*
+.ser_tab table{width:366px;margin:4px 0 0 4px;float:left;}
+.ser_tab .text{width:93px;height:21px;line-height:23px;padding-left:5px;border:1px solid #dadada;color:#555;}
+.ser_tab th{text-align:right;font-weight:normal;padding-right:10px; width:80px;white-space:nowrap;}
+.ser_tab tr{height:30px;vertical-align:middle;}
+.ser_tab .btn{width:110px;height:40px;background:url(../images/sprites_new.png) no-repeat 0 -989px;cursor:pointer;}
+*/
+.ser_tab .shou_query{position:relative;width:400px;float:left;margin:1px 0;}
+.shou_query dl{overflow:hidden;line-height:24px;padding:0px 13px 0 22px;margin-top:5px;}
+.shou_query dt{float:left;color:#555;padding-right:10px;}
+.shou_query dd{float:left;}
+.shou_query input{background:url(../images/sprites.png) no-repeat;}
+.shou_query .text{border:1px solid #dcdcdc;height:24px;line-height:24px;padding-left:4px;width:130px;background-position: 115px -634px;}
+.shou_query .text2{background-position:115px -664px;}
+.shou_query .search_query{position:absolute;top:45px;left:260px;width:112px; height: 40px;cursor: pointer;}
+.shou_query .search_link{background: url(../images/sprites_new.png) no-repeat 4px -992px;}
+.shou_query .search_hover{background: url(../images/sprites_new.png) no-repeat -110px -992px;}
+.ser_tab .swap {position:absolute;top:18px;left:218px;width:32px; background: url(../images/changeBtn.png) no-repeat;height: 62px; margin-right: 10px; cursor: pointer;}
+
+.notice{margin:4px 0 0 10px;width:220px;background:url(../images/line_bg.png) no-repeat left 12px;float:left;}
+.notice h3{font:bold 14px/30px "Simsun";color:#333;text-align:center;}
+.notice ul{height:73px;}
+.notice li{margin-left:18px;padding-left:12px;background:url(../images/li_dot.png) no-repeat left center;line-height:20px;}
+.notice h3 a:link,.notice h3 a:visited{float:right;font:normal 12px/22px arial,Vernada,"Simsun";color:#555;padding-right:5px;}
+.notice h3 a:hover,.notice h3 a:active{text-decoration:underline;color:#f60;}
+																															
+.notice a:link,.notice a:visited{color:#07679c;}
+.notice a:hover{color:#07679c;text-decoration:underline;}
+.notice .notice_time{float:right;font-size:12px;}
+.notice .list{-o-text-overflow: ellipsis;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:120px;display:inline-block;}
+.ser_term{width:780px;margin:10px 0 auto;}
+.tip_term{width:780px;margin:10px 0 0 10px;}
+.tip_term .price_tip{border:1px solid #FCC28C;color:#f60;line-height:26px;padding:0 6px 0 10px;background-color:#FFFAE9;}
+/*.ser_term .nav_mid_bg{width:682px;}*/
+.ser_term h2{font-weight:normal;font-size:12px;}
+.ser_term h2 strong{color:#1996cc;padding:0 3px;font-size:14px;}
+.ser_term h2 .amount{float:right;padding-right:4px;}
+.ser_termt h2 .amount strong{color:#f00;}
+.ser_term .box{border:1px solid #dadada;position:relative;}
+/*搜索条件 start*/
+.sel_checkbox{ width:664px;/*height: 90px;*/ margin:5px;padding:5px 10px; color:#666;overflow:hidden; font-family: Arial,SimSun;}
+.sel_checkbox li,.sel_checkbox2 li{ width:100%;height:20px;float:left;margin:5px 0; }
+.sel_checkbox li strong,.sel_checkbox2 li strong{float: left; line-height: 20px;}
+.sel_checkbox li input ,.sel_checkbox2 li input{margin-left:5px; float: left;}
+.sel_checkbox li label ,.sel_checkbox2 li label{float: left;font-family:simsun;padding-left:4px;line-height:19px;}
+.sel_checkbox .choose_all,.sel_checkbox2 .choose_all{background:#8EA6D4;color: #fff;width:30px;height:17px;overflow: hidden;cursor: pointer;line-height: 17px;*line-height: 18px;text-align: center;margin-left:5px;*margin-left:0;border-radius:5px;-webkit-border-radius: 5px;-moz-border-radius: 5px;}
+span.xianshi_box,span.shouhui_box{float: right;width:75px;height: 22px;cursor: pointer;line-height: 22px;padding-right:15px;font-weight:normal;color:#005bac; cursor: pointer; text-align: right;}
+
+.xianshi_box{background: url(../images/s_img201203.gif) no-repeat 82px -92px;}
+.shouhui_box{background: url(../images/s_img201203.gif) no-repeat 82px -114px;}
+.ser_term #ser-more{position:absolute;bottom:20px;right:0;width:100px;}
+.ser_term #ser-more a:link,.ser_term #ser-more a:visited{padding-right:14px;color:#08c;}
+.ser_term #ser-more a:hover,.ser_term #ser-more a:active{text-decoration:underline;color:#08c;}
+.ser_term .down-arrow a:link,.ser_term .down-arrow a:visited{background:url(../images/down-arrow.png) no-repeat right center;}
+.ser_term .up-arrow a:link,.ser_term .up-arrow a:visited{background:url(../images/up-arrow.png) no-repeat right center;}
+/*搜索条件 end*/
+/**列车途经站信息start*/
+/*列车信息弹出框 start*/
+/**#wayStation{position:absolute;width: 356px;height: 228px;background: #fff;}*/
+.train_station{position:relative;background: #fff;border:1px solid #dadada;margin:8px;}
+.train_station .station_icon{display: block;width: 13px;height: 8px;background: url(../images/icon_arrow.gif) no-repeat;overflow: hidden;position: absolute;top:-8px;left:80px;}
+.train_station .station_tit{height: 28px;line-height: 28px;background-color:#EDF5FA;}
+.train_station .station_tit span {display: block;height: 28px;line-height: 28px;float: left;text-align: center;}
+.train_station .station_tit .zx {width: 80px;text-align: center;margin-right: 5px;}
+.train_station .station_tit .zm {width: 120px;}
+.train_station .station_tit .rq {width: 90px;}
+.train_station .station_tit .dzsj {width: 110px;}
+.train_station .station_tit .fcsj {width: 110px;}
+.train_station .station_tit .tlsj {width: 110px;}
+.train_station .station_tit .lcs {width: 110px;}
+.train_station .station_tit .close {display: block;width: 10px;height: 10px;background: url(../images/sprite_icon.png) 0 -600px;float: right;margin: 9px 7px 0 0;display: inline;}
+.train_station .station_con {color: #333;}
+.train_station .station_con table {border: 0;width: 100%;background: #fff;padding:3px;}
+.train_station .station_con table .bgc td{background-color:#C9E8FA;padding:0;}
+.train_station .station_con table td {border: 0;padding: 0;line-height: 25px;height: 25px;background: #F6F9FD;color: #333;text-align:center;}
+/*
+.train_station .station_con table td .stationno {width: 80px;text-align: center;margin-right: 5px;}
+.train_station .station_con table td .stationname {width: 120px;}
+.train_station .station_con table td .scosttime {width: 90px;}
+.train_station .station_con table td .sarrtime {width: 110px;}
+.train_station .station_con table td .starttime {width: 110px;}
+.train_station .station_con table td .sinterval {width: 110px;}
+.train_station .station_con table td .sdistance {width: 110px;}
+*/
+/*列车信息弹出框 end*/
+/*列车信息非弹框展示start
+.train_station{width:754px;background:#F8F8F8 url(../images/station_bg.png) repeat-x;}
+.train_station table{border-bottom: 1px solid #E2E2E2;}
+.train_station table td{padding: 5px 0;border: 1px solid #E2E2E2;border-top:none;text-align: center;}
+.train_station table .first{border-left:none;}
+.train_station table .last{border-right:none;}
+.train_station table .base_txtgray{color:#999;}
+**/
+/*列车信息非弹框展示end**/
+/**列车途经站信息end*/
+/*搜索结果显示 start*/
+/*.ser_result h3{background:url(../images/nav_bg.jpg) repeat-x;height:35px;line-height:35px;border:1px solid #dadada;border-width:1px 0;}*/
+.ser_result{border:1px solid #dadada;border-top-width:0;width:778px;margin:0 auto;}
+.ser_result table{width:778px;color:#333;}
+/*.ser_result table tr:hover{background-color:#dbf3fa;}*/
+.ser_result td{padding:3px 0 3px 0px ;text-align:center;line-height:17px;}
+.ser_result table span{line-height:20px;}
+.ser_result .fd span{font-size:16px;font-weight:bold;font-family:Verdana;color:#555;}
+.ser_result tr td{border-bottom:1px solid #dadada;}
+/**zuoyuxing */
+.ser_result .wayStastion a:link,.ser_result .wayStastion a:visited{padding:0px 12px;color:#1A5289;}
+.ser_result .wayStastion .up-arrow a:link,.ser_result .wayStastion .up-arrow a:visited{background:url(../images/up-arrow.png) no-repeat right center;}
+.ser_result .wayStastion .down-arrow a:link,.ser_result .wayStastion .down-arrow a:visited{background:url(../images/down-arrow.png) no-repeat right center;}
+
+.ser_result .tit{background:url(../images/nav_bg.jpg) repeat-x;height:35px;line-height:33px;border-bottom:1px solid #dadada;}
+.ser_result input.btn1,.ser_result input.btn2{cursor:pointer;width:80px;height:35px;color:#fff;font:normal 12px/28px "Simsun";background:url(../images/sprites_new.png) no-repeat;}
+.ser_result input.btn_link{background-position: -80px -1040px;}
+.ser_result input.btn_hover{background-position: 3px -1040px;}
+.ser_result input.btn2{background-position: 3px -1081px;}
+.ser_result .checi{color:#124A86;font:bold 16px/24px Verdana;}
+/*.ser_result .checi{color:#f00;font:bold 16px/24px Verdana;}*/
+.ser_result .adr{text-align:left;padding-left:30px;}
+.ser_result .seat{padding-left:30px;text-align:left;width:166px;}
+.ser_result .seat span{color:#f60;padding:0 4px;}
+.ser_result .adr span{background:url(../images/sprites.png) no-repeat;padding:2px 0 2px 17px;}
+.ser_result .adr .start{background-position:0 -171px;}
+.ser_result .adr .pass{background-position:0 -208px;}
+.ser_result .adr .end{background-position:0 -189px;}
+.special{width:696px;height:122px;margin:0 auto;}
+/*搜索结果显示 end*/
+/*左边内容 end */
+
+/*右边内容 start*/
+.content .right_con{width:194px;float:right;margin-top:10px;}
+.right_con .ban1{width:192px;height:219px;border:1px solid #dadada;}
+.right_con .user_level{width:194px;}
+.right_con h2{height:35px;}
+.right_con h2 span{float:left;display:block;height:35px;line-height:36px;_line-height:33px;}
+.right_con .nav_mid_bg{width:172px;color:#333;padding-right:8px;font-weight:bold;font-size:14px;}
+.right_con .nav_mid_bg strong{color:#555;font-size:12px;font-weight:normal;float:right;}
+.right_con .user_level ul{border:1px solid #dadada;}
+.right_con .user_level li{border-bottom:1px dashed #dadada;padding:4px 0 4px 10px;}
+.right_con .user_level li span{color:#f00;font-weight:bold;padding:0 2px;}
+.right_con .user_level .li_last{border-bottom:0;}
+.right_con .user_level dl{width:182px;overflow:hidden;line-height:22px;}
+.right_con .user_level dt{float:left;}
+.right_con .user_level dd{float:left;}
+.right_con .user_level .name{color:#0081cc;}
+.right_con .user_level .profit{padding-left:20px;}
+
+.right_con .buy_info{width:194px;}
+.right_con .buy_info marquee{border:1px solid #dadada;}
+.right_con .buy_info li{border-bottom:1px dashed #dadada;padding:4px 0 4px 10px;line-height:20px;margin:0 4px;color:#555;}
+.right_con .buy_info li span{color:#999;font-weight:bold;padding:0 2px;}
+
+.right_con .exper ul{border:1px solid #dadada;}
+.right_con .exper li{line-height:20px;padding:4px 0 0 18px;background:url(../images/li_arrow.png) no-repeat 8px center;}
+.right_con .exper li a:link,.right_con .exper li a:visited{color:#555;}
+.right_con .exper li a:hover{color:#f60;}
+
+.right_con .order_list ul{border:1px solid #dadada;padding-bottom:5px;}
+.right_con .order_list li{border-bottom:1px dashed #dadada;line-height:28px;padding:4px 0 0 18px;background:url(../images/li_arrow.png) no-repeat 8px center;}
+.right_con .order_list li .btn_s{cursor:pointer;width:47px;height:24px;color:#fff;font:normal 12px/22px "Simsun";background:url(../images/sprites.png) no-repeat;}
+.right_con .order_list li .btn_s{background-position:-109px -171px;}
+.right_con .order_list li a:link,.right_con .order_list li a:visited{color:#555;text-decoration:underline;}
+.right_con .order_list li a:hover{color:#f60;}
+.right_con .order_list h2 a:link,.right_con .order_list h2 a:visited{color:#555;}
+.right_con .order_list h2 a:hover{color:#f60;}
+.right_con .order_list ul ul{border:0;padding-bottom:5px;}
+.right_con .order_list li li{border-bottom:0;line-height:24px;padding:0;background:none;}
+.right_con .order_list li span{color:#999;font-weight:bold;padding:0 8px 0 0;}
+
+.right_con .exper h2 a:link,.right_con .exper h2 a:visited{color:#555;}
+.right_con .exper h2 a:hover{color:#f60;}
+.right_con .ban2 { width: 194px; height: 114px;background:url(../images/jinzhi.gif) no-repeat;position:relative;}
+.right_con .ban2 span{position:absolute;bottom:8px;left:72px;line-height:20px;}
+.right_con .ban2 b{padding:0 4px;}
+.right_con .ban2 a:link,.right_con .ban2 a:visited{color:#555;font-size:14px;}
+.right_con .ban2 a:hover,.right_con .ban2 a:active{text-decoration:underline;}
+.right_con .ban3{width:194px;border:1px solid #dadada;}
+.right_con .ban3 a:link,.right_con .ban3 a:visited{display:block;background:url(../images/ban3_194x72.jpg) no-repeat;height:200px;width:192px;text-indent:-9999px;}
+.right_con .ban_bx_check{width:194px;}
+.right_con .ban_bx_check a:link,.right_con .ban_bx_check a:visited{display:block;background:url(../images/bx_check.jpg) no-repeat;height:101px;width:194px;text-indent:-9999px;}
+.right_con .ban_exam{width:192px;border:1px solid #dadada; text-align:center}
+.right_con .ban_exam a:link,.right_con .ban_exam a:visited{height:153px;width:194px;}
+/*右边内容 end*/
+
+
+
+/**预订页 end**/
+/**确认订单页**/
+.pub_self_take_mes input.btn1,.pub_self_take_mes input.btn2{cursor:pointer;width:80px;height:35px;color:#fff;font:normal 12px/28px "Simsun";background:url(../images/sprites_new.png) no-repeat;}
+.pub_self_take_mes input.btn_link{background-position: -80px -1040px;}
+.pub_self_take_mes input.btn_hover{background-position: 3px -1040px;}
+/**确认订单页**/
+/**投诉建议页 start**/
+.advice{margin-top:10px;}
+.advice .nav_mid_bg {color:#0089ca;font-size:14px;}
+.advice .con1{border:1px solid #dadada;padding:34px 0 16px ;}
+.advice .con1 dl{width:554px;margin:0 auto 20px;}
+.advice .con1 dt{float:left;line-height:18px;text-align:right;width:100px;}
+.advice .con1 .dt_nr{padding-right:28px;width:72px;}
+.advice .con1 dd{float:left;}
+.advice select{width:147px;}
+.advice textarea{padding:6px;border:1px solid #dadada; resize:none;width:433px;height:188px;positon:absolute;z-index:-1; }
+.advice .dd_jian{position:relative;}
+.advice .dd_jian span{position:absolute;top:6px;left:-15px;z-index:2;background:url(../images/jian.png) no-repeat;display:inline-block;width:16px;height:35px;}
+.advice p{text-align:center;}
+.advice .btn{margin:0 6px;background:url(../images/sprites.png) no-repeat -109px -130px;width:96px;height:37px;cursor:pointer;font:bold 14px/37px "Simsun";text-align:center;color:#fff;}
+.advice .con2{border:1px solid #dadada;border-top-width:0;}
+.advice h3{line-height:50px;font-size:14px;padding-left:6px;}
+.advice .ques{padding:0 10px 20px;}
+.advice .con2 dl{padding-left:40px;border-bottom:1px dotted #dadada;}
+.advice .con2 dl.no_border{border-bottom:0;}
+.advice .con2 dt{line-height:30px;padding-top:6px;font-size:14px;font-weight:bold;color:#08c;}
+.advice .con2 dl .time{color:#999;font-weight:normal;}
+.advice .con2 dl .xuhao{float:left;line-height:16px;color:#666;text-align:center;background:url(../images/sprites.png) 0 -254px no-repeat;width:16px;height:16px;display:inline-block;padding-right:10px;margin-top:4px;}
+.advice .con2 dd{line-height:20px;padding:0 0 8px 26px;line-height:18px;}
+
+/**投诉建议页 end**/
+
+
+
+/**预订信息页 start**/
+.ticket_mes .addr{font:bold 24px/30px "Simsun";color:#f60;}
+.ticket_mes .text{padding-left:3px;width:102px;border:1px solid #9dc5dc;height:18px;background:url(../images/sprites.png) no-repeat 90px -230px;}
+.ticket_mes span{font-weight:normal;}
+.ticket_mes .btn { width: 99px; height: 57px;color: #fff;font:bold 14px/57px "Microsoft yahei"; background: url(../images/sprites.png) no-repeat 0px -840px; }
+.book_passager_mes .table_list{width:570px;margin:10px 0 0 14px;}
+.book_passager_mes table td{padding:6px 3px;text-align:center;line-height:30px;}
+.book_passager_mes table .adult td{padding:6px 3px;text-align:center;line-height:40px;}
+.book_passager_mes .text{border:1px solid #a0c7dd;padding:0 3px;color:#333;}
+.book_passager_mes .text_name{width:50px;height:20px;line-height:20px;}
+.book_passager_mes .text_id{width:130px;height:20px;line-height:20px;}
+.tit_tip{float:left;padding-left:10px;line-height:31px;color:#aaa;}
+.tit_tip span{color:#0081cc;cursor:pointer;line-height:24px;}
+/*.book_passager_mes #add_person{line-height:24px;}
+.book_passager_mes #add_person span{color:#0081cc;cursor:pointer;}*/
+.adult td,.child td.border{border-top:1px dashed #dadada;}
+.book_passager_mes .table_list table{width:466px;}
+.book_passager_mes .no_border{border-bottom:0;}
+.star{color:#f00;}
+.
+.delivery_pos{position:relative;overflow:hidden;}
+/*.delivery_pos #add_person{position:absolute;_bottom:0;_top:59px;top:14px;right:30px;}*/
+.delivery_pos #add_person{position:absolute;width:142px;height:38px;bottom:3px;left:50%;margin-left:-69px;}
+.delivery_pos #add_person span {display:block;width:142px;height:38px;cursor: pointer;}
+.delivery_pos .ableAdd span{background:url(../images/add_passenger.png) no-repeat;}
+.delivery_pos .unableAdd span{background:url(../images/add_unpassenger.png) no-repeat;}
+.delPerson a:link,.delPerson a:visited{color: #0081cc; }
+.delPerson a:hover,.delPerson a:active{text-decoration:underline;}
+.delPerson{vertical-align:middle;padding:4px 10px 0 6px;display:block;}
+.delPerson label{float:left;padding-left:4px;cursor:hand;}
+.delPerson s{float:left;display:inline-block;margin-top:13px;width:14px;height:13px;background:url(../images/sprites_new.png) no-repeat 0 -359px;}
+#tickets-way{position:relative;}
+#tickets-way  .pub_table{display:none;}
+#tickets-way .pub_table.current{display:block;}
+#tickets-way h5{height:31px;position:absolute;top:0;left:0;}
+#tickets-way h5 span{border-bottom:1px solid #dadada;font:bold 14px/31px "Simsun";background:url(../images/sprites.png) no-repeat 0 -276px;color:#555;display:inline-block;float:left;cursor:pointer;width:152px;height:31px;text-align:center;}
+#tickets-way h5 span.current{background:none;border-bottom:none;}
+#tickets-way .pub_con{padding-top:31px;}
+.tijiao .btn{width:117px;height:40px;text-align:center;margin:0 auto;font:bold 14px/40px "Simsun";color:#fff;background:url(../images/sprites.png) no-repeat 0 -314px;}
+p.tijiao{text-align:center;padding:10px 0 20px;}
+
+/*1128 预订保险模块 start*/
+.insurance_wrap{border-top:solid 1px #dadada;padding:6px 10px 10px 20px;}
+.insurance_wrap dt{float:left;padding-top:2px;}
+.insurance_wrap dt label{color:#0081CC;line-height:20px;}
+.insurance_wrap h3{font:bold 14px/20px "Simsun";color:#f60;padding-bottom:5px;}
+.insurance_wrap .info-select{padding:6px 0 6px 20px;}
+.insurance_wrap .info-select img{float:left;}
+.insurance_wrap dd label{padding-right:10px;}
+.insurance_wrap dd{float:left;padding-left:10px;padding-top:10px;}
+.insurance_wrap select{width:130px;height:20px;padding-left:4px;font-size:12px;}
+.insurance_wrap .info_txt2{display:none;}
+.insurance_wrap p{line-height:25px;background:url(../images/buy_ico.gif) no-repeat;margin:6px 20px 2px 20px;_margin-left:10px;padding-left:20px;}
+.insurance_wrap .info_icon1{background-position:1px -36px;}
+.insurance_wrap .info_icon2{background-position:0 -16px;}
+.insurance_wrap .vip_btn{cursor:hand; width: 95px;height: 25px;display: inline-block;background: url(../images/sprites_new.png) no-repeat 0 -962px;
+color: #fff;text-align: center;line-height: 25px;margin-left: 5px;}
+.insurance_wrap select .bx_select{width:200px;}
+.insurance_wrap .train_product,.insurance_wrap .train_product_checked{display:inline-block;height:17px;line-height:17px;padding-left:22px;}
+.insurance_wrap .train_product{background: url(../images/radio-unchecked.png) no-repeat;}
+.insurance_wrap .train_product_checked{background: url(../images/radio-checked.png) no-repeat;}
+.insurance_wrap .train_product label,.insurance_wrap .train_product_checked label{line-height:17px;font-size:14px;margin-top:2px;}
+/*1128 预订保险模块 end*/
+
+/*添加信息模块*/
+.pub_table .price_tip{border:1px solid #FCC28C;color:#f60;line-height:26px;padding:0 6px;background-color:#FFFAE9;}
+.delivery_pos .delivery_pos_child{position:relative;overflow:hidden;margin-bottom:10px;padding-bottom:30px;}
+.show_tip{margin:0 10px 10px 15px;}
+.show_tip .price_tip{border:1px solid #FCC28C;color:#f60;line-height:20px;padding:0 6px;background-color:#FFFAE9;}
+/**预订信息页 end**/
+.ban4{width:756px; height:80px;margin:10px auto;background:url(../images/jinzhi2.gif) no-repeat center center;}
+
+
+/**退订页面 start**/
+.debook{margin:10px auto;}
+.debook h2 span{font-size:14px;}
+.debook dl{line-height:40px;padding:0 20px;border:1px solid #dadada;font:bold 14px/40px "Simsun";}
+.debook dt{float:left;}
+.debook dd{float:right;}
+.debook table{border:1px solid #dadada;border-top-width:0;width:780px;text-align:center;color:#333;}
+.debook tr{line-height:44px;}
+.debook tr.con{color:#555;line-height:20px;}
+/*新增 start*/
+.debook tr.tit{color:#08c;}
+.order_num_state td{border-bottom:1px solid #dadada;}
+.order_num_state span{color:#333;}
+/*新增 end*/
+.debook .way{color:#f60;}
+.debook .btn{margin: 0 2px;font-size:12px;color:#fff;width:47px;height:22px;background:url(../images/sprites.png) no-repeat -109px -173px;text-align:center;line-height:22px;}
+.debook .pad1{padding-left:3px;}
+/**退订页面 end**/
+
+/**提醒通告模块 start**/
+.notice_weak_box{width:754px;padding-bottom:3px;border:1px solid #dadada;border-top-width:2px;margin:10px auto;}
+.weak_box{width:482px;float:left;}
+.weak_box h3{color:#f60;font-size:14px;line-height:26px;padding-left:10px;}
+.weak_box li{padding-left:14px;margin-left:14px;line-height:20px;background:url(../images/li_dot.png) no-repeat left center;}
+.weak_box li a:link,.weak_box li a:visited{color:#026CC6;text-decoration:underline;}
+.weak_box li a:hover,.weak_box li a:active{color:#1178d0;}
+/**提醒通告模块 end**/
+
+
+/**订单号查询模块 start**/
+.order_num{padding:10px 0 0 54px;}
+.order_num dt{float:left;font:bold 14px/30px "Simsun";margin-right:13px;}
+.order_num dd{float:left;line-height:30px;}
+.order_num .dd_text{margin-right:48px;}
+.order_num .dd_text input{width:210px;height:30px;line-height:30px;border:1px solid #dadada;}
+.order_num .dd_btn input{border:0;width:101px;height:39px;text-align:center;line-height:39px;background:url(../images/sprites.png) no-repeat -109px -44px;}
+/**订单号查询模块 end**/
+
+
+/**订单信息模块 start**/
+.pub_con{border:1px solid #dadada;overflow:hidden;_padding-bottom:10px;}
+.pub_table{margin:10px 0;}
+.pub_table td select{border:1px solid #dadada;}
+.pub_yuliu{width:152px;text-align:center;}
+.pub_yuliu strong{font:bold 40px/40px "Simsun";}
+.pub_yuliu .checi{font:bold 15px/40px "microsoft yahei";}
+.pub_table td{line-height:32px;height:32px;}
+.border_top{border-top:1px dashed #dadada;}
+.pas1 p{margin:0 10px;}
+/**zuoyuxing*/
+.add_bg1{background:url(../images/adult.jpg) no-repeat 50px center;}
+.pub_passager_mes .btn_s{cursor:pointer;width:47px;height:24px;color:#fff;font:normal 12px/22px "Simsun";background:url(../images/sprites.png) no-repeat;}
+.pub_passager_mes .btn_s{background-position:-109px -171px;}
+
+/**订单信息模块 end**/
+
+
+
+/**车站自提模块 start**/
+.pub_self_take_mes .pub_yuliu{padding-right:0;}
+.pub_self_take_mes td{padding-right:30px;}
+/**车站自提模块 end**/
+
+
+/**配送退订模块 start**/
+.pub_delivery_mes .pub_yuliu{padding-right:0;}
+.pub_delivery_mes td{padding-right:30px;}
+.delivery_debook .pub_con table{width:auto;}
+/**配送退订模块 start**/
+
+
+/**退票信息模块 start**/
+.pub_debook_mes table{width:682px;}
+.pub_debook_mes td{line-height:30px;padding:6px 0;}
+.pub_debook_mes .btn3{margin:0 10px;border:0;background:url(../images/sprites.png) no-repeat 0 -96px;font:;height:28px;width:71px;font-size:14px;line-height:28px;text-align:center;color:#fff;}
+.pub_debook_mes .tip{color:#f00;width:214px;line-height:20px;}
+.pub_debook_mes .price{font-weight:bold;color:#f60;}
+.pub_debook_mes textarea{border:1px solid #9ec5dc;width:410px;height:90px;}
+.pub_debook_mes .pub_yuliu{width:90px;}
+.pub_debook_mes .btn{width:117px;height:40px;text-align:center;margin:0 auto;font:bold 14px/40px "Simsun";color:#fff;background:url(../images/sprites.png) no-repeat 0 -314px;}
+.pub_debook_mes p{text-align:center;padding:10px 0 20px;}
+/**退票信息模块  end**/
+
+/**我要加盟模块 start**/
+.join_us{border:1px solid #dadada;margin:0;}
+.join_us .flow_pic{background:url(../images/flow_pic.png) no-repeat -4px -126px;width:673px;margin:20px auto;}
+.join_us .join_us_ul{height:33px;background:url(../images/nav_mid_bg.png) repeat-x left bottom ;border-bottom:1px solid #dadada;}
+.join_us .join_us_ul li{float:left;width:100px;height:34px;font:normal 13px/34px "Simsun";text-align:center;}
+.join_us .join_us_ul li.current{background:#fff;font-weight:bold;position:relative;top:1px;}
+.join_us .join_us_ul li.current1{border:1px solid #dadada;border-width:0 1px;}
+.join_us .join_us_ul a:link,.join_us .join_us_ul a:visited{color:#333;}
+/*2013-06-28细化审核页面 start*/
+.join_us .flow_step{margin:20px 0;}
+.join_us .flow_step p{height:54px;width:636px;margin:0 auto;background:url(../images/flow_pic.png) no-repeat 0 -10px;}
+.join_us .flow_step .flow_pic1{background-position:0 -70px;}
+.join_us .flow_step .flow_pic2{background-position:0 -128px;}
+.join_us .flow_step .flow_pic3{background-position:0 -187px;}
+.join_us .flow_step .flow_pic4{background-position:0 -246px;}
+.join_us .flow_step .flow_pic5{background-position:0 -301px;} 
+.join_us .flow_step ul{width:636px;margin:0 auto;}
+.join_us .flow_step li{float:left;line-height:30px;font:bold 14px/30px "microsoft yahei","SimSun";color:#333;}
+.join_us .flow_step .step1{width:126px;}
+.join_us .flow_step .step2{width:126px;}
+.join_us .flow_step .step3{width:156px;}
+.join_us .flow_step .step4{width:108px;}
+.join_us .flow_step .step5{width:100px;}
+.join_us .flow_step .current{color:#008d46;}
+.backg .contact,.backg .validity{font-weight:bold;margin:30px 20px 0;padding:0 10px;border-bottom:1px solid #EEEDE8;line-height:30px;}
+/**
+.backg .contact{background:url(../images/users_group.png) no-repeat left 6px;}
+.backg .validity{background:url(../images/s_crown_1.gif) no-repeat left 6px;}**/
+.backg .contact span,.backg .validity span{display:inline-block;font-size:17px;padding-left:10px;}
+.vertified_btn .btn{width:117px;height:40px;margin:0 10px;color:#fff;font:bold 14px/40px "simSun";background:url(../images/sprites.png) no-repeat;}
+.vertified_btn .btn1{background-position:0 -912px;}
+.vertified_btn .btn1:hover{background-position:-127px -912px;}
+.vertified_btn .btn2{background-position:0 -314px;}
+.vertified_btn .btn2:hover{background-position:-127px -314px;}
+.join_us .backg h3{font-family:"Microsoft yahei";color:#333;}
+.backg .user_mes{border:1px solid #EEEDE8;width:646px;}
+.backg .user_mes th, .backg .user_mes td{font-size:15px;}
+.backg .user_mes th span, .backg .user_mes td span{font-size:15px;}
+.join_us .backg .user_mes,.join_us .backg .user_kinds{border:none;table-layout:auto;}
+.join_us .backg .user_kinds{margin-top:30px;}
+.join_us .backg .user_mes,.join_us .backg .user_kinds tr,.join_us .backg .user_mes,.join_us .backg .user_kinds td{border:none;}
+.join_us .backg .user_mes th{font-weight:bold;}
+.join_us .backg .user_kinds .vip_user{text-align:left;line-height:30px;padding-left:10px;background:url(../images/s_crown_1.gif) no-repeat 4px center;position:relative;border-bottom:1px solid #EEEDE8;}
+.join_us .backg .user_kinds .no_vip{background:url(../images/baoshi.gif) no-repeat 4px center;}
+.join_us .vip_user p{float:right;margin:0 0 0 4px;padding-right:10px;}
+.join_us .vip_user p strong{color:#333;}
+.vip_user span{float:left;color:#fff;margin:4px 0 0 14px;line-height:23px;padding-left:5px;font-size:14px;background:url(../images/money.gif) no-repeat;display:inline-block;width:130px;}
+.vip_user span b{color:#f60;font-size:16px;font-weight:bold;padding:0 3px 0 22px;}
+.vip_user span strong{color:#333;font-size:12px;font-weight:normal;}
+.join_us .user_kinds ul{width:420px;padding-top:10px;}
+.join_us .user_kinds li{background:url(../images/sprites.png) no-repeat 0 -700px;padding-left:10px;}
+/*20130725 加盟网店 start*/
+.join_us .user_mes .website_kinds td{line-height:24px;}
+.website_kinds li{float:left;width:100px;}
+.website_kinds th{vertical-align:top;padding-top:8px;}
+.join_us .user_mes .website_kinds input{float:left;margin-top:4px;}
+.join_us .user_mes .website_kinds label{line-height:24px;white-space:no-wrap;}
+/*20130725 加盟网店 end*/
+/*2013-06-28细化审核页面  end*/
+
+/* zuoyuxing start*/
+.table_list td select{border:1px solid #dadada;height:20px;}
+#tickets-way .pub_con table input{border:1px solid #dadada;height:22px;}
+.pub_delivery_mes table .link_text{border:1px solid #dadada;height:22px;}
+/*2013-11-27常用乘车人信息*/
+.usual-passenger{padding-left:10px;border:1px solid #dadada;border-bottom:none;}
+.usual-passenger p{line-height:36px;_padding-top:8px;}
+.usual-passenger span{color:#f60;}
+.usual-passenger p .btn{width:58px;height:22px;background-position:-179px -265px;color:#fff;text-align:left;padding-left:10px;font-size:12px;}
+.usual-passenger ul{padding:10px;}
+.usual-passenger li{float:left;width:120px;margin-right:10px;padding:2px 6px 2px 6px;line-height:18px;}
+.usual-passenger .current{background-color:#2B98DB;}
+.usual-passenger input{vertical-align:middle;float:left;padding:0;margin-top:2px;*+margin-top:0;}
+.usual-passenger label{padding:0 4px;color:#555;float:left;}
+.usual-passenger .current label{color:#fff;}
+.usual-passenger a{margin-top:2px;display:inline-block;float:left;width:5px;height:5px;background:url(../images/del_btn.png) no-repeat;}
+.usual-passenger .current a{background:url(../images/del_btn_hover.png) no-repeat;}
+/*常用乘车人信息*/
+/* zuoyuxing end*/
+
+/*.join_us .flow_pic li{float:left;text-align:right;padding-top:75px;height:20px;}
+.join_us .flow1{width:120px;}
+.join_us .flow2{width:164px;}
+.join_us .flow3{width:163px;}
+.join_us .flow_pic .flow4{width:172px;text-align:center;padding-left:50px;}
+.join_us li.current1{background:url(../images/flow_pic.png) -4px -11px no-repeat;color:#2ea6d8;}
+.join_us li.current2{background:url(../images/flow_pic.png) -124px -11px no-repeat;color:#2ea6d8;}
+.join_us li.current3{background:url(../images/flow_pic.png) -288px -11px no-repeat;color:#2ea6d8;}
+.join_us li.current4{background:url(../images/flow_pic.png) -452px -11px no-repeat;color:#2ea6d8;}
+.join_us .backg { background: #f4faff;}
+*/
+.join_us .user_mes{width:646px;margin:14px 0 0 40px;table-layout:fixed;}
+.join_us .user_mes th{font-weight:normal;text-align:right;}
+.join_us table.user_mes .xieyi{padding-left:56px;}
+.join_us table.user_mes .xieyi input{float:left;margin-top:11px;}
+
+.join_us table.user_mes .xieyi span{float:left;}
+.join_us table.user_mes .xieyi a:link,.join_us table.user_mes .xieyi a:visited{color:#08c;padding:0 4px;}
+.join_us table.user_mes .xieyi a:hover,.join_us table.user_mes .xieyi a:active{color:#08c;text-decoration:underline;}
+.join_us .user_mes tr.dizhi td{line-height:20px;}
+.join_us .user_mes td{height:34px;line-height:34px;}
+.join_us .user_mes .text{border:1px solid #9dc5dc;width:140px;height:20px;line-height:20px;padding-left:4px;}
+.join_us .user_mes .addr{width:310px;height:20px;line-height:20px;padding:0 4px;}
+.tip_color{color:#f00;}
+.join_us .user_kinds{border:1px solid #dadada;width:646px;text-align:center;border-collapse:collapse;margin:30px auto;}
+.join_us .user_kinds tr,.join_us .user_kinds td{border:1px solid #fea56a;padding:4px;}
+.join_us .xuanze tr:hover{background-color:#cef2fa;}
+.join_us .xuanze .no_hover:hover{background-color:transparent;}
+.join_us .buy_btn{background:url(../images/sprites.png) no-repeat 0 -499px;text-align:center;color:#fff;font:bold 12px/26px "Simsun";width:65px;height:26px;}
+.join_us .user_kinds .td_detail{text-align:left;width:300px;padding:4px 16px;line-height:18px;}
+.join_us p{text-align:center;margin:30px 0;}
+.join_us .pay_content{text-align:center;border-top:1px solid #dadada;margin:4px 25px 4px 25px;}
+.join_us .step { background: url(../images/sprites.png) no-repeat 0 -458px; width: 103px; height: 35px; color: #fff; font: bold 14px/35px "Simsun"; }
+.join_us .state { line-height: 24px; width: 672px; margin: 0 auto; padding-bottom: 20px; }
+.join_us .state strong { padding-right: 10px; background: url(../images/sprites.png) no-repeat 0 -407px; display: inline-block; width: 21px; height: 28px; }
+.join_us .state span { color: #f60; font-size: 16px; font-weight: bold; padding: 0 10px; }
+.join_us .pay_state { color: #2ea6d7; font-weight: bold; }
+.join_us .reg_tip,.join_us .buy_tip,.verifying_tip,.join_us .verified_tip{border:1px solid #FCC28C;background:#FFFAE9 url(../images/light_tip.gif) no-repeat 4px 4px;} 
+.join_us .reg_tip{float:left;width:188px;padding:6px;display:inline;margin-left:10px;background-image:none;}
+.join_us .reg_tip p{margin:0 auto;text-indent:2em;color:#BEA04E;line-height:18px;text-align:left;}
+.join_us .user_mes_r{float:left;width:440px;margin-top:15px;}
+.join_us .user_mes_r th span{padding-right:5px;color:red;}
+.join_us .user_mes_r td{line-height:40px;}
+.join_us .buy_tip,.join_us .verifying_tip,.join_us .verified_tip{padding:8px 10px 8px 28px;margin:0 auto;line-height:20px;width:608px;}
+.join_us .buy_tip p,.join_us .verifying_tip p,.join_us .verified_tip p{margin:0;text-align:left;color:#BEA04E;}
+.join_us .buy_tip2{margin-top:40px;background-position:4px 8px;}
+.join_us .verified_tip2{margin-top:30px;}
+/**我要加盟模块 end**/
+
+/*全局报错页面 start*/
+.globalWarningWrap { width: 100%;text-align: center; }/*--全局错误提示样式--*/
+.globalWarningWrap table { margin: 20px auto; }
+.globalWarningWrap td{padding-bottom:20px;}
+.btnWhite,.btnBlue{text-align:center; border:none; cursor:pointer;width:104px; height:36px; line-height:36px; font-size:14px; font-weight:bold;}
+.btnBlue,.btnBlue:hover{color:#fff;}
+.btnBlue{background:url(../images/sprites.png) 0px -458px no-repeat;}
+.btnBlue:hover{background:url(../images/sprites.png) -109px -458px no-repeat;}
+.btnWhite, .btnWhite:hover{color:#888;}
+.btnWhite{background:url(../images/sprites.png) 0 -545px no-repeat;}
+.btnWhite:hover{background:url(../images/sprites.png) -109px -545px no-repeat;}
+.lightRed{color:#f00;font-size:14px;}
+.pl30{padding-left:20px;display:inline-block;}
+/*全局报错页面 end*/
+
+/**通知公告页面 start**/
+.notice_wrap{width:660px;margin:20px auto;overflow:hidden;text-align:center;border:1px solid #dadada;padding-top:10px;}
+.notice_wrap h3{text-align:center;color:#353535;font:bold 16px/40px "Microsoft yahei","Simsun";position:relative;}
+.notice_wrap h3 span{position:absolute;top:0;right:40px;}
+.notice_wrap h3 a:link,.notice_wrap h3 a:visited{color:#08c;font:normal 12px/40px "Simsun";text-decoration:underline;}
+.notice_wrap h3 a:hover,.notice_wrap h3 a:active{text-decoration:none;}
+.times{border-bottom:1px dotted #999;padding-bottom:10px;margin:0 20px 20px;}
+.notice_wrap .times span{text-align:center;color:#999;font:normal 12px/22px "Simsun";padding-left:80px;}
+.notice_con p{text-indent:2em;line-height:23px;padding:0 20px 10px;text-align:left;}	
+.notice_wrap .back{height:28px;padding-top:40px;text-align:center;margin-bottom:40px;}
+.notice_wrap .btn{background:url(../images/sprites.png) no-repeat 0 -96px;width:71px;height:28px;line-height:28px;color:#fff;}
+/**通知公告页面 end**/
+
+/**弹出小提示 start**/
+.tip_wrap{width:80px;position:absolute;top:20px;left:30px;z-index:999;}
+.tip_wrap .tip{padding:6px;border:1px solid #ffba00;background-color:#fff;color:#f60;position: relative;}
+.tip_wrap b{background: url(../images/jt.gif) no-repeat;width: 10px;height: 6px;display: block;overflow: hidden;position: absolute;left: 8px;bottom: -6px;_bottom: -5px;}
+.num_tip_wrap .tip{padding:6px;border:1px solid #ffba00;background-color:#fff;color:#f60;position: relative;}
+.num_tip_wrap b{background: url(../images/jt.gif) no-repeat;width: 10px;height: 6px;display: block;overflow: hidden;position: absolute;left: 8px;bottom: -6px;_bottom: -5px;}
+.num_tip_wrap span{font-size: 20px;}
+/**弹出小提示 end**/
+
+/**业务介绍各页面 start**/
+.yew_con{width:960px;}
+.bread_nav{color:#555;padding-left:10px;line-height:30px;margin-top:6px;}
+.bread_nav a:link,.bread_nav a:visited{color:#555;}
+.bread_nav a:hover,.bread_nav a:active{color:#08c;text-decoration:underline;}
+.bread_nav span{font-size:12px;font-weight:bold;}
+.yew_l_con{width:143px;float:left;height:260px;}
+.yew_l_con h2{background:url(../images/left_nav.png) no-repeat;height:40px;text-align:center;font:bold 14px/40px "Microsoft yahei","Simsun";}
+.yew_l_con ul{border:1px solid #dadada;border-top-width:0;padding:6px 0 0 20px;}
+.yew_l_con li{height:24px;padding-left:20px;line-height:24px;background:url(../images/sprites.png) no-repeat 0 -700px;}
+.yew_l_con li a:link,.yew_l_con li a:visited{color:#333;}
+.yew_l_con li a:hover,.yew_l_con li a:active{color:#08c;}
+.yew_l_con .current a:link,.yew_l_con .current a:visited{color:#08c;}
+.yew_l_con .current a:hover,.yew_l_con .current a:active{color:#08c;}
+.yew_r_con{width:620px;float:left;margin-left:15px;border:1px solid #dadada;}
+.yew_r_con h2{line-height:40px;border-bottom:1px solid #dadada;padding-left:10px;color:#08c;font:bold 14px/40px "Simsun";}
+.yew_r_con .con_con{padding:10px 20px;}
+.yew_r_con .con_con h5{font:bold 16px/30px "Simsun";text-align:center;margin:10px 0;color:#333;}
+.yew_r_con .con_con li{line-height:22px;color:#333;padding-bottom:3px;}
+.yew_r_con .con_con .li_img{text-align:center;padding:14px;}
+.yew_r_con .con_con strong{color:#08c;font-weight:bold;}
+.yew_r_con .con_con span{color:#08c;}
+.yew_r_con .con_con .cp_time strong{color:#f60;}
+.yew_r_con table{width:600px;text-align:center;margin:20px auto;}
+.yew_r_con .con_con td,.yew_r_con .con_con th{border:1px solid #dadada;}
+.yew_r_con .con_con th{line-height:36px;background-color:#E9F1FA;}
+.yew_r_con .con_con td{line-height:30px;}
+.yew_r_con h3{font:bold 13px/25px "Simsun";padding:15px 0 5px;}
+.yew_r_con p{text-indent:2em;padding:6px 0;}
+.yew_r_con .h3_c{text-align:center;}
+.yew_r_con .line{border-bottom:1px dotted #08c;margin:20px 0;}
+.yew_r_con .con_con .declare{padding-top:30px;color:#08c;}
+.yew_r_con .con_con .declare strong{font-size:16px;}
+.yew_r_con .con_con a:link,.yew_r_con .con_con a:visited{font-size:16px;padding:0 10px;color:#f60;text-decoration:underline;}
+.yew_r_con .con_con a:hover,.yew_r_con .con_con a:active{text-decoration:none;}
+.yew_r_con .con_con .now_buy{padding:10px 0;text-indent:2em;}
+.yew_r_con h3 b{color:#f60;font-size:14px;font-weight:normal;padding:0 5px;}
+/**业务介绍各页面 end**/
+/**20130703 物料下载页 start **/
+.stuffload .ban{height:140px;background:url(../images/banner.gif) no-repeat center top;}
+.stuffload li{width:230px;float:left;margin:20px 76px 0 0;}
+.stuffload h2{background:url(../images/sprites.png) no-repeat 0 -788px;height:37px;color:#fff;font:bold 14px/28px "Microsoft yahei";padding-left:6px;}
+.stuffload .img{width:230px;height:250px;background-color:#d8f5ff;margin:6px 0;padding-top:16px;text-align:center;}
+.stuffload .intro{height:86px;padding:10px 10px 0;background-color:#eee;}
+.stuffload .text{line-height:22px;text-align:left;}
+.stuffload .btn_p{text-align:center;padding-top:8px;}
+.stuffload input{width:71px;height:28px;background:url(../images/sprites.png) no-repeat 0 -96px;color:#fff;font:normal 12px/28px "microsoft yahei" text-align:center;padding:;}
+/**20130703 物料下载页 end**/
+/*协议 start*/
+.protocol_con{float:none;margin:20px auto;}
+.protocol_con .notice_wrap{border:none;margin:0 auto;}
+/*协议 end*/
+/*20130814公告列表页 start*/
+.notice_list{margin:10px 0;border:1px solid #e6e6e6;}
+.notice_list h3{font:bold 12px/30px arial,Verdana,"Simsun";padding:0 10px;background-color:#f5f5f5;}
+.notice_list h3 span{float:right;}
+.notice_list .con_list{position:relative;padding:10px 0 15px 10px;}
+.notice_list .con_list a:link,.notice_list .con_list a:visited{color:#333;line-height:24px;}
+.notice_list .con_list a:hover,.notice_list .con_list a:active{color:#f60;text-decoration:underline;font:normal 12px/24px arial,"Simsun";}
+.notice_list .con_list .new:link,.notice_list .con_list .new:visited{color:#08c;}
+.notice_list .con_list s{padding:0 3px;}
+.notice_list .con_list span{position:absolute;top:;right:10px;color:#999;font:normal 11px/24px arial;}
+.bread_nav .back a:link,.bread_nav .back a:visited{float:right;color:#08c;font:normal 12px/40px "Simsun";text-decoration:underline;}
+.bread_nav .back a:hover,.bread_nav .back a:active{text-decoration:none;}
+/*20130814公告列表页 end*/
+/*20130814 保险协议 start*/
+.insurance_agreement p{line-height:24px;}
+.yew_r_con .insurance_agreement strong{color:#333;}
+.insurance_agreement h6{text-align:center;font-size:14px;}
+.yew_r_con .insurance_agreement table{width:680px;}
+.yew_r_con .insurance_agreement table p{line-height: 18px;text-indent: 0;}
+.yew_r_con .insurance_agreement th{background-color:#fff;}
+/*20130814 保险协议 end*/
+/*0907 指南 start*/
+#service_2013{width:947px; height:164px; border-top:1px solid #ddd; margin:14px auto 0; padding:9px 0 0 11px;}
+.service_left{width:130px; height:164px; float:left; padding:0;marginL:0;}
+.service_left li{height:41px; background:url(../images/bg_1.jpg) no-repeat right center; border-bottom:1px solid #ECECEC; padding-top:8px; line-height:19px;}
+.service_left li strong{font-size:14px;}
+.service_right{width:800px; height:164px; float:right; padding-top:8px;}
+.service_right li{width:110px; height:150px; float:left; background:url(../images/bg_2.jpg) no-repeat left center; line-height:28px; padding-left:50px;}
+.service_right li strong{color:#333;font:normal 16px/26px "Microsoft yahei";}
+/*0907 指南 end*/
+/*业务提供方 start*/
+.business-provider{padding:10px 0 20px;}
+.business-provider p{text-align:center;color:#999;}
+/*业务提供方 end*/
+
+h4{font:bold 14px/31px "Simsun";color:#555;background:url(../images/sprites.png) no-repeat 0 -276px;width:152px;height:31px;text-align:center;}
+.mb10{margin-bottom:10px;}
+.mb20{margin-bottom:20px;}
+.mb10_all{margin:10px auto;}
+
+/*悬浮tip start*/
+#preview{border:1px solid #ffaf87; background:#fff7d8;padding:5px; display:none; position:absolute;}
+/*悬浮tip end*/
+
+

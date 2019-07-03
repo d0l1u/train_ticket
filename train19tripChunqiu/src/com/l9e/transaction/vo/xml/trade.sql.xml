@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="trade">
+	<typeAlias alias="trade" type="com.l9e.transaction.vo.TradeVo" />
+
+	<!-- 向交易流水里添加交易流水 -->
+	<insert id="insertIntoTrade" parameterClass="trade">
+		insert into cp_tradeinfo(order_id, create_time, operate_time, operate_person
+		<isNotEmpty prepend="," property="trade_no">
+			trade_no
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="batch_no">
+			batch_no
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="seller_name">
+			seller_name
+		</isNotEmpty>
+		<isNotEmpty prepend=", " property="trade_seq">
+			trade_seq
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="trade_fee">
+			trade_fee
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="trade_type">
+			trade_type
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="channel">
+			channel
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="trade_channel">
+			trade_channel
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="trade_time">
+			trade_time
+		</isNotEmpty>
+		<isNotEmpty prepend=", " property="trade_id">
+			trade_id
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="buyer_id">
+			buyer_id
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="buyer_name">
+			buyer_name
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="trade_status">
+			trade_status
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="seller_id">
+			seller_id
+		</isNotEmpty>
+		<isNotEmpty prepend=", " property="remark">
+			remark
+		</isNotEmpty>
+		) value(#order_id:VARCHAR#, NOW(), NOW(), "train_chunqiu"
+		<isNotEmpty prepend="," property="trade_no">
+			#trade_no:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="batch_no">
+			#batch_no:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="seller_name">
+			#seller_name:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="trade_seq">
+			#trade_seq:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="trade_fee">
+			#trade_fee:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="trade_type">
+			#trade_type:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="channel">
+			#channel:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="trade_channel">
+			#trade_channel:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="trade_time">
+			#trade_time:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=", " property="trade_id">
+			#trade_id:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="buyer_id">
+			#buyer_id:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=", " property="buyer_name">
+			#buyer_name:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="trade_status">
+			#trade_status:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="seller_id">
+			#seller_id:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=", " property="remark">
+			#remark:VARCHAR#
+		</isNotEmpty>
+		)
+	</insert>
+
+	<!-- 查询交易流水号 -->
+	<select id="queryTrade" parameterClass="java.util.HashMap"
+		resultClass="trade">
+		select trade_id, order_id, trade_no, trade_status, trade_fee,
+		trade_type, channel, trade_channel, create_time, buyer_id, buyer_name,
+		trade_time, remark, fail_reason, trade_seq, seller_name,
+		seller_id, operate_time, operate_person from cp_tradeinfo
+		where 1 = 1
+		<isNotEmpty prepend=" and " property="order_id">
+			order_id=#order_id:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="trade_seq">
+			trade_seq=#trade_seq:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="trade_no">
+			trade_no=#trade_no:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="batch_no">
+			batch_no=#batch_no:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="trade_status">
+			trade_status =
+			#trade_status:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="trade_id">
+			trade_id=#trade_id:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="trade_type">
+			trade_type=#trade_type:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="channel">
+			channel =
+			#channel:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="trade_channel">
+			trade_channel=#trade_channel:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="buyer_id">
+			buyer_id=#buyer_id:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="seller_id">
+			seller_id=#seller_id:VARCHAR#
+		</isNotEmpty>
+		limit 1
+	</select>
+	
+	<!-- 获取不同的batch_no的列表 -->
+	<select id="queryDistinctBatchNo" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT DISTINCT batch_no from cp_tradeinfo where 1= 1
+		<isNotEmpty prepend=" and " property="trade_type">
+			trade_type=#trade_type:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="trade_status">
+			trade_status=#trade_status:VARCHAR#
+		</isNotEmpty>
+	</select>
+
+
+	<!-- 更新交易流水号 -->
+	<update id="updateTrade" parameterClass="trade">
+		update cp_tradeinfo set operate_time=now()
+		<isNotEmpty prepend=", " property="trade_no">
+			trade_no=#trade_no:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=", " property="operate_person">
+			operate_person=#operate_person:VARCHAR#
+		</isNotEmpty>
+<!-- 
+		<isNotEmpty prepend=", " property="seller_id">
+			seller_id=#seller_id:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=", " property="buyer_id">
+			buyer_id=#buyer_id:VARCHAR#
+		</isNotEmpty>
+	
+		<isNotEmpty prepend=", " property="channel">
+			channel=#channel:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=", " property="trade_channel">
+			trade_channel=#trade_channel:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=", " property="trade_fee">
+			trade_fee=#trade_fee:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=", " property="trade_type">
+			trade_type=#trade_type:VARCHAR#
+		</isNotEmpty>
+-->
+		<isNotEmpty prepend=", " property="trade_status">
+			trade_status=#trade_status:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=", " property="fail_reason">
+			fail_reason=#fail_reason:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=", " property="remark">
+			remark=#remark:VARCHAR#
+		</isNotEmpty>
+<!-- 
+<isNotEmpty prepend=", " property="trade_seq">
+			trade_seq=#trade_seq:VARCHAR#
+</isNotEmpty>
+-->
+		where order_id=#order_id:VARCHAR#
+		<isNotEmpty prepend=" and " property="trade_no">
+			trade_no=#trade_no:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="trade_type">
+			trade_type=#trade_type:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="batch_no">
+			batch_no=#batch_no:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="trade_seq">
+			trade_seq=#trade_seq:VARCHAR#
+		</isNotEmpty>
+	</update>
+</sqlMap>

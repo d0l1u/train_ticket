@@ -1,0 +1,732 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="elongBook">
+
+	<!-- 查询所有订单 -->
+	<select id="queryAllBookList" resultClass="com.l9e.transaction.vo.ElongVo">
+		SELECT qo.order_id, CONCAT(CONCAT(qo.from_city,'/'), qo.to_city)
+		AS startAndEnd, qo.train_no, from_time, pay_money, buy_money,
+		order_status, order_time, create_time,channel,
+		out_ticket_time, opt_ren 
+		FROM elong_orderinfo qo
+		ORDER BY qo.create_time DESC
+	</select>
+
+
+	<!-- 按条件查询订单 -->
+	<select id="queryBookList" parameterClass="java.util.HashMap"
+		resultClass="com.l9e.transaction.vo.ElongVo">
+		SELECT 
+		  qo.order_id,
+		  CONCAT(CONCAT(qo.from_city, '/'),qo.to_city) AS startAndEnd,
+		  qo.train_no,
+		  from_time,
+		  pay_money,
+		  buy_money,
+		  order_level,
+		  order_status,
+		  order_time,
+		  create_time,
+		  out_ticket_time,
+		  opt_ren,channel,
+		  notice_status AS notify_status,
+		  out_ticket_billno,
+		  ticket_num 
+		FROM
+		  elong_orderinfo qo 
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="order_id">
+				order_id=#order_id#
+			</isNotEmpty>
+			<isEmpty property="order_id">
+				<isNotEmpty prepend=" and " property="out_ticket_billno">
+					out_ticket_billno=#out_ticket_billno#
+				</isNotEmpty>
+				<isEmpty property="out_ticket_billno">
+					<isNotEmpty prepend=" and " property="begin_info_time">
+						qo.create_time
+						<![CDATA[>=]]>#begin_info_time#
+					</isNotEmpty>
+					<isNotEmpty prepend=" and " property="end_info_time">
+						qo.create_time
+						<![CDATA[<]]>
+						DATE_ADD(#end_info_time#,INTERVAL 1 DAY)
+					</isNotEmpty>
+						<isNotEmpty prepend=" and " property="order_status">
+							qo.order_status in
+							<iterate open="(" close=")" conjunction="," property="order_status">
+								#order_status[]#
+							</iterate>
+						</isNotEmpty>
+					<isNotEmpty prepend=" and " property="notify_status">
+						notice_status in
+						<iterate open="(" close=")" conjunction=","
+							property="notify_status">
+							#notify_status[]#
+						</iterate>
+					</isNotEmpty>
+					<isNotEmpty prepend=" and " property="channel">
+						channel in
+						<iterate open="(" close=")" conjunction=","
+							property="channel">
+							#channel[]#
+						</iterate>
+					</isNotEmpty>
+				</isEmpty>
+			</isEmpty>
+		</dynamic>
+		order by create_time desc LIMIT #everyPagefrom:Integer#,
+		#pageSize:Integer#
+
+	</select>
+
+	<!-- 按条件查询订单(撤销订单) -->
+	<select id="queryBookListCx" parameterClass="java.util.HashMap"
+		resultClass="com.l9e.transaction.vo.ElongVo">
+		SELECT 
+		  qo.order_id,
+		  CONCAT(CONCAT(qo.from_city, '/'),qo.to_city) AS startAndEnd,
+		  qo.train_no,
+		  from_time,
+		  pay_money,
+		  buy_money,
+		  order_level,
+		  order_status,
+		  order_time,
+		  create_time,
+		  out_ticket_time,
+		  opt_ren,
+		  notice_status AS notify_status,
+		  out_ticket_billno,
+		  ticket_num 
+		FROM
+		  elong_orderinfo qo 
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="order_id">
+				order_id=#order_id#
+			</isNotEmpty>
+			<isEmpty property="order_id">
+				<isNotEmpty prepend=" and " property="out_ticket_billno">
+					out_ticket_billno=#out_ticket_billno#
+				</isNotEmpty>
+				<isEmpty property="out_ticket_billno">
+					<isNotEmpty prepend=" and " property="begin_info_time">
+						qo.create_time
+						<![CDATA[>=]]>
+						#begin_info_time#
+					</isNotEmpty>
+					<isNotEmpty prepend=" and " property="end_info_time">
+						qo.create_time
+						<![CDATA[<]]>
+						#end_info_time#
+					</isNotEmpty>
+						<isNotEmpty prepend=" and " property="order_status">
+							qo.order_status in
+							<iterate open="(" close=")" conjunction="," property="order_status">
+								#order_status[]#
+							</iterate>
+						</isNotEmpty>
+					<isNotEmpty prepend=" and " property="notify_status">
+						notice_status in
+						<iterate open="(" close=")" conjunction=","
+							property="notify_status">
+							#notify_status[]#
+						</iterate>
+					</isNotEmpty>
+				</isEmpty>
+			</isEmpty>
+		</dynamic>
+		order by create_time desc LIMIT #everyPagefrom:Integer#,
+		#pageSize:Integer#
+
+	</select>
+
+	<update id="updateNotify_status" parameterClass="java.util.HashMap">
+		UPDATE elong_orderinfo AS qo 
+		SET qo.notice_status = '22' ,
+			qo.opt_ren = #opt_ren# 
+		WHERE qo.order_id=#order_id#
+	</update>
+	
+	<update id="updateNotify_Again" parameterClass="java.util.HashMap">
+		UPDATE elong_orderinfo_notify AS qo 
+		SET qo.out_notify_status = '11' ,qo.out_notify_num=0  
+		WHERE qo.order_id=#order_id#
+	</update>
+	
+	<update id="updateNotify_Again1" parameterClass="java.util.HashMap">
+		UPDATE elong_orderinfo AS qo 
+		SET qo.notice_status = '33' ,
+			qo.opt_ren = #opt_ren#,
+			qo.opt_time =NOW()
+		WHERE qo.order_id=#order_id#
+	</update>
+
+	<!-- 查询订单条数 -->
+	<select id="queryBookListCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM elong_orderinfo qo
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="order_id">
+				order_id=#order_id#
+			</isNotEmpty>
+			<isEmpty property="order_id">
+				<isNotEmpty prepend=" and "
+					property="out_ticket_billno">
+					out_ticket_billno=#out_ticket_billno#
+				</isNotEmpty>
+				<isEmpty property="out_ticket_billno">
+					<isNotEmpty prepend=" and "
+						property="begin_info_time">
+						qo.create_time
+						<![CDATA[>=]]>
+						#begin_info_time#
+					</isNotEmpty>
+					<isNotEmpty prepend=" and "
+						property="end_info_time">
+						qo.create_time
+						<![CDATA[<]]>
+						DATE_ADD(#end_info_time#,INTERVAL 1 DAY)
+					</isNotEmpty>
+						<isNotEmpty prepend=" and "
+							property="order_status">
+							order_status in
+							<iterate open="(" close=")" conjunction=","
+								property="order_status">
+								#order_status[]#
+							</iterate>
+						</isNotEmpty>
+					<isNotEmpty prepend=" and " property="notify_status">
+						notice_status in
+						<iterate open="(" close=")" conjunction=","
+							property="notify_status">
+							#notify_status[]#
+						</iterate>
+					</isNotEmpty>
+					<isNotEmpty prepend=" and " property="order_source">
+						order_source in
+						<iterate open="(" close=")" conjunction=","
+							property="order_source">
+							#order_source[]#
+						</iterate>
+					</isNotEmpty>
+					<isNotEmpty prepend=" and " property="channel">
+						channel in
+						<iterate open="(" close=")" conjunction=","
+							property="channel">
+							#channel[]#
+						</iterate>
+					</isNotEmpty>
+				</isEmpty>
+			</isEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 查询订单条数 (撤销订单)-->
+	<select id="queryBookListCountCx" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM elong_orderinfo qo
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="order_id">
+				order_id=#order_id# 
+			</isNotEmpty>
+			<isEmpty property="order_id">
+				<isNotEmpty prepend=" and "
+					property="out_ticket_billno">
+					out_ticket_billno=#out_ticket_billno#
+				</isNotEmpty>
+				<isEmpty property="out_ticket_billno">
+					<isNotEmpty prepend=" and "
+						property="begin_info_time">
+						qo.create_time
+						<![CDATA[>=]]>
+						#begin_info_time#
+					</isNotEmpty>
+					<isNotEmpty prepend=" and "
+						property="end_info_time">
+						qo.create_time
+						<![CDATA[<]]>
+						#end_info_time#
+					</isNotEmpty>
+						<isNotEmpty prepend=" and "
+							property="order_status">
+							order_status in
+							<iterate open="(" close=")" conjunction=","
+								property="order_status">
+								#order_status[]#
+							</iterate>
+						</isNotEmpty>
+					<isNotEmpty prepend=" and " property="notify_status">
+						notice_status in
+						<iterate open="(" close=")" conjunction=","
+							property="notify_status">
+							#notify_status[]#
+						</iterate>
+					</isNotEmpty>
+					<isNotEmpty prepend=" and " property="order_source">
+						order_source in
+						<iterate open="(" close=")" conjunction=","
+							property="order_source">
+							#order_source[]#
+						</iterate>
+					</isNotEmpty>
+				</isEmpty>
+			</isEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 获得定某订单号的详细信息 -->
+	<select id="queryBookOrderInfo" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT 
+		  qo.order_id, qo.notice_status AS notify_status,
+		  qo.from_city,
+		  qo.to_city,
+		  qo.train_no,
+		  qo.from_time,
+		  qo.to_time,
+		  qo.pay_money,
+		  qo.buy_money,
+		  qo.order_status,
+		  qo.order_time,
+		  qo.create_time,
+		  qo.out_ticket_billno,
+		  qo.out_ticket_time,
+		  cp.out_ticket_account,
+		  cp.bank_pay_seq,qo.channel,
+		  qo.opt_ren,qo.channel,
+		  qo.seat_type 
+		FROM
+		  elong_orderinfo AS qo 
+		  LEFT JOIN cp_orderinfo AS cp ON qo.order_id = cp.order_id  
+		WHERE qo.order_id=#order_id#
+	</select>
+
+	<!-- 查询联程分程订单信息 -->
+	<select id="queryLianChengOrderInfo"
+		parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT qot.trip_id, qot.trip_seq, qot.train_no,qot.order_status,
+		CONVERT(qot.pay_money, CHAR) AS pay_money,
+		CONVERT(qot.buy_money, CHAR) AS buy_money,qot.out_ticket_billno,
+		CONVERT(qot.create_time, CHAR) AS create_time,
+		CONVERT(qot.out_ticket_time,CHAR) AS out_ticket_time,
+		qot.out_fail_reason, qot.out_ticket_type, qot.from_city,
+		qot.to_city, CONVERT(qot.from_time,CHAR) AS
+		from_time,qot.ext_seat, CONVERT(qot.to_time, CHAR) AS to_time,
+		qot.seat_type, qot.order_source,
+		qot.channel,cp.out_ticket_account, cp.bank_pay_seq FROM
+		qunar_orderinfo_trip AS qot left join cp_orderinfo as cp on
+		qot.trip_id=cp.order_id WHERE qot.order_id LIKE #order_id#
+	</select>
+
+	<!-- 查询联程总订单信息 -->
+	<select id="queryLianChengTotalOrderInfo"
+		parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT qo.order_id, qo.train_no,qo.order_status,
+		CONVERT(qo.pay_money, CHAR) AS pay_money,qo.order_status,
+		CONVERT(qo.buy_money, CHAR) AS buy_money,qo.out_ticket_billno,
+		CONVERT(qo.create_time, CHAR) AS create_time,
+		CONVERT(qo.out_ticket_time,CHAR) AS out_ticket_time,
+		qo.out_fail_reason, qo.out_ticket_type, qo.from_city,
+		qo.to_city, CONVERT(qo.from_time,CHAR) AS from_time,qo.ext_seat,
+		CONVERT(qo.to_time, CHAR) AS to_time, qo.seat_type,
+		qo.order_source, qo.channel FROM qunar_orderinfo AS qo where
+		order_id=#order_id#
+	</select>
+
+	<!-- 查询联程付款信息 -->
+	<select id="queryLianChengPayInfo" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT qot.order_id,qot.trip_id, qot.from_city, qot.to_city,
+		qot.train_no, CONVERT(qot.from_time, CHAR) AS from_time,
+		CONVERT(qot.to_time, CHAR) AS to_time, CONVERT(qot.pay_money,
+		CHAR) AS paymoney, CONVERT(qot.buy_money, CHAR) AS buy_money,
+		qot.order_status, CONVERT(qot.create_time, CHAR) AS create_time,
+		qot.out_ticket_billno, CONVERT(qot.out_ticket_time, CHAR) AS
+		out_ticket_time,qot.out_ticket_type,qot.ext_seat,
+		cp.out_ticket_account, cp.bank_pay_seq,qot.order_source,
+		qot.seat_type, qot.channel FROM qunar_orderinfo_trip AS qot LEFT
+		JOIN cp_orderinfo AS cp ON qot.trip_id=cp.order_id where
+		qot.trip_id=#order_id#
+	</select>
+
+	<!-- 按照订单号查询车票信息 -->
+	<select id="queryBookCpInfo" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT 
+		  cp_id,
+		  order_id,
+		  user_name,
+		  ticket_type,
+		  ids_type,
+		  user_ids,
+		  buy_money,
+		  elong_seat_type qunar_seat_type,
+		  train_box,
+		  seat_no,
+		  seat_type,
+		  out_ticket_billno,
+		  alter_seat_type,
+		  alter_train_box,
+		  alter_seat_no,
+		  alter_buy_money,
+		  alter_train_no,
+		  alter_money,
+		  refund_12306_money 
+		FROM
+		  elong_orderinfo_cp
+		where order_id=#order_id#
+	</select>
+
+	<!-- 按照订单号查询日志信息 -->
+	<select id="queryBookLog" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT log_id,order_id, content, DATE_FORMAT(create_time,'%Y-%m-%d %H:%i:%s') AS create_time, opt_person FROM
+		elong_orderinfo_logs WHERE order_id=#order_id# ORDER BY
+		create_time DESC
+	</select>
+
+	<!-- 按照订单号查询通知信息 -->
+	<select id="queryBookNotify" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT order_id, cp_notify_status, cp_notify_num,
+		cp_notify_time, cp_notify_finish_time, out_notify_status,
+		out_notify_num, out_notify_finish_time, create_time FROM
+		elong_orderinfo_notify where order_id=#order_id#
+	</select>
+
+	<!-- 更新日志信息 -->
+	<insert id="insertLog" parameterClass="java.util.HashMap">
+		insert into elong_orderinfo_logs (order_id,content, create_time,
+		opt_person) values (#order_id#, #content#, now(), #opt_person#)
+	</insert>
+
+	<!-- 查询普通订单信息 -->
+	<select id="queryQunarBook" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT qunar.order_id,qunar.out_ticket_billno,
+			CONVERT(qunar.pay_money,CHAR) AS pay_money,
+			CONVERT(qunar.buy_money,CHAR) AS buy_money,
+			CONVERT(qunar.pay_money-qunar.buy_money,CHAR) AS differ, 
+			DATE_FORMAT(qunar.order_time,'%Y-%m-%d %H:%i:%s') AS order_time, 
+			DATE_FORMAT(qunar.from_time,'%Y-%m-%d %H:%i:%s') AS from_time, 
+			DATE_FORMAT(qunar.out_ticket_time, '%Y-%m-%d %H:%i:%s') AS out_ticket_time, cp.out_ticket_account,
+			cp.bank_pay_seq, CONVERT(qunar.ticket_num, CHAR) ticket_num
+		FROM elong_orderinfo AS qunar
+			LEFT JOIN cp_orderinfo AS cp ON qunar.order_id=cp.order_id 
+		WHERE 1=1 
+		<isNotEmpty prepend=" and " property="order_id">
+			qunar.order_id=#order_id#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="out_ticket_billno">
+			quanr.out_ticket_billno=#out_ticket_billno#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="begin_time">
+			qunar.create_time
+			<![CDATA[>=]]>#begin_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			qunar.create_time
+			<![CDATA[<]]>
+			DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="order_status">
+			qunar.order_status in
+			<iterate open="(" close=")" conjunction=","
+				property="order_status">
+				#order_status[]#
+			</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="notify_status">
+			qunar.notice_status in
+			<iterate open="(" close=")" conjunction=","
+				property="notify_status">
+				#notify_status[]#
+			</iterate>
+		</isNotEmpty>
+	</select>
+	
+	<!-- 查询普通订单信息 -->
+	<select id="queryQunarBookCp" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+			SELECT qunar.order_id,ec.cp_id,qunar.out_ticket_billno,ec.user_name,qunar.order_name,
+			CONVERT(ec.pay_money,CHAR) AS pay_money,
+			CONVERT(ec.buy_money,CHAR) AS buy_money,
+			CONVERT(ec.pay_money-ec.buy_money,CHAR) AS differ, 
+			CONVERT(qunar.pay_money,CHAR) AS all_pay_money,
+			CONVERT(qunar.buy_money,CHAR) AS all_buy_money,
+			CONVERT(qunar.pay_money-qunar.buy_money,CHAR) AS all_differ, 
+			DATE_FORMAT(qunar.order_time,'%Y-%m-%d %H:%i:%s') AS order_time, 
+			DATE_FORMAT(qunar.from_time,'%Y-%m-%d %H:%i:%s') AS from_time, qunar.channel,
+			DATE_FORMAT(qunar.out_ticket_time, '%Y-%m-%d %H:%i:%s') AS out_ticket_time, cp.out_ticket_account,
+			cp.bank_pay_seq, CONVERT(qunar.ticket_num, CHAR) ticket_num
+		FROM elong_orderinfo AS qunar
+			LEFT JOIN cp_orderinfo AS cp ON qunar.order_id=cp.order_id 
+		LEFT JOIN elong_orderinfo_cp AS ec ON qunar.order_id=ec.order_id 
+		WHERE 1=1 
+		<isNotEmpty prepend=" and " property="order_id">
+			qunar.order_id=#order_id#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="out_ticket_billno">
+			quanr.out_ticket_billno=#out_ticket_billno#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="begin_time">
+			qunar.create_time
+			<![CDATA[>=]]>#begin_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			qunar.create_time
+			<![CDATA[<]]>
+			DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="order_status">
+			qunar.order_status in
+			<iterate open="(" close=")" conjunction=","
+				property="order_status">
+				#order_status[]#
+			</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="notify_status">
+			qunar.notice_status in
+			<iterate open="(" close=")" conjunction=","
+				property="notify_status">
+				#notify_status[]#
+			</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="channel">
+						qunar.channel in
+						<iterate open="(" close=")" conjunction=","
+							property="channel">
+							#channel[]#
+						</iterate>
+	</isNotEmpty>
+	
+	</select>
+	
+	<!-- 查询普通订单信息 -->
+	<select id="queryQunarBookCpCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+			SELECT count(1)
+		FROM elong_orderinfo AS qunar
+			LEFT JOIN cp_orderinfo AS cp ON qunar.order_id=cp.order_id 
+		LEFT JOIN elong_orderinfo_cp AS ec ON qunar.order_id=ec.order_id 
+		WHERE 1=1 
+		<isNotEmpty prepend=" and " property="order_id">
+			qunar.order_id=#order_id#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="out_ticket_billno">
+			quanr.out_ticket_billno=#out_ticket_billno#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="begin_time">
+			qunar.create_time
+			<![CDATA[>=]]>#begin_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			qunar.create_time
+			<![CDATA[<]]>
+			DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="order_status">
+			qunar.order_status in
+			<iterate open="(" close=")" conjunction=","
+				property="order_status">
+				#order_status[]#
+			</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="notify_status">
+			qunar.notice_status in
+			<iterate open="(" close=")" conjunction=","
+				property="notify_status">
+				#notify_status[]#
+			</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="channel">
+						qunar.channel in
+						<iterate open="(" close=")" conjunction=","
+							property="channel">
+							#channel[]#
+						</iterate>
+	</isNotEmpty>
+	</select>
+	
+	<!-- 查询联程订单信息 -->
+	<select id="queryLianChengQunarBook"
+		parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT qot.trip_id AS order_id,qot.out_ticket_billno,
+		CONVERT(qot.pay_money,CHAR) AS
+		pay_money,CONVERT(qot.buy_money,CHAR) AS
+		buy_money,CONVERT(qot.pay_money-qot.buy_money,CHAR) AS differ,
+		DATE_FORMAT(qot.create_time,'%Y-%m-%d %H:%i:%s') AS order_time,
+		DATE_FORMAT(qot.out_ticket_time, '%Y-%m-%d %H:%i:%s') AS
+		out_ticket_time , qo.order_type ,cp.out_ticket_account,
+		cp.bank_pay_seq FROM qunar_orderinfo_trip AS qot JOIN
+		qunar_orderinfo AS qo ON qo.order_id=qot.order_id left join
+		cp_orderinfo as cp on qot.trip_id=cp.order_id where
+		qo.order_type='1'
+		<isNotEmpty prepend=" and " property="order_id">
+			qot.order_id like #order_id#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="out_ticket_billno">
+			qot.out_ticket_billno=#out_ticket_billno#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="begin_time">
+			qot.create_time
+			<![CDATA[>=]]>
+			#begin_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			qot.create_time
+			<![CDATA[<]]>
+			DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="order_status">
+			qo.order_status in
+			<iterate open="(" close=")" conjunction="," property="order_status">
+				#order_status[]#
+			</iterate>
+		</isNotEmpty>
+	</select>
+
+	<!-- 查询退款订单信息 -->
+	<select id="queryRefundTicket" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT 
+		  qunar.refund_seq,qo.order_name,
+		  qunar.order_id, qunar.cp_id,
+		  CONVERT(qunar.refund_money, CHAR) AS refund_money,
+		  DATE_FORMAT(qunar.create_time, '%Y-%m-%d %H:%i:%s') AS create_time,
+		  DATE_FORMAT(qunar.verify_time, '%Y-%m-%d %H:%i:%s') AS verify_time,
+		  DATE_FORMAT(qunar.user_time, '%Y-%m-%d %H:%i:%s') AS user_time,
+		  qunar.refund_12306_seq,
+		  CONVERT(qunar.alter_tickets_money, CHAR) AS alter_tickets_money,
+		  CONVERT(qunar.actual_refund_money, CHAR) actual_refund_money,
+		  qunar.detail_refund,
+		  qunar.detail_alter_tickets,
+		  qunar.change_ticket_info,qunar.channel,qo.out_ticket_billno,qunar.refund_type,
+		  CONVERT(qo.ticket_num, CHAR) ticket_num
+		FROM
+		  elong_orderinfo_refundstream AS qunar
+		LEFT JOIN
+		  elong_orderinfo AS qo ON qo.order_id = qunar.order_id  
+		WHERE 1 = 1 
+		<isNotEmpty prepend=" and " property="order_id">
+			qunar.order_id=#order_id#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="refund_12306_seq">
+			qunar.refund_12306_seq=#refund_12306_seq#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="begin_time">
+			qunar.verify_time
+			<![CDATA[>=]]>#begin_time#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="end_time">
+			qunar.verify_time
+			<![CDATA[<]]>
+			DATE_ADD(#end_time#,INTERVAL 1 DAY)
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="refund_status">
+			qunar.refund_status in
+			<iterate open="(" close=")" conjunction=","
+				property="refund_status">
+				#refund_status[]#
+			</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="notify_status">
+				qunar.notify_status in
+				<iterate open="(" close=")" conjunction=","
+					property="notify_status">
+					#notify_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+		<isNotEmpty prepend=" and " property="refund_type">
+			qunar.refund_type in
+			<iterate open="(" close=")" conjunction=","
+				property="refund_type">
+				#refund_type[]#
+			</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="channel">
+						qunar.channel in
+						<iterate open="(" close=")" conjunction=","
+							property="channel">
+							#channel[]#
+						</iterate>
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="opt_person">
+			qunar.opt_person=#opt_person#
+		</isNotEmpty>
+	</select>
+	
+	<select id="queryRefundTicketName" parameterClass="java.lang.String" resultClass="java.lang.String">
+       SELECT ec.user_name FROM  elong_orderinfo_cp AS ec WHERE ec.cp_id=#cp_id#
+    </select>
+	
+	<!-- 查询订单状态 -->
+	<select id="queryDbOrder_status" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT order_status FROM cp_orderinfo WHERE order_id=#order_id#
+	</select>
+	
+	<!-- 查询订单状态 -->
+	<select id="queryDbNotify_status" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT notice_status FROM elong_orderinfo WHERE order_id=#order_id#
+	</select>
+	
+	<!-- 撤销订单 -->
+	<update id="updateCheXiaoCp" parameterClass="java.util.HashMap" >
+		update cp_orderinfo 
+		<dynamic prepend="set">
+			<isNotEmpty prepend=","  property="order_status">
+				 order_status=#order_status#
+			</isNotEmpty>
+			<isNotEmpty  prepend="," property="opt_ren">
+				opt_ren =#opt_ren#
+			</isNotEmpty>
+		</dynamic>
+		where order_id=#order_id# and order_status not in ('99','10') and channel ='elong'
+	</update>
+	<update id="updateCheXiaoElong" parameterClass="java.util.HashMap" >
+		update elong_orderinfo 
+		<dynamic prepend="set">
+			<isNotEmpty prepend=","  property="order_status">
+				 order_status=#order_status#
+			</isNotEmpty>
+			<isNotEmpty  prepend="," property="opt_ren">
+				opt_ren =#opt_ren#
+			</isNotEmpty>
+		</dynamic>
+		where order_id=#order_id# and order_status not in ('33','44')
+	</update>
+	<!-- 添加撤销订单通知 -->
+	<insert id="insertCheXiaoNotify" parameterClass="java.util.HashMap">
+		INSERT INTO elong_goback_notify (order_id,notify_status, notify_num,
+		create_time) VALUES (#order_id#,'00', 0, NOW())
+	</insert>
+	
+	<!-- 异常管理重新通知 -->
+	<update id="updateGotoNormal" parameterClass="java.util.HashMap" >
+		update elong_allchannel_notify 
+		<dynamic prepend="set">
+			<isNotEmpty prepend=","  property="book_notify_status">
+				 book_notify_status = '00'
+			</isNotEmpty>
+			<isNotEmpty  prepend="," property="book_notify_num">
+				book_notify_num = 0
+			</isNotEmpty>
+			<isNotEmpty prepend=","  property="out_notify_status">
+				 out_notify_status = '00'
+			</isNotEmpty>
+			<isNotEmpty  prepend="," property="out_notify_num">
+				out_notify_num = 0
+			</isNotEmpty>
+		</dynamic>
+		where order_id=#order_id# 
+	</update>
+	
+	<!-- 异常管理重新通知 -->
+	<update id="updateGotoFailure" parameterClass="java.util.HashMap" >
+		update elong_orderinfo 
+		<dynamic prepend="set">
+			<isNotEmpty prepend=","  property="order_status">
+				 order_status = '44'
+			</isNotEmpty>
+			<isNotEmpty  prepend="," property="out_fail_reason">
+				out_fail_reason = '1'
+			</isNotEmpty>
+		</dynamic>
+		where order_id=#order_id# 
+	</update>
+</sqlMap>

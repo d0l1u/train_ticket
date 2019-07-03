@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.4" 
+	xmlns="http://java.sun.com/xml/ns/j2ee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
+	http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+  
+  <servlet>
+    <display-name>QueryTicket</display-name>
+    <servlet-name>QueryTicket</servlet-name>
+    <servlet-class>com.l9e.servlet.QueryTicketServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>QueryPriceServlet</servlet-name>
+    <servlet-class>com.l9e.servlet.QueryPriceServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>QueryStationNameServlet</servlet-name>
+    <servlet-class>com.l9e.servlet.QueryStationNameServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>QueryTrainListServlet</servlet-name>
+    <servlet-class>com.l9e.servlet.QueryTrainListServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>QueryMidStationServlet</servlet-name>
+    <servlet-class>com.l9e.servlet.QueryMidStationServlet</servlet-class>
+  </servlet>
+
+
+
+  <servlet-mapping>
+    <servlet-name>QueryTicket</servlet-name>
+    <url-pattern>/queryTicket</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>QueryPriceServlet</servlet-name>
+    <url-pattern>/servlet/queryPrice</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>QueryStationNameServlet</servlet-name>
+    <url-pattern>/servlet/queryStationName</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>QueryTrainListServlet</servlet-name>
+    <url-pattern>/servlet/queryTrainList</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>QueryMidStationServlet</servlet-name>
+    <url-pattern>/servlet/queryMidStation</url-pattern>
+  </servlet-mapping>
+</web-app>

@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="xcBook">
+	<!-- 查询预订订单列表 -->
+	<select id="queryXcBookList" parameterClass="java.util.HashMap"
+		resultClass="java.util.HashMap">
+		SELECT xc.order_id, xc.from_station AS from_city, xc.arrive_station AS to_city,xc.eop_order_id,
+			CONVERT(xc.ticket_pay_money, CHAR) AS ticket_pay_money,xc.merchant_order_id,
+			CONVERT(xc.bx_pay_money, CHAR) AS bx_pay_money,fy.notify_status,
+			CONVERT(xc.pay_money, CHAR) AS pay_money, xc.order_status,
+			DATE_FORMAT(xc.pay_time, '%Y-%m-%d %H:%i:%s') AS pay_time,
+			DATE_FORMAT(xc.out_ticket_time,'%Y-%m-%d %H:%i:%s') AS out_ticket_time, xc.train_no, 
+			CONCAT(CONVERT(DATE_FORMAT(xc.travel_time,'%Y-%m-%d'),CHAR),' ',xc.from_time,':00') AS from_time, 
+			xc.out_ticket_billno,xc.merchant_id,me.merchant_name,
+			xc.merchant_id AS user_id, xc.out_ticket_type, xc.opt_ren, 
+			DATE_FORMAT(xc.create_time,'%Y-%m-%d %H:%i:%s') AS create_time, xc.ticket_num
+		FROM xc_orderinfo AS xc 
+		LEFT JOIN ext_merchantinfo me ON me.merchant_id=xc.merchant_id
+		LEFT JOIN xc_orderinfo_returnnotify fy ON fy.order_id=xc.order_id
+		WHERE 1 = 1 
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				xc.order_id=#order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="merchant_order_id">
+	         	  xc.merchant_order_id =#merchant_order_id:VARCHAR#
+	      	</isNotEmpty>
+			<isNotEmpty prepend=" and " property="out_ticket_billno">
+				xc.out_ticket_billno=#out_ticket_billno:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="plat_order_id">
+				plat_order_id=#plat_order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				xc.create_time
+				<![CDATA[>=]]>
+				#begin_info_time:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				xc.create_time
+				<![CDATA[<]]>
+				DATE_ADD(#end_info_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_status">
+				order_status in
+				<iterate open="(" close=")" conjunction=","
+					property="order_status">
+					#order_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="notify_status">
+				fy.notify_status in
+				<iterate open="(" close=")" conjunction=","
+					property="notify_status">
+					#notify_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY xc.create_time DESC LIMIT #everyPagefrom:Integer#,
+		#pageSize:Integer#
+	</select>
+
+
+	<!-- 查询预订订单信息 -->
+	<select id="queryXcBookOrderInfo" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">				
+		SELECT xc.order_id,xc.order_status,xc.merchant_id AS user_id,xc.pay_money,
+			DATE_FORMAT(xc.pay_time,'%Y-%m-%d %H:%i:%s') AS pay_time,
+			xc.out_ticket_billno,xc.out_ticket_type,fy.notify_status,
+			DATE_FORMAT(xc.out_ticket_time,'%Y-%m-%d %H:%i:%s') AS out_ticket_time, 
+			NULL AS fund_type,xc.from_station AS from_city,xc.arrive_station AS to_city,
+			xc.from_time from_time, xc.merchant_order_id,
+			xc.arrive_time AS to_time,xc.travel_time, 
+			CONVERT(xc.ticket_pay_money,CHAR) AS ticket_pay_money,
+			CONVERT(xc.bx_pay_money,CHAR) AS bx_pay_money,
+			xc.pay_money,xc.train_no,xc.merchant_id AS user_phone,me.merchant_name AS dealer_name,
+			xc.seat_type, xc.buy_money,
+			IFNULL(xc.refund_deadline_ignore,0)AS refund_deadline_ignore,xc.refund_total,
+			xc.link_name,xc.link_phone,xc.out_ticket_billno,
+			IFNULL(xc.refund_deadline_ignore,0)AS refund_deadline_ignore
+		FROM xc_orderinfo AS xc LEFT JOIN ext_merchantinfo me ON me.merchant_id=xc.merchant_id
+		LEFT JOIN xc_orderinfo_returnnotify fy ON fy.order_id=xc.order_id
+		WHERE xc.order_id=#order_id:VARCHAR#
+	</select>
+
+	<!-- 查询预订订单条数 -->
+	<select id="queryXcBookListCount" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(xc.order_id) FROM xc_orderinfo xc 
+		LEFT JOIN xc_orderinfo_returnnotify fy ON fy.order_id=xc.order_id
+		WHERE 1 = 1
+		<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="order_id">
+				xc.order_id=#order_id:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="out_ticket_billno">
+				xc.out_ticket_billno=#out_ticket_billno:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="merchant_order_id">
+	         	  xc.merchant_order_id =#merchant_order_id:VARCHAR#
+	      	</isNotEmpty>
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				xc.create_time
+				<![CDATA[>=]]>
+				#begin_info_time:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				xc.create_time
+				<![CDATA[<]]>
+				DATE_ADD(#end_info_time:VARCHAR#,INTERVAL 1 DAY)
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="order_status">
+				xc.order_status in
+				<iterate open="(" close=")" conjunction=","
+					property="order_status">
+					#order_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="notify_status">
+				fy.notify_status in
+				<iterate open="(" close=")" conjunction=","
+					property="notify_status">
+					#notify_status[]:VARCHAR#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 更新操作人 -->
+	<update id="updateXcEndOpt_Ren" parameterClass="java.util.HashMap">
+		UPDATE xc_orderinfo
+		<dynamic prepend="SET">
+			<isNotEmpty prepend="," property="opt_ren">
+				opt_ren=#opt_ren#
+			</isNotEmpty>
+		</dynamic>
+		WHERE order_id = #order_id#
+	</update>
+
+	<!-- 查询预订订单-车票 --><!-- 没连接保险表productioninfo -->
+	<select id="queryXcBookOrderInfoCp" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT 
+  			cp.cp_id,
+  			cp.order_id,
+  			cp.user_name,
+  			cp.train_box,
+  			cp.seat_no,
+  			cp.ticket_type,
+  			cp.ids_type,
+  			cp.user_ids,
+  			cp.telephone,
+  			cp.create_time,
+  			cp.pay_money,
+  			cp.buy_money,
+  			cp.modify_time,
+  			cp.seat_type,
+  			bx.bx_id,
+  			bx.bx_code,
+			bx.product_id,
+			pr.NAME AS name_type
+		FROM
+  			xc_orderinfo_cp cp 
+  			LEFT JOIN cp_orderinfo_bx bx ON cp.cp_id = bx.cp_id 
+			LEFT JOIN ext_productinfo pr ON  bx.product_id=pr.product_id
+		WHERE cp.order_id=#order_id:VARCHAR#
+	</select>
+
+	<!-- 查询预订订单-保险 -->
+	<select id="queryXcBookOrderInfoBx" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT bx.bx_id,bx.order_id,bx.from_name,bx.to_name,bx.ids_type,bx.user_name,
+			bx.user_ids,bx.create_time,bx.modify_time,bx.telephone,bx.bx_status,
+			bx.bx_code,bx.bx_billno,bx.pay_money,bx.buy_money 
+		FROM cp_orderinfo_bx bx
+		WHERE bx.order_id=#order_id:VARCHAR#
+	</select>
+
+	<!-- 查询预订订单-历史记录 -->
+	<select id="queryXcHistroyByOrderId" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT hs.history_id, hs.order_optlog,
+			DATE_FORMAT(hs.create_time,'%Y-%m-%d %H:%i:%s') AS create_time,
+			hs.opter 
+		FROM xc_orderinfo_history hs 
+		WHERE hs.order_id=#order_id:VARCHAR# order by hs.create_time asc
+	</select>
+
+	<!-- 查询退款明细 -->
+	<select id="queryXcOutTicketInfo" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT hm.order_id,hm.refund_money,
+			DATE_FORMAT(hm.create_time,'%Y-%m-%d %H:%i:%s')AS create_time,
+			hm.refund_time,hm.user_remark,hm.our_remark,
+			hm.refund_plan_time, hm.refund_status,
+			hm.opt_person,hm.refund_type 
+		FROM xc_orderinfo_refundstream hm 
+		where hm.order_id=#order_id:VARCHAR#
+	</select>
+	
+	<!-- 切换无视截止时间 -->
+	<update id="updateXcSwitch_ignore" parameterClass="java.util.HashMap">
+		UPDATE xc_orderinfo SET refund_deadline_ignore=#refund_deadline_ignore#,opt_ren=#opt_ren# WHERE order_id=#order_id#
+	</update>
+	
+	<!-- 增加操作日志 -->
+	<insert id="addXcUserAccount" parameterClass="java.util.HashMap">
+		INSERT INTO xc_orderinfo_history (order_id,order_optlog,create_time,opter)
+		VALUES(#order_id#,#userAccount#,NOW(),#user#)
+	</insert>
+	
+	<!-- 查询预订订单信息 -->
+	<select id="queryBookOrderInfo" parameterClass="java.lang.String" resultClass="java.util.HashMap">		
+		SELECT hc.order_id,hc.order_status,hc.pay_money,
+			DATE_FORMAT(hc.pay_time,'%Y-%m-%d %H:%i:%s') AS pay_time,
+			hc.out_ticket_billno,hc.out_ticket_type,
+			DATE_FORMAT(hc.out_ticket_time,'%Y-%m-%d %H:%i:%s') AS out_ticket_time, 
+			NULL AS fund_type,hc.from_station from_city,hc.arrive_station to_city,
+			DATE_FORMAT(hc.from_time,'%H:%i') AS from_time, 
+			DATE_FORMAT(hc.arrive_time,'%H:%i') AS to_time,hc.travel_time, 
+			CONVERT(hc.ticket_pay_money,CHAR) AS ticket_pay_money,
+			CONVERT(hc.bx_pay_money,CHAR) AS bx_pay_money,
+			hc.pay_money,hc.train_no,
+			hc.seat_type, hc.buy_money,
+			IFNULL(hc.refund_deadline_ignore,0)AS refund_deadline_ignore,
+			hc.refund_total
+		FROM xc_orderinfo hc 
+		WHERE hc.order_id=#order_id:VARCHAR#
+	</select>
+</sqlMap>

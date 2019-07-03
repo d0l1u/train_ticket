@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="phonecheck">
+	
+	<!-- 查询退款表待核验账 -->
+	<select id="queryAccountInfo"  parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+	SELECT cr.account_name,cr.account_pwd,cr.refund_seq,cr.order_id,cr.cp_id,cc.phone FROM cp_orderinfo_refund cr LEFT JOIN 
+	cp_accountinfo_check cc ON cr.account_name = cc.account_username WHERE cr.order_status =#order_status:varchar# 
+		<isNotEmpty property="check_status">
+			  AND cc.check_status = #check_status:varchar#
+		</isNotEmpty>
+		 <isEqual property="is_put" compareValue="00">
+			  AND cc.check_status IS NULL
+		</isEqual>
+		<isEqual property="is_put" compareValue="11">
+			 AND cc.check_status IS NOT NULL
+	    </isEqual>
+	    limit 10
+	</select>
+	
+	<select id="queryAccountNum"  parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+	SELECT count(1) from cp_accountinfo_check where account_username = #account_username:varchar#
+	</select>
+	
+	<update id="updateRefundStatus" parameterClass="java.util.HashMap">
+	UPDATE cp_orderinfo_refund  SET order_status =#new_status:varchar# ,opt_ren=#opt_ren:varchar# ,option_time= now() 
+	WHERE order_status =#old_status:varchar# and refund_seq=#refund_seq:varchar# and order_id =#order_id:varchar# and cp_id =#cp_id:varchar#
+	</update>
+	
+	<insert id="addAccountCheckInfo" parameterClass="java.util.HashMap">
+	INSERT INTO cp_accountinfo_check 
+		(account_id,account_username,account_password,check_status,create_time,channel)
+	VALUE 
+		(#account_id:INTEGER#,#account_username:varchar#,#account_password:varchar#,'1',now(),'refund')
+	</insert>
+	
+	<insert id="addAccountCheckRefundInfo" parameterClass="java.util.HashMap">
+	INSERT INTO cp_accountinfo_check_refund 
+		(account_id,account_username,account_password,check_status,create_time)
+	VALUE 
+		(#account_id:INTEGER#,#account_username:varchar#,#account_password:varchar#,#check_status:varchar#,now())
+	</insert>
+	
+	<update id="updateAccountCheckInfo" parameterClass="java.util.HashMap">
+	UPDATE cp_accountinfo_check 
+		 SET check_status ='1'
+	WHERE account_username = #account_username:varchar# 
+	</update>
+
+	<select id="getPhoneMsgList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+	SELECT phone,account_id,user_id FROM cp_accountinfo_check WHERE check_status ='1' and channel='refund'
+	</select>
+	
+	
+	
+</sqlMap>

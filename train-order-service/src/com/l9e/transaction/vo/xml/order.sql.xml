@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="order">
+
+	<!-- 查询乘客-车票信息 -->
+	<select id="selectOrder" parameterClass="Map" resultClass="com.l9e.transaction.vo.Order">
+		
+	</select>
+	
+	<!-- 更新12306账号 -->
+	<update id="updateOrder" parameterClass="com.l9e.transaction.vo.Order">
+		UPDATE
+			cp_orderinfo
+		SET
+			order_id = #id:VARCHAR#
+		<dynamic>
+			<isNotEmpty prepend="," property="payMoney">
+				pay_money = #payMoney:DECIMAL#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="buyMoney">
+				buy_money = #buyMoney:DECIMAL#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="status">
+				order_status = #status:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="payTime">
+				pay_time = #payTime:DATETIME#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="outTicketTime">
+				out_ticket_time = #outTicketTime:DATETIME#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="billno">
+				out_ticket_billno = #billno:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="fromTime">
+				from_time = #fromTime:DATETIME#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="toTime">
+				to_time = #toTime:DATETIME#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="payAccount">
+				out_ticket_account = #payAccount:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="paySeq">
+				bank_pay_seq = #paySeq:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="errorInfo">
+				error_info = #errorInfo:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="accountId">
+				account_id = #accountId:INTEGER#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="workerId">
+				worker_id = #workerId:INTEGER#
+			</isNotEmpty>
+		</dynamic>
+		WHERE
+			order_id = #id:VARCHAR#
+	</update>
+</sqlMap>

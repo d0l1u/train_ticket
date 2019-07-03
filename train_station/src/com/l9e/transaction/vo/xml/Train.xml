@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="train">
+	<typeAlias alias="train" type="com.l9e.transaction.vo.Train" />
+	<select id="queryTrain" parameterClass="java.util.HashMap"
+		resultClass="train">
+		select train_id as trainId, train_no as trainNo, train_code as
+		trainCode,
+		start_station as startStation, end_station as endStation,
+		level,
+		start_station_code as startStationCode, end_station_code as
+		endStationCode, status from b_train where 1 = 1
+		<isNotEmpty prepend=" and " property="train_no">
+			train_no=#train_no:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="train_code">
+			train_code=#train_code:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="train_id">
+			train_id=#train_id:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="status">
+			status=#status:VARCHAR#
+		</isNotEmpty>
+	</select>
+
+	<select id="queryTrainfromLccc" parameterClass="java.util.HashMap" resultClass="train">
+		SELECT ccno AS trainNo, cc AS trainCode, ksrq AS startDate,
+		sfz AS startStation, zdz AS endStation 
+		FROM t_lccc WHERE 1 = 1
+		<isNotEmpty prepend=" and " property="train_code">
+			(cc LIKE CONCAT("%", '/', #train_code:VARCHAR#) OR cc LIKE CONCAT(#train_code:VARCHAR#, '/', "%") OR cc=#train_code:VARCHAR#)
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="status">
+			status=#status:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="train_no">
+			ccno=#train_no:VARCHAR#
+		</isNotEmpty>
+	</select>
+	
+	<insert id="insertTrainIntoLccc" parameterClass="java.util.List">
+		insert into t_lccc(ccno, cc, sfz, zdz,
+		ksrq, status) values
+		<iterate conjunction="," property="trainList">
+		    <![CDATA[
+		    (#trainList[].trainNo#, #trainList[].trainCode#, #trainList[].startStation#, #trainList[].endStation#,
+		     #trainList[].startDate#, #trainList[].status#)
+		    ]]>
+		</iterate>
+	</insert>
+
+	<insert id="insertTrainVoIntoLccc" parameterClass="train">
+		INSERT INTO t_lccc(ccno, cc, sfz, zdz, ksrq, status, lcdj) 
+		VALUES
+		(#trainNo#, #trainCode#, #startStation#, #endStation#, #startDate#, #status#, #level#)
+	</insert>
+
+	<insert id="insertTrain" parameterClass="java.util.List">
+		insert into train(train_no, train_code, start_station, end_station,
+		level, start_station_code, end_station_code, status) values
+		<iterate conjunction="," property="trainList">
+		    <![CDATA[
+		    (#trainList[].trainNo#, #trainList[].trainCode#, #trainList[].startStation#, #trainList[].endStation#,
+		     #trainList[].level#, #trainList[].startStationCode#, #trainList[].endStationCode#, #trainList[].status#)
+		    ]]>
+		</iterate>
+	</insert>
+
+	<update id="updateTrainOfLccc" parameterClass="train">
+		UPDATE t_lccc SET sfz=#startStation:VARCHAR#, zdz=#endStation:VARCHAR#, ccno=#trainNo:VARCHAR#, status = #status:VARCHAR#
+		<isNotEmpty prepend="," property="startDate">
+			ksrq=#startDate:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="level">
+			lcdj=#level:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="trainCode">
+			cc=#trainCode:VARCHAR#
+		</isNotEmpty>
+		WHERE 1 = 1
+		<isNotEmpty prepend=" and " property="trainCode">
+			(cc LIKE CONCAT("%", '/', #trainCode:VARCHAR#) OR cc LIKE CONCAT(#trainCode:VARCHAR#, '/', "%") OR cc=#trainCode:VARCHAR#)
+		</isNotEmpty>
+		<!-- <isNotEmpty prepend=" and " property="trainNo">
+			ccno =#trainNo:VARCHAR#
+		</isNotEmpty> -->
+	</update>
+	
+		<update id="updateTrainOfLcccByccno" parameterClass="train">
+		UPDATE t_lccc SET sfz=#startStation:VARCHAR#, zdz=#endStation:VARCHAR#, ccno=#trainNo:VARCHAR#, status = #status:VARCHAR#
+		<isNotEmpty prepend="," property="startDate">
+			ksrq=#startDate:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="level">
+			lcdj=#level:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="trainCode">
+			cc=#trainCode:VARCHAR#
+		</isNotEmpty>
+		WHERE 1 = 1
+		<!-- <isNotEmpty prepend=" and " property="trainCode">
+			(cc LIKE CONCAT("%", '/', #trainCode:VARCHAR#) OR cc LIKE CONCAT(#trainCode:VARCHAR#, '/', "%") OR cc=#trainCode:VARCHAR#)
+		</isNotEmpty> -->
+		 <isNotEmpty prepend=" and " property="trainNo">
+			ccno =#trainNo:VARCHAR#
+		</isNotEmpty>
+		</update>
+	
+	<update id="updateTrainOfLcccBycc" parameterClass="train">
+		UPDATE t_lccc SET sfz=#startStation:VARCHAR#, zdz=#endStation:VARCHAR#, ccno=#trainNo:VARCHAR#, status = #status:VARCHAR#
+		<isNotEmpty prepend="," property="startDate">
+			ksrq=#startDate:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="level">
+			lcdj=#level:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="," property="trainCode">
+			cc=#trainCode:VARCHAR#
+		</isNotEmpty>
+		WHERE 1 = 1
+		<isNotEmpty prepend=" and " property="trainCode">
+			(cc LIKE CONCAT("%", '/', #trainCode:VARCHAR#) OR cc LIKE CONCAT(#trainCode:VARCHAR#, '/', "%") OR cc=#trainCode:VARCHAR#)
+		</isNotEmpty>
+		<!-- <isNotEmpty prepend=" and " property="trainNo">
+			ccno =#trainNo:VARCHAR#
+		</isNotEmpty> -->
+	</update>
+	
+
+	<update id="updateTrain" parameterClass="train">
+		update train set start_station=#startStation:VARCHAR#,
+		start_station_code=#startStationCode:VARCHAR#, end_station =
+		#endStation:VARCHAR#, end_station_code = #endStationCode#, status =
+		#status:VARCHAR#,
+		<isNotEmpty prepend="," property="startDate">
+			start_date=#startDate:VARCHAR#
+		</isNotEmpty>
+		where 1 = 1
+		<isNotEmpty prepend=" and " property="trainCode">
+			train_code =
+			#trainCode:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="trainNo">
+			train_no =
+			#trainNo:VARCHAR#
+		</isNotEmpty>
+	</update>
+</sqlMap> 

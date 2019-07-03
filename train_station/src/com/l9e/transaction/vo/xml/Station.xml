@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="station">
+	<!-- 通过typeAlias使得我们在下面使用Student实体类的时候不需要写包名 -->
+	<typeAlias alias="station" type="com.l9e.transaction.vo.Station" />
+	<typeAlias alias="ctripStation" type="com.l9e.transaction.vo.CtripStation" />
+
+	<select id="queryStation" parameterClass="java.util.HashMap"
+		resultClass="com.l9e.transaction.vo.Station">
+		select station_id as stationId, station_code as stationCode,
+		station_name as
+		stationName, station_pinyin as stationPinyin,
+		first_letters_of_station
+		as firstLettersOfStation, city, level,
+		abbreviated_station as abbreviatedStation 
+		from b_station where 1 = 1
+		<isNotEmpty prepend=" and " property="stationName">
+			station_name=#stationName:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="stationCode">
+			station_code =
+			#stationCode:VARCHAR#
+		</isNotEmpty>
+	</select>
+
+	<select id="queryStationFromZm" parameterClass="java.util.HashMap"
+		resultClass="com.l9e.transaction.vo.Station">
+		SELECT lh AS stationCode, zmhz AS stationName, py AS firstLettersOfStation, status
+		FROM t_zm WHERE 1 = 1
+		<isNotEmpty prepend=" and " property="stationName">
+			zmhz=#stationName:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="stationCode">
+			lh=#stationCode:VARCHAR#
+		</isNotEmpty>
+	</select>
+
+	<update id="updateStation" parameterClass="com.l9e.transaction.vo.Station">
+		update station set status = #status:VARCHAR#,
+		station_name=#stationName:VARCHAR#, station_pinyin =
+		#stationPinyin:VARCHAR#,
+		first_letters_of_station=#firstLettersOfStation:VARCHAR#,
+		abbreviated_station=#abbreviatedStation:VARCHAR#
+		where station_code =
+		#stationCode:VARCHAR#
+		<isNotEmpty prepend=" and " property="stationId">
+			station_id=#stationId:Integer#
+		</isNotEmpty>
+	</update>
+
+	<update id="updateStationOfZm" parameterClass="com.l9e.transaction.vo.Station">
+		UPDATE t_zm SET zmhz=#stationName:VARCHAR#, py=#firstLettersOfStation:VARCHAR#, 
+		status=#status:VARCHAR#
+		WHERE lh = #stationCode:VARCHAR#
+	</update>
+
+	<insert id="insertStation" parameterClass="com.l9e.transaction.vo.Station">
+		insert b_station
+		(station_code, station_name, first_letters_of_station,
+		station_pinyin,
+		abbreviated_station, status) value
+		(#stationCode:VARCHAR#,
+		#stationName:VARCHAR#,
+		#firstLettersOfStation:VARCHAR#,
+		#stationPinyin:VARCHAR#,
+		#abbreviatedStation:VARCHAR#,
+		#status:VARCHAR#)
+	</insert>
+
+	<insert id="insertStationIntoZm" parameterClass="com.l9e.transaction.vo.Station">
+		INSERT INTO t_zm (lh, zmhz, py, city, status) 
+		VALUE
+		(#stationCode:VARCHAR#, #stationName:VARCHAR#,
+		#firstLettersOfStation:VARCHAR#, #city:VARCHAR#, #status:VARCHAR#)
+	</insert>
+	
+	<!-- 根据三字码删除 -->
+	<delete id="deteStationByCode" parameterClass="java.util.List">
+	   delete   from   t_zm    
+	   <dynamic prepend="where">
+	      lh in
+	    <iterate  open="(" close=")"  conjunction="," property="zmList">
+		    <![CDATA[
+		      #zmList[].stationCode:VARCHAR#
+		    ]]>
+		</iterate>
+		</dynamic>
+	</delete>
+	<!-- 根据站名删除  -->
+	<delete id="deteStationByName" parameterClass="java.util.List">
+		delete   from   t_zm
+	   <dynamic prepend="where">
+	      zmhz in
+	    <iterate  open="(" close=")"  conjunction="," property="zmList">
+		    <![CDATA[
+		      #zmList[].stationName:VARCHAR#
+		    ]]>
+		</iterate>
+		</dynamic>
+	</delete>
+	
+	<!-- 查询站名 -->
+	<select id="queryCtripStation" parameterClass="java.util.HashMap" 
+	resultClass="ctripStation">
+		SELECT  * FROM  t_ctrip_zm1 WHERE  1 = 1
+		<isNotEmpty prepend=" and " property="name">
+			name=#name:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend=" and " property="pinyin">
+			pinyin=#pinyin:VARCHAR#
+		</isNotEmpty>
+	</select>
+	
+	<!-- 添加站名 -->
+	<insert id="insertCtripStation" parameterClass="com.l9e.transaction.vo.CtripStation">
+		INSERT INTO t_ctrip_zm1 (name,pinyin,create_time,cc_status)
+		VALUE
+		(#name:VARCHAR#, #pinyin:VARCHAR#,NOW(),#cc_status:VARCHAR#)
+	</insert>
+	<!-- 更新站名 -->
+	<update id="updateCtripStation" parameterClass="com.l9e.transaction.vo.CtripStation">
+		UPDATE t_ctrip_zm1  SET name=#name:VARCHAR#,pinyin=#pinyin:VARCHAR#,cc_status=#cc_status:VARCHAR#,create_time=now()
+		WHERE  name = #name:VARCHAR#
+	</update>
+	
+</sqlMap>

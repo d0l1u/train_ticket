@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="accounttj">
+
+	<!-- 获取按条件查询所有 -->
+	<select id="queryAccounttjList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT 
+			  tj_id,
+			  DATE_FORMAT(create_time, '%Y-%m-%d %H:%i:%s') create_time,
+			  add_regist ,
+			  regist_pass ,
+			  regist_wait ,
+			  regist_success ,
+			  regist_fail ,
+			  regist_other ,
+			  regist_free ,
+			  regist_all_wait,
+			  regist_all_hand,
+			  account,
+			  account_wait,
+			  account_stop ,
+			  account_land ,
+			  account_add ,
+			  qunar_num ,
+			  qunar_stop ,
+			  qunar_can_use ,
+			  qunar_stop_today ,
+			  qunar_seal ,
+			  qunar_toomuch,
+			  qunar_out ,
+			  qunar_not_real,
+			  qunar_shici ,
+			  qunar_goback ,
+			  tongcheng_num,
+			  tongcheng_stop,
+			  tongcheng_can_use ,
+			  tongcheng_stop_today,
+			  tongcheng_seal,
+			  tongcheng_toomuch,
+			  tongcheng_out,
+			  tongcheng_not_real,
+			  tongcheng_shici,
+			  tongcheng_goback,
+			  elong_num,
+			  elong_stop,
+			  elong_can_use,
+			  elong_stop_today,
+			  elong_seal,
+			  elong_toomuch,
+			  elong_out,
+			  elong_not_real,
+			  elong_shici,
+			  elong_goback 
+			FROM
+			  tj_account 
+			WHERE 1 = 1 
+			<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				create_time
+				<![CDATA[>=]]>
+				DATE_FORMAT(#begin_info_time#,'%Y-%m-%d %H:%i:%s')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				create_time
+				<![CDATA[<]]>
+				DATE_ADD(DATE_FORMAT(#end_info_time#,'%Y-%m-%d
+				%H:%i:%s'),INTERVAL 1 DAY)
+			</isNotEmpty>
+			</dynamic>
+		ORDER BY create_time DESC  LIMIT #everyPagefrom:Integer#,#pageSize:Integer#
+	</select>
+	
+
+	<!-- 获取按条件查询数 -->
+	<select id="queryAccounttjCounts"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM tj_account 
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				create_time
+				<![CDATA[>=]]>
+				DATE_FORMAT(#begin_info_time#,'%Y-%m-%d %H:%i:%s')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				create_time
+				<![CDATA[<]]>
+				DATE_ADD(DATE_FORMAT(#end_info_time#,'%Y-%m-%d
+				%H:%i:%s'),INTERVAL 1 DAY)
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+
+	
+	<!-- 导出queryAccounttjExcel -->
+	<select id="queryAccounttjExcel" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+			SELECT 
+			  tj_id,
+			  DATE_FORMAT(create_time, '%Y-%m-%d') create_time,
+			  add_regist ,
+			  regist_pass ,
+			  regist_wait ,
+			  regist_success ,
+			  regist_fail ,
+			  regist_other ,
+			  regist_free ,
+			   regist_all_wait,
+			  regist_all_hand,
+			  account,
+			  account_wait,
+			  account_stop ,
+			  account_land ,
+			  account_add ,
+			  qunar_num ,
+			  qunar_stop ,
+			  qunar_stop_today ,
+			  qunar_can_use ,
+			  qunar_seal ,
+			  qunar_toomuch,
+			  qunar_out ,
+			  qunar_not_real,
+			  qunar_shici ,
+			  qunar_goback ,
+			  tongcheng_num,
+			  tongcheng_stop,
+			  tongcheng_can_use,
+			  tongcheng_stop_today,
+			  tongcheng_seal,
+			  tongcheng_toomuch,
+			  tongcheng_out,
+			  tongcheng_not_real,
+			  tongcheng_shici,
+			  tongcheng_goback,
+			  elong_num,
+			  elong_stop,
+			  elong_can_use,
+			  elong_stop_today,
+			  elong_seal,
+			  elong_toomuch,
+			  elong_out,
+			  elong_not_real,
+			  elong_shici,
+			  elong_goback  
+			FROM
+			  tj_account 
+			WHERE 1 = 1 
+			<dynamic prepend="">
+			<isNotEmpty prepend=" and " property="begin_info_time">
+				create_time
+				<![CDATA[>=]]>
+				DATE_FORMAT(#begin_info_time#,'%Y-%m-%d %H:%i:%s')
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="end_info_time">
+				create_time
+				<![CDATA[<]]>
+				DATE_ADD(DATE_FORMAT(#end_info_time#,'%Y-%m-%d
+				%H:%i:%s'),INTERVAL 1 DAY)
+			</isNotEmpty>
+			</dynamic>
+			ORDER BY create_time DESC
+	</select>
+
+</sqlMap>

@@ -1,0 +1,12 @@
+db.username =hcpiao
+db.password =ojWuQKtmWo
+db.url=jdbc:mysql://10.16.22.35:3306/hcpiao?useUnicode=true&characterEncoding=UTF8
+db.driver =com.mysql.jdbc.Driver
+db.acquireIncrement = 5
+db.initialPoolSize = 3
+db.maxPoolSize = 20
+db.minPoolSize = 2
+db.maxIdleTime = 3
+db.minIdleTime = 1
+db.acquireRetryAttempts= 0
+db.idleConnectionTestPeriod = 60

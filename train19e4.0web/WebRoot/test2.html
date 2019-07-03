@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>预订信息页</title>
+<link rel="stylesheet" href="E:/code/train19e4.0web/WebRoot/css/style.css" type="text/css" />
+<link rel="stylesheet" href="E:/code/train19e4.0web/WebRoot/css/default.css" type="text/css" />
+<link rel="stylesheet" href="E:/code/train19e4.0web/WebRoot/css/attach_style.css" type="text/css" />
+<link rel="stylesheet" href="/css/jquery.autocomplete.css" type="text/css" />
+
+<script type="text/javascript" src="E:/code/train19e4.0web/WebRoot/js/jquery.js"></script>
+<script type="text/javascript" src="E:/code/train19e4.0web/WebRoot/js/datepicker/WdatePicker.js"></script>
+<script type="text/javascript" src="E:/code/train19e4.0web/WebRoot/js/artDialog.js"></script>
+<script type="text/javascript" src="E:/code/train19e4.0web/WebRoot/js/idCard.js"></script>
+<script type="text/javascript" src="E:/code/train19e4.0web/WebRoot/js/json2.js"></script>
+<script type="text/javascript" src="E:/code/train19e4.0web/WebRoot/js/jquery.autocomplete.js"></script>
+<script type="text/javascript" src="E:/code/train19e4.0web/WebRoot/js/city.js"></script>
+<script type="text/javascript" src="E:/code/train19e4.0web/WebRoot/js/qiangpiao.js"></script>
+</head>
+<body>
+	<div class="content oz">
+		<div class="index_all">
+<iframe id="iframeSetHeight" name="iframeSetHeight" src="" width="0" height="0" style="display:none;" ></iframe>
+
+<!--左边内容 start-->
+<div id="new_left">
+<!--侧边栏 start-->
+
+		<h3 class="sidebar_tit"  onclick="toHref(this.id, '/buyTicket/bookIndex.jhtml');" style="cursor: pointer;">
+			火车票业务
+		</h3>
+		<!--登录状态 start-->
+   	   <div class="vip-state oz">
+	   	 	<a class="box-a" href="/joinUs/realNameAuth.jhtml">
+		      	<dl class="oz">
+		      		<dt>
+		              	<div class="vip-icon nolevel-icon"></div>
+		              	 <p class="operate update" style="text-align:center; width:63px; height:25px;line-height:25px;"><span>立即认证</span></p>
+		              </dt>
+		              <dd>
+		              	<p class="vip-mes"><label>姓名：</label><span  style="color: #555555">未填写</span></p>
+		              	  	  <p class="vip-mes"><label>状态：</label><span style="color:#555555">已开通</span></p>
+		                  <p class="vip-mes"><label>实名：</label><span class="state">未认证</span></p>
+		                  <p class="vip-mes"><label>等级：</label><span>无</span></p>
+		              </dd>
+		          </dl>   
+		     </a>
+		 </div>
+		<!--登录状态 end-->
+	<div id="sidebar">	
+	<ul class="sidebar_con" id="all_menu">
+		<li style="border-left: 4px #92d14f solid;" >
+			<div id="currentMenu_1"  class="current_cat1 current_onclick"  
+				onclick="toHref(this.id, '/buyTicket/bookIndex.jhtml');"> 
+				<a href="#">车票预订</a> 
+				<span  class="gcurrent" ></span> 
+			</div>
+		</li>
+		<li style="border-left: 4px #a04ed1 solid;" >
+			<div id="currentMenu_2"  class="cat2"  
+				onclick="toHref(this.id, '/query/queryOrderList.jhtml');" > 
+				<a href="#">我的订单</a> 
+				<span ></span>
+			</div>
+		</li>
+		<li  style="border-left: 4px #fca0ab solid;" >
+			<div id="currentMenu_3" class="cat3" 
+				onclick="toHref(this.id, '/query/querySaleReport.jhtml');" > 
+				<a href="#">销售报表</a> 
+				<span ></span>
+			</div>
+		</li>
+		<li style="border-left: 4px #ffc001 solid;" >
+			<div id="currentMenu_4"  class="cat4" 
+				onclick="toHref(this.id, '/complain/complainIndex.jhtml');"  > 
+				<a href="#">投诉建议</a> 
+				<span ></span>
+			</div>
+		</li>
+		<li style="border-left: 4px solid #f15f62;" >
+			<div id="currentMenu_5" class="cat5"  
+				onclick="toHref(this.id, '/pages/guide/newKaiTong.jsp');" > 
+				<a href="#">常见问题</a> 
+				<span ></span>
+			</div>
+		</li>
+	</ul>
+
+	</div>
+	
+<div id="new_ggao">
+		<h2>
+			<span>公告</span>
+			<a href="/notice/queryNoticeAllList.jhtml">更多
+			</a>
+		</h2>
+		<div class=nggao_con>
+			<ul style="padding-right: 8px;">
+				
+				
+    				<li>
+    				<span style="width:145px; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+        		<a title="<b style='color:red'>车次数据全更新</b>" href="/notice/queryNoticeInfo_no.jhtml?noticeId=126">
+        	<b style='color:red'>车次数据全更新</b>
+        		</a>
+        		</span>
+				<span class="notice_time">
+    			2016/11/23
+    			</span>
+    				</li>
+    				<li>
+    				<span style="width:145px; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+        		<a title="<b>预售时间调整公告</b>" href="/notice/queryNoticeInfo_no.jhtml?noticeId=130">
+        	<b>预售时间调整公告</b>
+        		</a>
+        		</span>
+				<span class="notice_time">
+    			2016/11/02
+    			</span>
+    				</li>
+    				<li>
+    				<span style="width:145px; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+        		<a title="开车前订票时间更改公告" href="/notice/queryNoticeInfo_no.jhtml?noticeId=114">
+        	开车前订票时间更改公告
+        		</a>
+        		</span>
+				<span class="notice_time">
+    			2015/05/05
+    			</span>
+    				</li>
+</ul>
+</div>
+</div>
+	<!--公告 end-->
+
+	<!--联系方式 start-->
+	<div id="new_contact">
+		<h3>
+			<span>联系方式</span>
+		</h3>
+		<div class="new_contact">
+			<span>客服热线</span>
+			<b>7:00-23:00</b>
+			<a href="#">400-688-2666</a>
+		</div>
+	</div>
+	<!--联系方式 end-->
+</div>
+
+<!--左边内容 end-->
+    	<!--右边内容 start-->
+    	<div class="infoinput-right oz">
+    		<div class="tip_term oz" style="width:785px;margin:0 0 10px 0;">
+    			<!--<p class="price_tip">温馨提醒：火车票订票时间为早7:00-晚23:00，23:00之后的订单将在次日早7:00之后处理。</p>  -->	
+            <p class="price_tip">温馨提醒：提前70天预约购票功能仅为VIP、SVIP订单专享，在平台预约购票后待铁路系统发售时订购，我们会将购票结果短信通知乘客。</p>
+            </div>
+            <form id="trainForm" action="/order/createOrder.jhtml" method="post">
+            	<input type="hidden" id="train_no" name="train_no" value="G11" />
+            	<input type="hidden" id=from_city name="from_city" value="北京南" />
+            	<input type="hidden" id="to_city" name="to_city" value="上海虹桥" />
+            	<input type="hidden" id="from_time" name="from_time" value="2016-11-26 08:00" />
+            	<input type="hidden" id="to_time" name="to_time" value="2016-11-26 13:10" />
+            	<input type="hidden" name="travelTime" id="travelTime" value="2016-11-26" />
+            	<input type="hidden" name="out_ticket_type" id="out_ticket_type" value="11" />
+            	<input type="hidden" name="ps_pay_money" value="20" />
+            	<input type="hidden" name="wz_ext" id="wz_ext" />
+            	<input type="hidden" name="choose_ext" id="choose_ext" />
+            	<input type="hidden" name="choose_type_value" id="choose_type_value" value="choose_type_11"/>
+            	
+            <div class="pub_order_mes ticket_mes oz mb10_all" style="margin:0;">
+            	<div class="pub_ord_tit">
+                    <h4 class="fl">车次信息</h4>
+                    <p class="tit_tip">（数据仅作参考，请以实际出票情况为准）</p>
+                    <!-- <input type="button" class="btn" value="重选车次" onclick="javascript:history.back(-1);"/> -->
+                </div>
+                <div class="new_pub_con">
+                	<table class="pub_table">
+                    	<tr>
+                        	<td class="pub_yuliu" rowspan="5">
+                            	<strong>G11</strong><br />
+                            	<span class="checi">高铁</span>
+                            </td>
+                            <td class="addr" colspan="2"><strong>北京南<span>（08:00）</span></trong>—<strong>上海虹桥<span>（13:10）</span></strong></td>
+                        	
+                        </tr>
+                        <tr>
+                        	<td width="280">日 期：<span>2016-11-26</span></td>
+                        	<td rowspan="3" width="100" style="padding-left:80px;"><input type="button" class="btn" value="重选" onclick="javascript:history.back(-1);"/></td>
+                        </tr>
+                        <tr>
+                        	<td width="320">坐 席：<select name="seat_type" id="seat_type">
+                            			<option selected="selected"  value="2">一等座</option>
+                            			<option value="3">二等座</option>
+                            			<option value="0">商务座</option>
+                            </select>
+                            <span id="wz_agree" style="display: none;">
+                            <span class="display_mid" style="padding-left: 20px;">
+                            <input type="checkbox" id="wz_chk" />
+                            </span>
+                            <label for="wz_chk" style="color:#0081cc;">同意无票时购买无座</label>
+                            </span>
+                            <span id="wz_agree1" style="display: none;">
+                           	 <span class="display_mid" style="padding-left: 0px;">
+                           	 <input type="checkbox" id="wz_chk1" /></span>
+                           	 <label for="wz_chk1" style="color:#0081cc;">同意无票时购买无座</label>
+                           	 </span>
+                           	 <span id="wz_agree2" style="display: none;">
+                           	 <span class="display_mid" style="padding-left: 0px;">
+                           	 <input type="checkbox" id="wz_chk2" /></span>
+                           	 <label for="wz_chk2" style="color:#0081cc;">同意无票时购买无座</label>
+                           	 </span>
+                            </td>
+                        </tr>
+                        <tr>
+                        	<td>票面价：
+								<span id="danjia_show">0.00</span> 元            	
+								<input type="hidden" id="danjia" name="danjia" value="0.00" />
+							</td>  
+						</tr>
+                       	<tr>
+	                      	<td id="sleeper_alter" colspan="2"><p class="price_tip" style="color:#EA0000;">卧铺铺位上中下是随机的，我们暂收下铺价格，出票后根据实际票价退还差价。
+	                       </p></td>
+                     	</tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <div class="book_passager_mes oz mb10_all">
+            	<div class="pub_ord_tit">
+                    <h4 class="fl" id="passenger_info">乘客信息</h4>
+                    <p class="tit_tip">（一个订单最多可代购5张票，请务必填写乘车人真实信息，<span onclick="javascript:showGpDesc();">购票说明</span>）</p>
+                </div>
+                <div class="new_pub_con delivery_pos oz">
+                	<div class="usual-passenger" id="pax_passenger" style="border:0;background-color:#EAF2FC;">
+		                <ul id="useManager" class="oz">
+		                </ul>
+		                <div class="down-arrow" id="ser-more"><a href="javascript:void(0);">更多</a></div>
+	            	</div>
+	                <div class="delivery_pos_child oz">
+	                	<div style="padding-bottom:10px;">
+		                	<table class="table_list" cellpadding="0" cellspacing="0" id="train_ticket_list" style="position:relative;z-index:999;width:97%;margin:10px;">
+		                    	<tr>
+		                    		<td width="25">&nbsp;</td>
+		                        	<td width="15"></td>
+		                        	<td width="100">姓 名</td>
+		                            <td width="90">类 型</td>
+		                            <td width="120">证件类型</td>
+		                            <td width="135">证件号码</td>
+		                            <td width="110">&nbsp;</td>
+		                            <td width="90">&nbsp;</td>
+		                        </tr>
+		                        <tr class="adult" style="display: none;">
+		                        	<td><span class="delPerson fl" id="delPerson_index_source"><a href="javascript:void(0);"><s></s></a></span></td>
+		                        	<td class="indexTr" id="index_index_source">index_source</td>
+		                            <td><input style="width:90px;border:1px solid #dadada;" type="text" name="bookDetailInfoList_source.user_name" id="user_name_index_source" 
+		                            		class="text text_name user_name_text" title="姓名" onblur="hideMsg(this);" onkeyup="value=value.replace(/(^\s*)|(\s*$)/g,'');" /></td>
+		                            <td>
+		                            	<select style="width:70px;" name="bookDetailInfoList_source.ticket_type" id="ticket_type_index_source" class="ticket_type_select" onchange="toggleTip(index_source);">
+		                                	<option value="0">成人票</option>
+		                                	<option value="1">儿童票</option>
+		                            	</select>
+		                            </td>
+		                            <td>
+		                            	<select style="width:100px;" name="bookDetailInfoList_source.ids_type" id="ids_type_index_source"  class="ids_type_select">
+		                                	<option value="2">二代身份证</option>
+		                                	<!--<option value="1">一代身份证</option>-->
+		                                	<option value="3">港澳通行证</option>
+		                                	<option value="4">台湾通行证</option>
+		                                	<option value="5">护照</option>
+		                                </select>
+		                            </td>
+		                            <td><input style="width:130px;border:1px solid #dadada;" type="text" class="text text_id idcard_text" name="bookDetailInfoList_source.user_ids" 
+		                            		id="user_ids_index_source" title="证件号码" onblur="hideMsg(this);hideNumMsg(this);toggleTip(index_source);"
+		                            		onfocus="getNumbers(this,'idcard');" onkeyup="value=value.replace(/(^\s*)|(\s*$)/g,'');getNumbers(this,'idcard');" /></td>
+		                            <td>
+		                            	<div class="savePaxDiv fl"><input id="savePax_index_source" class="savePax_index_source" type="checkbox" /><label for="savePax_index_source" style="cursor:hand;">保存为常用乘客</label></div>
+		                            </td>
+		                            <td nowrap="nowrap">
+		                            	<span class="fl addChildren" style="display:inline;" id="addChildren_index_source"><a href="javascript:void(0);">添加随行儿童</a></span>
+		                            </td>
+		                        </tr>
+		                     </table>
+	                      	 <div class="add_person_statement oz" style="width:97%;margin:10px;color:#ea0000;">
+	                      	 	<p style="float:left;padding-left:26px;width:60px;line-height:24px;">温馨提示：</p>
+	                      	 	<p style="float:left;text-align:left;color:#ea0000;width:600px;line-height:24px;">
+	                      	 		<span>1、若2-5人一同出行，请添加同行乘客后一起提交，可提高连座几率；</span><br />
+	                      	 		<span>2、所填写的乘客姓名和证件号码必须与证件上信息保持一致，若有错别字或号码不准确均会导致出票失败。</span> 
+	                      	 	</p>
+	                      	 	
+	                          </div>
+		                 </div>
+	                     <div id="add_person" >
+                           	<div class="ableAdd" style="float:left;">
+                           		<span class="add_adult"></span>
+                           	</div>
+                         </div>
+	                </div>
+	                <!-- 购买儿童票提示 -->
+	                <div class="show_tip" id="child_tip" style="display: none;">
+                		<p class="price_tip" >1.为确保儿童出行安全，儿童票须跟成人票一起购买，乘车儿童有有效身份证件的，填写儿童有效身份证件信息；乘车儿童没有有效身份证件的，应使用同行成年人的有效身份证件信息；购票时不受前条限制，
+但购票后、开车前须办理换票手续方可进站乘车。<br />
+2.儿童身高为1.2-1.5米可购买儿童票，超过1.5米须购买成人票。一名成年乘客可以免费携带一名身高不足1.2米的儿童。身高不足1.2米的儿童超过一名时，一名儿童免费，其他儿童需购买儿童票。<br />
+3.儿童票暂收成人票价，<font style="color:#EA0000;">出票后根据实际票价退还差价。</font></p>
+                	</div>
+                	</div>
+                </div>
+                <!-- 抢票信息开始 -->
+                <div class="book_passager_mes oz mb10_all">
+            	<div class="pub_ord_tit">
+                    <h4 class="fl" id="passenger_info">抢票设置</h4>
+                    <p class="tit_tip">抢票提示文字：</p>
+                </div>
+                <div class="new_pub_con delivery_pos oz">
+                	<div class="usual-passenger" id="pax_passenger" style="border:0;background-color:#EAF2FC;">
+		                <ul id="useManager" class="oz">
+		                </ul>
+	            	</div>
+	            	
+						<div class="yun_time" style="margin-left: 35px; margin-top: 10px;">
+                            <strong>停止抢票时间为</strong>
+                            <select style="width: 159px;" id="yun_qiangpiao">
+	                             <option valuename="抢至发车前5天" value="120">抢至2016-11-29 23:00:00</option>
+	                             <option valuename="抢至发车前3天" value="72">抢至2016-11-27 23:00:00</option>
+	                             <option valuename="抢至发车前2天" value="48">抢至2016-11-26 23:00:00</option>
+	                             <option valuename="抢至发车前1天" value="24">抢至2016-11-25 23:00:00</option>
+	                             <option valuename="抢至发车前一小时" value="-1" selected="true">抢至：发车前一小时</option>
+                            </select>
+                            <span id="changevalueName"></span><br>
+                          
+                             <div style="margin-top:12px">
+                           </div>
+                           <div class="yun_tit">云抢票成功率评估：<strong class="yun_tag_red" id="ticketEfficiency">抢票成功率<span>一般</span></strong> </div>
+	            	</div>
+	                <div class="delivery_pos_child oz">
+	                	<div style="padding-bottom:10px;">
+	                      	 <div class="add_person_statement oz" style="width:97%;margin:10px;color:#ea0000;">
+	                      	 	<p style="float:left;padding-left:26px;width:60px;line-height:24px;">温馨提示：</p>
+	                      	 	<p style="float:left;text-align:left;color:#ea0000;width:600px;line-height:24px;">
+	                      	 		<span>1、仅有1名乘客，抢到票的概率高</span><br />
+	                      	 		<span>2、将为您抢票抢至发车前一小时，时间充足，容易抢到票</span><br /> 
+	                      	 		<span>3、您已选择同时抢1个坐席和1个车次，抢票成功率提高了1倍</span><br />
+	                      	 		<span>4、余票大数据显示发车前三天平均每天有35张新的余票放出，抢到票的概率很高</span><br />
+	                      	 	</p>
+	                          </div>
+		                 </div>
+	                </div>
+                	</div>
+                </div>
+                <!-- 抢票信息结束 -->
+                
+                <div class="book_passager_mes oz mb10_all">
+                	<div class="book_passager_mes oz">
+		            	<div class="pub_ord_tit">
+		                    <h4 class="fl">SVIP服务费</h4>
+		                    <p class="tit_tip">（极速抢票，赠送保险！）</p>
+		                </div>
+		            </div>
+		            <div class="new_pub_con">
+	                <div class="insurance_wrap oz">
+				        <dl class="oz">
+				            <dd>
+				            	<div class="info_txt1">
+				                	<div class="info-select oz">
+					                	
+					                		
+	                                		<input id="train_product_0" value="BX_0" type="hidden"/>
+	                                		<span class="train_product" type="radio" id="product_0" > <label style="margin-right:35px;">SVIP服务费合计：</label></span>
+	                            		
+                            		</div>
+				                </div>
+				            </dd>
+				        </dl>
+				     </div>
+                </div>
+
+            </div>
+
+			<div class="pub_delivery_mes oz mb10_all" id="tickets-way">
+			   	<div class="pub_ord_tit">
+        	    	<h4 class="fl">取票方式</h4>
+	                <p class="tit_tip">（取票规则：开车前可在任何火车站或代售点自由取票，<span onclick="javascript:showQpDesc();" id="qupiao">取票说明</span>）</p>
+                </div>
+            			<style>
+                    	.type_22 td{padding-left:80px;line-height: 0px;}
+                    	.type_class{ font-size: 14px; cursor:pointer;}
+                    	.checked_type{BACKGROUND: url(../images/radio-checked.png) no-repeat;display:inline-block;height: 17px;width: 17px;background-position: center;}
+                    	.unchecked_type{BACKGROUND: url(../images/radio-unchecked.png) no-repeat; display:inline-block;height: 17px;width: 17px;background-position: center;}
+                    	</style>
+                <div class="new_pub_con">
+                    <table class="pub_table current"  style="margin:10px 0px 10px 40px;">
+                    	<tr>
+                    	<td colspan="3" class="height30">
+                    	<span  class="type_class" id="check_class_11"><span class="checked_type" id="check_type_11"></span><label>车站自提</label></span> 
+                    	  
+                    	  </td>
+                    	</tr>
+                    	<tr class="type_11"  id="table_type_11">
+                        	<td width="234"><span style="color:red;">*</span>联 系 人：<span><input type="text" class="link_text width120" id="link_name" name="link_name" /></span></td>
+                        	<td><span style="color:red;">*</span>手 机：<span><input type="text" class="link_text width120" id="link_phone" name="link_phone"  
+                        						onblur="hideNumMsg(this);" onkeyup="getNumbers(this,'phone');" onfocus="getNumbers(this,'phone');" style="inline-height:22px;"/></span>
+                        						</td>
+                        </tr>
+                        <tr>
+                        
+                    	</tr>
+                    	
+                        <tr id="addressInput" style="display: none;">
+                        	<td colspan="3">收件地址：<span><input type="text" class="link_text width280" name="link_address" value="北京海淀区鼎好大厦"  /></span></td>
+                        </tr>
+                    </table>
+                      <table class="pub_table current type_22"  style="margin:10px 0px 10px 40px;display: none;" id="table_type_22">
+                    	<tr id="choose_type">
+                    	<td colspan="3">购买下铺&nbsp;&nbsp;&nbsp;&nbsp;
+                    	<select name="choose_seat_num" id="choose_seat_num">
+                            	<option value="1">1张</option>
+                            	<option value="2">2张</option>
+                            	<option value="3">3张</option>
+                            	<option value="4">4张</option>
+                            	<option value="5">5张</option>
+                            </select>
+                        	&nbsp;下铺&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="checkbox" id="choose_agree" >同意下铺不足时，接受上中铺。</td>
+                    	</tr>
+                    	<tr id="choose_type_alert">
+	                    	<td colspan="3">
+	                    	&nbsp;&nbsp;&nbsp;&nbsp;<p class="price_tip">我们将根据您的选择为您购票，下铺票不足时，将会导致购票失败。</p>
+	                    	</td>
+                    	</tr>
+                    	<tr>
+	                    	<td colspan="3">
+	                    	联系人&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" class="link_text width120" id="link_name_ps" name="link_name_ps" />
+	                    	</td>
+                    	</tr>
+                    	<tr>
+	                    	<td colspan="3">
+	                    	手机号&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span><input type="text" class="link_text width120" id="link_phone_ps" name="link_phone_ps"  
+                        						onblur="hideNumMsg(this);" onkeyup="getNumbers(this,'phone');" onfocus="getNumbers(this,'phone');" style="inline-height:22px;"/></span>
+	                    	</td>
+                    	</tr>
+                    	<tr>
+	                    	<td colspan="3">
+	                    	所在省市&nbsp;&nbsp;&nbsp;&nbsp;
+	                    	<select name="province" id="province" disabled="disabled" style="background-color:#FFFFCD;">   
+							<option value="0">请选择省份</option> 
+							</select> 
+							<select name="city" id="city" disabled="disabled" style="background-color:#FFFFCD;">  
+							<option value="0">请选择城市</option> 
+							</select> 
+							<select name="district" id="district" style="background-color:#FFFFCD;">   
+							<option value="0">请选择区县</option> 
+							</select> 
+							
+							<input type="hidden" value="110000" id="pre_province"/> 
+							<input type="hidden" value="110100" id="pre_city"/> 
+							                   	
+	                    	</td>
+                    	</tr>
+                    	<tr>
+	                    	<td colspan="3">
+	                    	详细地址&nbsp;&nbsp;&nbsp;&nbsp;<span><input type="text" class="link_text" style="width:380px;color:#aaa" id="ps_address" name="ps_address" 
+                        		value="请填写可以收件的真实地址（包括省市区）" onfocus="if(this.value=='请填写可以收件的真实地址（包括省市区）'){this.value=''};this.style.color='#333';" 
+                    			onblur="if(this.value==''||this.value=='请填写可以收件的真实地址（包括省市区）'){this.value='请填写可以收件的真实地址（包括省市区）';this.style.color='#aaa';}"/></span>
+	                    	</td>
+                    	</tr>
+                    	<tr>
+	                    	<td colspan="3">
+	                    	<p class="price_tip">配送费<font style="font-weight: bold; color: red;">￥20</font> + 纸质票费<font style="font-weight: bold; color: red;">￥5</font>，今天16点前完成支付，明天17点前送到！</p>
+	                    	</td>
+                    	</tr>
+                        
+                        <tr id="addressInput" style="display: none;">
+                        	<td colspan="3">收件地址：<span><input type="text" class="link_text width280" name="link_address" value="北京海淀区鼎好大厦"  /></span></td>
+                        </tr>
+                    </table>
+                     
+                </div>
+        	</div>
+        	
+        	<div class="pub_delivery_mes oz mb10_all" id="fp_content" style="display:none;">
+			   	<div class="pub_ord_tit">
+        	    	<h4 class="fl">保险信息</h4>
+	                <p class="tit_tip"></p>
+                </div>
+                <div class="new_pub_con">
+                    <table class="pub_table current">
+	                    <tr>
+		                    <td class="pub_yuliu" rowspan="1">
+		                    </td>
+		                    <td colspan="3">
+		                  	 	<span class="display_mid"><input type="checkbox" id="chk_fp" /></span>保险发票（将在火车发车后第二个工作日由承保的保险公司用平信免费邮寄寄出）
+		                    </td>
+	                    </tr>
+                    	<tr class="fp_item" style="display: none;">
+                        	<td class="pub_yuliu" rowspan="3"></td>
+                        	<td width="234">收件人：<span><input type="text" class="link_text width90" id="fp_receiver" name="fp_receiver" /></span></td>
+                        	<td>手 机：<span><input type="text" class="link_text width120" id="fp_phone" name="fp_phone" 
+                        						onblur="hideNumMsg(this);" onkeyup="getNumbers(this,'phone');" onfocus="getNumbers(this,'phone');" /></span></td>
+                        </tr>
+                        <tr class="fp_item" style="display: none;">
+                        	<td colspan="3">邮&nbsp;&nbsp;编：<span><input type="text" class="link_text width120" id="fp_zip_code" name="fp_zip_code" /></span></td>
+                        </tr>
+                        <tr class="fp_item" style="display: none;">
+                        	<td colspan="3">地&nbsp;&nbsp;址：<span><input type="text" class="link_text" style="width:380px;color:#aaa" id="fp_address" name="fp_address" 
+                        		value="请填写可以收件的真实地址（包括省市区）" onfocus="if(this.value=='请填写可以收件的真实地址（包括省市区）'){this.value=''};this.style.color='#333';" 
+                    			onblur="if(this.value==''||this.value=='请填写可以收件的真实地址（包括省市区）'){this.value='请填写可以收件的真实地址（包括省市区）';this.style.color='#aaa';}"/></span></td>
+                        </tr>
+                    </table>
+                    
+                </div>
+        	</div>
+        	
+        	 <p style="padding-left:153px;">
+        	 	<span class="display_mid">
+        	 		<input type="checkbox" id="chk_bxconfirm" checked="checked"/>
+        	 	</span>
+        	 	我已阅读并同意
+        	 	<span style="color:#0081cc;cursor:pointer;line-height:24px;" onclick="window.open('http://ehcp.19e.cn:80/pages/guide/daiGou.jsp');">《火车票线下代购服务协议》</span>、
+        	 	<span style="color:#0081cc;cursor:pointer;line-height:24px;" onclick="window.open('http://ehcp.19e.cn:80/pages/guide/chengnuoPage.jsp');">《平台购票承诺书》</span>
+        	 	<span id="bx_confirm">和<span style="color:#0081cc;cursor:pointer;line-height:24px;" onclick="window.open('http://www.unionlife.com.cn/tab674/');">《保险说明》</span></span>
+        	 </p>
+             <p class="tijiao"><input type="button" value="提交订单" id="btnSubmit" class="infoinput_submit" /></p>
+            </form>
+        </div>
+       
+    </div>
+    </div>
+    <div id="tip" class="tip_wrap" style="display: none;"><div class="tip"><b></b><span class="errMsg"></span></div></div>
+    <div id="num_tip" class="num_tip_wrap" style="display: none;"><div class="tip"><b></b><span class="numMsg"></span></div></div>
+</body>
+</html>

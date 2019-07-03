@@ -1,0 +1,572 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="robTicket">
+	<resultMap id="cp_map" class="com.l9e.transaction.vo.RobTicket_CP">
+		<result column="cp_id" jdbcType="VARCHAR" property="cpId" />
+		<result column="order_id" jdbcType="VARCHAR" property="orderId" />
+		<result column="user_name" jdbcType="VARCHAR" property="userName" />
+		<result column="ticket_type" jdbcType="INTEGER" property="ticketType" />
+		<result column="cert_type" jdbcType="VARCHAR" property="certType" />
+		<result column="cert_no" jdbcType="VARCHAR" property="certNo" />
+		<result column="telephone" jdbcType="VARCHAR" property="telephone" />
+		<result column="create_time" jdbcType="VARCHAR" property="createTime" />
+		<result column="pay_money" jdbcType="VARCHAR" property="payMoney" />
+		<result column="buy_money" jdbcType="VARCHAR" property="buyMoney" />
+		<result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+		<result column="seat_type" jdbcType="VARCHAR" property="seatType" />
+		<result column="train_no" jdbcType="VARCHAR" property="trainNo" />
+		<result column="train_box" jdbcType="VARCHAR" property="trainBox" />
+		<result column="seat_no" jdbcType="VARCHAR" property="seatNo" />
+		<result column="check_status" jdbcType="VARCHAR" property="checkStatus" />
+		<result column="pay_money_ext" jdbcType="VARCHAR" property="payMoneyExt" />
+		<result column="buy_money_ext" jdbcType="VARCHAR" property="buyMoneyExt" />
+		<result column="OrderTicketPrice" jdbcType="VARCHAR" property="orderTicketPrice" />
+		<result column="OrderTicketSeat" jdbcType="VARCHAR" property="orderTicketSeat" />
+		<result column="refund_status" jdbcType="VARCHAR" property="refundStatus" />
+	</resultMap>
+
+	<resultMap id="history_map" class="com.l9e.transaction.vo.RobTicket_History">
+		<result column="history_id" jdbcType="INTEGER" property="historyId" />
+		<result column="order_id" jdbcType="VARCHAR" property="orderId" />
+		<result column="order_optlog" jdbcType="VARCHAR" property="orderOptlog" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="opter" jdbcType="VARCHAR" property="opter" />
+	</resultMap>
+
+	<resultMap id="oi_map" class="com.l9e.transaction.vo.RobTicket_OI">
+		<result column="order_id" jdbcType="VARCHAR" property="orderId" />
+		<result column="ctrip_order_id" jdbcType="VARCHAR" property="ctripOrderId" />
+		<result column="fromTo_zh" jdbcType="VARCHAR" property="fromtoZh" />
+		<result column="pay_money" jdbcType="DECIMAL" property="payMoney" />
+		<result column="buy_money" jdbcType="DECIMAL" property="buyMoney" />
+		<result column="order_status" jdbcType="VARCHAR" property="orderStatus" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
+		<result column="out_ticket_time" jdbcType="TIMESTAMP" property="outTicketTime" />
+		<result column="out_ticket_type" jdbcType="INTEGER" property="outTicketType" />
+		<result column="opt_ren" jdbcType="VARCHAR" property="optRen" />
+		<result column="out_ticket_billno" jdbcType="VARCHAR" property="outTicketBillno" />
+		<result column="train_no" jdbcType="VARCHAR" property="trainNo" />
+		<result column="train_no_accept" jdbcType="VARCHAR" property="trainNoAccept" />
+		<result column="from_city" jdbcType="VARCHAR" property="fromCity" />
+		<result column="to_city" jdbcType="VARCHAR" property="toCity" />
+		<result column="from_time" jdbcType="TIMESTAMP" property="fromTime" />
+		<result column="to_time" jdbcType="TIMESTAMP" property="toTime" />
+		<result column="travel_time" jdbcType="VARCHAR" property="travelTime" />
+		<result column="seat_type" jdbcType="VARCHAR" property="seatType" />
+		<result column="seat_type_accept" jdbcType="VARCHAR" property="seatTypeAccept" />
+		<result column="account_id" jdbcType="VARCHAR" property="accountId" />
+		<result column="worker_id" jdbcType="INTEGER" property="workerId" />
+		<result column="out_ticket_account" jdbcType="VARCHAR"
+			property="outTicketAccount" />
+		<result column="bank_pay_seq" jdbcType="VARCHAR" property="bankPaySeq" />
+		<result column="error_info" jdbcType="VARCHAR" property="errorInfo" />
+		<result column="option_time" jdbcType="TIMESTAMP" property="optionTime" />
+		<result column="channel" jdbcType="VARCHAR" property="channel" />
+		<result column="level" jdbcType="VARCHAR" property="level" />
+		<result column="pay_type" jdbcType="VARCHAR" property="payType" />
+		<result column="is_pay" jdbcType="VARCHAR" property="isPay" />
+		<result column="return_optlog" jdbcType="VARCHAR" property="returnOptlog" />
+		<result column="pro_bak2" jdbcType="VARCHAR" property="proBak2" />
+		<result column="pay_limit_time" jdbcType="TIMESTAMP" property="payLimitTime" />
+		<result column="cancel_time" jdbcType="TIMESTAMP" property="cancelTime" />
+		<result column="refund_time" jdbcType="TIMESTAMP" property="refundTime" />
+		<result column="manual_order" jdbcType="VARCHAR" property="manualOrder" />
+		<result column="wait_for_order" jdbcType="VARCHAR" property="waitForOrder" />
+		<result column="device_type" jdbcType="TINYINT" property="deviceType" />
+		<result column="from_3c" jdbcType="VARCHAR" property="from3c" />
+		<result column="to_3c" jdbcType="VARCHAR" property="to3c" />
+		<result column="account_from_way" jdbcType="INTEGER" property="accountFromWay" />
+		<result column="pay_money_ext_sum" jdbcType="DECIMAL" property="payMoneyExtSum" />
+		<result column="buy_money_ext_sum" jdbcType="DECIMAL" property="buyMoneyExtSum" />
+		<result column="final_train_no" jdbcType="VARCHAR" property="finalTrainNo" />
+		<result column="pay_serial_number" jdbcType="VARCHAR" property="paySerialNumber" />
+		<result column="final_seat_type" jdbcType="VARCHAR" property="finalSeatType" />
+		<result column="leak_cut_offTime" jdbcType="INTEGER" property="leakCutOfftime" />
+		<result column="contact_person" jdbcType="VARCHAR" property="contactPerson" />
+		<result column="contact_phone" jdbcType="VARCHAR" property="contactPhone" />
+		<result column="leak_cut_str" jdbcType="VARCHAR" property="leakCutStr" />
+	</resultMap>
+	<resultMap id="notify_map" class="com.l9e.transaction.vo.RobTicket_Notify">
+		<result column="task_id" jdbcType="INTEGER" property="taskId" />
+		<result column="order_id" jdbcType="VARCHAR" property="orderId" />
+		<result column="task_type" jdbcType="VARCHAR" property="taskType" />
+		<result column="task_num" jdbcType="INTEGER" property="taskNum" />
+		<result column="task_status" jdbcType="VARCHAR" property="taskStatus" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="option_time" jdbcType="TIMESTAMP" property="optionTime" />
+	</resultMap>
+	<sql id="history_col">
+		history_id, order_id, order_optlog, create_time, opter
+	</sql>
+
+	<sql id="orderInfo_col">
+		order_id, ctrip_order_id, fromTo_zh, pay_money, buy_money,
+		order_status,
+		create_time,
+		pay_time, out_ticket_time, out_ticket_type,
+		opt_ren, out_ticket_billno,
+		train_no,
+		train_no_accept, from_city,
+		to_city, from_time, to_time, travel_time, seat_type,
+		seat_type_accept,
+		account_id, worker_id, out_ticket_account,
+		bank_pay_seq, error_info,
+		option_time, channel, level, pay_type, is_pay, return_optlog,
+		pro_bak2,
+		pay_limit_time,
+		manual_order, wait_for_order, device_type,
+		from_3c, to_3c, account_from_way,
+		pay_money_ext_sum,
+		buy_money_ext_sum,
+		final_train_no, pay_serial_number, final_seat_type, leak_cut_offTime,
+		contact_person, contact_phone,leak_cut_str,cancel_time,refund_time
+  </sql>
+
+	<sql id="cp_col">
+		cp_id, order_id, user_name, ticket_type, cert_type,
+		cert_no, telephone,
+		create_time,
+		pay_money, buy_money, modify_time,
+		seat_type, train_no, train_box, seat_no,
+		check_status,
+		pay_money_ext,
+		buy_money_ext,
+		OrderTicketPrice,
+		OrderTicketSeat,
+		refund_status
+  </sql>
+  <sql id="cp_col_simple">
+		user_name as userName, 
+		ticket_type as ticketType,
+		seat_no as seatNo,
+		OrderTicketSeat
+  </sql>
+  
+	<select id="queryCPByPrimaryKey" parameterClass="com.l9e.transaction.vo.RobTicket_CP"
+		resultMap="cp_map">
+		select
+		<include refid="cp_col" />
+		from hc_rob_orderinfo_cp
+		where cp_id = #cpId:VARCHAR#
+	</select>
+
+	<select id="selectHistoryByPrimaryKey" parameterClass="com.l9e.transaction.vo.RobTicket_History"
+		resultMap="history_map">
+		select
+		<include refid="history_col" />
+		from
+		hc_rob_orderinfo_history where history_id =
+		#historyId:INTEGER#
+	</select>
+	<select id="selectNotifyByPrimaryKey" parameterClass="com.l9e.transaction.vo.RobTicket_Notify"></select>
+
+	<select id="selectOrderInfoByPrimaryKey" parameterClass="com.l9e.transaction.vo.RobTicket_OI"
+		resultMap="oi_map">
+		select
+		<include refid="orderInfo_col" />
+		from
+		hc_rob_orderinfo where order_id = #orderId:VARCHAR#
+	</select>
+	<!--selectType oneMonthOrder createTime orderId outTicketBillno-->
+	<select id="selectOrderInfoByConditions" parameterClass="java.util.HashMap"
+		resultMap="oi_map">
+		select
+		<include refid="orderInfo_col" />
+		from
+		hc_rob_orderinfo where account_id = #agent_id:VARCHAR#
+		<isNotEmpty prepend="and" property="orderId">
+			order_id = #orderid:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="outTicketBillno">
+			out_ticket_billno = #outTicketBillno:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="order_Status">
+			 order_status =#order_Status:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="createTime">
+			 to_days(create_time)=to_days(STR_TO_DATE(#createTime:VARCHAR#,'%Y-%m-%d %H:%i:%s'))
+		</isNotEmpty>
+		<isEqual prepend="and" property="oneMonthOrder" compareValue="0">
+			 DATE_SUB(CURDATE(), INTERVAL 1 MONTH) <![CDATA[<=]]> date(create_time)
+		</isEqual>
+	    <isEqual prepend="and" property="oneMonthOrder" compareValue="1">
+			 DATE_SUB(CURDATE(), INTERVAL 1 MONTH) <![CDATA[>=]]> date(create_time)
+		</isEqual>
+		limit  #page#, #pageSize#
+	</select>
+	<select id="selectOrderInfoByConditionsCount" parameterClass="java.util.HashMap"
+		resultClass="int">
+		select
+		count(1)
+		from
+		hc_rob_orderinfo where account_id = #agent_id:VARCHAR#
+		<isNotEmpty prepend="and" property="orderId">
+			order_id = #orderid:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="outTicketBillno">
+			out_ticket_billno = #outTicketBillno:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="order_Status">
+			 order_status =#order_Status:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="createTime">
+			 to_days(create_time)=to_days(STR_TO_DATE(#createTime:VARCHAR#,'%Y-%m-%d %H:%i:%s'))
+		</isNotEmpty>
+		<isEqual prepend="and" property="oneMonthOrder" compareValue="0">
+			 DATE_SUB(CURDATE(), INTERVAL 1 MONTH) <![CDATA[<=]]> date(create_time)
+		</isEqual>
+	    <isEqual prepend="and" property="oneMonthOrder" compareValue="1">
+			 DATE_SUB(CURDATE(), INTERVAL 1 MONTH) <![CDATA[>=]]> date(create_time)
+		</isEqual>
+	</select>
+	<select id="selectOrderStatusNum" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		SELECT
+		SUM(order_status = '00') AS noPayNum,
+		SUM(order_status = '99') AS successNum,
+		SUM(order_status = '88') as waitingNum,
+		SUM(order_status = '10') as failNum,
+		SUM(order_status='71') as refundNum
+		FROM
+		hc_rob_orderinfo where account_id = #agent_id:VARCHAR#	
+	</select>
+	<select id="selectCPsByorderId" parameterClass="com.l9e.transaction.vo.RobTicket_OI"
+		resultMap="cp_map">
+		select
+		<include refid="cp_col" />
+		from hc_rob_orderinfo_cp
+		where order_id = #orderId:VARCHAR#
+	</select>
+
+	<insert id="insertCP" parameterClass="com.l9e.transaction.vo.RobTicket_CP"> insert into
+		hc_rob_orderinfo_cp (cp_id, order_id, user_name, ticket_type,
+		cert_type, cert_no, telephone, create_time, pay_money, buy_money,
+		modify_time, seat_type, train_no, train_box, seat_no, check_status,
+		pay_money_ext, buy_money_ext ) values (#cpId:VARCHAR#,
+		#orderId:VARCHAR#, #userName:VARCHAR#,
+		#ticketType:INTEGER#,
+		#certType:VARCHAR#,
+		#certNo:VARCHAR#, #telephone:VARCHAR#,
+		#createTime:VARCHAR#, #payMoney:VARCHAR#,
+		#buyMoney:VARCHAR#,
+		#modifyTime:TIMESTAMP#,
+		#seatType:VARCHAR#, #trainNo:VARCHAR#,
+		#trainBox:VARCHAR#, #seatNo:VARCHAR#,
+		#checkStatus:VARCHAR#,
+		#payMoneyExt:VARCHAR#,
+		#buyMoneyExt:VARCHAR# ) 
+	</insert>
+	<insert id="insertHistory" parameterClass="com.l9e.transaction.vo.RobTicket_History"> insert into
+		hc_rob_orderinfo_history (history_id, order_id, order_optlog,
+		create_time, opter) values (#historyId:INTEGER#,
+		#orderId:VARCHAR#,
+		#orderOptlog:VARCHAR#,
+		#createTime:TIMESTAMP#, #opter:VARCHAR#)
+	</insert>
+	<insert id="insertNotify" parameterClass="com.l9e.transaction.vo.RobTicket_Notify">
+	</insert>
+	<insert id="insertOrderInfo" parameterClass="com.l9e.transaction.vo.RobTicket_OI"> insert into
+		hc_rob_orderinfo (order_id, ctrip_order_id, fromTo_zh, pay_money,
+		buy_money, order_status, create_time, pay_time, out_ticket_time,
+		out_ticket_type, opt_ren, out_ticket_billno, train_no,
+		train_no_accept, from_city, to_city, from_time, to_time, travel_time,
+		seat_type, seat_type_accept, account_id, worker_id,
+		out_ticket_account, bank_pay_seq, error_info, option_time, channel,
+		level, pay_type, is_pay, return_optlog, pro_bak2, pay_limit_time,
+		manual_order, wait_for_order, device_type, from_3c, to_3c,
+		account_from_way, pay_money_ext_sum, buy_money_ext_sum,
+		final_train_no, pay_serial_number, final_seat_type, leak_cut_offTime,
+		contact_person, contact_phone,leak_cut_str ) values (#orderId:VARCHAR#,
+		#ctripOrderId:VARCHAR#, #fromtoZh:VARCHAR#,
+		#payMoney:DECIMAL#,
+		#buyMoney:DECIMAL#,
+		#orderStatus:VARCHAR#, #createTime:TIMESTAMP#,
+		#payTime:TIMESTAMP#, #outTicketTime:TIMESTAMP#,
+		#outTicketType:INTEGER#, #optRen:VARCHAR#,
+		#outTicketBillno:VARCHAR#,
+		#trainNo:VARCHAR#,
+		#trainNoAccept:VARCHAR#, #fromCity:VARCHAR#,
+		#toCity:VARCHAR#,
+		#fromTime:TIMESTAMP#,
+		#toTime:TIMESTAMP#,
+		#travelTime:VARCHAR#,
+		#seatType:VARCHAR#, #seatTypeAccept:VARCHAR#,
+		#accountId:INTEGER#,
+		#workerId:INTEGER#,
+		#outTicketAccount:VARCHAR#,
+		#bankPaySeq:VARCHAR#,
+		#errorInfo:VARCHAR#, #optionTime:TIMESTAMP#,
+		#channel:VARCHAR#, #level:VARCHAR#,
+		#payType:VARCHAR#,
+		#isPay:VARCHAR#,
+		#returnOptlog:VARCHAR#, #proBak2:VARCHAR#,
+		#payLimitTime:TIMESTAMP#,
+		#manualOrder:VARCHAR#,
+		#waitForOrder:VARCHAR#, #deviceType:TINYINT#,
+		#from3c:VARCHAR#,
+		#to3c:VARCHAR#,
+		#accountFromWay:INTEGER#,
+		#payMoneyExtSum:DECIMAL#,
+		#buyMoneyExtSum:DECIMAL#,
+		#finalTrainNo:VARCHAR#,
+		#paySerialNumber:VARCHAR#,
+		#finalSeatType:VARCHAR#,
+		#leakCutOfftime:INTEGER#,
+		#contactPerson:VARCHAR#,
+		#contactPhone:VARCHAR#,#leakCutStr:VARCHAR#)
+	</insert>
+	<update id="updateCP" parameterClass="com.l9e.transaction.vo.RobTicket_CP"> update
+		hc_rob_orderinfo_cp
+		set order_id = #orderId:VARCHAR#,
+		user_name =
+		#userName:VARCHAR#,
+		ticket_type =
+		#ticketType:INTEGER#, cert_type =
+		#certType:VARCHAR#,
+		cert_no = #certNo:VARCHAR#,
+		telephone = #telephone:VARCHAR#,
+		create_time =
+		#createTime:VARCHAR#, pay_money =
+		#payMoney:VARCHAR#,
+		buy_money =
+		#buyMoney:VARCHAR#, modify_time =
+		#modifyTime:TIMESTAMP#,
+		seat_type =
+		#seatType:VARCHAR#, train_no = #trainNo:VARCHAR#,
+		train_box
+		= #trainBox:VARCHAR#, seat_no =
+		#seatNo:VARCHAR#,
+		check_status =
+		#checkStatus:VARCHAR#, pay_money_ext =
+		#payMoneyExt:VARCHAR#,
+		buy_money_ext =
+		#buyMoneyExt:VARCHAR# where
+		cp_id = #cpId:VARCHAR#
+	</update>
+	<update id="updateHistory" parameterClass="com.l9e.transaction.vo.RobTicket_History"> update
+		hc_rob_orderinfo_history set order_id = #orderId:VARCHAR#,
+		order_optlog = #orderOptlog:VARCHAR#, create_time =
+		#createTime:TIMESTAMP#, opter = #opter:VARCHAR#
+		where history_id =
+		#historyId:INTEGER# </update>
+	<update id="updateNotify" parameterClass="com.l9e.transaction.vo.RobTicket_Notify"></update>
+
+	<update id="updateOrderInfo" parameterClass="com.l9e.transaction.vo.RobTicket_OI" > 
+		UPDATE
+			hc_rob_orderinfo
+		<dynamic prepend="SET">
+			<isNotEmpty prepend="," property="ctripOrderId">
+				ctrip_order_id = #ctripOrderId:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="orderStatus">
+				order_status = #orderStatus:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="paySerialNumber">
+				pay_serial_number = #paySerialNumber:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="optionTime">
+				option_time = NOW()
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="payTime">
+				pay_time = NOW()
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="outTicketBillno">
+				out_ticket_billno = #outTicketBillno#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="outTicketAccount">
+				out_ticket_account =#outTicketAccount#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="outTicketTime">
+				out_ticket_time = #outTicketTime#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refundTime">
+				refund_time = #refundTime#
+			</isNotEmpty>
+		</dynamic>
+		WHERE
+			order_id = #orderId:VARCHAR#
+	</update>
+	<update id="updateJLOrderInfo" parameterClass="com.l9e.transaction.vo.RobTicket_OI" > 
+		UPDATE
+			jl_orderinfo
+		<dynamic prepend="SET">
+			<isNotEmpty prepend="," property="orderStatus">
+				order_status = #orderStatus:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="paySerialNumber">
+				pay_serial_number = #paySerialNumber:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="optionTime">
+				option_time = NOW()
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="payTime">
+				pay_time = NOW()
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="outTicketBillno">
+				out_ticket_billno = #outTicketBillno#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="outTicketAccount">
+				out_ticket_account =#outTicketAccount#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="outTicketTime">
+				out_ticket_time = #outTicketTime#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refundTime">
+				refund_time = #refundTime#
+			</isNotEmpty>
+		</dynamic>
+		WHERE
+			order_id = #orderId:VARCHAR#
+	</update>
+	<delete id="deleteCP" parameterClass="com.l9e.transaction.vo.RobTicket_CP"> delete from
+		hc_rob_orderinfo_cp where cp_id = #cpId:VARCHAR# </delete>
+
+	<delete id="deleteHistory" parameterClass="com.l9e.transaction.vo.RobTicket_History"> delete from
+		hc_rob_orderinfo_history where history_id =
+		#historyId:INTEGER#
+	</delete>
+	<delete id="deleteNotify" parameterClass="com.l9e.transaction.vo.RobTicket_Notify"></delete>
+
+	<delete id="deleteOrderInfo" parameterClass="com.l9e.transaction.vo.RobTicket_OI"> delete from
+		hc_rob_orderinfo where order_id = #orderId:VARCHAR#
+	</delete>
+	<delete id="deleteCPByOrderInfo" parameterClass="com.l9e.transaction.vo.RobTicket_OI">
+		delete from
+		hc_rob_orderinfo_cp where order_id = #orderId:VARCHAR# 
+	</delete>
+	
+	<select id="queryEOPByEopId" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT hc.order_id, hc.eop_order_id, hc.asp_refund_seq, hc.eop_refund_url,
+			hc.pay_url,hc.query_result_url,hc.send_notify_url
+			FROM hc_order_eop hc 
+		WHERE hc.eop_order_id=#eop_order_id:VARCHAR#
+	</select>
+	<select id="queryOrderIdByCtripId" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		select jl.order_id from jl_orderinfo as jl where jl.ctrip_order_id =#ctrip_order_id:VARCHAR#
+	</select>
+	<select id="querySMSRobSucc" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT
+		hc.order_id,
+		hc.contact_phone,
+  		u.shop_short_name,
+  		hc.from_city,
+		hc.to_city,
+  		hc.train_no,
+  		hc.out_ticket_billno,
+  		date_format(hc.from_time,"%Y-%m-%d %T") as from_time ,
+  		hc.contact_person
+        FROM
+	    hc_rob_orderinfo as hc 
+	    LEFT JOIN hc_userinfo as u on hc.account_id = u.user_id 
+        WHERE
+	    hc.order_id = #order_id:VARCHAR#
+	</select>
+	<insert id="insertRefund" parameterClass="com.l9e.transaction.vo.RobTicket_Refund">
+	   INSERT INTO jl_orderinfo_refund
+	  (re_id,eop_refund_seq,rob_order_id,eop_order_id,refund_money,refund_status,opt_time,opt_log) 
+	   VALUES 
+	  (#re_id#,#eop_refund_seq#,#rob_order_id#,#eop_order_id#,#refund_money#,#refund_status#,#opt_time#,#opt_log#);
+	</insert>
+	<update id="updateRefund">
+		UPDATE  jl_orderinfo_refund 
+		<dynamic prepend="SET">
+			 <isNotEmpty prepend="," property="rob_order_id">
+			 	rob_order_id =#rob_order_id#
+			 </isNotEmpty>
+			 <isNotEmpty prepend="," property="eop_order_id">
+			 	eop_order_id =#eop_order_id#
+			 </isNotEmpty>
+			 <isNotEmpty prepend="," property="refund_money">
+			 	refund_money =#refund_money#
+			 </isNotEmpty>
+			 <isNotEmpty prepend="," property="refund_status">
+			 	refund_status =#refund_status#
+			 </isNotEmpty>
+			 <isNotEmpty prepend="," property="opt_time">
+			 	opt_time =#opt_time#
+			 </isNotEmpty>
+			 <isNotEmpty prepend="," property="opt_log">
+			 	opt_log =#opt_log#
+			 </isNotEmpty>
+			 <isNotEmpty prepend="," property="rob_order_id">
+			 	rob_order_id =#rob_order_id#
+			 </isNotEmpty>
+		</dynamic> 
+		WHERE (eop_refund_seq =#eop_refund_seq#);
+	</update>
+	
+	<!-- 插入jl_orderinfo_history表一条日志记录 -->
+	<insert id="insertJlOrderHistory" parameterClass="Map">
+		insert into jl_orderinfo_history
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="order_id">
+				order_id
+			</isNotNull>
+			<isNotNull prepend="," property="order_optlog">
+				order_optlog
+			</isNotNull>
+			<isNotNull prepend="," property="create_time">
+				create_time
+			</isNotNull>
+			<isNotNull prepend="," property="opter">
+				opter
+			</isNotNull>
+			)
+		</dynamic>
+		values
+		<dynamic prepend="(">
+			<isNotNull prepend="," property="order_id">
+				#order_id:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="order_optlog">
+				#order_optlog:VARCHAR#
+			</isNotNull>				
+			<isNotNull prepend="," property="create_time">
+				now()
+			</isNotNull>
+			<isNotNull prepend="," property="opter">
+				#opter:VARCHAR#
+			</isNotNull>
+			)
+		</dynamic>
+	</insert>
+	<update id="updateCPRobSucc" parameterClass="HashMap">
+		UPDATE jl_orderinfo_cp jl,
+		hc_rob_orderinfo_cp hc
+		SET jl.seat_no = #seat_no# ,hc.seat_no =#seat_no#,
+		jl.OrderTicketPrice = #OrderTicketPrice# ,hc.OrderTicketPrice=#OrderTicketPrice#,
+		jl.OrderTicketSeat=#OrderTicketSeat#,hc.OrderTicketSeat=#OrderTicketSeat#,
+		jl.train_no=#train_no#,hc.train_no = #train_no#
+		WHERE jl.cp_id = #cp_id# AND hc.cp_id = #cp_id#
+	</update>
+	
+	<update id="updateFrontBackCP_Refund_Front" parameterClass="HashMap">
+		UPDATE 
+		hc_rob_orderinfo_cp hc
+		SET hc.refund_status =#status#
+		where hc.cp_id = #cp_id#
+	</update>
+	<update id="updateFrontBackCP_Refund_Back" parameterClass="HashMap">
+		UPDATE jl_orderinfo_cp jl
+		SET jl.refund_status = #status# 
+		where jl.cp_id = #cp_id# 
+	</update>
+	<select id="queryRefundCp" parameterClass="Map" resultClass="com.l9e.transaction.vo.RobTicket_CP">
+		select cp_id as cpId  ,refund_status as refundStatus
+		from hc_rob_orderinfo_cp 
+		where order_id = #order_id# 
+		and cert_no = #cert_no# 
+		and ticket_type = #ticket_type#
+		and refund_status =#refund_status# 
+		and seat_no like CONCAT('%', #seat_no#, '%')
+	</select>
+	
+	<insert id="insertRobRefundFromCtrip" parameterClass="Map">
+		INSERT INTO jl_ctrip_refund 
+		(`ctrip_trade_no`, `order_id`, `refund_money`, `ctrip_ref_time`, `create_time`)
+		VALUES (#ctrip_trade_no#, #order_id#, #refund_money#, #ctrip_ref_time#, #create_time#);
+	</insert>
+</sqlMap>

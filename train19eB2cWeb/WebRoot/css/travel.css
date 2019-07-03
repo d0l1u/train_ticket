@@ -1,0 +1,291 @@
+@charset "utf-8";
+/* CSS Document */
+
+.btn13{border:0; width:129px; height:39px; background:url(../images/train-bg_v1.png) no-repeat -258px -331px; color:#fff; font-weight:300px; font-size:16px; line-height:39px; text-align:center;  cursor:pointer; margin:10px auto;}
+
+.btn13:hover{ background:url(../images/train-bg_v1.png) no-repeat -258px -372px; }
+
+/* 以下是我的旅行页面所有样式 */
+.travel_con{ width:1180px; height:auto; margin:20px auto; margin-bottom:250px; overflow:hidden;}
+
+/* 以下是我的旅行页面左侧导航样式 */
+
+.left_nav{ float:left; width:175px; height:auto;}
+
+.left_nav ul{width:173px; border:1px solid #ccc; height:auto;}
+
+.left_nav ul li.con{width:173px; height:40px;text-align:center; font-size:14px; line-height:40px; cursor:pointer;}
+
+.left_nav ul li.con:hover{ background:url(../images/travel_lion.png) no-repeat 32px center; text-decoration:none; color:#f60;}
+
+.left_nav ul li.title{width:156px; height:45px; font-size:16px; font-weight:600; padding-left:17px; line-height:45px; background:#f4f4f4;}
+
+.left_nav ul li.title span{ color:#000;}
+
+.left_nav ul li a{ color:#333;}
+
+.left_nav ul li.current{background:url(../images/travel_lion.png) no-repeat 32px center; text-decoration:none; color:#f60; }
+
+
+/* 以下是我的旅行页面右侧内容样式 */
+
+.right_con{ float:right; width:985px; height:auto; overflow:hidden; }
+
+.hello_k{ width:883px; border:1px solid #ccc; padding:30px 0 20px 100px; height:115px;}
+
+.hello_k dd{ float:left; margin-right:30px;}
+
+.hello_k dt{ float:left; height:128px;}
+
+.hello_k dt p{ line-height:70px; margin-top:10px; font-size:18px;}
+
+/* 以下是密码强中弱样式 */
+.hello_k dt .safe{ display:inline-block;margin-top:2px; height:36px; line-height:36px;}
+
+.hello_k a{font-size:14px; color:#1d7ad9;}
+
+.password_strength{ height:30px; width:190px; clear:both; margin-left:100px;}
+
+.password_strength span { display: block;text-align: center;line-height: 22px;color: #999;}
+
+.password_strength p { padding: 0px;margin: 0px;height: 8px; overflow: hidden;background-color: #DDD;}
+
+.password_strength p.on{background:#f60;}
+
+.password_strength li { float: left;width: 54px; margin-left: 4px;display: inline;}
+
+.clearfix:after { content: "."; display: block;clear: both;visibility: hidden;line-height: 0; height: 0px;}
+
+/* 以下是正文标题火车票订单样式 */
+.trainOrder{ width:970px; border-bottom:1px solid #1D7AD9; padding-left:15px; margin-top:15px;}
+
+.trainOrder li{ width:150px; border:1px solid #1D7AD9; border-top:2px solid #1D7AD9; border-bottom:0; height:30px; line-height:30px; text-align:center; background:#f8f8f8; margin-bottom:-1px; font-size:16px; font-weight:800;}
+
+.trainO_con{ width:985px; height:auto; margin-bottom:40px;}
+
+.condi_table li{ float:left; color:#333;}
+
+.condi_ul{ height:30px; margin:10px 0;}
+
+.trainO_tb{ clear:both;}
+
+.condi_xinxi{width:985px; height:auto;border-bottom:1px solid #C9C9C9; margin-bottom:10px;}
+
+.condi_xinxi table td a{ color:#1D7AD9;}
+
+.condi_xinxi table td strong{ color:#f60;}
+
+.condi_table .title { width:100%; height: 40px;line-height: 40px; background:#e3e3e3;color: #333;}
+
+.condi_table input.btn3{ margin:10px 0 0 0;}
+
+.condi_xinxi table .content td{ height:76px; line-height:76px;}
+
+.condi_xinxi table input{ font-size:13px; font-weight:800;}
+
+.trainNOrder{ width:785px; height:160px; margin-bottom:40px; padding:50px 50px;}
+
+.trainNOrder span{ width:257px; height:100px; display:inline-block; background:url(../images/logo.jpg) no-repeat; float:left;}
+
+.trainNOrder P{ width:300px; height:100px; float:left; line-height:80px; text-align:center;}
+
+
+
+/* 以下是MytrainOrder页面样式样式 */
+.ordersearch{ width:945px; height:60px; padding-left:40px; padding-top:10px; border-bottom:1px solid #c9c9c9;}
+
+.ordersearch p{ height:37px; padding-top:13px; float:left;}
+
+.ordersearch input{ border:1px solid #ccc; height:25px; line-height:25px; width:200px; padding-left:10px;}
+
+.ordersearch button{ border:0;}
+
+
+/* 以下是买保险待支付详情页页面样式MyBepaidbx页面样式样式 */
+.trainO_con .message .bepaid_tit{ width:963px; line-height:40px;}
+
+.trainO_con .message { width:983px; margin-bottom:10px; overflow:hidden;}
+
+.trainO_con .message .message_c{width:983px;}
+
+.trainO_con .message table{ width:960px; text-align:center; margin:10px 0 10px 10px;}
+
+.message .bepaid_messtb td{ height:40px; line-height:40px;}
+
+.message .message_ck td{ height:80px;}
+
+.message .message_ck span{ font-size:20px; font-weight:400;}
+
+.trainO_con .message .bepaid_tb td{ height:35px; line-height:35px; text-align:left; padding-left:30px; width:50%;}
+
+.trainO_con .message .bepaid_tb td b{ color:#f60;}
+
+.Bepaid_last{ width:800px; margin:20px 0; height:50px;text-align:center; padding-left:185px;}
+
+.Bepaid_last p{ float:right; height:50px; line-height:50px; width:200px; font-size:18px;}
+
+.Bepaid_last p span{ color:#f60; font-weight:800;}
+
+
+/* 以下是买保险订单支付超时页面内容样式 */
+.nopaid_zt strong{color:#f60;  font-size:16px;}
+
+.right_con .trainO_con  .message .bepaid_tb .nopaid_zt{padding-left:313px;}
+
+/* 以下是不买保险出票中页面内容样式 */
+.trainO_con .paying_last{ padding-left:300px;}
+
+
+/* 以下是我的旅行所有弹框drawframe内容样式 */
+/* 退票弹框样式 */
+.return{ width:400px; height:280px; border:1px solid #86CBFF; margin:50px auto; padding-top:20px;}
+
+.return p{ margin:30px auto; height:20px; width:225px;}
+
+.return input{ border:0; margin-left:47px; font-size:18px; font-weight:bold;}
+
+.return dl{ width:300px; height:50px; margin:30px auto;}
+
+.return dl dt{ width:80px; height:50px; float:left;}
+
+.return dl dd{width:220px; height:50px; float:left;}
+
+/* 密码修改成功样式 */
+.password{  width:400px; height:280px; border:1px solid #86CBFF; margin:50px auto; padding-top:20px;}
+
+.password dl{ width:260px; height:100px; margin:40px auto; margin-bottom:0;}
+
+.password dd{ float:right;  line-height:60px;}
+
+.password dd p{line-height:60px;  width:170px; height:60px;}
+
+.password dt{ float:left; height:60px; width:60px; }
+
+.password dt strong{ display:inline-block; height:60px; width:60px; background:url(../images/trainbg.png) no-repeat right -480px;}
+
+.password button{ border:0; font-size:18px; font-weight:bold; margin-left:134px;}
+
+.password dt i{ display:inline-block; height:60px; width:60px; background:url(../images/tanh.png) no-repeat;}
+
+.btn6{ width:129px; height:39px; background:url(../images/train-bg_v1.png) no-repeat -257px -417px; color:#fff; font-weight:300px; font-size:16px; line-height:39px; text-align:center;  cursor:pointer; margin:10px auto;}
+
+
+/*以下是个人中心-我的信息MyInformation页面样式 */
+.MyInmatable{ height:auto; margin:20px 0 20px 100px;}
+
+.MyInmatable td{ padding:15px 5px;}
+
+.right_con .MyInma_button{ border:0; font-size:18px; font-weight:bold; margin-left:155px;}
+
+.MyOrder{ width:970px; border-bottom:1px solid #1D7AD9; padding-left:15px;}
+
+.MyOrder li{ width:150px; border:1px solid #1D7AD9; border-top:2px solid #1D7AD9; border-bottom:0; height:30px; line-height:30px; text-align:center; background:#f8f8f8; margin-bottom:-1px; font-size:16px; font-weight:800;}
+
+
+/*以下是个人中心-编辑信息EditInformation页面样式 */
+
+.MyInmatable input.text{ height:25px; line-height:25px; padding-left:10px; width:225px;}
+
+.MyInmatable select.sel{ width:65px;}
+
+
+/*以下是个人中心-常用信息CommonInfor页面样式 */
+
+.CommonI_cx{ width:950px; padding-left:15px; margin:15px 10px; }
+
+.CommonI_cx .txt{ height:30px; line-height:30px; padding-left:10px; width:225px; border:1px solid #ccc; margin-right:20px;}
+
+.CommonI_cx .btn{ border:0; margin-right:20px; font-weight:800; height:39px;}
+
+.zw_add .btn{ border:0; margin-right:20px; font-weight:800; height:39px;}
+
+.CommonI_tb td{height:40px; line-height:40px;}
+
+.CommonI_tb a{color:#1D7AD9;}
+
+.CommonI_tb{ width:980px; text-align:center; margin-bottom:60px;}
+
+
+/**以下是添加新乘客页面AddPassengers样式****/
+.MyInmatable b{ color:red;}
+
+.MyInmatable .right{ text-align:right;}
+
+.MyInmatable select{ width:240px;height:28px; }
+
+.AddP_btn{ border:0; font-size:18px; font-weight:bold; margin-left:195px;}
+
+.no_span{ width:20px; height:17px; background:url(../images/trainbg.png) no-repeat left -573px; display:inline-block;}
+.yes_span{ width:20px; height:17px; background:url(../images/trainbg.png) no-repeat left -596px; display:inline-block;}
+
+/* 以下是邮寄地址页面mailAddress样式 */
+.zw_add{ width:100%; height:50px; text-align:center;}
+
+.zw_add button{ border:0; margin-left:30px; font-weight:600;}
+
+
+
+/* 以下是增加邮寄地址页面addAddress样式 */
+.MyInmatable .address{ width:150px;}
+
+.MyInmatable input.changads{ width:445px; color:#666;}
+
+.Adda_btn{ border:0; font-size:18px; font-weight:bold; margin-left:209px;}
+
+
+/* 以下是商户合作页面内容样式 */
+
+.coop_p{ line-height:25px; margin:10px 30px; text-indent:2em;}
+
+/* 以下是合作优势页面内容样式 */
+.advantage_con{ width:985px; height:auto; margin-bottom:40px;}
+
+.advantage_con dl{ width:300px; padding-left:90px; float:left; margin:20px 0 0 40px;}
+
+.advantage_con dl dt{ font-size:16px; font-weight:bold; margin-bottom:10px; color:#218eff;}
+
+.advantage_con dl dd{ width:200px; height:40px;}
+
+.information01{ background:url(../images/bg01.jpg) no-repeat 10px center;}
+
+.information02{ background:url(../images/bg02.jpg) no-repeat 10px center;}
+
+.information03{ background:url(../images/bg03.jpg) no-repeat 10px center;}
+
+.information04{ background:url(../images/bg04.jpg) no-repeat 10px center;}
+
+.information05{ background:url(../images/bg05.jpg) no-repeat 10px 7px;}
+
+.information06{ background:url(../images/bg06.jpg) no-repeat 10px center;}
+
+/* 以下是成功案例页面内容样式 */
+.trainO_con dl{ overflow:hidden; margin-bottom:20px;}
+
+.trainO_con dt{ float:left; height:450px; width:800px; background:url(../images/cash_cmpay.png) no-repeat; border:2px solid #ccc; border-right:1px solid #ccc;}
+
+.trainO_con .case_h3{ margin:10px;}
+
+.trainO_con  dd{ float:left; width:159px; height:410px; padding:20px 10px; border:2px solid #ccc; border-left:1px solid #ccc;}
+
+.trainO_con dd p{text-indent:2em;}
+
+.trainO_con .case01 dt{ background:url(../images/cash_cmpay.png) no-repeat;}
+
+.trainO_con .case02 dt{ background:url(../images/case_bank.png) no-repeat;}
+
+.trainO_con .case03 dt{ background:url(../images/case_sh.png) no-repeat;}
+
+
+/* 以下是业务联系页面内容样式 */
+.trainO_con .contact_l{ float:left; margin-top:50px;}
+
+.trainO_con .contact_r{ float:left; margin-top:20px; height:249px; width:466px; background:url(../images/contact-bg.jpg) no-repeat;}
+
+.trainO_con .contact_l h3{ width:400px; height:40px; border-bottom:1px dashed #ccc; line-height:40px; text-align:center; font-size:16px;}
+
+.trainO_con .contact_l p{ line-height:40px; text-indent:2em;}
+
+.trainO_con .contact_l p span{ color:#208EFF; font-weight:bold;}
+
+
+

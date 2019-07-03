@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="tj_Dealer">
+	<select id="queryDealerIdByMouth" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT 
+		  DISTINCT(hc.dealer_id)
+		FROM
+		  hc_orderinfo hc 
+		WHERE hc.order_status = '44' and  hc.dealer_id is not null 
+		  AND  hc.create_time <![CDATA[>=]]> CONCAT(#this_mouth#, ' 00:00:00') 
+		AND hc.create_time <![CDATA[<]]> CONCAT(#next_mouth#, ' 00:00:00') 
+	</select>
+	
+	<select id="queryAreaNameByDealerId" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT ga.area_name FROM  gen_area ga , hc_orderinfo hc
+		WHERE ga.area_no =  hc.at_province_id 
+		 AND   hc.dealer_id = #dealer_id# limit 1
+	</select>
+	
+	<select id="queryPayMoneyByDealerId" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT 
+		 SUM(hc.pay_money)
+		FROM
+		  hc_orderinfo hc 
+		WHERE hc.order_status = '44' AND hc.dealer_id = #dealer_id#
+		  AND  hc.create_time <![CDATA[>=]]> CONCAT(#this_mouth#, ' 00:00:00') 
+		AND hc.create_time <![CDATA[<]]> CONCAT(#next_mouth#, ' 00:00:00') 
+	</select>
+	<select id="queryOrderCountByDealerId" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT 
+		 COUNT(hc.order_id)
+		FROM
+		  hc_orderinfo hc 
+		WHERE hc.order_status = '44' AND hc.dealer_id = #dealer_id#
+		  AND  hc.create_time <![CDATA[>=]]> CONCAT(#this_mouth#, ' 00:00:00') 
+		AND hc.create_time <![CDATA[<]]> CONCAT(#next_mouth#, ' 00:00:00') 
+	</select>
+	<select id="queryRefundMoneyByDealerId" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT 
+		 SUM(hr.refund_money)
+		FROM
+		  hc_orderinfo_refundstream hr
+		 LEFT JOIN 
+		  hc_orderinfo hc  ON hc.order_id = hr.order_id 
+		  WHERE hr.refund_status = '44' AND hc.dealer_id = #dealer_id#
+		  AND  hr.create_time <![CDATA[>=]]> CONCAT(#this_mouth#, ' 00:00:00') 
+		AND hr.create_time <![CDATA[<]]> CONCAT(#next_mouth#, ' 00:00:00') 
+	</select>
+	<select id="queryRefundCountByDealerId" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT 
+		 COUNT(hr.order_id)
+		FROM
+		  hc_orderinfo_refundstream hr
+		 LEFT JOIN 
+		  hc_orderinfo hc  ON hc.order_id = hr.order_id 
+		  WHERE hr.refund_status = '44' AND hc.dealer_id = #dealer_id#
+		  AND  hr.create_time <![CDATA[>=]]> CONCAT(#this_mouth#, ' 00:00:00') 
+		AND hr.create_time <![CDATA[<]]> CONCAT(#next_mouth#, ' 00:00:00') 
+	</select>
+	
+	<insert id="addToTj_Dealer" parameterClass="java.util.HashMap">
+		INSERT INTO tj_dealer
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="create_time">
+				create_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="date_time">
+				date_time
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="dealer_id">
+				dealer_id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="area_name">
+				area_name
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_money">
+				pay_money
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="order_count">
+				order_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_count">
+				refund_count
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_money">
+				refund_money
+			</isNotEmpty>
+			)
+		</dynamic>
+		 values
+		<dynamic prepend="(">
+			<isNotEmpty prepend="," property="create_time">
+				now()
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="date_time">
+				#date_time#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="dealer_id">
+				#dealer_id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="area_name">
+				#area_name#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="pay_money">
+				#pay_money#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="order_count">
+				#order_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_count">
+				#refund_count#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="refund_money">
+				#refund_money#
+			</isNotEmpty>
+			)
+		</dynamic>
+	</insert>
+</sqlMap>

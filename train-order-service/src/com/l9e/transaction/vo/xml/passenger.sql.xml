@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="passenger">
+
+	<!-- 查询乘客-车票信息 -->
+	<select id="selectPassenger" parameterClass="Map" resultClass="com.l9e.transaction.vo.Passenger">
+		SELECT
+			cp_id id,
+			user_name name,
+			ticket_type ticketType,
+			cert_type passportType,
+			cert_no passportNo,
+			telephone,
+			CONVERT(pay_money, DECIMAL(10,2)) payMoney,
+			CONVERT(buy_money, DECIMAL(10,2)) buyMoney,
+			seat_type seatType,
+			train_box trainBox,
+			seat_no seatNo,
+			check_status checkStatus
+		FROM
+			cp_orderinfo_cp
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="AND" property="orderId">
+				order_id = #orderId:VARCHAR#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<!-- 更新12306账号 -->
+	<update id="updatePassenger" parameterClass="com.l9e.transaction.vo.Passenger">
+		UPDATE
+			cp_orderinfo_cp
+		SET
+			cp_id = #id:VARCHAR#
+		<dynamic>
+			<isNotEmpty prepend="," property="payMoney">
+				pay_money = #payMoney:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="buyMoney">
+				buy_money = #buyMoney:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="seatType">
+				seat_type = #seatType:INTEGER#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="trainBox">
+				train_box = #trainBox:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="seatNo">
+				seat_no = #seatNo:VARCHAR#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="checkStatus">
+				check_status = #checkStatus:VARCHAR#
+			</isNotEmpty>
+		</dynamic>
+		WHERE
+			cp_id = #id:VARCHAR#
+	</update>
+</sqlMap>

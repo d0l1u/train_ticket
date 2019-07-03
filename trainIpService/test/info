@@ -1,0 +1,28 @@
+{
+	"insureCode ":"123",
+	"toStationCode":"RZH",
+	"cheCi":"K1237",
+	"passengers":[
+		{
+			"ticketType":"1",
+			"idsType":"1",
+			"passengerId":13985573,
+			"reason":0,
+			"passportTypeName":"二代身份证",
+			"piaoTypeName":"成人票",
+			"zwName":"硬座",
+			"passengerName":"张三",
+			"zwCode":"1",
+			"passportNo":"610103197598242518",
+			"price":156.0
+		}
+	],
+	"fromStationCode":"BZH",
+	"phone":"18899830545",
+	"toStationName":"温州",
+	"trainDate":"2015-08-19",
+	"fromStationName":"亳州",
+	"contact":"张三",
+	"orderId":"TN_HG568J9LH34TTT5",
+	"callBackUrl":"http://www.tuniu.com/api/train/bookOrderFeedback"
+}

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="queryTicket">
+	<!-- 根据站站查询旧火车票数据 -->
+	<select id="queryTicketDataList" parameterClass="java.util.HashMap"
+		resultClass="com.l9e.transaction.vo.TrainDataFake">
+		SELECT id,train_no,from_city,to_city,from_time,to_time,begin_city,end_city,train_type,
+		time_cost,yz_price,rz_price,yw_price,rw_price,ydz_price,edz_price,gw_price,swz_price,tdz_price 
+		FROM hc_train_base 
+		WHERE from_city=#from_station:VARCHAR# AND to_city=#arrive_station:VARCHAR# ORDER BY from_time ASC
+	</select>
+	
+	<!-- 根据车次查询途径站信息 -->
+	<select id="queryWayStationDataList" parameterClass="java.util.HashMap"
+		resultClass="com.l9e.transaction.vo.TrainStationVo">
+		SELECT id,train_no,station,arrive_time,start_time,stop_time,station_index,distance,days 
+		FROM hc_train_station 
+		WHERE MATCH (train_no)AGAINST (#train_no:VARCHAR#) AND 
+		arrive_time BETWEEN STR_TO_DATE(#arrive_time:VARCHAR#,"%H:%i:%s") AND STR_TO_DATE(#start_time:VARCHAR#,"%H:%i:%s") 
+		ORDER BY station_index ASC
+	</select>
+	
+	<!-- 根据站站查询新火车票数据 -->
+	<select id="queryTicketNewDataList" parameterClass="java.util.HashMap"
+		resultClass="com.l9e.transaction.vo.TrainNewDataFake">
+		SELECT xh,cc,fz,dz,yz,rz,yws,ywz,ywx,rws,rwx,rz2,rz1 
+		FROM t_zjpj_a 
+		WHERE fz like CONCAT(#from_station:VARCHAR#,'%') AND dz like CONCAT(#arrive_station:VARCHAR#,'%') ORDER BY xh ASC
+	</select>
+	
+	
+	<!-- 根据页面展示车次查询库中具体车次信息 -->
+	<select id="queryTheCheciForStation" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+		select checi FROM t_sinfo WHERE czcc=#checi:VARCHAR# LIMIT 1
+	</select>
+	
+	<!-- 根据查询出的具体车次查询途径站信息 -->
+	<select id="queryWayStationInfo" parameterClass="java.lang.String"
+		resultClass="com.l9e.transaction.vo.TrainNewStationVo">
+		SELECT stationno,name,arrtime,starttime,distance,costtime  
+		FROM t_sinfo
+		WHERE checi =#checi:VARCHAR#
+		ORDER BY stationno ASC
+	</select>
+	
+	<!-- 从本地根据站站查询不可预订火车票数据 -->
+	<select id="queryTicketAppendTrainList" parameterClass="java.util.HashMap"
+		resultClass="com.l9e.transaction.vo.TrainNewDataFakeAppendTrain">
+		SELECT xh,czcc as cc,fz,dz,yz,rz,yws,ywz,ywx,rws,rwx,rz2,rz1,start_station_name,
+		end_station_name,start_time,arrive_time,lishi   
+		FROM t_zjpj_a 
+		WHERE fz like CONCAT(#from_station:VARCHAR#,'%') AND dz like CONCAT(#arrive_station:VARCHAR#,'%') ORDER BY start_time ASC
+	</select>
+	<!-- 查询统计车站信息 -->
+	<select id="queryOftenStation" resultClass="java.lang.String">
+		SELECT station FROM inner_oftentraininfo GROUP BY station ORDER BY show_order ASC 
+	</select>
+	<!-- 根据车站，查询统计车站的详细信息 -->
+	<select id="queryOftenStationInfo" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT train_code,from_station,arrive_station,price,start_station,end_station 
+		FROM inner_oftentraininfo WHERE station = #station:VARCHAR#
+	</select>
+	
+	
+</sqlMap>

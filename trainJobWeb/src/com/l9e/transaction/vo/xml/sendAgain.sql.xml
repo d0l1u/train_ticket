@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="sendAgain">
+	<!-- 获取待重发的排队订单号-->
+	<select id="queryNeedSendAgainOrder" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+		SELECT order_id FROM cp_orderinfo_queue WHERE queue_status='00' AND resend_time <![CDATA[<]]> NOW()  
+		AND NOW() <![CDATA[<]]> DATE_ADD(create_time, INTERVAL #num:Integer# MINUTE) limit 20
+	</select>
+	
+	<!-- 获取待重发的排队 超时改人工订单号-->
+	<select id="queryNeedToManualOrder" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+		SELECT order_id FROM cp_orderinfo_queue WHERE queue_status='00'	
+		AND NOW() <![CDATA[>]]> DATE_ADD(create_time, INTERVAL #num:Integer# MINUTE) 
+	</select>
+
+	<!-- 更新重发 -->
+	<update id="updateToSendAgainByOrderId" parameterClass="java.lang.String">
+		update cp_orderinfo set order_status='01' where order_id=#orderId:VARCHAR#
+	</update>
+	
+	<!-- 更新人工 -->
+	<update id="updateToManualByOrderId" parameterClass="java.lang.String">
+		update cp_orderinfo set order_status='44' where order_id=#orderId:VARCHAR#
+	</update>
+	
+	<!-- 更新人工 -->
+	<update id="updateCpQueueByOrderId" parameterClass="java.lang.String">
+		update cp_orderinfo_queue set queue_status='11' where order_id=#orderId:VARCHAR#
+	</update>
+	
+</sqlMap>

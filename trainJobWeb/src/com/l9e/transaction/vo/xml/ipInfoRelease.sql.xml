@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ipInfoRelease">
+
+	<!-- 查询待释放IP列表 -->
+	<select id="selectReleaseIpInfoList" parameterClass="Map" resultClass="com.l9e.transaction.vo.IpInfoRelease">
+	SELECT
+	ip_id ipId,
+	ip_ext ipExt,
+	release_status releaseStatus,
+	release_num releaseNum
+	FROM
+	cp_ipinfo_release
+	WHERE
+	release_status = #releaseStatus:VARCHAR#
+	or (release_status = '3' and
+	option_time
+		    <![CDATA[<]]>
+	DATE_SUB(NOW(), INTERVAL 3 MINUTE))
+	and
+	create_time
+		     <![CDATA[<]]>
+	DATE_SUB(NOW(), INTERVAL 10 MINUTE)	
+	</select>
+
+	<!-- 更新待释放IP表的信息 -->
+	<update id="updateIpInfoRelease" parameterClass="Map">
+	UPDATE
+	cp_ipinfo_release
+	SET
+	release_status = #releaseStatus:VARCHAR#
+	<isNotEmpty prepend="," property="optionTime">
+		option_time = now()
+    </isNotEmpty>
+	<isNotEmpty prepend="," property="releaseNum">
+		release_num = #releaseNum:INTEGER# 
+    </isNotEmpty>
+	WHERE
+	    ip_id = #ipId:INTEGER#
+	</update>
+	
+</sqlMap>
