@@ -42,7 +42,7 @@
 		<jedis.version>2.9.0</jedis.version>
 
 		<!-- spring -->
-		<spring.version>4.3.2.RELEASE</spring.version>
+		<spring.version>4.3.16.RELEASE</spring.version>
 		<commons-lang3.version>3.6</commons-lang3.version>
 		<!-- Joda Time 日期工具类 -->
 		<joda-time.version>2.9.7</joda-time.version>
